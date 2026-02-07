@@ -1,21 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { APP_NAME } from '@/constants/app';
+import { RootNavigator } from '@/navigation';
+import { ThemeProvider } from '@/theme';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>{APP_NAME} Mobile App</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider defaultThemeName="mystical-purple">
+      <RootNavigator />
+      <StatusBar style="light" />
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

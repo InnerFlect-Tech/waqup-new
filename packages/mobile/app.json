@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "scheme": "waqup",
     "extra": {
       "supabaseUrl": "${EXPO_PUBLIC_SUPABASE_URL}",
       "supabasePublishableKey": "${EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY}"
@@ -24,7 +25,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "waqup"
+            },
+            {
+              "scheme": "https",
+              "host": "waqup.app",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
