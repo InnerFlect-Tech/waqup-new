@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createSupabaseClient } from '@waqup/shared/services/supabase/client';
+import { createSupabaseClient } from '@waqup/shared/services';
 import Constants from 'expo-constants';
 
 const supabaseUrl = 

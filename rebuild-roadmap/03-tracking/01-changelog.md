@@ -81,10 +81,28 @@
 - **Updated**: 2026-02-07
 
 ### Step 1.4: Configure Supabase Connection
-- **Status**: ⏳ Pending
-- **Completed**: -
-- **Notes**: -
-- **Updated**: -
+- **Status**: ✅ Complete
+- **Completed**: 2026-02-07
+- **Notes**: 
+  - **Shared Package**: Created Supabase client factory function in `packages/shared/src/services/supabase/client.ts`
+    - Platform-agnostic `createSupabaseClient()` function that accepts storage adapter
+    - `testSupabaseConnection()` utility function for testing
+    - Exported from shared services index
+  - **Mobile Package**: 
+    - Verified `expo-constants` is installed (already present)
+    - Created mobile-specific Supabase client in `packages/mobile/src/services/supabase.ts`
+    - Uses AsyncStorage for auth persistence
+    - Reads environment variables from `Constants.expoConfig?.extra` or `process.env.EXPO_PUBLIC_*`
+    - Updated `app.json` with `extra` field for environment variables
+  - **Web Package**: 
+    - Created web-specific Supabase client in `packages/web/src/lib/supabase.ts`
+    - Uses browser localStorage automatically (no storage adapter needed)
+    - Reads environment variables from `process.env.NEXT_PUBLIC_*`
+  - **Verification**: 
+    - TypeScript compilation succeeds on both platforms
+    - Imports work correctly from `@waqup/shared/services`
+    - Both clients properly configured with auth options (autoRefreshToken, persistSession, detectSessionInUrl: false)
+- **Updated**: 2026-02-07
 
 ### Step 1.5: Set Up Navigation Structure
 - **Status**: ⏳ Pending

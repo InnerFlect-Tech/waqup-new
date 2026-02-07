@@ -64,7 +64,7 @@ The setup scripts will:
 #### Prerequisites
 
 **Required for All Platforms**:
-- **Node.js**: 20.9.0+ (LTS) or Node.js 22+ (LTS)
+- **Node.js**: >= 24.0.0 (LTS)
 - **npm**: 10.0.0+ (comes with Node.js)
 - **Git**: Latest version
 
@@ -94,7 +94,7 @@ The setup scripts will:
 ```powershell
 # 1. Install Node.js (if not installed)
 # Download from: https://nodejs.org/ (LTS version)
-node --version  # Verify: Should be 20.9.0+ or 22+
+node --version  # Verify: Should be >= 24.0.0
 npm --version   # Verify: Should be 10.0.0+
 
 # 2. Install Git (if not installed)
@@ -137,7 +137,7 @@ npm run dev:all:win
 brew install node@22
 
 # Option B: Download from https://nodejs.org/ (LTS version)
-node --version  # Verify: Should be 20.9.0+ or 22+
+node --version  # Verify: Should be >= 24.0.0
 npm --version   # Verify: Should be 10.0.0+
 
 # 2. Install Git (if not installed)
@@ -190,7 +190,7 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Verify installation
-node --version  # Should be 20.9.0+ or 22+
+node --version  # Should be >= 24.0.0
 npm --version   # Should be 10.0.0+
 
 # 2. Install Git (if not installed)

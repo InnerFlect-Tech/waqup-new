@@ -27,13 +27,13 @@ if (Test-Command "node") {
     
     # Check version
     $versionNumber = [int]($nodeVersion -replace 'v(\d+)\..*', '$1')
-    if ($versionNumber -lt 20) {
-        Write-Host "⚠️  Node.js version should be 20.9.0+ or 22+. Current: $nodeVersion" -ForegroundColor Yellow
+    if ($versionNumber -lt 24) {
+        Write-Host "⚠️  Node.js version should be >= 24.0.0. Current: $nodeVersion" -ForegroundColor Yellow
         Write-Host "   Please update Node.js from https://nodejs.org/" -ForegroundColor Yellow
     }
 } else {
     Write-Host "❌ Node.js is not installed!" -ForegroundColor Red
-    Write-Host "   Please install Node.js 20.9.0+ or 22+ from https://nodejs.org/" -ForegroundColor Yellow
+    Write-Host "   Please install Node.js >= 24.0.0 from https://nodejs.org/" -ForegroundColor Yellow
     Write-Host "   After installation, run this script again." -ForegroundColor Yellow
     exit 1
 }
@@ -146,9 +146,8 @@ if (-not (Test-Command "node")) {
 } else {
     $nodeVersion = node --version
     $versionNumber = [int]($nodeVersion -replace 'v(\d+)\..*', '$1')
-    $minorVersion = [int]($nodeVersion -replace 'v\d+\.(\d+)\..*', '$1')
-    if ($versionNumber -lt 20 -or ($versionNumber -eq 20 -and $minorVersion -lt 9)) {
-        Write-Host "⚠️  Node.js version should be >= 20.9.0. Current: $nodeVersion" -ForegroundColor Yellow
+    if ($versionNumber -lt 24) {
+        Write-Host "⚠️  Node.js version should be >= 24.0.0. Current: $nodeVersion" -ForegroundColor Yellow
     }
 }
 
@@ -182,10 +181,10 @@ if (Test-Path "scripts\verify-versions.sh") {
 } else {
     Write-Host "   Checking package.json versions..." -ForegroundColor Yellow
     $packageJson = Get-Content "package.json" | ConvertFrom-Json
-    if ($packageJson.engines.node -eq ">=20.9.0") {
-        Write-Host "✅ Root package.json: Node requirement correct (>=20.9.0)" -ForegroundColor Green
+    if ($packageJson.engines.node -eq ">=24.0.0") {
+        Write-Host "✅ Root package.json: Node requirement correct (>=24.0.0)" -ForegroundColor Green
     } else {
-        Write-Host "⚠️  Root package.json: Node requirement should be >=20.9.0" -ForegroundColor Yellow
+        Write-Host "⚠️  Root package.json: Node requirement should be >=24.0.0" -ForegroundColor Yellow
     }
 }
 

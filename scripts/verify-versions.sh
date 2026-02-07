@@ -18,10 +18,10 @@ NODE_VERSION=$(node --version | cut -d'v' -f2)
 NODE_MAJOR=$(echo $NODE_VERSION | cut -d'.' -f1)
 NODE_MINOR=$(echo $NODE_VERSION | cut -d'.' -f2)
 
-if [ "$NODE_MAJOR" -ge 20 ] && [ "$NODE_MINOR" -ge 9 ]; then
-    echo -e "${GREEN}✅ Node.js version: $NODE_VERSION (>= 20.9.0)${NC}"
+if [ "$NODE_MAJOR" -ge 24 ]; then
+    echo -e "${GREEN}✅ Node.js version: $NODE_VERSION (>= 24.0.0)${NC}"
 else
-    echo -e "${RED}❌ Node.js version: $NODE_VERSION (requires >= 20.9.0)${NC}"
+    echo -e "${RED}❌ Node.js version: $NODE_VERSION (requires >= 24.0.0)${NC}"
     exit 1
 fi
 
@@ -40,14 +40,14 @@ echo ""
 
 # Check root package.json
 echo -e "${CYAN}📦 Checking root package.json...${NC}"
-if grep -q '"node": ">=20.9.0"' package.json; then
+if grep -q '"node": ">=24.0.0"' package.json; then
     echo -e "${GREEN}✅ Root package.json: Node requirement correct${NC}"
 else
     echo -e "${RED}❌ Root package.json: Node requirement incorrect${NC}"
     exit 1
 fi
 
-if grep -q '"@types/node": "\^22.0.0"' package.json; then
+if grep -q '"@types/node": "\^24.0.0"' package.json; then
     echo -e "${GREEN}✅ Root package.json: @types/node version correct${NC}"
 else
     echo -e "${RED}❌ Root package.json: @types/node version incorrect${NC}"
@@ -56,7 +56,7 @@ fi
 
 # Check shared package.json
 echo -e "\n${CYAN}📦 Checking shared package.json...${NC}"
-if grep -q '"@types/node": "\^22.0.0"' packages/shared/package.json; then
+if grep -q '"@types/node": "\^24.0.0"' packages/shared/package.json; then
     echo -e "${GREEN}✅ Shared package.json: @types/node version correct${NC}"
 else
     echo -e "${RED}❌ Shared package.json: @types/node version incorrect${NC}"
@@ -126,5 +126,5 @@ echo -e "  • npm: $NPM_VERSION"
 echo -e "  • TypeScript: 5.9.3 (all packages)"
 echo -e "  • React Navigation: v7 (mobile)"
 echo -e "  • React: 19.1.0 (mobile), 19.2.3 (web)"
-echo -e "  • @types/node: 22.0.0 (root & shared)"
+echo -e "  • @types/node: 24.0.0 (root & shared)"
 echo ""

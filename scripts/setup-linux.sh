@@ -40,18 +40,18 @@ if command_exists node; then
     
     # Check version
     VERSION_NUMBER=$(echo $NODE_VERSION | sed 's/v\([0-9]*\).*/\1/')
-    if [ "$VERSION_NUMBER" -lt 20 ]; then
-        echo -e "${YELLOW}⚠️  Node.js version should be 20.9.0+ or 22+. Current: $NODE_VERSION${NC}"
+    if [ "$VERSION_NUMBER" -lt 24 ]; then
+        echo -e "${YELLOW}⚠️  Node.js version should be >= 24.0.0. Current: $NODE_VERSION${NC}"
         echo -e "${YELLOW}   Please update Node.js from https://nodejs.org/${NC}"
     fi
 else
     echo -e "${RED}❌ Node.js is not installed!${NC}"
     if [ "$OS" == "macOS" ]; then
-        echo -e "${YELLOW}   Install via Homebrew: brew install node@22${NC}"
+        echo -e "${YELLOW}   Install via Homebrew: brew install node@24${NC}"
         echo -e "${YELLOW}   Or download from: https://nodejs.org/${NC}"
     elif [ "$OS" == "Linux" ]; then
         echo -e "${YELLOW}   Install via NodeSource:${NC}"
-        echo -e "${YELLOW}   curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -${NC}"
+        echo -e "${YELLOW}   curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -${NC}"
         echo -e "${YELLOW}   sudo apt-get install -y nodejs${NC}"
     fi
     echo -e "${YELLOW}   After installation, run this script again.${NC}"
@@ -198,9 +198,8 @@ if ! command_exists node; then
 else
     NODE_VERSION=$(node --version)
     VERSION_NUMBER=$(echo $NODE_VERSION | sed 's/v\([0-9]*\).*/\1/')
-    MINOR_VERSION=$(echo $NODE_VERSION | sed 's/v[0-9]*\.\([0-9]*\).*/\1/')
-    if [ "$VERSION_NUMBER" -lt 20 ] || ([ "$VERSION_NUMBER" -eq 20 ] && [ "$MINOR_VERSION" -lt 9 ]); then
-        echo -e "${YELLOW}⚠️  Node.js version should be >= 20.9.0. Current: $NODE_VERSION${NC}"
+    if [ "$VERSION_NUMBER" -lt 24 ]; then
+        echo -e "${YELLOW}⚠️  Node.js version should be >= 24.0.0. Current: $NODE_VERSION${NC}"
     fi
 fi
 
