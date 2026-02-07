@@ -83,5 +83,14 @@ Install-Packages "packages/web" "date-fns uuid"
 # Dev Dependencies
 Install-Packages "packages/web" "@types/uuid" -IsDev $true
 
+# Final step: Ensure all Next.js dependencies (including @next/swc) are installed
+Write-Host "=== Verifying Web Dependencies ===" -ForegroundColor Blue
+Write-Host "Running final npm install to ensure Next.js dependencies are complete..." -ForegroundColor Yellow
+Set-Location "$projectRoot\packages\web"
+npm install --no-audit --no-fund
+Set-Location $projectRoot
+Write-Host "✅ Web dependencies verified" -ForegroundColor Green
+Write-Host ""
+
 Write-Host "✅ All dependencies installed successfully!" -ForegroundColor Green
 Write-Host ""

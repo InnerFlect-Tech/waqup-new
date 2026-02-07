@@ -87,4 +87,12 @@ install_packages "packages/web" "date-fns uuid"
 # Dev Dependencies
 install_packages "packages/web" "@types/uuid" "true"
 
+# Final step: Ensure all Next.js dependencies (including @next/swc) are installed
+echo -e "${BLUE}=== Verifying Web Dependencies ===${NC}"
+echo -e "${YELLOW}Running final npm install to ensure Next.js dependencies are complete...${NC}"
+cd "$PROJECT_ROOT/packages/web"
+npm install --no-audit --no-fund
+cd "$PROJECT_ROOT"
+echo -e "${GREEN}✅ Web dependencies verified${NC}\n"
+
 echo -e "${GREEN}✅ All dependencies installed successfully!${NC}\n"

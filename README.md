@@ -4,7 +4,7 @@
 
 [![Repository](https://img.shields.io/badge/repository-GitHub-blue)](https://github.com/InnerFlect-Tech/waqup-new)
 [![License](https://img.shields.io/badge/license-UNLICENSED-lightgrey)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/node-20.9.0%2B%20or%2022.0.0%2B-brightgreen)](https://nodejs.org/)
 [![npm](https://img.shields.io/badge/npm-%3E%3D10.0.0-red)](https://www.npmjs.com/)
 
 ---
@@ -20,19 +20,9 @@ cd waqup-new
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Installation
 
-### Automated Installation (Recommended)
-
-**Windows**:
-```powershell
-# Clone the repository
-git clone https://github.com/InnerFlect-Tech/waqup-new.git
-cd waqup-new
-
-# Run automated setup script
-.\scripts\setup-windows.ps1
-```
+### Quick Start (Recommended)
 
 **macOS/Linux**:
 ```bash
@@ -40,36 +30,68 @@ cd waqup-new
 git clone https://github.com/InnerFlect-Tech/waqup-new.git
 cd waqup-new
 
-# Run automated setup script
-./scripts/setup-linux.sh
+# Run master installation script (does everything)
+chmod +x scripts/install.sh
+./scripts/install.sh
 ```
 
-The setup scripts will:
-- ✅ Check and verify Node.js, npm, and Git installation
-- ✅ Install Expo CLI globally
-- ✅ Install all project dependencies
-- ✅ Create `.env` file from `.env.example`
-- ✅ Verify Android SDK setup (if applicable)
-- ✅ Check macOS development tools (Xcode, CocoaPods) on macOS
+**Windows**:
+```powershell
+# Clone the repository
+git clone https://github.com/InnerFlect-Tech/waqup-new.git
+cd waqup-new
 
-**After running the script**:
-1. Edit `.env` file with your API keys and credentials
-2. Run `npm run dev:all` to start development servers
+# Run master installation script (does everything)
+.\scripts\install.ps1
+```
+
+The master installation script will:
+1. ✅ **Verify Prerequisites**: Check Node.js (>=20.9.0 or >=22.0.0), npm (>=10.0.0), Git
+2. ✅ **Install Dependencies**: Install all root, mobile, and web dependencies
+3. ✅ **Setup Environment**: Create `.env` file from `.env.example`
+4. ✅ **Verify Installation**: Run TypeScript compilation checks
+
+**After installation**:
+1. Edit `.env` file with your API keys and credentials (see [Environment Variables](#environment-variables))
+2. Run `npm run dev:all` (or `npm run dev:all:win` on Windows) to start development servers
 3. Start coding! 🎉
-
----
 
 ### Manual Installation
 
-#### Prerequisites
+If you prefer to install manually or run scripts individually:
+
+**macOS/Linux**:
+```bash
+# Make scripts executable (first time only)
+chmod +x scripts/*.sh
+
+# Run scripts in order
+./scripts/01-verify-prerequisites.sh
+./scripts/02-install-dependencies.sh
+./scripts/03-setup-environment.sh
+./scripts/04-verify-installation.sh
+```
+
+**Windows**:
+```powershell
+# Run scripts in order
+.\scripts\01-verify-prerequisites.ps1
+.\scripts\02-install-dependencies.ps1
+.\scripts\03-setup-environment.ps1
+.\scripts\04-verify-installation.ps1
+```
+
+See [scripts/README.md](./scripts/README.md) for detailed information about each script.
+
+### Prerequisites
 
 **Required for All Platforms**:
-- **Node.js**: >= 24.0.0 (LTS)
+- **Node.js**: 20.9.0+ (LTS) or Node.js 22.0.0+ (LTS)
 - **npm**: 10.0.0+ (comes with Node.js)
 - **Git**: Latest version
 
-**For Mobile Development**:
-- **Expo CLI**: `npm install -g expo-cli`
+**Optional (for Mobile Development)**:
+- **Expo CLI**: `npm install -g expo-cli` (optional - can use npx instead)
 - **Expo Go App** (Recommended - No SDK needed):
   - Install Expo Go on your iOS/Android device
   - Scan QR code to run app - no Android SDK or Xcode needed!
@@ -84,147 +106,58 @@ The setup scripts will:
   
 **Note**: Android SDK is **NOT required** for development with Expo Go. See [docs/02-mobile/04-android-sdk-requirements.md](./docs/02-mobile/04-android-sdk-requirements.md) for details.
 
-**External Services** (Required):
-- Supabase account and project
+**External Services** (Required - add to `.env` file):
+- Supabase account and project (URL and keys)
 - OpenAI API key
-- Stripe account (for payments)
+- Stripe account (for payments - publishable and secret keys)
 
-#### Windows Installation
+### Environment Variables
 
+After installation, edit the `.env` file with your credentials:
+
+```bash
+# Supabase Configuration
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SECRET_KEY=your_supabase_secret_key
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key
+
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+```
+
+### Troubleshooting
+
+**Scripts won't run (macOS/Linux)**:
+```bash
+# Make scripts executable
+chmod +x scripts/install.sh
+chmod +x scripts/*.sh
+```
+
+**PowerShell execution policy (Windows)**:
 ```powershell
-# 1. Install Node.js (if not installed)
-# Download from: https://nodejs.org/ (LTS version)
-node --version  # Verify: Should be >= 24.0.0
-npm --version   # Verify: Should be 10.0.0+
-
-# 2. Install Git (if not installed)
-# Download from: https://git-scm.com/download/win
-git --version   # Verify installation
-
-# 3. Install Expo CLI globally
-npm install -g expo-cli
-
-# 4. Clone repository
-git clone https://github.com/InnerFlect-Tech/waqup-new.git
-cd waqup-new
-
-# 5. Install dependencies
-npm install
-
-# 6. Setup environment
-copy .env.example .env
-# Edit .env file with your credentials
-
-# 7. Start development servers
-npm run dev:all:win
+# Allow script execution (run as Administrator)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-**Android Setup (Windows - Optional)**:
-> **💡 Tip**: Skip this if using Expo Go! Android SDK is only needed for custom native modules or local builds.
+**npm install hangs**:
+The installation scripts use `--no-audit --no-fund` flags to prevent hanging. If installation still hangs:
+1. Clear npm cache: `npm cache clean --force`
+2. Remove node_modules: `rm -rf node_modules packages/*/node_modules` (Unix) or `Remove-Item -Recurse -Force node_modules,packages\*\node_modules` (Windows)
+3. Remove package-lock.json files
+4. Run installation again
 
-1. Install Android Studio from https://developer.android.com/studio
-2. Set up Android SDK (API 33+)
-3. Configure environment variables:
-   - Open System Properties > Environment Variables
-   - Add: `ANDROID_HOME = C:\Users\YourUsername\AppData\Local\Android\Sdk`
-   - Add to Path: `%ANDROID_HOME%\platform-tools`
-
-#### macOS Installation
-
-```bash
-# 1. Install Node.js (if not installed)
-# Option A: Via Homebrew
-brew install node@24
-
-# Option B: Download from https://nodejs.org/ (LTS version)
-node --version  # Verify: Should be >= 24.0.0
-npm --version   # Verify: Should be 10.0.0+
-
-# 2. Install Git (if not installed)
-# Comes with Xcode Command Line Tools:
-xcode-select --install
-
-# 3. Install Expo CLI globally
-npm install -g expo-cli
-
-# 4. Install Xcode (for iOS development)
-# Download from App Store: https://apps.apple.com/app/xcode/id497799835
-# Install Command Line Tools:
-xcode-select --install
-
-# 5. Install CocoaPods (for iOS development)
-sudo gem install cocoapods
-
-# 6. Clone repository
-git clone <repository-url>
-cd waqup-app/waqup-new
-
-# 7. Install dependencies
-npm install
-
-# 8. Setup environment
-cp .env.example .env
-# Edit .env file with your credentials
-
-# 9. Start development servers
-npm run dev:all
-```
-
-**Android Setup (macOS - Optional)**:
-> **💡 Tip**: Skip this if using Expo Go! Android SDK is only needed for custom native modules or local builds.
-
-1. Install Android Studio from https://developer.android.com/studio
-2. Set up Android SDK (API 33+)
-3. Add to `~/.zshrc` or `~/.bash_profile`:
-   ```bash
-   export ANDROID_HOME=$HOME/Library/Android/sdk
-   export PATH=$PATH:$ANDROID_HOME/platform-tools
-   ```
-4. Reload shell: `source ~/.zshrc` or `source ~/.bash_profile`
-
-#### Linux Installation
-
-```bash
-# 1. Install Node.js via NodeSource (Ubuntu/Debian)
-curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# Verify installation
-node --version  # Should be >= 24.0.0
-npm --version   # Should be 10.0.0+
-
-# 2. Install Git (if not installed)
-sudo apt-get install git
-
-# 3. Install Expo CLI globally
-sudo npm install -g expo-cli
-
-# 4. Clone repository
-git clone https://github.com/InnerFlect-Tech/waqup-new.git
-cd waqup-new
-
-# 5. Install dependencies
-npm install
-
-# 6. Setup environment
-cp .env.example .env
-# Edit .env file with your credentials
-
-# 7. Start development servers
-npm run dev:all
-```
-
-**Android Setup (Linux - Optional)**:
-> **💡 Tip**: Skip this if using Expo Go! Android SDK is only needed for custom native modules or local builds.
-
-1. Install Android Studio from https://developer.android.com/studio
-2. Set up Android SDK (API 33+)
-3. Add to `~/.bashrc` or `~/.zshrc`:
-   ```bash
-   export ANDROID_HOME=$HOME/Android/Sdk
-   export PATH=$PATH:$ANDROID_HOME/platform-tools
-   ```
-4. Reload shell: `source ~/.bashrc` or `source ~/.zshrc`
+**Node.js version issues**:
+- Ensure Node.js version is 20.9.0+ or 22.0.0+
+- Use `nvm` (Node Version Manager) to switch versions if needed
+- macOS: `brew install node@22` or download from nodejs.org
+- Windows: Download installer from nodejs.org
 
 ---
 
@@ -248,7 +181,7 @@ npm run dev:all
 - **Mobile**: Expo SDK 54, React Native, TypeScript 5.9.3
 - **Web**: Next.js 16.1.6, React 19.2.3, TypeScript 5.9.3
 - **Shared**: Supabase, Zustand, React Query, Zod
-- **Runtime**: Node.js 24+ (Active LTS), npm 10+
+- **Runtime**: Node.js 20.9.0+ or 22.0.0+ (LTS), npm 10+
 
 ---
 
