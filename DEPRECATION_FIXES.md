@@ -20,15 +20,15 @@ This document summarizes all fixes made to resolve deprecation warnings and clar
 - Caused `EBADENGINE` warnings during `npm install`
 
 **Fix**:
-- Updated `package.json` to require Node `>=20.9.0` (matches actual LTS versions)
-- Updated `@types/node` from `^24.0.0` to `^22.0.0`
+- Updated `package.json` to require Node `>=24.0.0` (LTS)
+- Updated `@types/node` to `^24.0.0`
 
 **Files Changed**:
 - `package.json` (root)
 
 **Result**:
 - ✅ No more Node version warnings
-- ✅ Compatible with Node 20.9.0+ and 22+ (current LTS versions)
+- ✅ Requires Node >= 24.0.0 (LTS)
 
 ---
 
@@ -131,7 +131,7 @@ This document summarizes all fixes made to resolve deprecation warnings and clar
 
 ### Minimum Requirements (Expo Go)
 
-- ✅ Node.js 20.9.0+ or 22+ (LTS)
+- ✅ Node.js >= 24.0.0 (LTS)
 - ✅ npm 10.0.0+
 - ✅ Expo CLI
 - ✅ Expo Go app on device
@@ -151,7 +151,7 @@ This document summarizes all fixes made to resolve deprecation warnings and clar
 ### For Most Developers (Recommended)
 
 ```bash
-# 1. Install Node.js 20.9.0+ or 22+
+# 1. Install Node.js >= 24.0.0
 node --version  # Verify
 
 # 2. Install Expo CLI

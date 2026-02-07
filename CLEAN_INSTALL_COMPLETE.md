@@ -20,8 +20,8 @@ All package versions have been verified, aligned, and cleaned. The project is re
 ## What Was Fixed
 
 ### 1. Version Alignment ✅
-- **Node.js requirement**: Fixed from `>=24.0.0` to `>=20.9.0`
-- **@types/node**: Aligned to `^22.0.0` across root and shared
+- **Node.js requirement**: `>=24.0.0`
+- **@types/node**: Aligned to `^24.0.0` across root, shared, and web
 - **TypeScript**: Aligned to `^5.9.3` or `~5.9.3` across all packages
 - **React Navigation**: Aligned to v7.1.x consistently
 - **React versions**: Correct for each platform (19.1.0 for mobile, 19.2.3 for web)
@@ -45,14 +45,15 @@ All package versions have been verified, aligned, and cleaned. The project is re
 
 ### System Requirements
 ```
-✅ Node.js: 22.20.0 (>= 20.9.0)
+✅ Node.js: >= 24.0.0
 ✅ npm: 10.9.3 (>= 10.0.0)
 ```
 
 ### Package Versions
 ```
-✅ Root: Node >=20.9.0, @types/node ^22.0.0, TypeScript ^5.9.3
-✅ Shared: @types/node ^22.0.0, TypeScript ^5.9.3
+✅ Root: Node >=24.0.0, @types/node ^24.0.0, TypeScript ^5.9.3
+✅ Shared: @types/node ^24.0.0, TypeScript ^5.9.3
+✅ Web: @types/node ^24.0.0, TypeScript ^5.9.3
 ✅ Mobile: React 19.1.0, React Navigation v7, TypeScript ~5.9.3
 ✅ Web: React 19.2.3, TypeScript ^5.9.3
 ```

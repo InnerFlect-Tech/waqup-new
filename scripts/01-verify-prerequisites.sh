@@ -57,10 +57,10 @@ if command_exists node; then
 else
     echo -e "  ${RED}❌ Node.js is not installed!${NC}"
     if [ "$OS" == "macOS" ]; then
-        echo -e "  ${YELLOW}   Install via Homebrew: brew install node@22${NC}"
+        echo -e "  ${YELLOW}   Install via Homebrew: brew install node@24${NC}"
     elif [ "$OS" == "Linux" ]; then
         echo -e "  ${YELLOW}   Install via NodeSource:${NC}"
-        echo -e "  ${YELLOW}   curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -${NC}"
+        echo -e "  ${YELLOW}   curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -${NC}"
     fi
     echo -e "  ${YELLOW}   Or download from: https://nodejs.org/${NC}"
     exit 1

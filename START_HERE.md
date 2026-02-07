@@ -9,7 +9,7 @@ This document will guide you through getting started with development.
 ## 📋 Quick Start Checklist
 
 ### ✅ Prerequisites
-- [ ] Node.js 20.9.0+ (LTS) or Node.js 22+ (LTS) installed
+- [ ] Node.js >= 24.0.0 (LTS) installed
 - [ ] npm or yarn installed
 - [ ] Git configured
 - [ ] Expo CLI installed (`npm install -g expo-cli`)

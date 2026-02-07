@@ -18,7 +18,7 @@
 **Best for**: Most developers, especially when starting out
 
 **What you need**:
-- Node.js 20.9.0+ or 22+
+- Node.js >= 24.0.0
 - npm 10.0.0+
 - Expo CLI
 - Expo Go app on your phone (iOS/Android)
@@ -213,8 +213,8 @@ eas build --platform android --profile production
    ```
    npm warn EBADENGINE Unsupported engine
    ```
-   - **Fixed**: Updated `package.json` to require Node >=20.9.0 (was >=24.0.0)
-   - **Action**: No action needed if using Node 20.9.0+ or 22+
+   - **Fixed**: Updated `package.json` to require Node >=24.0.0
+   - **Action**: No action needed if using Node >= 24.0.0
 
 2. **Package Deprecations**:
    - Some packages may show deprecation warnings

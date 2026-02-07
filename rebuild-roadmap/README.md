@@ -110,7 +110,7 @@ We provide automated setup scripts that handle all the installation steps for yo
 ### Prerequisites
 
 **Required for All Platforms**:
-- **Node.js**: 20.9.0+ (LTS) or Node.js 22+ (LTS)
+- **Node.js**: >= 24.0.0 (LTS)
 - **npm**: 10.0.0+ (comes with Node.js)
 - **Git**: Latest version
 - **Code Editor**: VS Code or Cursor (recommended)
@@ -152,7 +152,7 @@ We provide automated setup scripts that handle all the installation steps for yo
 # 1. Install Node.js (if not installed)
 # Download from: https://nodejs.org/ (LTS version)
 # Verify installation:
-node --version  # Should be 20.9.0+ or 22+
+node --version  # Should be >= 24.0.0
 npm --version   # Should be 10.0.0+
 
 # 2. Install Git (if not installed)
@@ -238,11 +238,11 @@ npm run dev:web     # Web (Next.js)
 **Linux (Ubuntu/Debian)**:
 ```bash
 # 1. Install Node.js via NodeSource
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Verify installation:
-node --version  # Should be 20.9.0+ or 22+
+node --version  # Should be >= 24.0.0
 npm --version   # Should be 10.0.0+
 
 # 2. Install Git (if not installed)
@@ -265,10 +265,10 @@ sudo npm install -g expo-cli
 # 1. Install Node.js (if not installed)
 # Download from: https://nodejs.org/ (LTS version)
 # OR use Homebrew:
-brew install node@22
+brew install node@24
 
 # Verify installation:
-node --version  # Should be 20.9.0+ or 22+
+node --version  # Should be >= 24.0.0
 npm --version   # Should be 10.0.0+
 
 # 2. Install Git (if not installed)

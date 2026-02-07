@@ -134,7 +134,7 @@ npm run dev:all:win
 ```bash
 # 1. Install Node.js (if not installed)
 # Option A: Via Homebrew
-brew install node@22
+brew install node@24
 
 # Option B: Download from https://nodejs.org/ (LTS version)
 node --version  # Verify: Should be >= 24.0.0
@@ -186,7 +186,7 @@ npm run dev:all
 
 ```bash
 # 1. Install Node.js via NodeSource (Ubuntu/Debian)
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Verify installation

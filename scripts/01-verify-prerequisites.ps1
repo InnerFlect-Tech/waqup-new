@@ -22,16 +22,11 @@ if (Test-Command "node") {
     Write-Host "  ✅ Node.js is installed: $nodeVersion" -ForegroundColor Green
     
     $versionNumber = [int]($nodeVersion -replace 'v(\d+)\..*', '$1')
-    $minorVersion = [int]($nodeVersion -replace 'v\d+\.(\d+)\..*', '$1')
     
-    if ($versionNumber -ge 22) {
-        Write-Host "  ✅ Version check passed (>= 22.0.0)" -ForegroundColor Green
-    } elseif ($versionNumber -eq 20 -and $minorVersion -ge 9) {
-        Write-Host "  ✅ Version check passed (>= 20.9.0)" -ForegroundColor Green
-    } elseif ($versionNumber -gt 20) {
-        Write-Host "  ✅ Version check passed" -ForegroundColor Green
+    if ($versionNumber -ge 24) {
+        Write-Host "  ✅ Version check passed (>= 24.0.0)" -ForegroundColor Green
     } else {
-        Write-Host "  ❌ Node.js version should be 20.9.0+ or 22.0.0+" -ForegroundColor Red
+        Write-Host "  ❌ Node.js version should be >= 24.0.0" -ForegroundColor Red
         Write-Host "     Current: $nodeVersion" -ForegroundColor Yellow
         Write-Host "     Please update from https://nodejs.org/" -ForegroundColor Yellow
         exit 1

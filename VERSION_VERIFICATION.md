@@ -14,16 +14,16 @@ All package versions have been verified, aligned, and cleaned. The project is re
 ## Version Summary
 
 ### System Requirements
-- ✅ **Node.js**: 22.20.0 (requires >= 20.9.0)
+- ✅ **Node.js**: >= 24.0.0
 - ✅ **npm**: 10.9.3 (requires >= 10.0.0)
 
 ### Root Package (`package.json`)
-- ✅ **Node requirement**: `>=20.9.0` (fixed from `>=24.0.0`)
-- ✅ **@types/node**: `^22.0.0` (fixed from `^24.0.0`)
+- ✅ **Node requirement**: `>=24.0.0`
+- ✅ **@types/node**: `^24.0.0`
 - ✅ **TypeScript**: `^5.9.3`
 
 ### Shared Package (`packages/shared/package.json`)
-- ✅ **@types/node**: `^22.0.0` (fixed from `^24.0.0`)
+- ✅ **@types/node**: `^24.0.0`
 - ✅ **TypeScript**: `^5.9.3`
 - ✅ **@supabase/supabase-js**: `^2.90.1`
 - ✅ **zustand**: `^5.0.10`
@@ -55,14 +55,14 @@ All package versions have been verified, aligned, and cleaned. The project is re
 
 ### 1. Node.js Version Requirement ✅
 - **Before**: Required Node `>=24.0.0` (doesn't exist)
-- **After**: Requires Node `>=20.9.0` (matches LTS versions)
+- **After**: Requires Node `>=24.0.0` (LTS)
 - **Files**: `package.json` (root)
 
 ### 2. @types/node Version Alignment ✅
 - **Before**: 
   - Root: `^22.0.0` ✅
   - Shared: `^24.0.0` ❌
-- **After**: All packages use `^22.0.0`
+- **After**: All packages use `^24.0.0`
 - **Files**: `packages/shared/package.json`
 
 ### 3. TypeScript Version Alignment ✅
@@ -96,7 +96,7 @@ All package versions have been verified, aligned, and cleaned. The project is re
 ### rebuild-roadmap Paths ✅
 All paths to `rebuild-roadmap` are correct:
 
-- **From root**: `rebuild-roadmap/` ✅
+- **From root (waqup-new/)**: `rebuild-roadmap/` ✅
 - **From docs/**: `../rebuild-roadmap/` ✅
 - **From docs/02-mobile/**: `../../rebuild-roadmap/` ✅
 
@@ -122,7 +122,7 @@ All paths to `rebuild-roadmap` are correct:
 
 A verification script has been created at `scripts/verify-versions.sh` that checks:
 
-1. ✅ Node.js version (>= 20.9.0)
+1. ✅ Node.js version (>= 24.0.0)
 2. ✅ npm version (>= 10.0.0)
 3. ✅ Root package.json versions
 4. ✅ Shared package.json versions
@@ -150,7 +150,7 @@ A verification script has been created at `scripts/verify-versions.sh` that chec
 
 ### Shared
 - **TypeScript 5.9.3**: Consistent across all packages
-- **@types/node 22.0.0**: Matches Node.js LTS versions
+- **@types/node 24.0.0**: Matches Node.js 24 LTS
 
 ---
 
