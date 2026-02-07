@@ -5,12 +5,7 @@
  * Platforms import from here: import { loginSchema, signupSchema } from '@waqup/shared/schemas'
  */
 
-// Auth schemas will be added here
-// export const loginSchema = z.object({ ... });
-// export const signupSchema = z.object({ ... });
+export * from './auth.schemas';
 
 // Content schemas will be added here
 // export const contentSchema = z.object({ ... });
-
-// Empty export to make this a valid module
-export {};

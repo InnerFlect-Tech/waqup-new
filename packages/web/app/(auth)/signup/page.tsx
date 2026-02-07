@@ -1,53 +1,135 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { Container, Typography, Button, Input } from '@/components';
 import { useTheme } from '@/theme';
 import { AnimatedBackground, Logo } from '@/components';
 import { spacing, borderRadius } from '@/theme';
+import { signupSchema } from '@waqup/shared/schemas';
+import { useAuthStore } from '@/stores';
 import Link from 'next/link';
-import { Mail, Lock, ArrowRight, Eye, EyeOff, User } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import type { SignupFormData } from '@waqup/shared/schemas';
 
 export default function SignupPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+  const { signup, isLoading, error, setError, resendVerificationEmail } = useAuthStore();
+  const [signupSuccess, setSignupSuccess] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    
-    // Validation
-    if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
-      return;
-    }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      acceptTerms: false,
+    },
+  });
 
-    setIsLoading(true);
+  // Clear error when component mounts
+  useEffect(() => {
+    return () => {
+      setError(null);
+    };
+  }, [setError]);
 
-    // TODO: Implement actual signup logic with Supabase
-    setTimeout(() => {
-      setIsLoading(false);
-      // For now, just simulate success
-    }, 1000);
+  const onSubmit = async (data: SignupFormData) => {
+    setError(null);
+    const result = await signup(data.email, data.password);
+    
+    if (result.success) {
+      setUserEmail(data.email);
+      setSignupSuccess(true);
+    }
+    // Error is already set in the store
   };
+
+  const handleResendVerification = async () => {
+    if (userEmail) {
+      await resendVerificationEmail(userEmail);
+    }
+  };
+
+  if (signupSuccess) {
+    return (
+      <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+        <AnimatedBackground intensity="medium" color="primary" />
+        
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: colors.gradients.mystical,
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+
+        <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: spacing.xl }}>
+          <div style={{ width: '100%', maxWidth: '480px' }}>
+            <div
+              style={{
+                padding: spacing.xl * 2,
+                borderRadius: borderRadius.xl,
+                background: colors.glass.opaque,
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: `1px solid ${colors.glass.border}`,
+                boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
+                textAlign: 'center',
+              }}
+            >
+              <CheckCircle2 size={64} color={colors.success} style={{ margin: '0 auto', marginBottom: spacing.lg }} />
+              <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
+                Check Your Email
+              </Typography>
+              <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, lineHeight: '24px' }}>
+                We've sent a verification email to <strong>{userEmail}</strong>. Please check your inbox and click the verification link to activate your account.
+              </Typography>
+              <Button
+                variant="primary"
+                size="lg"
+                fullWidth
+                onPress={handleResendVerification}
+                style={{
+                  background: colors.gradients.primary,
+                  marginBottom: spacing.md,
+                }}
+              >
+                Resend Verification Email
+              </Button>
+              <Link
+                href="/login"
+                style={{
+                  display: 'block',
+                  textAlign: 'center',
+                  color: colors.accent.tertiary,
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  marginTop: spacing.md,
+                }}
+              >
+                Back to Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
@@ -69,7 +151,7 @@ export default function SignupPage() {
           {/* Logo */}
           <div style={{ textAlign: 'center', marginBottom: spacing.xl * 2 }}>
             <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              <Logo size="lg" showIcon={true} href={undefined} />
+              <Logo size="lg" showIcon={false} href={undefined} />
             </Link>
             <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '18px', marginTop: spacing.md }}>
               Start your transformation journey today
@@ -88,7 +170,7 @@ export default function SignupPage() {
               boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
             }}
           >
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }}>
                 Create Account
               </Typography>
@@ -109,100 +191,155 @@ export default function SignupPage() {
                 </div>
               )}
 
-              <Input
-                type="text"
-                label="Name"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                leftIcon={<User size={20} color={colors.text.secondary} />}
-                containerStyle={{
-                  background: colors.glass.transparent,
-                  marginBottom: spacing.lg,
-                }}
-                style={{ color: colors.text.primary }}
-              />
-
-              <Input
-                type="email"
-                label="Email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                leftIcon={<Mail size={20} color={colors.text.secondary} />}
-                containerStyle={{
-                  background: colors.glass.transparent,
-                  marginBottom: spacing.lg,
-                }}
-                style={{ color: colors.text.primary }}
-              />
-
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                label="Password"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                leftIcon={<Lock size={20} color={colors.text.secondary} />}
-                rightIcon={
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: spacing.xs,
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    type="email"
+                    label="Email"
+                    placeholder="your@email.com"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    onBlur={onBlur}
+                    leftIcon={<Mail size={20} color={colors.text.secondary} />}
+                    error={errors.email?.message}
+                    containerStyle={{
+                      background: colors.glass.transparent,
+                      marginBottom: spacing.lg,
                     }}
-                  >
-                    {showPassword ? (
-                      <EyeOff size={20} color={colors.text.secondary} />
-                    ) : (
-                      <Eye size={20} color={colors.text.secondary} />
-                    )}
-                  </button>
-                }
-                containerStyle={{
-                  background: colors.glass.transparent,
-                  marginBottom: spacing.lg,
-                }}
-                style={{ color: colors.text.primary }}
+                    style={{ color: colors.text.primary }}
+                  />
+                )}
               />
 
-              <Input
-                type={showConfirmPassword ? 'text' : 'password'}
-                label="Confirm Password"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                leftIcon={<Lock size={20} color={colors.text.secondary} />}
-                rightIcon={
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: spacing.xs,
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    label="Password"
+                    placeholder="Create a password"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    onBlur={onBlur}
+                    leftIcon={<Lock size={20} color={colors.text.secondary} />}
+                    rightIcon={
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: spacing.xs,
+                        }}
+                      >
+                        {showPassword ? (
+                          <EyeOff size={20} color={colors.text.secondary} />
+                        ) : (
+                          <Eye size={20} color={colors.text.secondary} />
+                        )}
+                      </button>
+                    }
+                    error={errors.password?.message}
+                    helperText="Must contain uppercase, lowercase, and number"
+                    containerStyle={{
+                      background: colors.glass.transparent,
+                      marginBottom: spacing.lg,
                     }}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff size={20} color={colors.text.secondary} />
-                    ) : (
-                      <Eye size={20} color={colors.text.secondary} />
+                    style={{ color: colors.text.primary }}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    label="Confirm Password"
+                    placeholder="Confirm your password"
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    onBlur={onBlur}
+                    leftIcon={<Lock size={20} color={colors.text.secondary} />}
+                    rightIcon={
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: spacing.xs,
+                        }}
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff size={20} color={colors.text.secondary} />
+                        ) : (
+                          <Eye size={20} color={colors.text.secondary} />
+                        )}
+                      </button>
+                    }
+                    error={errors.confirmPassword?.message}
+                    containerStyle={{
+                      background: colors.glass.transparent,
+                      marginBottom: spacing.md,
+                    }}
+                    style={{ color: colors.text.primary }}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="acceptTerms"
+                render={({ field: { onChange, value } }) => (
+                  <div style={{ marginBottom: spacing.md }}>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        gap: spacing.sm,
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={value}
+                        onChange={(e) => onChange(e.target.checked)}
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          cursor: 'pointer',
+                          accentColor: colors.accent.primary,
+                        }}
+                      />
+                      <Typography variant="caption" style={{ color: colors.text.secondary }}>
+                        I accept the{' '}
+                        <Link href="/terms" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>
+                          Terms of Service
+                        </Link>{' '}
+                        and{' '}
+                        <Link href="/privacy" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>
+                          Privacy Policy
+                        </Link>
+                      </Typography>
+                    </label>
+                    {errors.acceptTerms && (
+                      <Typography variant="small" style={{ color: colors.error, marginTop: spacing.xs }}>
+                        {errors.acceptTerms.message}
+                      </Typography>
                     )}
-                  </button>
-                }
-                containerStyle={{
-                  background: colors.glass.transparent,
-                  marginBottom: spacing.md,
-                }}
-                style={{ color: colors.text.primary }}
+                  </div>
+                )}
               />
 
               <Button

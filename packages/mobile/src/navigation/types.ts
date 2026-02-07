@@ -10,9 +10,10 @@ export type RootStackParamList = {
 };
 
 export type AuthStackParamList = {
-  Login: undefined;
+  Login: { message?: string } | undefined;
   Signup: undefined;
   ForgotPassword: undefined;
+  ResetPassword: { token: string } | undefined;
 };
 
 export type MainTabParamList = {

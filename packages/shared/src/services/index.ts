@@ -8,11 +8,11 @@
 // Supabase services
 export * from './supabase';
 
+// Auth services
+export * from './auth/authService';
+
 // AI services will be added here
 // export * from './ai';
 
 // Payment services will be added here
 // export * from './payments';
-
-// Empty export to make this a valid module
-export {};

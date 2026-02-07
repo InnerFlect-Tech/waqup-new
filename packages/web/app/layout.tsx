@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import '../src/styles/animations.css';
 import { ThemeProvider } from '@/theme';
+import { AuthProvider } from '@/components/auth/AuthProvider';
 
 export const metadata: Metadata = {
   title: 'waQup',
@@ -34,7 +35,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ThemeProvider defaultThemeName="mystical-purple">
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

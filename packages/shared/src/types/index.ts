@@ -5,14 +5,10 @@
  * Platforms import from here: import { User, ContentItem } from '@waqup/shared/types'
  */
 
-// User types will be added here
-// export type User = { ... };
+export * from './auth';
 
 // Content types will be added here
 // export type ContentItem = { ... };
 
 // Credit types will be added here
 // export type CreditTransaction = { ... };
-
-// Empty export to make this a valid module
-export {};
