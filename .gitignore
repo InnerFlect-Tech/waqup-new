@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.expo/
+.expo-shared/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+# Windows
+*.exe
+*.bat
+*.cmd
+
+# React Native
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Metro
+.metro-health-check*
+
+# Testing
+coverage/
+
+# Temporary files
+tmp/
+temp/

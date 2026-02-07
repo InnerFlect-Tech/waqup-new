@@ -1,0 +1,45 @@
+{
+  "name": "waqup-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "waQup multi-platform application - Mobile (React Native + Expo for Android/iOS) and Web (Next.js for desktop browsers)",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev:mobile": "npm run start --workspace=packages/mobile",
+    "dev:web": "npm run dev --workspace=packages/web",
+    "dev:all": "npm run dev:mobile & npm run dev:web",
+    "dev:all:win": "npm run dev:mobile & npm run dev:web",
+    "build:shared": "npm run build --workspace=packages/shared",
+    "build:mobile": "npm run build --workspace=packages/mobile",
+    "build:web": "npm run build --workspace=packages/web",
+    "build:all": "npm run build:shared && npm run build:mobile && npm run build:web",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "type-check": "npm run type-check --workspaces"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InnerFlect-Tech/waqup-new.git"
+  },
+  "keywords": [
+    "waqup",
+    "mobile",
+    "desktop",
+    "web",
+    "react-native",
+    "expo",
+    "nextjs"
+  ],
+  "author": "InnerFlect Tech",
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,1387 @@
+# waQup Mobile App - Cursor Rules
+
+## Project Context
+
+This is the **waQup multi-platform rebuild** - building Mobile (React Native + Expo for Android/iOS) and Web (Next.js for desktop browsers) apps **simultaneously from scratch**. This is the **main development repository** for the new waQup platform.
+
+**Location**: `waqup-app/waqup-new/` (this is the active development repo)
+**Strategy**: **Parallel Development** - Mobile and Web platforms developed simultaneously
+**Tech Stack**: 
+- **Mobile**: React Native + Expo SDK 54 + TypeScript 5.9.3 (Android + iOS)
+- **Web**: Next.js 16.1.6 + TypeScript 5.9.3 (Desktop browsers - Chrome-first)
+- **Shared**: Supabase backend (same as web app)
+**Goal**: Production-ready apps for iOS, Android, and Web browsers (Chrome-first, PWA support)
+
+---
+
+## Core Principles
+
+### 1. Step-by-Step Verification
+- **Each step must be independently testable**
+- **Clear UI checkpoints at each step** - visible progress
+- **Update changelog** (`rebuild-roadmap/03-tracking/01-changelog.md`) when completing steps
+- **If re-running a step, update changelog with new entry**
+
+### 2. Now/After Analysis
+- **Always document current state (NOW)** before changes
+- **Always document target state (AFTER)** after changes
+- **Use phase analysis documents** (`rebuild-roadmap/02-phases/`) for detailed analysis
+- **Keep schemas coherent** - verify database schemas at each phase
+
+### 3. Documentation First
+- **Base all work on existing docs** in `../../docs/` and `docs/`
+- **Use Context7 to query docs** - fastest and most accurate
+- **Reference scientific foundations** from `../../docs/internal/02-scientific-foundations.md`
+- **Follow product constitution** from `../../docs/internal/01-product-constitution.md`
+- **Update docs as you go** - keep documentation in sync with code
+
+### 4. Production Quality
+- **Not prototypes** - everything must be production-ready
+- **Proper error handling** - graceful error states everywhere
+- **Loading states** - show loading indicators during async operations
+- **Empty states** - beautiful empty states for all screens
+- **Performance optimized** - follow performance targets
+
+### 5. Multi-Platform Parallel Development
+- **Both platforms developed simultaneously** - Mobile and Web in parallel
+- **Shared codebase** - Business logic in `packages/shared/`
+- **Platform-specific UI** - UI components in each platform folder
+- **Test simultaneously** - Test both platforms together
+- **Consistency** - Ensure UI/UX consistency across platforms
+- **Web as Desktop** - Web app serves desktop users via browsers (PWA support)
+
+### 6. Mobile-First Design (Mobile Platform)
+- **Optimize for mobile screens** - not desktop
+- **Touch-friendly** - proper touch targets (44x44pt minimum)
+- **Background audio** - support background playback
+- **Offline support** - cache data for offline access
+- **Native feel** - use native components and patterns
+
+### 7. Web-Optimized for Desktop Browsers (Web Platform)
+- **Keyboard shortcuts** - Full keyboard navigation
+- **PWA support** - Installable as desktop app
+- **Responsive design** - Optimized for desktop screen sizes
+- **Performance** - < 2s first load, > 95 Lighthouse score
+- **Chrome-first** - Optimize for Chrome (~80% market share)
+
+### 8. Web-Optimized Design (Web Platform)
+- **Chrome-first** - Optimize for Chrome (~80% market share)
+- **PWA support** - Installable, offline support
+- **SEO** - Content discoverable
+- **Performance** - < 2s first load, > 95 Lighthouse score
+
+---
+
+## Documentation Structure (Hierarchical & Numbered)
+
+### Complete Documentation Reference
+
+**IMPORTANT**: Always use Context7 to query documentation when needed. Reference ALL docs below.
+
+#### 1. Core Product Docs (`../../docs/internal/`)
+**Location**: `../../docs/internal/` (main waQup project - use Context7 to query)
+
+**Core Documents (01-07)**:
+- `01-product-constitution.md` - Core identity, principles, boundaries, invariants
+- `02-scientific-foundations.md` - Scientific backing, neuroplasticity, subconscious mind
+- `03-conversational-system.md` - Conversation flows, content types, state machine
+- `04-ai-voice-ethics.md` - AI voice guidelines, ethical boundaries, privacy
+- `05-system-architecture.md` - Complete system architecture, APIs, infrastructure
+- `06-value-economy.md` - Credits system, tokens, economic model
+- `07-roadmap.md` - Product roadmap, milestones, development phases
+
+**Technical Reference**:
+- `database.md` - Complete database schema, tables, RLS policies, storage
+- `flows.md` - User flows, ritual creation flow, affirmation flow
+- `system-spec.md` - Technical specifications, requirements, implementation status
+- `system-audit.md` - Implementation status, review, audit
+- `undocumented-features.md` - Complete catalog of implemented features
+
+**Audio & AI**:
+- `audio-generation.md` - Voice cloning, TTS, ElevenLabs integration, implementation flow
+- `elevenlabs-advantages.md` - Why ElevenLabs, enterprise features, advantages
+- `audio-generation-improvements.md` - Cost optimizations, GPT-4o-mini, Batch API
+- `audio-generation-best-option-analysis.md` - TTS comparison, alternatives analysis
+- `audio-generation-tested-alternatives.md` - Tested alternatives and results
+
+**Platform & Features**:
+- `marketplace-platform.md` - Marketplace features, viral distribution, verified content
+- `voice-interaction-design.md` - Voice interaction patterns, design principles
+
+#### 2. Mobile-Specific Docs (`docs/02-mobile/`)
+**Location**: `docs/02-mobile/` (this project)
+
+- `README.md` - Mobile documentation overview
+- `01-technology-stack.md` - Finalized tech stack, decisions, package versions, cost analysis (mobile)
+- `02-architecture.md` - Mobile architecture, layers, data flow, project structure, integration points
+- `03-implementation.md` - Implementation guide, patterns, gotchas, best practices, code examples (mobile)
+
+#### 3. Platform Strategy Docs (`docs/03-platforms/`)
+**Location**: `docs/03-platforms/` (this project)
+
+- `README.md` - Platform documentation overview
+- `01-multi-platform-strategy.md` - Multi-platform strategy (Mobile + Web), platform differences, Revolut-level quality standards, parallel development
+- `02-browser-optimization-strategy.md` - Chrome-first browser optimization strategy, browser-specific features, expansion plan
+
+#### 4. Reference Guides (`docs/04-reference/`)
+**Location**: `docs/04-reference/` (this project)
+
+- `01-context7-usage.md` - How to use Context7 for documentation queries
+- `02-cursor-rules-guide.md` - Cursor rules explained and how to use them
+
+#### 5. Roadmap & Planning (`rebuild-roadmap/`)
+**Location**: `rebuild-roadmap/` (this project)
+
+**Planning** (`01-planning/`):
+- `01-roadmap.md` - Main roadmap (13 phases, 50+ steps), success criteria, UI checkpoints
+- `02-schema-verification.md` - Database schema analysis, missing tables, migrations, coherence checklist
+
+**Phase Analyses** (`02-phases/`):
+- `00-phase-00-research-planning.md` - Research phase (complete)
+- `01-phase-01-project-foundation.md` - Detailed Phase 1 analysis with NOW/AFTER comparison
+- `02-phase-02-design-system-ui-foundation.md` - Design system with quality testing
+- `03-phase-03-authentication-system.md` - Authentication implementation
+- `04-phase-04-core-pages-structure.md` - Core pages structure
+- `05-phase-05-content-definitions-types.md` - Content types and definitions
+- `06-phase-06-error-handling-validation.md` - Error handling and validation
+- `07-phase-07-api-integration.md` - API integration
+- `08-phase-08-audio-system.md` - Audio system
+- `09-phase-09-ai-integration.md` - AI integration
+- `10-phase-10-payment-credits.md` - Payment and credits
+- `11-phase-11-performance-optimization.md` - Performance optimization
+- `12-phase-12-testing-quality-assurance.md` - Testing and QA
+- `13-phase-13-app-store-preparation.md` - App store preparation
+- `14-phase-14-marketplace-platform.md` - Marketplace platform (future)
+
+**Tracking** (`03-tracking/`):
+- `01-changelog.md` - Step completion tracking, updates, status
+- `02-analysis-template.md` - Template for creating phase analysis documents
+- `03-step-tracking.md` - Template for tracking individual steps
+
+### Using Context7 for Documentation
+
+**ALWAYS use Context7 when you need documentation information:**
+
+1. **For Product Understanding**:
+   ```
+   Use Context7 to query: "What are the three content types in waQup and how do they differ?"
+   Reference: ../../docs/internal/01-product-constitution.md
+   ```
+
+2. **For Scientific Backing**:
+   ```
+   Use Context7 to query: "What is the scientific foundation for voice-first design?"
+   Reference: ../../docs/internal/02-scientific-foundations.md
+   ```
+
+3. **For Technical Architecture**:
+   ```
+   Use Context7 to query: "How does the conversation system work?"
+   Reference: ../../docs/internal/03-conversational-system.md
+   ```
+
+4. **For Database Schema**:
+   ```
+   Use Context7 to query: "What is the database schema for content items?"
+   Reference: ../../docs/internal/database.md
+   OR
+   Reference: rebuild-roadmap/01-planning/02-schema-verification.md
+   ```
+
+5. **For Audio Generation**:
+   ```
+   Use Context7 to query: "How does ElevenLabs voice cloning work?"
+   Reference: ../../docs/internal/audio-generation.md
+   ```
+
+6. **For Technology Stack**:
+   ```
+   Use Context7 to query: "What is the finalized tech stack for mobile?"
+   Reference: docs/02-mobile/01-technology-stack.md
+   ```
+
+7. **For Implementation Details**:
+   ```
+   Use Context7 to query: "What are the implementation patterns for React Native?"
+   Reference: docs/02-mobile/03-implementation.md
+   ```
+
+8. **For Architecture**:
+   ```
+   Use Context7 to query: "What is the mobile app architecture?"
+   Reference: docs/02-mobile/02-architecture.md
+   ```
+
+**Context7 Usage Pattern**:
+- **Before implementing**: Query relevant docs using Context7
+- **When stuck**: Use Context7 to find answers in docs
+- **When verifying**: Use Context7 to check requirements
+- **When documenting**: Use Context7 to reference existing patterns
+
+### Documentation Access Strategy
+
+1. **Primary**: Use Context7 to query docs (fastest, most accurate)
+2. **Secondary**: Read files directly if Context7 unavailable
+3. **Reference**: Use `../../docs/internal/` for full context
+4. **Mobile**: Use `docs/02-mobile/` for mobile-specific information
+
+### When Creating New Docs
+
+- **Use Context7 first** - query existing docs for patterns
+- **Reference existing docs** - adapt from `../../docs/`
+- **Follow numbering** - use numbered format (01-, 02-, etc.)
+- **Keep structure consistent** - follow existing patterns
+- **Update changelog** - document what was created
+- **Link from README** - add to appropriate README
+
+---
+
+## Technology Stack (Finalized)
+
+### Core
+- **Framework**: React Native + Expo SDK 54 (Mobile: Android + iOS)
+- **Language**: TypeScript (strict mode)
+- **Navigation**: React Navigation v6
+- **State**: Zustand (global) + React Query (server)
+- **Backend**: Supabase (same as web app)
+
+### Audio
+- **Playback**: expo-av
+- **TTS**: ElevenLabs (Professional Voice Cloning)
+- **Recording**: expo-av
+
+### AI
+- **Conversations**: OpenAI GPT-4o-mini (75% cost reduction)
+- **Scripts**: OpenAI GPT-4 (Batch API for 50% cost reduction)
+
+### Payments
+- **SDK**: Stripe React Native SDK
+- **Features**: Subscriptions, one-time payments, Apple Pay, Google Pay
+
+### Forms & Validation
+- **Forms**: react-hook-form
+- **Validation**: zod + @hookform/resolvers
+
+### UI & Animations
+- **Animations**: react-native-reanimated v3
+- **Gestures**: react-native-gesture-handler
+
+### Build & Deploy
+- **Build**: Expo EAS Build
+- **Updates**: OTA updates (for JS changes)
+
+**Reference**: `docs/02-mobile/01-technology-stack.md` for details
+
+---
+
+## Project Structure (Monorepo)
+
+```
+waqup-new/
+├── packages/
+│   ├── shared/              # Shared code (business logic)
+│   │   ├── src/
+│   │   │   ├── services/   # API services (Supabase)
+│   │   │   ├── stores/     # Zustand stores
+│   │   │   ├── types/      # TypeScript types
+│   │   │   ├── utils/      # Utilities
+│   │   │   └── schemas/    # Zod validation schemas
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── mobile/              # React Native app (Android + iOS)
+│   │   ├── src/
+│   │   │   ├── app/        # App entry
+│   │   │   ├── screens/    # Screen components
+│   │   │   ├── components/ # React Native components
+│   │   │   ├── navigation/ # React Navigation
+│   │   │   └── hooks/      # Custom hooks
+│   │   ├── app.json        # Expo config
+│   │   └── package.json
+│   │
+│   └── web/                # Next.js app (Desktop browsers)
+│       ├── app/            # Next.js App Router
+│       ├── src/
+│       │   ├── components/ # Web components
+│       │   └── hooks/     # Custom hooks
+│       └── public/         # Static assets
+│
+├── docs/                   # Documentation
+├── rebuild-roadmap/        # Roadmap & planning
+├── package.json            # Root workspace config
+└── .cursorrules            # This file
+```
+
+**Reference**: `docs/02-mobile/02-architecture.md` and `docs/03-platforms/01-multi-platform-strategy.md` for details
+
+---
+
+## Code Standards
+
+### TypeScript
+- **Strict mode enabled** - no `any` types
+- **Type everything** - functions, components, props
+- **Use types from Supabase** - auto-generated types
+- **Shared types** - put in `packages/shared/src/types/` (NOT duplicated in each platform)
+- **Export types** - export from shared, import in platforms
+
+### Components
+- **Functional components** - use hooks
+- **Type props** - define prop types
+- **Memo when needed** - use React.memo for expensive components
+- **Extract logic** - use custom hooks
+- **No duplicate components** - reuse shared components or create platform-specific variants
+
+### State Management
+- **Zustand for global state** - auth, UI state, preferences (in `packages/shared/src/stores/`)
+- **React Query for server state** - content, user data, real-time (use shared hooks)
+- **Don't mix concerns** - clear separation
+- **No duplicate stores** - all stores in shared, imported by platforms
+
+### Error Handling
+- **Try-catch everywhere** - async operations
+- **User-friendly messages** - no technical jargon
+- **Log errors** - for debugging
+- **Show error states** - in UI
+- **Centralized error handling** - error utilities in shared
+
+### Performance
+- **Lazy load screens** - use React.lazy
+- **Optimize images** - WebP, compression
+- **Memo expensive computations** - use useMemo
+- **Avoid unnecessary re-renders** - use useCallback
+- **Code splitting** - split by route/feature
+- **Bundle optimization** - analyze bundle size regularly
+
+---
+
+## Production-Level Rules
+
+### 1. No Code Duplication (DRY Principle)
+
+**Rule**: Business logic MUST be in `packages/shared/`, NEVER duplicated across platforms
+
+**What Goes in Shared**:
+- ✅ API services (Supabase, OpenAI, Stripe)
+- ✅ State management (Zustand stores)
+- ✅ TypeScript types
+- ✅ Validation schemas (Zod)
+- ✅ Utility functions
+- ✅ Constants (API endpoints, config)
+- ✅ Business logic (content creation, credit calculation)
+
+**What Stays Platform-Specific**:
+- ✅ UI components (React Native vs React DOM)
+- ✅ Navigation (React Navigation vs Next.js Router)
+- ✅ Platform-specific APIs (expo-av vs Web Audio API)
+- ✅ Platform-specific styling
+
+**Anti-Patterns** (DO NOT DO):
+- ❌ Copy-paste API calls to each platform
+- ❌ Duplicate types in each platform
+- ❌ Duplicate validation schemas
+- ❌ Duplicate utility functions
+- ❌ Duplicate business logic
+
+**Before Creating Code**:
+1. **Check shared first** - Is this already in `packages/shared/`?
+2. **Can it be shared?** - If yes, put it in shared
+3. **Platform-specific?** - Only if truly platform-specific
+
+---
+
+### 2. Architecture Alignment
+
+**Rule**: All platforms MUST follow the same architecture patterns
+
+**Shared Architecture**:
+```
+packages/shared/src/
+├── services/          # API services (Supabase, OpenAI, Stripe)
+│   ├── supabase/
+│   ├── ai/
+│   └── payments/
+├── stores/           # Zustand stores (auth, UI, preferences)
+├── types/            # TypeScript types (shared across platforms)
+├── utils/            # Utility functions
+└── schemas/          # Zod validation schemas
+```
+
+**Platform Architecture** (Mobile/Web):
+```
+packages/{platform}/src/
+├── app/              # App entry
+├── screens/          # Screen components
+├── components/       # UI components (platform-specific)
+│   ├── ui/          # UI primitives
+│   └── features/    # Feature components
+├── navigation/       # Navigation (platform-specific)
+└── hooks/           # Platform-specific hooks (wrapping shared)
+```
+
+**Alignment Rules**:
+- ✅ Same folder structure across platforms (screens/, components/, navigation/)
+- ✅ Same naming conventions
+- ✅ Same patterns for data fetching (React Query hooks in shared)
+- ✅ Same patterns for state management (Zustand stores in shared)
+- ✅ Consistent file organization
+
+---
+
+### 3. Code Organization
+
+**Rule**: Follow consistent organization patterns
+
+**File Organization**:
+- **One component per file** - No multiple components in one file
+- **Co-locate related files** - Keep related files together
+- **Barrel exports** - Use `index.ts` for clean imports
+- **Feature-based organization** - Group by feature, not by type
+
+**Import Organization**:
+```typescript
+// 1. External dependencies
+import React from 'react';
+import { View } from 'react-native';
+
+// 2. Shared code (from packages/shared)
+import { useAuthStore } from '@waqup/shared/stores';
+import { getContent } from '@waqup/shared/services';
+
+// 3. Platform-specific imports
+import { Button } from '@/components/ui/Button';
+import { useNavigation } from '@/navigation';
+```
+
+**Naming Conventions**:
+- **Components**: PascalCase (`Button.tsx`, `AudioPlayer.tsx`)
+- **Hooks**: `use` prefix (`useAuth.ts`, `useContent.ts`)
+- **Services**: kebab-case (`audio-service.ts`, `content-api.ts`)
+- **Types**: PascalCase (`User.ts`, `ContentItem.ts`) or `*.types.ts`
+- **Utils**: camelCase (`formatDate.ts`, `validateEmail.ts`)
+
+---
+
+### 4. Shared Code Usage
+
+**Rule**: Always import from shared, never duplicate
+
+**Correct Pattern**:
+```typescript
+// ✅ CORRECT: Import from shared
+import { useAuthStore } from '@waqup/shared/stores';
+import { getContent } from '@waqup/shared/services';
+import { ContentItem } from '@waqup/shared/types';
+import { contentSchema } from '@waqup/shared/schemas';
+```
+
+**Incorrect Pattern**:
+```typescript
+// ❌ WRONG: Duplicating in platform
+// DON'T create packages/mobile/src/stores/authStore.ts
+// DON'T create packages/desktop/src/services/contentApi.ts
+```
+
+**Shared Package Setup**:
+```json
+// packages/shared/package.json
+{
+  "name": "@waqup/shared",
+  "main": "src/index.ts",
+  "exports": {
+    "./stores": "./src/stores/index.ts",
+    "./services": "./src/services/index.ts",
+    "./types": "./src/types/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./schemas": "./src/schemas/index.ts"
+  }
+}
+```
+
+---
+
+### 5. Platform-Specific Adaptations
+
+**Rule**: Adapt UI/UX for platform, but keep business logic shared
+
+**Platform Adaptations**:
+- **Mobile**: Touch gestures, native components, mobile navigation
+- **Web**: Browser APIs, PWA features, web navigation, keyboard shortcuts, desktop-optimized
+
+**Shared Business Logic**:
+- ✅ Content creation flow (same logic, different UI)
+- ✅ Authentication (same logic, different UI)
+- ✅ Credit system (same logic, different UI)
+- ✅ Audio playback (same state, different implementation)
+
+**Example**:
+```typescript
+// ✅ Shared service (packages/shared/src/services/content.ts)
+export const createContent = async (data: ContentData) => {
+  // Business logic here - same for all platforms
+};
+
+// ✅ Platform-specific UI (packages/mobile/src/screens/CreateScreen.tsx)
+import { createContent } from '@waqup/shared/services';
+// Use mobile-specific UI components
+```
+
+---
+
+### 6. Type Safety Across Platforms
+
+**Rule**: Types MUST be shared, never duplicated
+
+**Type Definitions**:
+- ✅ All types in `packages/shared/src/types/`
+- ✅ Export from shared
+- ✅ Import in platforms
+- ✅ Use Supabase generated types in shared
+
+**Type Usage**:
+```typescript
+// ✅ CORRECT: Import from shared
+import { User, ContentItem, CreditTransaction } from '@waqup/shared/types';
+
+// ❌ WRONG: Defining types in platform
+// DON'T create packages/mobile/src/types/User.ts
+```
+
+---
+
+### 7. API Service Layer
+
+**Rule**: All API calls MUST be in shared services
+
+**Service Organization**:
+```
+packages/shared/src/services/
+├── supabase/
+│   ├── client.ts          # Supabase client
+│   ├── auth.ts            # Auth operations
+│   ├── content.ts          # Content operations
+│   └── storage.ts         # Storage operations
+├── ai/
+│   ├── openai.ts          # OpenAI integration
+│   └── elevenlabs.ts      # ElevenLabs integration
+└── payments/
+    └── stripe.ts          # Stripe integration
+```
+
+**Usage Pattern**:
+```typescript
+// ✅ CORRECT: Use shared service
+import { login, signup } from '@waqup/shared/services/supabase/auth';
+import { getContent, createContent } from '@waqup/shared/services/supabase/content';
+
+// ❌ WRONG: Creating API calls in platform
+// DON'T create packages/mobile/src/services/api.ts
+```
+
+---
+
+### 8. State Management Consistency
+
+**Rule**: Global state MUST be in shared stores
+
+**Store Organization**:
+```
+packages/shared/src/stores/
+├── authStore.ts           # Auth state
+├── uiStore.ts             # UI state (theme, preferences)
+└── contentStore.ts         # Content state (if needed)
+```
+
+**Usage Pattern**:
+```typescript
+// ✅ CORRECT: Import from shared
+import { useAuthStore } from '@waqup/shared/stores';
+
+// ❌ WRONG: Creating stores in platform
+// DON'T create packages/mobile/src/stores/authStore.ts
+```
+
+**Platform-Specific State**:
+- ✅ Only UI state that's truly platform-specific (e.g., mobile drawer state)
+- ✅ Navigation state (platform-specific)
+- ✅ Component local state (use useState)
+
+---
+
+### 9. Validation Schema Consistency
+
+**Rule**: Validation schemas MUST be shared
+
+**Schema Organization**:
+```
+packages/shared/src/schemas/
+├── auth.schemas.ts         # Auth validation
+├── content.schemas.ts       # Content validation
+└── payment.schemas.ts      # Payment validation
+```
+
+**Usage Pattern**:
+```typescript
+// ✅ CORRECT: Import from shared
+import { loginSchema, signupSchema } from '@waqup/shared/schemas/auth';
+import { contentSchema } from '@waqup/shared/schemas/content';
+
+// ❌ WRONG: Duplicating schemas
+// DON'T create packages/mobile/src/schemas/auth.ts
+```
+
+---
+
+### 10. Code Review Checklist
+
+**Before Committing**:
+- [ ] **No duplicates**: Check if code exists in shared
+- [ ] **Architecture aligned**: Follows same structure as other platforms
+- [ ] **Types shared**: Types imported from shared, not duplicated
+- [ ] **Services shared**: API calls use shared services
+- [ ] **Stores shared**: State management uses shared stores
+- [ ] **Schemas shared**: Validation uses shared schemas
+- [ ] **Consistent naming**: Follows naming conventions
+- [ ] **Proper imports**: Imports organized correctly
+- [ ] **Type safety**: No `any` types, all typed
+- [ ] **Error handling**: Proper error handling
+- [ ] **Loading states**: Loading states implemented
+- [ ] **Empty states**: Empty states implemented
+- [ ] **Tested**: Works on target platform(s)
+- [ ] **Documented**: Code is documented if complex
+
+---
+
+### 11. Monorepo Best Practices
+
+**Workspace Configuration**:
+- ✅ Use workspace protocol for internal packages
+- ✅ Shared package versioned and published (or linked)
+- ✅ Platform packages depend on shared via workspace
+
+**Dependency Management**:
+```json
+// packages/mobile/package.json
+{
+  "dependencies": {
+    "@waqup/shared": "workspace:*",
+    // ... other deps
+  }
+}
+```
+
+**Build Order**:
+1. Build shared first
+2. Build platforms (can be parallel)
+3. Test all platforms
+
+---
+
+### 12. Consistency Across Platforms
+
+**Rule**: UI/UX should be consistent, adapted for platform
+
+**Consistency Checklist**:
+- [ ] Same user flows (adapted for platform)
+- [ ] Same feature set (all platforms have same features)
+- [ ] Consistent branding (colors, typography, spacing)
+- [ ] Consistent interactions (adapted for platform)
+- [ ] Consistent error messages
+- [ ] Consistent loading states
+- [ ] Consistent empty states
+
+**Platform Adaptations** (Allowed):
+- ✅ Different UI components (React Native vs React DOM)
+- ✅ Different navigation patterns (tabs vs menu)
+- ✅ Different input methods (touch vs keyboard)
+- ✅ Platform-specific features (background audio on mobile)
+
+---
+
+### 13. Testing Strategy
+
+**Rule**: Test shared code once, test platform-specific code per platform
+
+**Testing Organization**:
+- ✅ Shared code: Unit tests in `packages/shared/__tests__/`
+- ✅ Platform code: Platform-specific tests in `packages/{platform}/__tests__/`
+- ✅ Integration tests: Test shared + platform integration
+- ✅ E2E tests: Test complete flows on each platform
+
+**Test Coverage**:
+- ✅ Shared code: >90% coverage (critical business logic)
+- ✅ Platform code: >80% coverage
+- ✅ Critical flows: 100% E2E coverage
+
+---
+
+### 14. Performance Considerations
+
+**Rule**: Optimize for production from the start
+
+**Performance Checklist**:
+- [ ] Code splitting implemented
+- [ ] Lazy loading for screens/components
+- [ ] Image optimization
+- [ ] Bundle size monitoring
+- [ ] Memory leak prevention
+- [ ] Proper cleanup (useEffect, subscriptions)
+- [ ] Debouncing/throttling where needed
+- [ ] Caching strategy implemented
+
+---
+
+### 15. Security Best Practices
+
+**Rule**: Security is not optional
+
+**Security Checklist**:
+- [ ] No secrets in code (use environment variables)
+- [ ] API keys in environment variables only
+- [ ] Input validation (use shared schemas)
+- [ ] Output sanitization
+- [ ] HTTPS only
+- [ ] Secure token storage (Keychain/Keystore)
+- [ ] RLS policies verified
+- [ ] No sensitive data in logs
+
+---
+
+### 16. Documentation Standards
+
+**Rule**: Code should be self-documenting, complex logic documented
+
+**Documentation Requirements**:
+- ✅ Complex functions: JSDoc comments
+- ✅ Complex components: Props documentation
+- ✅ Shared services: API documentation
+- ✅ Architecture decisions: Document in docs/
+- ✅ Breaking changes: Document in changelog
+
+---
+
+### 17. Git Workflow
+
+**Rule**: Clean, meaningful commits
+
+**Commit Guidelines**:
+- ✅ One logical change per commit
+- ✅ Descriptive commit messages
+- ✅ Reference step/phase in commit
+- ✅ Update changelog in same commit
+- ✅ No "WIP" commits in main branch
+- ✅ Atomic commits (can be reverted independently)
+
+**Branch Strategy**:
+- ✅ `main` - Production-ready code only
+- ✅ `feature/*` - New features
+- ✅ `fix/*` - Bug fixes
+- ✅ `refactor/*` - Code refactoring
+
+---
+
+### 18. Error Handling Standards
+
+**Rule**: Graceful error handling everywhere
+
+**Error Handling Pattern**:
+```typescript
+// ✅ CORRECT: Proper error handling
+try {
+  const result = await apiCall();
+  return result;
+} catch (error) {
+  // Log for debugging
+  console.error('API call failed:', error);
+  
+  // Show user-friendly message
+  showError('Something went wrong. Please try again.');
+  
+  // Return error state
+  return { error: true, message: 'Failed to load data' };
+}
+```
+
+**Error Types**:
+- ✅ Network errors: Retry with backoff
+- ✅ Validation errors: Show inline errors
+- ✅ Auth errors: Redirect to login
+- ✅ Server errors: Show generic message, log details
+
+---
+
+### 19. Loading State Standards
+
+**Rule**: Always show loading states
+
+**Loading Patterns**:
+- ✅ Button loading: Disable button, show spinner
+- ✅ Screen loading: Full-screen loader or skeleton
+- ✅ List loading: Skeleton loaders
+- ✅ Form submission: Disable form, show loading
+
+**Never**:
+- ❌ Blank screens during loading
+- ❌ No feedback during async operations
+- ❌ Multiple simultaneous loading states
+
+---
+
+### 20. Empty State Standards
+
+**Rule**: Beautiful, helpful empty states
+
+**Empty State Requirements**:
+- ✅ Clear message explaining why it's empty
+- ✅ Action to fix (if applicable)
+- ✅ Helpful illustration or icon
+- ✅ Consistent design across platforms
+
+**Examples**:
+- No content: "Create your first affirmation"
+- No search results: "No results found. Try different keywords"
+- Error: "Something went wrong. Tap to retry"
+
+---
+
+## Code Quality Checklist
+
+### Before Creating New Code
+
+1. **Check Shared First**: Does this exist in `packages/shared/`?
+2. **Can It Be Shared?**: If yes, put it in shared
+3. **Follow Architecture**: Does it follow the established structure?
+4. **No Duplicates**: Am I duplicating existing code?
+5. **Type Safety**: Are all types defined?
+6. **Error Handling**: Is error handling implemented?
+7. **Loading States**: Are loading states handled?
+8. **Empty States**: Are empty states handled?
+
+### Code Review Questions
+
+1. **Is this code duplicated?** → Move to shared
+2. **Does this follow architecture?** → Refactor to match
+3. **Are types shared?** → Import from shared
+4. **Is error handling proper?** → Add error handling
+5. **Are loading states handled?** → Add loading states
+6. **Is this production-ready?** → Review against standards
+
+---
+
+## Quick Reference
+
+### ✅ DO
+- Put business logic in `packages/shared/`
+- Import types from shared
+- Use shared services for API calls
+- Use shared stores for state
+- Use shared schemas for validation
+- Follow consistent architecture
+- Test on all platforms
+- Update changelog
+
+### ❌ DON'T
+- Duplicate code across platforms
+- Create types in platform folders
+- Create API services in platform folders
+- Create stores in platform folders
+- Create validation schemas in platform folders
+- Skip error handling
+- Skip loading states
+- Skip empty states
+- Commit without testing
+
+---
+
+## Database & Schema
+
+### Current Schema
+- **Same database as web app** - Supabase PostgreSQL
+- **Reference**: `rebuild-roadmap/01-planning/02-schema-verification.md`
+
+### Missing Tables (To Be Created)
+- `content_items` - Unified table for affirmations/meditations/rituals
+- `credit_transactions` - Credit system tracking
+- `conversations` - Conversational creation flow
+
+### Schema Changes
+- **Always verify schemas** - check coherence
+- **Create migrations** - for schema changes
+- **Update docs** - document schema changes
+- **Test RLS policies** - verify security
+
+---
+
+## Implementation Workflow
+
+### Before Starting a Step
+
+1. **Read phase analysis** - `rebuild-roadmap/02-phases/01-phase-XX-*.md`
+2. **Check changelog** - `rebuild-roadmap/03-tracking/01-changelog.md`
+3. **Use Context7** - query relevant documentation
+4. **Review docs** - understand requirements
+5. **Understand NOW state** - current implementation
+6. **Plan AFTER state** - target implementation
+7. **Check multi-platform strategy** - `docs/03-platforms/01-multi-platform-strategy.md`
+
+### During Implementation
+
+1. **Follow step-by-step** - don't skip steps
+2. **Implement on both platforms** - Mobile and Web simultaneously
+3. **Test frequently** - after each change on both platforms
+4. **Update changelog** - mark progress
+5. **Document decisions** - note why choices were made
+6. **Keep schemas coherent** - verify at each step
+7. **Ensure consistency** - UI/UX consistent across platforms
+
+### After Completing a Step
+
+1. **Verify UI checkpoint** - see visible progress on both platforms
+2. **Test functionality** - ensure it works on Mobile and Web
+3. **Verify consistency** - UI/UX consistent across platforms
+4. **Update changelog** - mark complete with date in `rebuild-roadmap/03-tracking/01-changelog.md`
+5. **Update docs** - if needed
+6. **Commit changes** - with descriptive message
+
+### When Re-Running a Step
+
+1. **Check changelog** - see what was done before in `rebuild-roadmap/03-tracking/01-changelog.md`
+2. **Update changelog** - add new entry with date
+3. **Note changes** - what was updated
+4. **Keep history** - don't delete previous entries
+5. **Test all platforms** - ensure changes work on all platforms
+
+---
+
+## Key Requirements
+
+### Voice-First Design
+- **Audio is primary** - text/visual are secondary
+- **Background audio** - support background playback
+- **Handle interruptions** - calls, notifications
+- **Voice recording** - high-quality capture
+
+### Three Content Types (NOT Interchangeable)
+- **Affirmations** - Cognitive re-patterning (shallow → medium)
+- **Guided Meditations** - State induction (medium)
+- **Rituals** - Identity encoding (deepest)
+
+**Reference**: Use Context7 to query `../../docs/internal/01-product-constitution.md`
+
+### Conversation Over Forms
+- **No static forms** - all creation through dialogue
+- **Chat-like interface** - conversational UI
+- **Context-aware** - adapts based on responses
+- **State machine** - manage conversation flow
+
+### Practice is Free
+- **Unlimited replay** - no credit consumption for playback
+- **Credits for creation** - only creation costs credits
+- **No subscription pressure** - user autonomy
+
+### User Autonomy
+- **No manipulation** - respect user choices
+- **No pressure** - no consequences for not practicing
+- **Easy exit** - can leave anytime
+
+---
+
+## Testing Requirements
+
+### Unit Tests
+- **Utilities** - test utility functions
+- **Components** - test UI components
+- **Hooks** - test custom hooks
+- **Services** - test API services
+
+### Integration Tests
+- **Feature flows** - test complete flows
+- **Navigation** - test navigation flows
+- **State** - test state management
+
+### E2E Tests
+- **Critical flows** - auth, content creation, playback
+- **Real devices** - test on iOS and Android
+- **Offline** - test offline scenarios
+
+### Coverage Target
+- **>80% code coverage** - for critical code
+
+---
+
+## Performance Targets
+
+- **App launch**: < 2 seconds
+- **Screen transition**: < 300ms
+- **API response**: < 500ms
+- **Audio playback start**: < 1 second
+- **Bundle size**: < 50MB (initial download)
+
+---
+
+## Security Requirements
+
+### Authentication
+- **Supabase Auth v2** - with PKCE
+- **Secure token storage** - Keychain/Keystore
+- **Session persistence** - auto refresh
+- **Biometric auth** - optional
+
+### Data Protection
+- **HTTPS only** - all API calls
+- **Certificate pinning** - optional
+- **Encrypted storage** - sensitive data
+- **RLS policies** - database security
+
+### Privacy
+- **GDPR compliant** - data handling
+- **Minimal data collection** - only necessary
+- **User control** - data export/deletion
+- **Privacy policy** - required
+
+---
+
+## App Store Requirements
+
+### iOS
+- **App Store Connect** - account required ($99/year)
+- **Code signing** - certificates
+- **Guidelines compliance** - follow Apple's guidelines
+- **Privacy policy** - required
+- **Age rating** - required
+
+### Android
+- **Google Play Console** - account ($25 one-time)
+- **App signing** - signing key
+- **Policy compliance** - follow Play policies
+- **Privacy policy** - required
+- **Content rating** - required
+
+---
+
+## Cost Optimization
+
+### API Costs
+- **GPT-4o-mini** - for conversations (75% savings)
+- **Batch API** - for background scripts (50% savings)
+- **Prompt caching** - up to 50% additional savings
+- **Vercel AI SDK caching** - 30-50% savings
+
+### Estimated Monthly Costs (10K users)
+- **OpenAI TTS**: ~$750/month
+- **OpenAI LLM**: ~$50-200/month
+- **Supabase**: ~$25/month
+- **Storage**: ~$2.50/month
+- **Vercel**: ~$20/month
+- **Total**: ~$850-1,000/month
+
+**Reference**: `docs/02-mobile/01-technology-stack.md` for cost details
+
+---
+
+## Common Patterns
+
+### Supabase Connection
+```typescript
+import { createClient } from '@supabase/supabase-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export const supabase = createClient(
+  process.env.EXPO_PUBLIC_SUPABASE_URL!,
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+  {
+    auth: {
+      storage: AsyncStorage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  }
+);
+```
+
+### React Query Hook
+```typescript
+const { data, isLoading, error } = useQuery({
+  queryKey: ['content', contentId],
+  queryFn: () => getContent(contentId),
+  cacheTime: Infinity,
+  staleTime: 5 * 60 * 1000,
+});
+```
+
+### Zustand Store
+```typescript
+const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  session: null,
+  setUser: (user) => set({ user }),
+}));
+```
+
+**Reference**: `docs/02-mobile/03-implementation.md` for more patterns
+
+---
+
+## Changelog Management
+
+### When Completing a Step
+1. Open `rebuild-roadmap/03-tracking/01-changelog.md`
+2. Find the step
+3. Update status: ⏳ Pending → ✅ Complete
+4. Add completion date
+5. Add notes about what was done
+6. Update "Updated" date
+
+### When Re-Running a Step
+1. Open `rebuild-roadmap/03-tracking/01-changelog.md`
+2. Find the step
+3. Keep previous completion entry
+4. Add new entry below with:
+   - Updated date
+   - What changed
+   - Notes about updates
+
+### Format
+```markdown
+### Step X.X: Step Name
+- **Status**: ✅ Complete (or ⏳ Pending)
+- **Completed**: YYYY-MM-DD
+- **Notes**: What was done
+- **Updated**: YYYY-MM-DD
+```
+
+---
+
+## File Naming Conventions
+
+### Components
+- **PascalCase**: `Button.tsx`, `AudioPlayer.tsx`
+- **Screens**: `*Screen.tsx` suffix
+- **Hooks**: `use*` prefix
+
+### Files
+- **kebab-case**: `audio-service.ts`, `content-api.ts`
+- **Types**: `*.types.ts` or in `types/` folder
+- **Numbered docs**: `01-name.md`, `02-name.md` (for ordered docs)
+
+### Folders
+- **kebab-case**: `api-services/`
+- **Numbered**: `01-core/`, `02-mobile/` (for ordered folders)
+
+---
+
+## Git Workflow
+
+### Commits
+- **Descriptive messages** - what and why
+- **Reference steps** - mention step number
+- **Update changelog** - in same commit
+
+### Branches
+- **main** - production-ready code
+- **feature/*** - new features
+- **fix/*** - bug fixes
+
+---
+
+## Important Files to Always Check
+
+### Primary (This Project)
+1. **Changelog**: `rebuild-roadmap/03-tracking/01-changelog.md` - step status
+2. **Roadmap**: `rebuild-roadmap/01-planning/01-roadmap.md` - overall plan
+3. **Schema**: `rebuild-roadmap/01-planning/02-schema-verification.md` - database
+4. **Tech Stack**: `docs/02-mobile/01-technology-stack.md` - finalized decisions
+5. **Architecture**: `docs/02-mobile/02-architecture.md` - system structure
+6. **Implementation**: `docs/02-mobile/03-implementation.md` - patterns & guide
+7. **Context7 Guide**: `docs/04-reference/01-context7-usage.md` - Context7 usage
+8. **Cursor Rules Guide**: `docs/04-reference/02-cursor-rules-guide.md` - Rules guide
+9. **Multi-Platform Strategy**: `docs/03-platforms/01-multi-platform-strategy.md` - Platform strategy
+10. **Browser Optimization**: `docs/03-platforms/02-browser-optimization-strategy.md` - Browser strategy
+
+### Reference (Main Project - Use Context7)
+9. **Product Constitution**: `../../docs/internal/01-product-constitution.md` - Core principles
+10. **Scientific Foundations**: `../../docs/internal/02-scientific-foundations.md` - Research backing
+11. **System Architecture**: `../../docs/internal/05-system-architecture.md` - Full architecture
+12. **Database**: `../../docs/internal/database.md` - Complete schema
+13. **User Flows**: `../../docs/internal/flows.md` - User journeys
+14. **Audio Generation**: `../../docs/internal/audio-generation.md` - Voice cloning, TTS
+15. **Conversational System**: `../../docs/internal/03-conversational-system.md` - Conversation flows
+16. **All Other Docs**: `../../docs/internal/` - Complete reference (20+ files)
+
+**Use Context7 to query these docs when needed!**
+
+---
+
+## When in Doubt - Use Context7 First
+
+### Documentation Lookup Strategy
+
+1. **Use Context7 to query docs** - Fastest way to find information
+   - Query: "What does [topic] say about [specific question]?"
+   - Reference the relevant doc from the list above
+   
+2. **Check mobile docs** - `docs/02-mobile/` folder
+   - `01-technology-stack.md` - Tech decisions
+   - `02-architecture.md` - Architecture
+   - `03-implementation.md` - Implementation guide
+
+3. **Check roadmap** - `rebuild-roadmap/01-planning/01-roadmap.md`
+   - Overall plan and phases
+   - Step-by-step guide
+
+4. **Check changelog** - `rebuild-roadmap/03-tracking/01-changelog.md`
+   - What's been done
+   - Current status
+
+5. **Check phase analysis** - `rebuild-roadmap/02-phases/`
+   - Detailed steps for each phase
+
+6. **Use Context7 for main docs** - `../../docs/internal/`
+   - Product constitution
+   - Scientific foundations
+   - System architecture
+   - Database schema
+   - User flows
+   - Audio generation
+   - All other internal docs (20+ files)
+
+### Context7 Query Examples
+
+**For Product Questions**:
+```
+Use Context7: "What are the core principles of waQup?"
+Reference: ../../docs/internal/01-product-constitution.md
+```
+
+**For Technical Questions**:
+```
+Use Context7: "How does the Supabase integration work?"
+Reference: ../../docs/internal/05-system-architecture.md
+```
+
+**For Database Questions**:
+```
+Use Context7: "What tables are missing in the database schema?"
+Reference: rebuild-roadmap/01-planning/02-schema-verification.md
+```
+
+**For Implementation Questions**:
+```
+Use Context7: "How do I implement audio playback in React Native?"
+Reference: docs/02-mobile/03-implementation.md
+```
+
+**For Architecture Questions**:
+```
+Use Context7: "What is the mobile app architecture?"
+Reference: docs/02-mobile/02-architecture.md
+```
+
+**For Technology Questions**:
+```
+Use Context7: "What is the finalized tech stack?"
+Reference: docs/02-mobile/01-technology-stack.md
+```
+
+---
+
+## Current Development Status
+
+### Active Phase
+**Phase 1: Project Foundation** - Step 1.1
+
+**Current Task**: Initialize All Platform Projects (Mobile + Web)
+
+**Status**: ⏳ Ready to Start
+
+**Next Actions**: See `NEXT_STEPS.md` and `TASKS.md` for immediate tasks
+
+---
+
+## Quick Start Commands
+
+### Initialize Projects
+```bash
+# 1. Set up monorepo
+npm init -y
+# Configure workspaces in package.json
+
+# 2. Initialize Mobile
+cd packages
+npx create-expo-app@latest mobile --template blank-typescript
+
+# 2. Initialize Web (Next.js)
+npx create-next-app@latest web --typescript --app --tailwind --eslint
+
+# 4. Initialize Web (or use existing)
+npx create-next-app@latest web --typescript --app
+
+# 5. Create Shared
+mkdir -p shared/src/{services,stores,types,utils,schemas}
+cd shared && npm init -y
+```
+
+### Development
+```bash
+# Run all platforms
+npm run dev:all
+
+# Or individually
+npm run dev:mobile
+npm run dev:web
+```
+
+---
+
+## Development Status
+
+### Current Phase
+**Phase 1: Project Foundation** - Step 1.1
+
+**Current Task**: Initialize All Platform Projects (Mobile + Web)
+
+**Status**: 🚀 Building Now
+
+**Next Actions**: See `NEXT_STEPS.md` and `TASKS.md` for immediate tasks
+
+---
+
+## Quick Start Commands
+
+### Initialize Projects
+```bash
+# 1. Set up monorepo
+npm init -y
+# Configure workspaces in package.json
+
+# 2. Initialize Mobile
+cd packages
+npx create-expo-app@latest mobile --template blank-typescript
+
+# 2. Initialize Web (Next.js)
+npx create-next-app@latest web --typescript --app --tailwind --eslint
+
+# 4. Initialize Web (or use existing)
+npx create-next-app@latest web --typescript --app
+
+# 5. Create Shared
+mkdir -p shared/src/{services,stores,types,utils,schemas}
+cd shared && npm init -y
+```
+
+### Development
+```bash
+# Run all platforms
+npm run dev:all
+
+# Or individually
+npm run dev:mobile
+npm run dev:web
+```
+
+---
+
+**Last Updated**: 2026-02-07
+**Version**: 4.0 (Production-Level Rules & Multi-Platform Development)
+**Status**: 🚀 Building Now - Follow Production Rules Above
