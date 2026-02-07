@@ -70,14 +70,19 @@ The setup scripts will:
 
 **For Mobile Development**:
 - **Expo CLI**: `npm install -g expo-cli`
-- **iOS Development** (macOS only):
+- **Expo Go App** (Recommended - No SDK needed):
+  - Install Expo Go on your iOS/Android device
+  - Scan QR code to run app - no Android SDK or Xcode needed!
+- **iOS Development** (macOS only - Optional, for custom builds):
   - Xcode 15.0+ (via App Store)
   - Xcode Command Line Tools: `xcode-select --install`
   - CocoaPods: `sudo gem install cocoapods`
-- **Android Development**:
+- **Android Development** (Optional - Only needed for custom builds):
   - Android Studio (latest)
   - Android SDK (API 33+)
   - Java Development Kit (JDK) 17+
+  
+**Note**: Android SDK is **NOT required** for development with Expo Go. See [docs/02-mobile/04-android-sdk-requirements.md](./docs/02-mobile/04-android-sdk-requirements.md) for details.
 
 **External Services** (Required):
 - Supabase account and project
@@ -114,7 +119,9 @@ copy .env.example .env
 npm run dev:all:win
 ```
 
-**Android Setup (Windows)**:
+**Android Setup (Windows - Optional)**:
+> **💡 Tip**: Skip this if using Expo Go! Android SDK is only needed for custom native modules or local builds.
+
 1. Install Android Studio from https://developer.android.com/studio
 2. Set up Android SDK (API 33+)
 3. Configure environment variables:
@@ -163,7 +170,9 @@ cp .env.example .env
 npm run dev:all
 ```
 
-**Android Setup (macOS)**:
+**Android Setup (macOS - Optional)**:
+> **💡 Tip**: Skip this if using Expo Go! Android SDK is only needed for custom native modules or local builds.
+
 1. Install Android Studio from https://developer.android.com/studio
 2. Set up Android SDK (API 33+)
 3. Add to `~/.zshrc` or `~/.bash_profile`:
@@ -205,7 +214,9 @@ cp .env.example .env
 npm run dev:all
 ```
 
-**Android Setup (Linux)**:
+**Android Setup (Linux - Optional)**:
+> **💡 Tip**: Skip this if using Expo Go! Android SDK is only needed for custom native modules or local builds.
+
 1. Install Android Studio from https://developer.android.com/studio
 2. Set up Android SDK (API 33+)
 3. Add to `~/.bashrc` or `~/.zshrc`:

@@ -8,7 +8,7 @@
 |----------|-----------|---------|
 | **Framework** | React Native + Expo | SDK 54 |
 | **Language** | TypeScript | 5.6+ |
-| **Navigation** | React Navigation | v6 |
+| **Navigation** | React Navigation | v7 |
 | **State** | Zustand + React Query | v4 + v5 |
 | **Backend** | Supabase | Latest |
 | **Audio** | expo-av | ~14.0 |
@@ -30,9 +30,9 @@
 {
   "expo": "~54.0.0",
   "react-native": "0.81.5",
-  "@react-navigation/native": "^6.1.0",
-  "@react-navigation/stack": "^6.3.0",
-  "@react-navigation/bottom-tabs": "^6.5.0"
+  "@react-navigation/native": "^7.1.0",
+  "@react-navigation/native-stack": "^7.1.0",
+  "@react-navigation/bottom-tabs": "^7.1.0"
 }
 ```
 

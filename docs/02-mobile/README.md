@@ -11,7 +11,8 @@
 ├── README.md                    # This file
 ├── 01-technology-stack.md      # Mobile tech stack & decisions
 ├── 02-architecture.md          # Mobile app architecture
-└── 03-implementation.md        # Mobile implementation guide
+├── 03-implementation.md        # Mobile implementation guide
+└── 04-android-sdk-requirements.md  # Android SDK requirements & setup
 ```
 
 ---
@@ -21,6 +22,7 @@
 - **[01 Technology Stack](./01-technology-stack.md)** - Mobile tech decisions, packages, cost analysis
 - **[02 Architecture](./02-architecture.md)** - Mobile architecture, layers, data flow, structure
 - **[03 Implementation](./03-implementation.md)** - Mobile implementation patterns, gotchas, best practices
+- **[04 Android SDK Requirements](./04-android-sdk-requirements.md)** - Android SDK setup guide (optional for Expo Go)
 
 ---
 

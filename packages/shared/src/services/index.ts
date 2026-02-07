@@ -5,8 +5,8 @@
  * Platforms import from here: import { getContent } from '@waqup/shared/services'
  */
 
-// Supabase services will be added here
-// export * from './supabase';
+// Supabase services
+export * from './supabase';
 
 // AI services will be added here
 // export * from './ai';

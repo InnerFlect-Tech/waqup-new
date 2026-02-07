@@ -143,11 +143,24 @@ $allGood = $true
 if (-not (Test-Command "node")) {
     Write-Host "❌ Node.js check failed" -ForegroundColor Red
     $allGood = $false
+} else {
+    $nodeVersion = node --version
+    $versionNumber = [int]($nodeVersion -replace 'v(\d+)\..*', '$1')
+    $minorVersion = [int]($nodeVersion -replace 'v\d+\.(\d+)\..*', '$1')
+    if ($versionNumber -lt 20 -or ($versionNumber -eq 20 -and $minorVersion -lt 9)) {
+        Write-Host "⚠️  Node.js version should be >= 20.9.0. Current: $nodeVersion" -ForegroundColor Yellow
+    }
 }
 
 if (-not (Test-Command "npm")) {
     Write-Host "❌ npm check failed" -ForegroundColor Red
     $allGood = $false
+} else {
+    $npmVersion = npm --version
+    $npmMajor = [int]($npmVersion -replace '(\d+)\..*', '$1')
+    if ($npmMajor -lt 10) {
+        Write-Host "⚠️  npm version should be >= 10.0.0. Current: $npmVersion" -ForegroundColor Yellow
+    }
 }
 
 if (-not (Test-Command "git")) {
@@ -157,6 +170,23 @@ if (-not (Test-Command "git")) {
 
 if (-not (Test-Command "expo")) {
     Write-Host "⚠️  Expo CLI check failed (optional for web-only development)" -ForegroundColor Yellow
+}
+
+# Step 9: Verify package versions
+Write-Host ""
+Write-Host "📦 Step 9: Verifying package versions..." -ForegroundColor Green
+if (Test-Path "scripts\verify-versions.sh") {
+    Write-Host "   Running version verification script..." -ForegroundColor Yellow
+    # Note: PowerShell can't directly run bash scripts, so we'll check manually
+    Write-Host "   (Version verification script available for Linux/macOS)" -ForegroundColor Yellow
+} else {
+    Write-Host "   Checking package.json versions..." -ForegroundColor Yellow
+    $packageJson = Get-Content "package.json" | ConvertFrom-Json
+    if ($packageJson.engines.node -eq ">=20.9.0") {
+        Write-Host "✅ Root package.json: Node requirement correct (>=20.9.0)" -ForegroundColor Green
+    } else {
+        Write-Host "⚠️  Root package.json: Node requirement should be >=20.9.0" -ForegroundColor Yellow
+    }
 }
 
 if ($allGood) {
@@ -171,6 +201,7 @@ if ($allGood) {
     Write-Host "      - npm run dev:web (for web)" -ForegroundColor White
     Write-Host ""
     Write-Host "📚 For more information, see rebuild-roadmap/README.md" -ForegroundColor Cyan
+    Write-Host "🔍 Run scripts\verify-versions.sh (on Linux/macOS) to verify all versions" -ForegroundColor Cyan
 } else {
     Write-Host ""
     Write-Host "⚠️  Setup completed with warnings. Please fix the issues above." -ForegroundColor Yellow

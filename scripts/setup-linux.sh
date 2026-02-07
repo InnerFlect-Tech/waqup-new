@@ -195,11 +195,24 @@ ALL_GOOD=true
 if ! command_exists node; then
     echo -e "${RED}❌ Node.js check failed${NC}"
     ALL_GOOD=false
+else
+    NODE_VERSION=$(node --version)
+    VERSION_NUMBER=$(echo $NODE_VERSION | sed 's/v\([0-9]*\).*/\1/')
+    MINOR_VERSION=$(echo $NODE_VERSION | sed 's/v[0-9]*\.\([0-9]*\).*/\1/')
+    if [ "$VERSION_NUMBER" -lt 20 ] || ([ "$VERSION_NUMBER" -eq 20 ] && [ "$MINOR_VERSION" -lt 9 ]); then
+        echo -e "${YELLOW}⚠️  Node.js version should be >= 20.9.0. Current: $NODE_VERSION${NC}"
+    fi
 fi
 
 if ! command_exists npm; then
     echo -e "${RED}❌ npm check failed${NC}"
     ALL_GOOD=false
+else
+    NPM_VERSION=$(npm --version)
+    NPM_MAJOR=$(echo $NPM_VERSION | cut -d'.' -f1)
+    if [ "$NPM_MAJOR" -lt 10 ]; then
+        echo -e "${YELLOW}⚠️  npm version should be >= 10.0.0. Current: $NPM_VERSION${NC}"
+    fi
 fi
 
 if ! command_exists git; then
@@ -209,6 +222,22 @@ fi
 
 if ! command_exists expo; then
     echo -e "${YELLOW}⚠️  Expo CLI check failed (optional for web-only development)${NC}"
+fi
+
+# Step 10: Verify package versions
+echo ""
+echo -e "${GREEN}📦 Step 10: Verifying package versions...${NC}"
+if [ -f "scripts/verify-versions.sh" ]; then
+    echo -e "${YELLOW}   Running version verification script...${NC}"
+    chmod +x scripts/verify-versions.sh
+    ./scripts/verify-versions.sh
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ All package versions verified${NC}"
+    else
+        echo -e "${YELLOW}⚠️  Some version checks failed. Please review above.${NC}"
+    fi
+else
+    echo -e "${YELLOW}⚠️  Version verification script not found${NC}"
 fi
 
 if [ "$ALL_GOOD" = true ]; then
@@ -223,6 +252,7 @@ if [ "$ALL_GOOD" = true ]; then
     echo -e "      ${NC}- npm run dev:web (for web)"
     echo ""
     echo -e "${CYAN}📚 For more information, see rebuild-roadmap/README.md${NC}"
+    echo -e "${CYAN}🔍 Run ./scripts/verify-versions.sh anytime to verify all versions${NC}"
 else
     echo ""
     echo -e "${YELLOW}⚠️  Setup completed with warnings. Please fix the issues above.${NC}"
