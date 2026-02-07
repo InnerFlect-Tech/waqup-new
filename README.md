@@ -2,6 +2,22 @@
 
 **Production-ready mobile and web application for iOS, Android, and desktop browsers**
 
+[![Repository](https://img.shields.io/badge/repository-GitHub-blue)](https://github.com/InnerFlect-Tech/waqup-new)
+[![License](https://img.shields.io/badge/license-UNLICENSED-lightgrey)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen)](https://nodejs.org/)
+[![npm](https://img.shields.io/badge/npm-%3E%3D10.0.0-red)](https://www.npmjs.com/)
+
+---
+
+## 📍 Repository
+
+**GitHub**: [https://github.com/InnerFlect-Tech/waqup-new](https://github.com/InnerFlect-Tech/waqup-new)
+
+```bash
+git clone https://github.com/InnerFlect-Tech/waqup-new.git
+cd waqup-new
+```
+
 ---
 
 ## 🚀 Quick Start
@@ -11,8 +27,8 @@
 **Windows**:
 ```powershell
 # Clone the repository
-git clone <repository-url>
-cd waqup-app/waqup-new
+git clone https://github.com/InnerFlect-Tech/waqup-new.git
+cd waqup-new
 
 # Run automated setup script
 .\scripts\setup-windows.ps1
@@ -21,8 +37,8 @@ cd waqup-app/waqup-new
 **macOS/Linux**:
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd waqup-app/waqup-new
+git clone https://github.com/InnerFlect-Tech/waqup-new.git
+cd waqup-new
 
 # Run automated setup script
 ./scripts/setup-linux.sh
@@ -84,8 +100,8 @@ git --version   # Verify installation
 npm install -g expo-cli
 
 # 4. Clone repository
-git clone <repository-url>
-cd waqup-app/waqup-new
+git clone https://github.com/InnerFlect-Tech/waqup-new.git
+cd waqup-new
 
 # 5. Install dependencies
 npm install
@@ -175,8 +191,8 @@ sudo apt-get install git
 sudo npm install -g expo-cli
 
 # 4. Clone repository
-git clone <repository-url>
-cd waqup-app/waqup-new
+git clone https://github.com/InnerFlect-Tech/waqup-new.git
+cd waqup-new
 
 # 5. Install dependencies
 npm install
@@ -276,12 +292,10 @@ npm run dev:all
 
 ---
 
-## 🔗 Repositories
+## 🔗 Related Repositories
 
-- **Main Repo**: `waqup-app/` (parent directory)
-- **New Project**: `waqup-app/waqup-new/` (this directory)
-
-Both repositories are tracked separately and visible in Cursor.
+- **This Repository**: [waqup-new](https://github.com/InnerFlect-Tech/waqup-new) - Multi-platform rebuild (Mobile + Web)
+- **Main Project**: `waqup-app/` (parent directory) - Original project
 
 ---
 
@@ -296,4 +310,13 @@ Both repositories are tracked separately and visible in Cursor.
 
 ---
 
-**Last Updated**: 2026-02-07
+---
+
+## 📝 License
+
+This project is proprietary and confidential. All rights reserved.
+
+---
+
+**Last Updated**: February 7, 2026  
+**Repository**: [https://github.com/InnerFlect-Tech/waqup-new](https://github.com/InnerFlect-Tech/waqup-new)
