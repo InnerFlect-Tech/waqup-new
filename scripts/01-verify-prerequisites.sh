@@ -38,18 +38,13 @@ if command_exists node; then
     NODE_VERSION=$(node --version)
     echo -e "  ✅ Node.js is installed: $NODE_VERSION"
     
-    # Check version (>=20.9.0 or >=22.0.0)
+    # Check version (>=24.0.0)
     VERSION_NUMBER=$(echo $NODE_VERSION | sed 's/v\([0-9]*\).*/\1/')
-    MINOR_VERSION=$(echo $NODE_VERSION | sed 's/v[0-9]*\.\([0-9]*\).*/\1/')
     
-    if [ "$VERSION_NUMBER" -ge 22 ]; then
-        echo -e "  ✅ Version check passed (>= 22.0.0)"
-    elif [ "$VERSION_NUMBER" -eq 20 ] && [ "$MINOR_VERSION" -ge 9 ]; then
-        echo -e "  ✅ Version check passed (>= 20.9.0)"
-    elif [ "$VERSION_NUMBER" -gt 20 ]; then
-        echo -e "  ✅ Version check passed"
+    if [ "$VERSION_NUMBER" -ge 24 ]; then
+        echo -e "  ✅ Version check passed (>= 24.0.0)"
     else
-        echo -e "  ${RED}❌ Node.js version should be 20.9.0+ or 22.0.0+${NC}"
+        echo -e "  ${RED}❌ Node.js version should be >= 24.0.0${NC}"
         echo -e "  ${YELLOW}   Current: $NODE_VERSION${NC}"
         echo -e "  ${YELLOW}   Please update from https://nodejs.org/${NC}"
         exit 1
