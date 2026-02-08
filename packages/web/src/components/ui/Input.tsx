@@ -31,9 +31,18 @@ export const Input: React.FC<InputProps> = ({
   const colors = theme.colors;
   const [focused, setFocused] = useState(false);
 
+  const borderColor = error
+    ? colors.error
+    : focused
+      ? colors.accent.primary
+      : colors.border.light;
+  const borderWidth = focused ? 2 : 1;
+
   const inputContainerStyle: React.CSSProperties = {
     borderRadius: borderRadius.md,
-    border: `1px solid ${colors.border.light}`,
+    borderWidth: `${borderWidth}px`,
+    borderStyle: 'solid',
+    borderColor,
     backgroundColor: colors.glass.light,
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
@@ -42,13 +51,6 @@ export const Input: React.FC<InputProps> = ({
     alignItems: 'center',
     minHeight: '44px',
     transition: 'all 0.2s ease-in-out',
-    ...(focused && {
-      borderColor: colors.accent.primary,
-      borderWidth: '2px',
-    }),
-    ...(error && {
-      borderColor: colors.error,
-    }),
     ...containerStyle,
   };
 

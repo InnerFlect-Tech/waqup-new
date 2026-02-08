@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { AnimatedBackground, Logo } from '@/components';
@@ -89,6 +89,14 @@ const benefits = [
 export default function HowItWorksPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const [showStepArrow, setShowStepArrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const handler = () => setShowStepArrow(mq.matches);
+    handler();
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
@@ -281,7 +289,7 @@ export default function HowItWorksPage() {
                       </div>
                     </div>
                     {index < steps.length - 1 && (
-                      <div style={{ display: 'none', '@media (min-width: 768px)': { display: 'block' } }}>
+                      <div style={{ display: showStepArrow ? 'block' : 'none' }}>
                         <ArrowRight size={24} color={colors.accent.tertiary} />
                       </div>
                     )}

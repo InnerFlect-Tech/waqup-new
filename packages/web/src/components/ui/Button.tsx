@@ -77,7 +77,19 @@ export const Button: React.FC<ButtonProps> = ({
           <Loading variant="spinner" size="sm" color={variant === 'primary' ? 'white' : 'primary'} />
         </span>
       ) : (
-        <Typography variant={textVariant} style={{ color: textColor, textAlign: 'center' }}>
+        <Typography
+          as="span"
+          variant={textVariant}
+          style={{
+            color: textColor,
+            textAlign: 'center',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: spacing.sm,
+            flexWrap: 'nowrap',
+          }}
+        >
           {children}
         </Typography>
       )}
@@ -92,7 +104,9 @@ function getBaseStyles(): React.CSSProperties {
     justifyContent: 'center',
     display: 'flex',
     flexDirection: 'row',
-    border: 'none',
+    borderWidth: 0,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
     outline: 'none',
     fontFamily: 'inherit',
   };
@@ -135,19 +149,22 @@ function getVariantStyles(variant: string, colors: any): React.CSSProperties {
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
         boxShadow: `0 4px 12px ${colors.mystical.glow}60`,
-        // Hover state handled via CSS or inline styles
       };
     case 'secondary':
       return {
         backgroundColor: colors.glass.light,
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-        border: `1px solid ${colors.glass.border}`,
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: colors.glass.border,
       };
     case 'outline':
       return {
         backgroundColor: 'transparent',
-        border: `1px solid ${colors.accent.primary}`,
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: colors.accent.primary,
         color: colors.text.primary,
       };
     case 'text':
@@ -160,7 +177,9 @@ function getVariantStyles(variant: string, colors: any): React.CSSProperties {
         backgroundColor: colors.glass.transparent,
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-        border: `1px solid ${colors.glass.border}`,
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: colors.glass.border,
         color: colors.text.primary,
       };
     default:

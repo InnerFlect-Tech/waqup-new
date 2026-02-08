@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
           <div style={{ width: '100%', maxWidth: '480px' }}>
             <div
               style={{
-                padding: spacing.xl * 2,
+                padding: spacing.xxxl,
                 borderRadius: borderRadius.xl,
                 background: colors.glass.opaque,
                 backdropFilter: 'blur(20px)',
@@ -126,7 +126,7 @@ export default function ForgotPasswordPage() {
       <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: spacing.xl }}>
         <div style={{ width: '100%', maxWidth: '480px' }}>
           {/* Logo */}
-          <div style={{ textAlign: 'center', marginBottom: spacing.xl * 2 }}>
+          <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
             <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
               <Logo size="lg" showIcon={false} href={undefined} />
             </Link>
@@ -138,7 +138,7 @@ export default function ForgotPasswordPage() {
           {/* Forgot Password Form Card */}
           <div
             style={{
-              padding: spacing.xl * 2,
+              padding: spacing.xxxl,
               borderRadius: borderRadius.xl,
               background: colors.glass.opaque,
               backdropFilter: 'blur(20px)',

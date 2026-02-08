@@ -69,10 +69,11 @@ chmod +x scripts/*.sh
 
 ### 02: Install Dependencies
 - Installs root workspace dependencies
-- Installs mobile platform dependencies (React Navigation, expo-av, forms, etc.)
-- Installs web platform dependencies (forms, utilities)
+- Installs mobile platform dependencies (React Navigation with **native-stack**, expo-av, forms, etc.)
+- Installs web platform dependencies (forms, **zod**, **@stripe/stripe-js**, utilities)
 - Uses `--no-audit --no-fund` flags to prevent hanging
 - Installs directly in package directories for reliability
+- **Keep in sync**: Packages installed here should also be listed in each package’s `package.json` so a root `npm install` is sufficient.
 
 ### 03: Setup Environment
 - Copies `.env.example` to `.env` if it doesn't exist

@@ -26,14 +26,20 @@ export interface LogoProps {
  * - Q letter highlighted in purple gradient
  * - Matches the thin, elegant logo style from design reference
  */
-export const Logo: React.FC<LogoProps> = ({
-  size = 'md',
-  showIcon = false, // Default to false - logo is now text-only
-  href = '/',
-  className = '',
-}) => {
+export const Logo: React.FC<LogoProps> = (props) => {
+  const {
+    size = 'md',
+    showIcon = false, // Default to false - logo is now text-only
+    href,
+    className = '',
+  } = props;
   const { theme } = useTheme();
   const colors = theme.colors;
+
+  // When href is omitted, default to '/'. When href={undefined} is passed (e.g. parent wraps in Link), render no link to avoid nested <a>.
+  const hasHrefProp = 'href' in props;
+  const linkHref = !hasHrefProp ? '/' : (href ?? '/');
+  const renderAsLink = !hasHrefProp || (href != null && href !== '');
 
   const sizeMap = {
     sm: { icon: '24px', fontSize: '20px', gap: spacing.sm },
@@ -76,9 +82,9 @@ export const Logo: React.FC<LogoProps> = ({
     </div>
   );
 
-  if (href) {
+  if (renderAsLink) {
     return (
-      <Link href={href} style={{ textDecoration: 'none', display: 'inline-block' }}>
+      <Link href={linkHref} style={{ textDecoration: 'none', display: 'inline-block' }}>
         {logoContent}
       </Link>
     );

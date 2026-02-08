@@ -52,7 +52,7 @@ echo -e "${GREEN}✅ Root dependencies installed${NC}\n"
 echo -e "${BLUE}=== Mobile Platform Dependencies ===${NC}"
 
 # Navigation
-install_packages "packages/mobile" "@react-navigation/native @react-navigation/stack @react-navigation/bottom-tabs"
+install_packages "packages/mobile" "@react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs"
 
 # Navigation peer dependencies
 install_packages "packages/mobile" "react-native-screens react-native-safe-area-context"
@@ -79,7 +79,10 @@ install_packages "packages/mobile" "@types/react-native @types/uuid" "true"
 echo -e "${BLUE}=== Web Platform Dependencies ===${NC}"
 
 # Forms
-install_packages "packages/web" "react-hook-form @hookform/resolvers"
+install_packages "packages/web" "react-hook-form @hookform/resolvers zod"
+
+# Payments (Stripe client)
+install_packages "packages/web" "@stripe/stripe-js"
 
 # Utilities
 install_packages "packages/web" "date-fns uuid"

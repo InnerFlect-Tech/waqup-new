@@ -48,7 +48,7 @@ Write-Host ""
 Write-Host "=== Mobile Platform Dependencies ===" -ForegroundColor Blue
 
 # Navigation
-Install-Packages "packages/mobile" "@react-navigation/native @react-navigation/stack @react-navigation/bottom-tabs"
+Install-Packages "packages/mobile" "@react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs"
 
 # Navigation peer dependencies
 Install-Packages "packages/mobile" "react-native-screens react-native-safe-area-context"
@@ -75,7 +75,10 @@ Install-Packages "packages/mobile" "@types/react-native @types/uuid" -IsDev $tru
 Write-Host "=== Web Platform Dependencies ===" -ForegroundColor Blue
 
 # Forms
-Install-Packages "packages/web" "react-hook-form @hookform/resolvers"
+Install-Packages "packages/web" "react-hook-form @hookform/resolvers zod"
+
+# Payments (Stripe client)
+Install-Packages "packages/web" "@stripe/stripe-js"
 
 # Utilities
 Install-Packages "packages/web" "date-fns uuid"
