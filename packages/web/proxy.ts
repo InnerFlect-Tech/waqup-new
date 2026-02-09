@@ -2,31 +2,31 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Middleware for protected routes
+ * Proxy for protected routes
  * Checks authentication state and redirects if needed
- * 
+ *
  * Note: This is a basic implementation. For production, you may want to
  * verify the session server-side or use a more robust approach.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  
+
   // Public routes that don't require authentication
   const publicRoutes = ['/', '/login', '/signup', '/forgot-password', '/reset-password', '/how-it-works', '/pricing'];
-  
+
   // Check if route is public
   const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
-  
+
   // Protected routes (main app routes)
-  const isProtectedRoute = pathname.startsWith('/home') || 
-                           pathname.startsWith('/library') || 
-                           pathname.startsWith('/create') || 
+  const isProtectedRoute = pathname.startsWith('/home') ||
+                           pathname.startsWith('/library') ||
+                           pathname.startsWith('/create') ||
                            pathname.startsWith('/profile');
-  
+
   // For protected routes, we'll handle redirect in the layout component
   // since we need client-side auth state check
-  // Middleware can't access client-side state easily
-  
+  // Proxy can't access client-side state easily
+
   return NextResponse.next();
 }
 
