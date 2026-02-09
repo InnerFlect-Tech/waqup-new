@@ -103,7 +103,7 @@ export default function SignupPage() {
                 variant="primary"
                 size="lg"
                 fullWidth
-                onPress={handleResendVerification}
+                onClick={handleResendVerification}
                 style={{
                   background: colors.gradients.primary,
                   marginBottom: spacing.md,

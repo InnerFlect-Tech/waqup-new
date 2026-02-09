@@ -187,12 +187,13 @@ export default function HomePage() {
                           opacity: 0.6,
                         }}
                       />
-                      <action.icon 
-                        size={24} 
-                        color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                        strokeWidth={2.5}
-                        style={{ position: 'relative', zIndex: 1 }}
-                      />
+                      <span style={{ position: 'relative', zIndex: 1 }}>
+                        <action.icon 
+                          size={24} 
+                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
+                          strokeWidth={2.5}
+                        />
+                      </span>
                     </div>
                       <Typography variant="h3" style={{ color: textColor }}>
                         {action.name}
@@ -261,12 +262,13 @@ export default function HomePage() {
                             opacity: isOpaque ? 0.5 : 0.3,
                           }}
                         />
-                        <item.icon 
-                          size={20} 
-                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                          strokeWidth={2.5}
-                          style={{ position: 'relative', zIndex: 1 }}
-                        />
+                        <span style={{ position: 'relative', zIndex: 1 }}>
+                          <item.icon 
+                            size={20} 
+                            color={isOpaque ? colors.text.onDark : colors.accent.primary}
+                            strokeWidth={2.5}
+                          />
+                        </span>
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>

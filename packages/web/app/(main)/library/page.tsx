@@ -340,12 +340,13 @@ export default function LibraryPage() {
                       opacity: 0.6,
                     }}
                   />
+                  <span style={{ position: 'relative', zIndex: 1 }}>
                   <Sparkles 
                     size={24} 
                     color={colors.text.onDark}
                     strokeWidth={2.5}
-                    style={{ position: 'relative', zIndex: 1 }}
                   />
+                </span>
                 </div>
                 <Typography variant="h3" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
                   Create New

@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
                 variant="primary"
                 size="lg"
                 fullWidth
-                onPress={() => router.push('/login')}
+                onClick={() => router.push('/login')}
                 style={{
                   background: colors.gradients.primary,
                   marginBottom: spacing.md,

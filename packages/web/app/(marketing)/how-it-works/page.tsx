@@ -269,7 +269,9 @@ export default function HowItWorksPage() {
                           opacity: 0.6,
                         }}
                       />
-                      <IconComponent size={32} color={colors.text.onDark} strokeWidth={2.5} style={{ position: 'relative', zIndex: 1 }} />
+                      <span style={{ position: 'relative', zIndex: 1 }}>
+                      <IconComponent size={32} color={colors.text.onDark} strokeWidth={2.5} />
+                    </span>
                     </div>
                     <div style={{ flex: 1 }}>
                       <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
@@ -377,7 +379,9 @@ export default function HowItWorksPage() {
                         opacity: 0.6,
                       }}
                     />
-                    <IconComponent size={24} color={colors.text.onDark} strokeWidth={2.5} style={{ position: 'relative', zIndex: 1 }} />
+                    <span style={{ position: 'relative', zIndex: 1 }}>
+                    <IconComponent size={24} color={colors.text.onDark} strokeWidth={2.5} />
+                  </span>
                   </div>
                   <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
                     {benefit.title}

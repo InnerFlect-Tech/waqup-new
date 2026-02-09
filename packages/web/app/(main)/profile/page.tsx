@@ -132,7 +132,9 @@ export default function ProfilePage() {
                     opacity: 0.6,
                   }}
                 />
-                <User size={40} color={colors.text.onDark} strokeWidth={2.5} style={{ position: 'relative', zIndex: 1 }} />
+                <span style={{ position: 'relative', zIndex: 1 }}>
+                <User size={40} color={colors.text.onDark} strokeWidth={2.5} />
+              </span>
               </div>
               <div style={{ flex: 1 }}>
                 <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
@@ -201,12 +203,13 @@ export default function ProfilePage() {
                             opacity: isOpaque ? 0.5 : 0.3,
                           }}
                         />
-                        <IconComponent 
-                          size={20} 
-                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                          strokeWidth={2.5}
-                          style={{ position: 'relative', zIndex: 1 }}
-                        />
+                        <span style={{ position: 'relative', zIndex: 1 }}>
+                          <IconComponent 
+                            size={20} 
+                            color={isOpaque ? colors.text.onDark : colors.accent.primary}
+                            strokeWidth={2.5}
+                          />
+                        </span>
                       </div>
                       <div style={{ flex: 1 }}>
                         <Typography variant="h4" style={{ color: textColor, marginBottom: spacing.xs }}>

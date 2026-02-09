@@ -114,7 +114,7 @@ export default function ResetPasswordPage() {
                 variant="primary"
                 size="lg"
                 fullWidth
-                onPress={() => router.push('/forgot-password')}
+                onClick={() => router.push('/forgot-password')}
                 style={{
                   background: colors.gradients.primary,
                   marginBottom: spacing.md,

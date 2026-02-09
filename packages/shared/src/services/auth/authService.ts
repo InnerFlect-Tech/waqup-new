@@ -18,7 +18,7 @@ export interface AuthService {
   logout: () => Promise<AuthServiceResult<void>>;
   getCurrentSession: () => Promise<AuthServiceResult<Session>>;
   getCurrentUser: () => Promise<AuthServiceResult<User>>;
-  requestPasswordReset: (data: ForgotPasswordData) => Promise<AuthServiceResult<void>>;
+  requestPasswordReset: (data: ForgotPasswordData, redirectTo?: string) => Promise<AuthServiceResult<void>>;
   resetPassword: (data: ResetPasswordData) => Promise<AuthServiceResult<void>>;
   resendVerificationEmail: (email: string) => Promise<AuthServiceResult<void>>;
   onAuthStateChange: (

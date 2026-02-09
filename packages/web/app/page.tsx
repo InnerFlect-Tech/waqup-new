@@ -360,7 +360,9 @@ export default function LandingPage() {
                         opacity: 0.6,
                       }}
                     />
-                    <IconComponent size={28} color={colors.text.onDark} strokeWidth={2.5} style={{ position: 'relative', zIndex: 1 }} />
+                    <span style={{ position: 'relative', zIndex: 1 }}>
+                    <IconComponent size={28} color={colors.text.onDark} strokeWidth={2.5} />
+                  </span>
                   </div>
                   <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
                     {feature.title}
