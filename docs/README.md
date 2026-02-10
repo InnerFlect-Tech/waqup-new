@@ -24,8 +24,7 @@ docs/
 │   └── 02-browser-optimization-strategy.md  # Chrome-first browser strategy
 │
 └── 04-reference/               # Reference guides
-    ├── 01-context7-usage.md    # How to use Context7
-    └── 02-cursor-rules-guide.md # Cursor rules guide
+    └── 01-showcase-access.md   # Component showcase (Web & Mobile access)
 ```
 
 ---
@@ -42,8 +41,7 @@ docs/
 - **[02 Browser Optimization Strategy](./03-platforms/02-browser-optimization-strategy.md)** - Chrome-first browser strategy
 
 ### 📚 Reference Guides (`04-reference/`)
-- **[01 Context7 Usage](./04-reference/01-context7-usage.md)** - How to use Context7
-- **[02 Cursor Rules Guide](./04-reference/02-cursor-rules-guide.md)** - Cursor rules explained
+- **[01 Showcase Access](./04-reference/01-showcase-access.md)** - Component showcase (Web URL & Mobile deep links)
 
 ### 🔗 Core Product Docs (`01-core/`)
 - See [01-core/README.md](./01-core/README.md) for reference to main product docs
@@ -62,8 +60,7 @@ docs/
    - Browser Optimization: `03-platforms/02-browser-optimization-strategy.md`
 
 3. **For Reference Guides**: 
-   - Context7: `04-reference/01-context7-usage.md`
-   - Cursor Rules: `04-reference/02-cursor-rules-guide.md`
+   - Showcase access: `04-reference/01-showcase-access.md`
 
 4. **For Product Context**: See `01-core/README.md` → `../../docs/internal/`
 

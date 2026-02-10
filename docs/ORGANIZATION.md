@@ -25,8 +25,7 @@ docs/
 │   └── 02-browser-optimization-strategy.md  # Chrome-first browser strategy
 │
 └── 04-reference/               # Reference guides
-    ├── 01-context7-usage.md    # How to use Context7
-    └── 02-cursor-rules-guide.md # Cursor rules guide
+    └── 01-showcase-access.md   # Component showcase (Web & Mobile access)
 ```
 
 ---
@@ -51,9 +50,9 @@ docs/
 **Coherence**: ✅ Separated from mobile-specific docs
 
 ### 04-reference/ - Reference Guides
-**Purpose**: Tools and reference documentation  
-**Content**: Context7 usage, Cursor rules guide  
-**Scope**: Development tools, AI assistance
+**Purpose**: Reference documentation (SSOT)  
+**Content**: Showcase access (Web URL, Mobile deep links)  
+**Scope**: Development and testing reference
 
 ---
 

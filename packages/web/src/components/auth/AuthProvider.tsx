@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores';
+import { getOverrideUserToRestore } from '@/lib/auth-override';
 
 /**
  * Auth Provider Component
@@ -20,6 +21,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     initializeAuth().then((unsub) => {
       unsubscribe = unsub;
+      // If no Supabase session but override is stored, restore override user so pages are visible
+      const overrideUser = getOverrideUserToRestore();
+      if (overrideUser) {
+        useAuthStore.getState().setUser(overrideUser);
+      }
       setIsReady(true);
     });
     

@@ -1,11 +1,14 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Container } from '@/components';
 import { Typography, Button, Card } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 import { AnimatedBackground, ThemeSelector } from '@/components';
+import { useAuthStore } from '@/stores';
+import { clearStoredOverride } from '@/lib/auth-override';
 import Link from 'next/link';
 import { 
   User,
@@ -54,6 +57,7 @@ const MENU_ITEMS: MenuItem[] = [
 export default function ProfilePage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const router = useRouter();
 
   // TODO: Get actual user data from auth context/store
   const user = {
@@ -246,9 +250,10 @@ export default function ProfilePage() {
                 borderColor: colors.error,
                 color: colors.error,
               }}
-              onClick={() => {
-                // TODO: Implement logout logic
-                console.log('Logout clicked');
+              onClick={async () => {
+                clearStoredOverride();
+                await useAuthStore.getState().logout();
+                router.push('/login');
               }}
             >
               <LogOut size={20} color={colors.error} style={{ marginRight: spacing.sm }} />

@@ -11,10 +11,19 @@ build/
 .next/
 *.log
 
-# Environment variables (commit .env.example as template)
+# Environment variables (commit .env.example as template only)
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+.env.test
+packages/*/.env
+packages/*/.env.local
+packages/*/.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
 
 # IDE
 .vscode/

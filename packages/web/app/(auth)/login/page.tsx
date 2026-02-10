@@ -10,6 +10,7 @@ import { AnimatedBackground, Logo } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
+import { applyOverrideLogin } from '@/lib/auth-override';
 import Link from 'next/link';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import type { LoginFormData } from '@waqup/shared/schemas';
@@ -45,11 +46,32 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
     const result = await login(data.email, data.password);
-    
+
     if (result.success) {
       router.push('/home');
+      return;
     }
-    // Error is already set in the store
+
+    // Try override login (env-configured admin/dev credentials)
+    try {
+      const res = await fetch('/api/auth/override', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
+      const json = res.ok ? await res.json() : null;
+      if (json?.ok) {
+        const overrideUser = applyOverrideLogin(data.email);
+        useAuthStore.getState().setUser(overrideUser);
+        useAuthStore.getState().setSession(null);
+        useAuthStore.getState().setError(null);
+        router.push('/home');
+        return;
+      }
+    } catch {
+      // fall through to existing error
+    }
+    // Error is already set in the store from Supabase login
   };
 
   return (
