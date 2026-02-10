@@ -20,7 +20,7 @@ export function createOverrideUser(email: string): User {
     aud: 'override',
     role: 'override',
     email_confirmed_at: new Date().toISOString(),
-    phone_confirmed_at: null,
+    phone_confirmed_at: undefined,
     confirmed_at: new Date().toISOString(),
     phone: undefined,
     last_sign_in_at: new Date().toISOString(),
