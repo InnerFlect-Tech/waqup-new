@@ -51,13 +51,16 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer linking={linking}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Showcase" component={ShowcaseScreen} />
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName={isAuthenticated ? 'Main' : 'Auth'}
+      >
         {isAuthenticated ? (
           <Stack.Screen name="Main" component={MainNavigator} />
         ) : (
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
+        <Stack.Screen name="Showcase" component={ShowcaseScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

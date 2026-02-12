@@ -2,16 +2,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSupabaseClient } from '@waqup/shared/services';
 import Constants from 'expo-constants';
 
-const supabaseUrl = 
-  Constants.expoConfig?.extra?.supabaseUrl || 
-  process.env.EXPO_PUBLIC_SUPABASE_URL;
+// process.env is inlined by Metro; Constants.extra from app.config.js as fallback
+const supabaseUrl =
+  process.env.EXPO_PUBLIC_SUPABASE_URL ||
+  Constants.expoConfig?.extra?.supabaseUrl ||
+  '';
 
-const supabaseKey = 
-  Constants.expoConfig?.extra?.supabasePublishableKey || 
-  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+const supabaseKey =
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  Constants.expoConfig?.extra?.supabasePublishableKey ||
+  '';
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
+  throw new Error(
+    'Missing Supabase env. Set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY in packages/mobile/.env'
+  );
 }
 
 export const supabase = createSupabaseClient({

@@ -19,6 +19,7 @@
     "dev:mobile": "npm run start --workspace=packages/mobile",
     "dev:web": "npm run dev --workspace=packages/web",
     "dev:all": "npm run dev:mobile & npm run dev:web",
+    "dev:all:clean": "rm -f packages/web/.next/dev/lock 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:8081 2>/dev/null|xargs kill -9) || true; npm run dev:all",
     "dev:all:win": "npm run dev:mobile & npm run dev:web",
     "build:shared": "npm run build --workspace=packages/shared",
     "build:mobile": "npm run build --workspace=packages/mobile",
