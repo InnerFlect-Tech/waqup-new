@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Container } from '@/components';
 import {
   Typography,
   Button,
@@ -13,7 +12,7 @@ import {
 } from '@/components';
 import { spacing, typography, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, ThemeSelector, SpeakingAnimation } from '@/components';
+import { PageShell, ThemeSelector, SpeakingAnimation, AppHeader } from '@/components';
 import Link from 'next/link';
 
 export default function ShowcasePage() {
@@ -25,30 +24,10 @@ export default function ShowcasePage() {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   return (
-    <Container>
+    <PageShell intensity="medium" bare>
       <ThemeSelector />
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      <div
-        style={{
-          minHeight: '100vh',
-          padding: spacing.xl,
-          background: colors.gradients.background,
-          position: 'relative',
-        }}
-      >
-        {/* Mystical Radial Gradient Overlay */}
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: colors.gradients.mystical,
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <AppHeader variant="public" />
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl, textAlign: 'center' }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -381,8 +360,7 @@ export default function ShowcasePage() {
             </Typography>
           </div>
         </div>
-      </div>
-    </Container>
+    </PageShell>
   );
 }
 

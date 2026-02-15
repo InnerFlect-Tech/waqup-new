@@ -6,6 +6,7 @@
 export * from './colors';
 export * from './typography';
 export * from './spacing';
+export * from './design-tokens';
 export * from './borders';
 export * from './shadows';
 export * from './glass';

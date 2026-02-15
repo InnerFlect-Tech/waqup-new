@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, Logo } from '@/components';
+import { PageShell } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
@@ -76,58 +76,8 @@ export default function PricingPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      {/* Mystical Radial Gradient Overlay */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: colors.gradients.mystical,
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
-
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        {/* Navigation */}
-        <nav
-          style={{
-            padding: `${spacing.lg} ${spacing.xl}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            maxWidth: '1400px',
-            margin: '0 auto',
-          }}
-        >
-          <Logo size="md" />
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg }}>
-            <Link href="/how-it-works" style={{ textDecoration: 'none' }}>
-              <Typography variant="body" style={{ color: colors.text.secondary, fontWeight: 400 }}>
-                How It Works
-              </Typography>
-            </Link>
-            <Link href="/pricing" style={{ textDecoration: 'none' }}>
-              <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 600 }}>
-                Pricing
-              </Typography>
-            </Link>
-            <Link href="/login" style={{ textDecoration: 'none' }}>
-              <Button variant="outline" size="md" style={{ borderColor: colors.glass.border }}>
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/signup" style={{ textDecoration: 'none' }}>
-              <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        </nav>
-
-        {/* Content */}
+    <PageShell intensity="medium" bare>
+      {/* Content */}
         <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
@@ -486,7 +436,6 @@ export default function PricingPage() {
             </Typography>
           </div>
         </div>
-      </div>
-    </div>
+    </PageShell>
   );
 }

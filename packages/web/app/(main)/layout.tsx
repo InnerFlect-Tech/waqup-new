@@ -1,6 +1,5 @@
 import React from 'react';
-import { ThemeProvider } from '@/theme';
-import { ThemeSelector } from '@/components';
+import { ThemeSelector, AppHeader } from '@/components';
 
 export default function MainLayout({
   children,
@@ -8,9 +7,10 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider defaultThemeName="mystical-purple">
+    <>
       <ThemeSelector />
+      <AppHeader variant="authenticated" />
       {children}
-    </ThemeProvider>
+    </>
   );
 }

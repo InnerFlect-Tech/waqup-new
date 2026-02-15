@@ -40,12 +40,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Handle protected route redirects
     if (!isReady || !isInitialized) return;
 
-    const publicRoutes = ['/', '/login', '/signup', '/forgot-password', '/reset-password', '/how-it-works', '/pricing'];
-    const isPublicRoute = publicRoutes.includes(pathname) || pathname.startsWith('/showcase');
-    const isProtectedRoute = pathname.startsWith('/home') || 
-                            pathname.startsWith('/library') || 
-                            pathname.startsWith('/create') || 
-                            pathname.startsWith('/profile');
+    const publicRoutes = [
+      '/',
+      '/login',
+      '/signup',
+      '/forgot-password',
+      '/reset-password',
+      '/confirm-email',
+      '/auth/beta-signup',
+      '/how-it-works',
+      '/pricing',
+      '/pages',
+      '/sitemap',
+    ];
+    const isPublicRoute =
+      publicRoutes.includes(pathname) ||
+      pathname.startsWith('/showcase') ||
+      pathname.startsWith('/onboarding');
+    const isProtectedRoute =
+      pathname.startsWith('/home') ||
+      pathname.startsWith('/library') ||
+      pathname.startsWith('/create') ||
+      pathname.startsWith('/profile') ||
+      pathname.startsWith('/sanctuary');
 
     if (isProtectedRoute && !user) {
       // Redirect to login if trying to access protected route without auth

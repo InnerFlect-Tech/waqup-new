@@ -1,12 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Container } from '@/components';
 import { Typography, Button, Card } from '@/components';
 import { Icon } from '@/components/ui/Icon';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, ThemeSelector } from '@/components';
+import { PageShell } from '@/components';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -47,13 +46,13 @@ const QUICK_ACTIONS: QuickAction[] = [
     name: 'Set Reminder',
     description: 'Schedule your practice',
     icon: Bell,
-    href: '/reminders',
+    href: '/sanctuary/reminders',
   },
   {
     name: 'Learn & Transform',
     description: 'Understand the science of transformation',
     icon: GraduationCap,
-    href: '/learn',
+    href: '/sanctuary/learn',
   },
 ];
 
@@ -69,20 +68,20 @@ const MENU_ITEMS: MenuItem[] = [
     name: 'Progress',
     description: 'Track your transformation journey',
     icon: TrendingUp,
-    href: '/progress',
+    href: '/sanctuary/progress',
   },
   {
     name: 'Credits',
     description: 'Manage your credits',
     icon: CreditCard,
-    href: '/credits',
+    href: '/sanctuary/credits',
     count: 50,
   },
   {
     name: 'Settings',
     description: 'Customize your experience',
     icon: Settings,
-    href: '/settings',
+    href: '/sanctuary/settings',
   },
 ];
 
@@ -91,30 +90,8 @@ export default function HomePage() {
   const colors = theme.colors;
 
   return (
-    <Container>
-      <ThemeSelector />
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      <div
-        style={{
-          minHeight: '100vh',
-          padding: spacing.xl,
-          background: colors.gradients.background,
-          position: 'relative',
-        }}
-      >
-        {/* Mystical Radial Gradient Overlay */}
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: colors.gradients.mystical,
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+    <PageShell intensity="medium">
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -332,7 +309,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </div>
-    </Container>
+    </PageShell>
   );
 }

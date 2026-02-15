@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { Container, Typography, Button, Input } from '@/components';
+import { Typography, Button, Input } from '@/components';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, Logo } from '@/components';
+import { Logo, PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { signupSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
@@ -65,33 +65,9 @@ export default function SignupPage() {
 
   if (signupSuccess) {
     return (
-      <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-        <AnimatedBackground intensity="medium" color="primary" />
-        
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: colors.gradients.mystical,
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: spacing.xl }}>
-          <div style={{ width: '100%', maxWidth: '480px' }}>
-            <div
-              style={{
-                padding: spacing.xxxl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.opaque,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
-                textAlign: 'center',
-              }}
-            >
+      <PageShell intensity="medium" maxWidth={480} centered>
+        <div style={{ width: '100%' }}>
+          <GlassCard variant="auth" style={{ textAlign: 'center' }}>
               <CheckCircle2 size={64} color={colors.success} style={{ margin: '0 auto', marginBottom: spacing.lg }} />
               <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
                 Check Your Email
@@ -124,52 +100,27 @@ export default function SignupPage() {
               >
                 Back to Login
               </Link>
-            </div>
-          </div>
+          </GlassCard>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      {/* Mystical Radial Gradient Overlay */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: colors.gradients.mystical,
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
+    <PageShell intensity="medium" maxWidth={480} centered>
+      <div style={{ width: '100%' }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            <Logo size="lg" showIcon={false} href={undefined} />
+          </Link>
+          <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '18px', marginTop: spacing.md }}>
+            Start your transformation journey today
+          </Typography>
+        </div>
 
-      <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: spacing.xl }}>
-        <div style={{ width: '100%', maxWidth: '480px' }}>
-          {/* Logo */}
-          <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
-            <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              <Logo size="lg" showIcon={false} href={undefined} />
-            </Link>
-            <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '18px', marginTop: spacing.md }}>
-              Start your transformation journey today
-            </Typography>
-          </div>
-
-          {/* Signup Form Card */}
-          <div
-            style={{
-              padding: spacing.xxxl,
-              borderRadius: borderRadius.xl,
-              background: colors.glass.opaque,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
-            }}
-          >
+        {/* Signup Form Card */}
+        <GlassCard variant="auth">
             <form onSubmit={handleSubmit(onSubmit)}>
               <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }}>
                 Create Account
@@ -375,27 +326,26 @@ export default function SignupPage() {
                 </Typography>
               </div>
             </form>
-          </div>
+        </GlassCard>
 
-          {/* Back to Home */}
-          <div style={{ textAlign: 'center', marginTop: spacing.xl }}>
-            <Link
-              href="/"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: spacing.sm,
-                color: colors.text.secondary,
-                textDecoration: 'none',
-                fontSize: '14px',
-              }}
-            >
-              <ArrowRight size={16} color={colors.text.secondary} style={{ transform: 'rotate(180deg)' }} />
-              Back to home
-            </Link>
-          </div>
+        {/* Back to Home */}
+        <div style={{ textAlign: 'center', marginTop: spacing.xl }}>
+          <Link
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: spacing.sm,
+              color: colors.text.secondary,
+              textDecoration: 'none',
+              fontSize: '14px',
+            }}
+          >
+            <ArrowRight size={16} color={colors.text.secondary} style={{ transform: 'rotate(180deg)' }} />
+            Back to home
+          </Link>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

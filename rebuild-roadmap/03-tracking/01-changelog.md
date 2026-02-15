@@ -353,6 +353,27 @@
 
 ---
 
+## Pages & Routes Complete (2026-02-13)
+
+### Web App - Full Route Structure
+- **Status**: ✅ Complete
+- **Completed**: 2026-02-13
+- **Notes**:
+  - Created `/pages` index and `/sitemap` (HTML + XML) for all routes
+  - Added Auth: `/confirm-email`, `/auth/beta-signup`
+  - Added Onboarding: `/onboarding`, `/onboarding/profile`, `/onboarding/preferences`, `/onboarding/guide`
+  - Added Sanctuary: `/sanctuary`, settings, credits, progress, referral, reminders, learn
+  - Added Affirmations: list, create (steps), record
+  - Added Rituals: list, [id], [id]/edit, create, recordings
+  - Added Meditations: create (for create page link)
+  - Removed duplicate ThemeSelector from (main) pages; removed redundant ThemeProvider from route group layouts
+  - Updated home and profile links to sanctuary routes
+  - Updated AuthProvider, proxy, navigation types with new routes
+  - Created shared PlaceholderPage component for new pages
+- **Updated**: 2026-02-13
+
+---
+
 ## How to Update
 
 When completing a step:
@@ -368,7 +389,7 @@ When re-running a step:
 
 ---
 
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-13
 
 ---
 

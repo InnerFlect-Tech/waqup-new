@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@stripe/stripe-js": "^4.10.0",
+    "@supabase/ssr": "^0.5.2",
     "@waqup/shared": "*",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.563.0",

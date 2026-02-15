@@ -208,6 +208,13 @@ waqup-new/
 └── package.json         # Root workspace config
 ```
 
+### Web design system (packages/web)
+
+- **Shared layout**: `AppHeader` (public / authenticated / simplified), `PageShell` (background + gradient + content container), `GlassCard` (auth/content variants)
+- **Design tokens**: `packages/web/src/theme/design-tokens.ts` (CONTENT_MAX_WIDTH, spacing, glass card styles)
+- **Layouts**: Auth (no header), Main/Sanctuary (authenticated header), Marketing (public header), Onboarding (simplified header)
+- **Reference**: [docs/04-reference/03-web-app-structure.md](./docs/04-reference/03-web-app-structure.md)
+
 ---
 
 ## 🏃 Development
@@ -250,6 +257,7 @@ npm run dev:all
 - ✅ Shared package set up
 - ✅ Documentation complete
 - ✅ Cross-platform compatible
+- ✅ Web design consistency: AppHeader, PageShell, GlassCard, design tokens; all pages aligned
 - ⏳ Ready for Phase 1 development
 
 ---
@@ -262,5 +270,5 @@ This project is proprietary and confidential. All rights reserved.
 
 ---
 
-**Last Updated**: February 7, 2026  
+**Last Updated**: February 15, 2026  
 **Repository**: [https://github.com/InnerFlect-Tech/waqup-new](https://github.com/InnerFlect-Tech/waqup-new)

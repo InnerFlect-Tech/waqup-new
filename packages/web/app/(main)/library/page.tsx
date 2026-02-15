@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Container } from '@/components';
 import { Typography, Button, Card, Badge } from '@/components';
 import { Icon } from '@/components/ui/Icon';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, ThemeSelector } from '@/components';
+import { PageShell } from '@/components';
 import Link from 'next/link';
 import { Music, Sparkles, Brain, Library as LibraryIcon } from 'lucide-react';
 
@@ -91,29 +90,8 @@ export default function LibraryPage() {
   };
 
   return (
-    <Container>
-      <ThemeSelector />
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      <div
-        style={{
-          minHeight: '100vh',
-          padding: spacing.xl,
-          background: colors.gradients.background,
-        }}
-      >
-        {/* Mystical Radial Gradient Overlay */}
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: colors.gradients.mystical,
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+    <PageShell intensity="medium">
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div
             style={{
@@ -504,7 +482,6 @@ export default function LibraryPage() {
             opacity: 1;
           }
         `}</style>
-      </div>
-    </Container>
+    </PageShell>
   );
 }

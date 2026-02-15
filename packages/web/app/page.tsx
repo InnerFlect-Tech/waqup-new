@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Container, Typography, Button } from '@/components';
+import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, Logo, ThemeSelector } from '@/components';
+import { AppHeader, PageShell, ThemeSelector } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
 import {
@@ -74,59 +74,11 @@ export default function LandingPage() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+    <PageShell intensity="high" bare>
       <ThemeSelector />
-      <AnimatedBackground intensity="high" color="primary" />
-      
-      {/* Mystical Radial Gradient Overlay */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: colors.gradients.mystical,
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
+      <AppHeader variant="public" />
 
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        {/* Navigation */}
-        <nav
-          style={{
-            padding: `${spacing.lg} ${spacing.xl}`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            maxWidth: '1400px',
-            margin: '0 auto',
-          }}
-        >
-          <Logo size="md" />
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg }}>
-            <Link href="/how-it-works" style={{ textDecoration: 'none' }}>
-              <Typography variant="body" style={{ color: colors.text.secondary, fontWeight: 400 }}>
-                How It Works
-              </Typography>
-            </Link>
-            <Link href="/pricing" style={{ textDecoration: 'none' }}>
-              <Typography variant="body" style={{ color: colors.text.secondary, fontWeight: 400 }}>
-                Pricing
-              </Typography>
-            </Link>
-            <Link href="/login" style={{ textDecoration: 'none' }}>
-              <Button variant="outline" size="md" style={{ borderColor: colors.glass.border }}>
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/signup" style={{ textDecoration: 'none' }}>
-              <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        </nav>
-
-        {/* Hero Section */}
+      {/* Hero Section */}
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
@@ -477,7 +429,6 @@ export default function LandingPage() {
             </Typography>
           </div>
         </footer>
-      </div>
 
       {/* Pulse Animation */}
       <style jsx>{`
@@ -490,6 +441,6 @@ export default function LandingPage() {
           }
         }
       `}</style>
-    </div>
+    </PageShell>
   );
 }

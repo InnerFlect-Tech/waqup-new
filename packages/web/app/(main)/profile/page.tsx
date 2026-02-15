@@ -2,11 +2,10 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Container } from '@/components';
 import { Typography, Button, Card } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, ThemeSelector } from '@/components';
+import { PageShell } from '@/components';
 import { useAuthStore } from '@/stores';
 import { clearStoredOverride } from '@/lib/auth-override';
 import Link from 'next/link';
@@ -32,25 +31,25 @@ const MENU_ITEMS: MenuItem[] = [
     name: 'Preferences',
     description: 'Customize your experience',
     icon: Settings,
-    href: '/settings/preferences',
+    href: '/sanctuary/settings',
   },
   {
     name: 'Notifications',
     description: 'Manage your notification settings',
     icon: Bell,
-    href: '/settings/notifications',
+    href: '/sanctuary/reminders',
   },
   {
     name: 'Credits',
     description: 'View and manage your credits',
     icon: CreditCard,
-    href: '/credits',
+    href: '/sanctuary/credits',
   },
   {
     name: 'Privacy & Security',
     description: 'Manage your privacy settings',
     icon: Shield,
-    href: '/settings/privacy',
+    href: '/sanctuary/settings',
   },
 ];
 
@@ -66,30 +65,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <Container>
-      <ThemeSelector />
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      <div
-        style={{
-          minHeight: '100vh',
-          padding: spacing.xl,
-          background: colors.gradients.background,
-          position: 'relative',
-        }}
-      >
-        {/* Mystical Radial Gradient Overlay */}
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: colors.gradients.mystical,
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+    <PageShell intensity="medium">
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -276,7 +253,6 @@ export default function ProfilePage() {
             </Link>
           </div>
         </div>
-      </div>
-    </Container>
+    </PageShell>
   );
 }

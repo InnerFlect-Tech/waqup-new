@@ -1,11 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Container } from '@/components';
 import { Typography, Button, Card } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
-import { AnimatedBackground, ThemeSelector } from '@/components';
+import { PageShell } from '@/components';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -27,21 +26,21 @@ const CONTENT_TYPES: ContentType[] = [
     name: 'Create Affirmation',
     description: 'Powerful statements to rewire your subconscious mind',
     icon: Sparkles,
-    href: '/affirmations/create',
+    href: '/sanctuary/affirmations/create',
     color: 'primary',
   },
   {
     name: 'Create Meditation',
     description: 'Guided meditations for deep relaxation and transformation',
     icon: Brain,
-    href: '/meditations/create',
+    href: '/sanctuary/meditations/create',
     color: 'secondary',
   },
   {
     name: 'Create Ritual',
     description: 'Personalized rituals combining voice, frequencies, and intention',
     icon: Music,
-    href: '/rituals/create',
+    href: '/sanctuary/rituals/create',
     color: 'tertiary',
   },
 ];
@@ -51,30 +50,8 @@ export default function CreatePage() {
   const colors = theme.colors;
 
   return (
-    <Container>
-      <ThemeSelector />
-      <AnimatedBackground intensity="medium" color="primary" />
-      
-      <div
-        style={{
-          minHeight: '100vh',
-          padding: spacing.xl,
-          background: colors.gradients.background,
-          position: 'relative',
-        }}
-      >
-        {/* Mystical Radial Gradient Overlay */}
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: colors.gradients.mystical,
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+    <PageShell intensity="medium">
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -188,7 +165,6 @@ export default function CreatePage() {
             </Link>
           </div>
         </div>
-      </div>
-    </Container>
+    </PageShell>
   );
 }

@@ -12,16 +12,33 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/login', '/signup', '/forgot-password', '/reset-password', '/how-it-works', '/pricing'];
+  const publicRoutes = [
+    '/',
+    '/login',
+    '/signup',
+    '/forgot-password',
+    '/reset-password',
+    '/confirm-email',
+    '/auth/beta-signup',
+    '/how-it-works',
+    '/pricing',
+    '/pages',
+    '/sitemap',
+  ];
 
   // Check if route is public
-  const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
+  const isPublicRoute =
+    publicRoutes.some((route) => pathname === route || pathname.startsWith(route + '/')) ||
+    pathname.startsWith('/showcase') ||
+    pathname.startsWith('/onboarding');
 
   // Protected routes (main app routes)
-  const isProtectedRoute = pathname.startsWith('/home') ||
-                           pathname.startsWith('/library') ||
-                           pathname.startsWith('/create') ||
-                           pathname.startsWith('/profile');
+  const isProtectedRoute =
+    pathname.startsWith('/home') ||
+    pathname.startsWith('/library') ||
+    pathname.startsWith('/create') ||
+    pathname.startsWith('/profile') ||
+    pathname.startsWith('/sanctuary');
 
   // For protected routes, we'll handle redirect in the layout component
   // since we need client-side auth state check
