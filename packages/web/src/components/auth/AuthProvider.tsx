@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/how-it-works',
       '/pricing',
       '/pages',
-      '/sitemap',
+      '/sitemap-view',
     ];
     const isPublicRoute =
       publicRoutes.includes(pathname) ||

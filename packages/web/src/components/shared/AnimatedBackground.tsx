@@ -110,19 +110,12 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
       />
 
       {/* CSS Animations */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px) translateX(0px) scale(0.8);
-            opacity: 0;
-          }
-          50% {
-            transform: translateY(-20px) translateX(10px) scale(1);
-            opacity: 0.1;
-          }
+          0%, 100% { transform: translateY(0px) translateX(0px) scale(0.8); opacity: 0; }
+          50% { transform: translateY(-20px) translateX(10px) scale(1); opacity: 0.1; }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 };

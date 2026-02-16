@@ -178,257 +178,55 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
       </div>
 
       {/* CSS Animations */}
-      <style jsx>{`
-        /* Page Container - Clean transitions */
+      <style dangerouslySetInnerHTML={{ __html: `
         .page {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transform: translateY(10px);
+          position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0; transform: translateY(10px);
           transition: opacity 0.6s ease, transform 0.6s ease;
           pointer-events: none;
         }
-
-        .page.active {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* Page 1: Minimal Floating Orbs */
-        .minimal-orb-container {
-          position: relative;
-          width: 100%;
-          height: 100%;
-        }
-
+        .page.active { opacity: 1; transform: translateY(0); }
+        .minimal-orb-container { position: relative; width: 100%; height: 100%; }
         .minimal-orb {
-          position: absolute;
-          border-radius: 50%;
+          position: absolute; border-radius: 50%;
           background: ${colors.glass.light};
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
           border: 1px solid ${colors.glass.border};
           box-shadow: 0 4px 16px ${colors.mystical.glow}15;
         }
-
-        .minimal-orb-1 {
-          width: 120px;
-          height: 120px;
-          top: 25%;
-          left: 20%;
-          animation: minimalFloat-1 8s ease-in-out infinite;
-        }
-
-        .minimal-orb-2 {
-          width: 100px;
-          height: 100px;
-          top: 50%;
-          right: 25%;
-          animation: minimalFloat-2 10s ease-in-out infinite;
-        }
-
-        .minimal-orb-3 {
-          width: 80px;
-          height: 80px;
-          bottom: 25%;
-          left: 50%;
-          animation: minimalFloat-3 12s ease-in-out infinite;
-        }
-
-        @keyframes minimalFloat-1 {
-          0%, 100% {
-            transform: translate(0, 0);
-            opacity: 0.6;
-          }
-          50% {
-            transform: translate(20px, -20px);
-            opacity: 0.8;
-          }
-        }
-
-        @keyframes minimalFloat-2 {
-          0%, 100% {
-            transform: translate(0, 0);
-            opacity: 0.5;
-          }
-          50% {
-            transform: translate(-25px, 25px);
-            opacity: 0.7;
-          }
-        }
-
-        @keyframes minimalFloat-3 {
-          0%, 100% {
-            transform: translate(0, 0);
-            opacity: 0.6;
-          }
-          50% {
-            transform: translate(15px, -15px);
-            opacity: 0.8;
-          }
-        }
-
-        /* Page 2: Clean Frequency Bars */
-        .clean-frequency-container {
-          position: relative;
-          width: 80%;
-          max-width: 400px;
-          height: 200px;
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          gap: 6px;
-        }
-
+        .minimal-orb-1 { width: 120px; height: 120px; top: 25%; left: 20%; animation: minimalFloat-1 8s ease-in-out infinite; }
+        .minimal-orb-2 { width: 100px; height: 100px; top: 50%; right: 25%; animation: minimalFloat-2 10s ease-in-out infinite; }
+        .minimal-orb-3 { width: 80px; height: 80px; bottom: 25%; left: 50%; animation: minimalFloat-3 12s ease-in-out infinite; }
+        @keyframes minimalFloat-1 { 0%, 100% { transform: translate(0, 0); opacity: 0.6; } 50% { transform: translate(20px, -20px); opacity: 0.8; } }
+        @keyframes minimalFloat-2 { 0%, 100% { transform: translate(0, 0); opacity: 0.5; } 50% { transform: translate(-25px, 25px); opacity: 0.7; } }
+        @keyframes minimalFloat-3 { 0%, 100% { transform: translate(0, 0); opacity: 0.6; } 50% { transform: translate(15px, -15px); opacity: 0.8; } }
+        .clean-frequency-container { position: relative; width: 80%; max-width: 400px; height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
         .clean-frequency-bar {
-          flex: 1;
-          max-width: 24px;
-          height: var(--bar-height);
-          min-height: 20px;
-          background: ${colors.gradients.primary};
-          border-radius: 4px 4px 0 0;
-          opacity: 0.7;
-          animation: cleanBarPulse 1.5s ease-in-out infinite;
-          transform-origin: bottom;
+          flex: 1; max-width: 24px; height: var(--bar-height); min-height: 20px;
+          background: ${colors.gradients.primary}; border-radius: 4px 4px 0 0;
+          opacity: 0.7; animation: cleanBarPulse 1.5s ease-in-out infinite; transform-origin: bottom;
         }
-
-        @keyframes cleanBarPulse {
-          0%, 100% {
-            transform: scaleY(1);
-            opacity: 0.7;
-          }
-          50% {
-            transform: scaleY(1.1);
-            opacity: 0.9;
-          }
-        }
-
-        /* Page 3: Subtle Wave Pattern */
-        .subtle-wave-container {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
+        @keyframes cleanBarPulse { 0%, 100% { transform: scaleY(1); opacity: 0.7; } 50% { transform: scaleY(1.1); opacity: 0.9; } }
+        .subtle-wave-container { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .subtle-wave {
-          position: absolute;
-          width: 300px;
-          height: 300px;
-          border-radius: 50%;
-          border: 1px solid ${colors.glass.border};
-          background: ${colors.glass.light}40;
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+          position: absolute; width: 300px; height: 300px; border-radius: 50%;
+          border: 1px solid ${colors.glass.border}; background: ${colors.glass.light}40;
+          backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-
-        .subtle-wave-1 {
-          animation: subtleWave-1 6s ease-in-out infinite;
-        }
-
-        .subtle-wave-2 {
-          animation: subtleWave-2 8s ease-in-out infinite 1s;
-        }
-
-        .subtle-wave-3 {
-          animation: subtleWave-3 10s ease-in-out infinite 2s;
-        }
-
-        @keyframes subtleWave-1 {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.3;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 0.5;
-          }
-        }
-
-        @keyframes subtleWave-2 {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.2;
-          }
-          50% {
-            transform: scale(1.15);
-            opacity: 0.4;
-          }
-        }
-
-        @keyframes subtleWave-3 {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.25;
-          }
-          50% {
-            transform: scale(1.2);
-            opacity: 0.45;
-          }
-        }
-
-        /* Page 4: Minimal Rotating Rings */
-        .minimal-ring-container {
-          position: relative;
-          width: 200px;
-          height: 200px;
-        }
-
-        .minimal-ring {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          border-radius: 50%;
-          border: 1.5px solid ${colors.glass.border};
-        }
-
-        .minimal-ring-1 {
-          width: 120px;
-          height: 120px;
-          border-top-color: ${colors.accent.primary};
-          border-right-color: ${colors.accent.secondary};
-          border-bottom-color: transparent;
-          border-left-color: transparent;
-          animation: minimalRotate-1 8s linear infinite;
-        }
-
-        .minimal-ring-2 {
-          width: 160px;
-          height: 160px;
-          border-top-color: ${colors.accent.secondary};
-          border-right-color: ${colors.accent.primary};
-          border-bottom-color: transparent;
-          border-left-color: transparent;
-          animation: minimalRotate-2 12s linear infinite reverse;
-        }
-
-        @keyframes minimalRotate-1 {
-          from {
-            transform: translate(-50%, -50%) rotate(0deg);
-          }
-          to {
-            transform: translate(-50%, -50%) rotate(360deg);
-          }
-        }
-
-        @keyframes minimalRotate-2 {
-          from {
-            transform: translate(-50%, -50%) rotate(360deg);
-          }
-          to {
-            transform: translate(-50%, -50%) rotate(0deg);
-          }
-        }
-      `}</style>
+        .subtle-wave-1 { animation: subtleWave-1 6s ease-in-out infinite; }
+        .subtle-wave-2 { animation: subtleWave-2 8s ease-in-out infinite 1s; }
+        .subtle-wave-3 { animation: subtleWave-3 10s ease-in-out infinite 2s; }
+        @keyframes subtleWave-1 { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.1); opacity: 0.5; } }
+        @keyframes subtleWave-2 { 0%, 100% { transform: scale(1); opacity: 0.2; } 50% { transform: scale(1.15); opacity: 0.4; } }
+        @keyframes subtleWave-3 { 0%, 100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(1.2); opacity: 0.45; } }
+        .minimal-ring-container { position: relative; width: 200px; height: 200px; }
+        .minimal-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 1.5px solid ${colors.glass.border}; }
+        .minimal-ring-1 { width: 120px; height: 120px; border-top-color: ${colors.accent.primary}; border-right-color: ${colors.accent.secondary}; border-bottom-color: transparent; border-left-color: transparent; animation: minimalRotate-1 8s linear infinite; }
+        .minimal-ring-2 { width: 160px; height: 160px; border-top-color: ${colors.accent.secondary}; border-right-color: ${colors.accent.primary}; border-bottom-color: transparent; border-left-color: transparent; animation: minimalRotate-2 12s linear infinite reverse; }
+        @keyframes minimalRotate-1 { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes minimalRotate-2 { from { transform: translate(-50%, -50%) rotate(360deg); } to { transform: translate(-50%, -50%) rotate(0deg); } }
+      ` }} />
     </div>
   );
 };

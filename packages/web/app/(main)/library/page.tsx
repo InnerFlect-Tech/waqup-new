@@ -433,7 +433,7 @@ export default function LibraryPage() {
                     transition: 'opacity 0.3s ease',
                     pointerEvents: 'none',
                   }}
-                  className="hover-overlay"
+                  className="library-hover-overlay"
                 >
                   <Button variant="primary" size="sm" style={{ background: colors.gradients.primary }}>
                     Play Now
@@ -474,14 +474,10 @@ export default function LibraryPage() {
         </div>
 
         {/* CSS for hover effect */}
-        <style jsx>{`
-          .hover-overlay {
-            pointer-events: none;
-          }
-          [class*='Card']:hover .hover-overlay {
-            opacity: 1;
-          }
-        `}</style>
+        <style dangerouslySetInnerHTML={{ __html: `
+          .library-hover-overlay { pointer-events: none; }
+          [class*='Card']:hover .library-hover-overlay { opacity: 1; }
+        ` }} />
     </PageShell>
   );
 }

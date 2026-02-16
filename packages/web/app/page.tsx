@@ -431,16 +431,12 @@ export default function LandingPage() {
         </footer>
 
       {/* Pulse Animation */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
         }
-      `}</style>
+      ` }} />
     </PageShell>
   );
 }

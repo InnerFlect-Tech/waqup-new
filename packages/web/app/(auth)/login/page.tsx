@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Typography, Button, Input, Loading } from '@/components';
 import { useTheme } from '@/theme';
-import { Logo, PageShell, GlassCard } from '@/components';
+import { Logo, PageShell, GlassCard, TestLoginButton } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
@@ -337,6 +337,11 @@ export default function LoginPage() {
               </div>
             </form>
         </GlassCard>
+
+        {/* Test login (no DB) - only when NEXT_PUBLIC_ENABLE_TEST_LOGIN=true */}
+        <div style={{ textAlign: 'center', marginTop: spacing.lg }}>
+          <TestLoginButton />
+        </div>
 
         {/* Back to Home */}
         <div style={{ textAlign: 'center', marginTop: spacing.xl }}>

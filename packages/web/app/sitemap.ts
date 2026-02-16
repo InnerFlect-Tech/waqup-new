@@ -34,7 +34,7 @@ const STATIC_ROUTES = [
   '/sanctuary/meditations/create',
   '/showcase',
   '/pages',
-  '/sitemap',
+  '/sitemap-view',
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

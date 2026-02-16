@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Logo, Typography, Button } from '@/components';
+import { Logo, Typography, Button, TestLoginButton } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing } from '@/theme';
 import { useAuthStore } from '@/stores';
@@ -79,6 +79,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ variant: variantOverride }
           <Link href="/profile" style={linkStyle('/profile')}>
             <Typography variant="body">Profile</Typography>
           </Link>
+          {user?.id?.startsWith?.('override-') && <TestLoginButton />}
           <button
             onClick={() => logout()}
             style={{

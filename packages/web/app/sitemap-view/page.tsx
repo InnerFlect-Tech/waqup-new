@@ -38,7 +38,7 @@ const SITEMAP_ROUTES = [
   { path: '/sanctuary/rituals/recordings', section: 'Rituals' },
   { path: '/showcase', section: 'Utility' },
   { path: '/pages', section: 'Utility' },
-  { path: '/sitemap', section: 'Utility' },
+  { path: '/sitemap-view', section: 'Utility' },
 ];
 
 export default function SitemapPage() {
