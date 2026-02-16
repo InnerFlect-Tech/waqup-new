@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Typography, Badge } from '@/components';
-import { useTheme } from '@/theme';
+import { useTheme, type Theme } from '@/theme';
 import { PageShell, ThemeSelector, AppHeader } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
@@ -21,7 +21,8 @@ interface RouteGroup {
   routes: RouteEntry[];
 }
 
-const ROUTE_GROUPS: RouteGroup[] = [
+// --- Without auth (public): AuthProvider allows access when not logged in ---
+const WITHOUT_AUTH: RouteGroup[] = [
   {
     title: 'Landing & Marketing',
     routes: [
@@ -51,9 +52,21 @@ const ROUTE_GROUPS: RouteGroup[] = [
     ],
   },
   {
-    title: 'Main App',
+    title: 'Utility (public by exception)',
     routes: [
-      { path: '/home', description: 'Dashboard', status: 'exists', note: 'Clarify relationship with /sanctuary (roadmap: "Home (Sanctuary)")' },
+      { path: '/showcase', description: 'Design system & UI components', status: 'exists' },
+      { path: '/pages', description: 'This index', status: 'exists' },
+      { path: '/sitemap-view', description: 'Sitemap', status: 'exists' },
+    ],
+  },
+];
+
+// --- With auth (protected): AuthProvider redirects to /login if not logged in ---
+const WITH_AUTH: RouteGroup[] = [
+  {
+    title: 'Main',
+    routes: [
+      { path: '/home', description: 'Dashboard', status: 'exists', note: 'Clarify vs /sanctuary' },
       { path: '/library', description: 'Library', status: 'exists' },
       { path: '/create', description: 'Create', status: 'exists' },
       { path: '/profile', description: 'Profile', status: 'exists' },
@@ -62,7 +75,7 @@ const ROUTE_GROUPS: RouteGroup[] = [
   {
     title: 'Sanctuary',
     routes: [
-      { path: '/sanctuary', description: 'Sanctuary home', status: 'exists', note: 'Clarify relationship with /home' },
+      { path: '/sanctuary', description: 'Sanctuary home', status: 'exists', note: 'Clarify vs /home' },
       { path: '/sanctuary/settings', description: 'Settings', status: 'exists' },
       { path: '/sanctuary/credits', description: 'Credits', status: 'exists' },
       { path: '/sanctuary/progress', description: 'Progress', status: 'exists' },
@@ -75,59 +88,46 @@ const ROUTE_GROUPS: RouteGroup[] = [
     title: 'Affirmations',
     routes: [
       { path: '/sanctuary/affirmations', description: 'List', status: 'exists' },
-      { path: '/sanctuary/affirmations/create', description: 'Create (steps: select, theme, voice, audio, mix, complete)', status: 'to_change', note: 'Make conversational (orb/speak), not static forms' },
+      { path: '/sanctuary/affirmations/[id]', description: 'Detail', status: 'to_create', note: 'Phase 5.2' },
+      { path: '/sanctuary/affirmations/[id]/edit', description: 'Edit', status: 'to_create' },
+      { path: '/sanctuary/affirmations/create', description: 'Create', status: 'to_change', note: 'Make conversational' },
       { path: '/sanctuary/affirmations/record', description: 'Record', status: 'exists' },
+      { path: '/sanctuary/affirmations/[id]/edit-audio', description: 'Edit sound/script', status: 'to_create' },
     ],
   },
   {
     title: 'Rituals',
     routes: [
       { path: '/sanctuary/rituals', description: 'List', status: 'exists' },
-      { path: '/sanctuary/rituals/[id]', description: 'Ritual detail', status: 'exists' },
+      { path: '/sanctuary/rituals/[id]', description: 'Detail', status: 'exists' },
       { path: '/sanctuary/rituals/[id]/edit', description: 'Edit', status: 'exists' },
-      { path: '/sanctuary/rituals/create', description: 'Create (steps: init, values, strengths, goals, patterns, tone, language, script, review, record, enhance, complete)', status: 'to_change', note: 'Make conversational (orb/speak)' },
+      { path: '/sanctuary/rituals/create', description: 'Create', status: 'to_change', note: 'Make conversational' },
       { path: '/sanctuary/rituals/recordings', description: 'Recordings', status: 'exists' },
+      { path: '/sanctuary/rituals/[id]/edit-audio', description: 'Edit sound/script', status: 'to_create' },
     ],
   },
   {
     title: 'Meditations',
     routes: [
-      { path: '/sanctuary/meditations', description: 'List', status: 'to_create', note: 'Missing in app' },
-      { path: '/sanctuary/meditations/[id]', description: 'Meditation detail', status: 'to_create', note: 'Phase 5.2' },
-      { path: '/sanctuary/meditations/[id]/edit', description: 'Edit meditation', status: 'to_create' },
-      { path: '/sanctuary/meditations/create', description: 'Create meditation', status: 'to_change', note: 'Make conversational (orb/speak)' },
+      { path: '/sanctuary/meditations', description: 'List', status: 'to_create' },
+      { path: '/sanctuary/meditations/[id]', description: 'Detail', status: 'to_create' },
+      { path: '/sanctuary/meditations/[id]/edit', description: 'Edit', status: 'to_create' },
+      { path: '/sanctuary/meditations/create', description: 'Create', status: 'to_change', note: 'Make conversational' },
+      { path: '/sanctuary/meditations/[id]/edit-audio', description: 'Edit sound/script', status: 'to_create' },
     ],
   },
   {
     title: 'Voice & conversation (to create)',
     routes: [
-      { path: '/speak', description: 'Orb that speaks — voice-first conversation UI', status: 'to_create', note: 'voice-interaction-design, Phase 9' },
-      { path: '/create/conversation', description: 'Conversational creation (chat-like, no static forms)', status: 'to_create', note: 'Replace/augment create flows; state machine' },
-      { path: '/sanctuary/affirmations/[id]/edit-audio', description: 'Edit sound/script in pipeline (affirmation)', status: 'to_create', note: 'Cool edit-audio step in pipeline' },
-      { path: '/sanctuary/rituals/[id]/edit-audio', description: 'Edit sound/script in pipeline (ritual)', status: 'to_create', note: 'Cool edit-audio step in pipeline' },
-      { path: '/sanctuary/meditations/[id]/edit-audio', description: 'Edit sound/script in pipeline (meditation)', status: 'to_create', note: 'Cool edit-audio step in pipeline' },
+      { path: '/speak', description: 'Orb that speaks', status: 'to_create', note: 'Phase 9' },
+      { path: '/create/conversation', description: 'Conversational creation', status: 'to_create' },
     ],
   },
   {
-    title: 'Affirmations (missing detail/edit)',
+    title: 'Marketplace (Phase 14)',
     routes: [
-      { path: '/sanctuary/affirmations/[id]', description: 'Affirmation detail (play, edit, delete, share)', status: 'to_create', note: 'Phase 5.2' },
-      { path: '/sanctuary/affirmations/[id]/edit', description: 'Edit affirmation', status: 'to_create' },
-    ],
-  },
-  {
-    title: 'Marketplace (Phase 14 — future)',
-    routes: [
-      { path: '/marketplace', description: 'Discovery, search, filter, browse', status: 'to_create', note: 'Phase 14.1' },
-      { path: '/marketplace/creator', description: 'Creator dashboard — publish, pricing, analytics', status: 'to_create', note: 'Phase 14.2' },
-    ],
-  },
-  {
-    title: 'Useful Links',
-    routes: [
-      { path: '/showcase', description: 'Design system & UI components (elements)', status: 'exists' },
-      { path: '/pages', description: 'Index of all pages (this page)', status: 'exists' },
-      { path: '/sitemap-view', description: 'Sitemap', status: 'exists' },
+      { path: '/marketplace', description: 'Discovery', status: 'to_create' },
+      { path: '/marketplace/creator', description: 'Creator dashboard', status: 'to_create' },
     ],
   },
 ];
@@ -146,47 +146,51 @@ const STATUS_BADGE_VARIANT: Record<RouteStatus, 'success' | 'warning' | 'error' 
   to_change: 'warning',
 };
 
-/** Convert a path with dynamic segments (e.g. [id]) to a concrete href for Next.js Link. */
 function pathToHref(path: string): string {
-  return path
-    .replace(/\[id\]/g, '1')
-    .replace(/\[[\w-]+\]/g, '1');
+  return path.replace(/\[id\]/g, '1').replace(/\[[\w-]+\]/g, '1');
 }
 
-function RouteCard({ route, colors }: { route: RouteEntry; colors: Record<string, string> }) {
+function RouteCard({ route, colors }: { route: RouteEntry; colors: Theme['colors'] }) {
   const isAction = route.status === 'to_delete' || route.status === 'to_change';
   const href = pathToHref(route.path);
-  const linkStyle: React.CSSProperties = {
-    display: 'block',
-    padding: spacing.md,
-    borderRadius: borderRadius.md,
-    background: isAction ? `${colors.warning}12` : undefined,
-    border: `1px solid ${isAction ? colors.warning ?? colors.glass.border : colors.glass.border}`,
-    textDecoration: 'none',
-    color: colors.text.primary,
-  };
-
   return (
-    <Link href={href} style={linkStyle}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xs }}>
-        <Typography variant="body" style={{ fontWeight: 600 }}>
+    <Link
+      href={href}
+      style={{
+        display: 'block',
+        padding: spacing.sm,
+        borderRadius: borderRadius.md,
+        background: isAction ? `${colors.warning}12` : undefined,
+        border: `1px solid ${isAction ? colors.warning ?? colors.glass.border : colors.glass.border}`,
+        textDecoration: 'none',
+        color: colors.text.primary,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexWrap: 'wrap', marginBottom: 2 }}>
+        <Typography variant="small" style={{ fontWeight: 600, fontSize: '13px' }}>
           {route.path}
         </Typography>
         <Badge variant={STATUS_BADGE_VARIANT[route.status]} size="sm">
           {STATUS_LABELS[route.status]}
         </Badge>
       </div>
-      <Typography variant="small" style={{ color: colors.text.secondary }}>
+      <Typography variant="small" style={{ color: colors.text.secondary, fontSize: '12px', lineHeight: 1.3 }}>
         {route.description}
       </Typography>
       {route.note && (
-        <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginTop: spacing.xs, fontStyle: 'italic' }}>
+        <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginTop: 2, fontStyle: 'italic', fontSize: '11px' }}>
           {route.note}
         </Typography>
       )}
     </Link>
   );
 }
+
+const CARD_GRID_STYLE: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+  gap: spacing.sm,
+};
 
 export default function PagesIndexPage() {
   const { theme } = useTheme();
@@ -197,26 +201,39 @@ export default function PagesIndexPage() {
       <ThemeSelector />
       <AppHeader variant="public" />
       <div style={{ padding: spacing.xl }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
+        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontSize: '1.5rem' }}>
             All Pages
           </Typography>
-          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
-            Index of all routes in the waQup web app. Status: exists, to create, to delete, or to change.
+          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, fontSize: '14px' }}>
+            By auth: public (no login) vs protected (login required). Status: exists / to create / to change.
           </Typography>
 
-          {ROUTE_GROUPS.map((group) => (
-            <div key={group.title} style={{ marginBottom: spacing.xxl }}>
-              <Typography variant="h2" style={{ marginBottom: spacing.lg, color: colors.text.primary, fontSize: '1.25rem' }}>
+          {/* Exceptions: clear note */}
+          <div
+            style={{
+              padding: spacing.sm,
+              borderRadius: borderRadius.md,
+              background: `${colors.accent.primary}12`,
+              border: `1px solid ${colors.accent.primary}40`,
+              marginBottom: spacing.xl,
+              fontSize: '12px',
+              color: colors.text.secondary,
+            }}
+          >
+            <strong style={{ color: colors.text.primary }}>Exceptions:</strong> All of &quot;Without auth&quot; are public. In &quot;With auth&quot;, only routes under /home, /library, /create, /profile, /sanctuary require login. <em>/pages</em>, <em>/showcase</em>, <em>/sitemap-view</em> and <em>/onboarding/*</em> are public by design (dev/testing or first-time flow).
+          </div>
+
+          {/* Without auth */}
+          <Typography variant="h2" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
+            Without auth (public)
+          </Typography>
+          {WITHOUT_AUTH.map((group) => (
+            <div key={group.title} style={{ marginBottom: spacing.lg }}>
+              <Typography variant="body" style={{ marginBottom: spacing.xs, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
                 {group.title}
               </Typography>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: spacing.sm,
-                }}
-              >
+              <div style={CARD_GRID_STYLE}>
                 {group.routes.map((route) => (
                   <RouteCard key={route.path} route={route} colors={colors} />
                 ))}
@@ -224,7 +241,24 @@ export default function PagesIndexPage() {
             </div>
           ))}
 
-          <Link href="/" style={{ textDecoration: 'none' }}>
+          {/* With auth */}
+          <Typography variant="h2" style={{ marginTop: spacing.xl, marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
+            With auth (protected)
+          </Typography>
+          {WITH_AUTH.map((group) => (
+            <div key={group.title} style={{ marginBottom: spacing.lg }}>
+              <Typography variant="body" style={{ marginBottom: spacing.xs, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
+                {group.title}
+              </Typography>
+              <div style={CARD_GRID_STYLE}>
+                {group.routes.map((route) => (
+                  <RouteCard key={route.path} route={route} colors={colors} />
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <Link href="/" style={{ textDecoration: 'none', fontSize: '13px', marginTop: spacing.lg, display: 'inline-block' }}>
             <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 500 }}>
               Back to Home
             </Typography>
