@@ -62,7 +62,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pathname.startsWith('/library') ||
       pathname.startsWith('/create') ||
       pathname.startsWith('/profile') ||
-      pathname.startsWith('/sanctuary');
+      pathname.startsWith('/sanctuary') ||
+      pathname.startsWith('/speak') ||
+      pathname.startsWith('/marketplace');
 
     if (isProtectedRoute && !user) {
       // Redirect to login if trying to access protected route without auth

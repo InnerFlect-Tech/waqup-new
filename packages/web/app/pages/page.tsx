@@ -88,11 +88,11 @@ const WITH_AUTH: RouteGroup[] = [
     title: 'Affirmations',
     routes: [
       { path: '/sanctuary/affirmations', description: 'List', status: 'exists' },
-      { path: '/sanctuary/affirmations/[id]', description: 'Detail', status: 'to_create', note: 'Phase 5.2' },
-      { path: '/sanctuary/affirmations/[id]/edit', description: 'Edit', status: 'to_create' },
+      { path: '/sanctuary/affirmations/[id]', description: 'Detail', status: 'exists', note: 'Stub' },
+      { path: '/sanctuary/affirmations/[id]/edit', description: 'Edit', status: 'exists', note: 'Stub' },
       { path: '/sanctuary/affirmations/create', description: 'Create', status: 'to_change', note: 'Make conversational' },
       { path: '/sanctuary/affirmations/record', description: 'Record', status: 'exists' },
-      { path: '/sanctuary/affirmations/[id]/edit-audio', description: 'Edit sound/script', status: 'to_create' },
+      { path: '/sanctuary/affirmations/[id]/edit-audio', description: 'Edit sound/script', status: 'exists', note: 'Stub' },
     ],
   },
   {
@@ -103,31 +103,31 @@ const WITH_AUTH: RouteGroup[] = [
       { path: '/sanctuary/rituals/[id]/edit', description: 'Edit', status: 'exists' },
       { path: '/sanctuary/rituals/create', description: 'Create', status: 'to_change', note: 'Make conversational' },
       { path: '/sanctuary/rituals/recordings', description: 'Recordings', status: 'exists' },
-      { path: '/sanctuary/rituals/[id]/edit-audio', description: 'Edit sound/script', status: 'to_create' },
+      { path: '/sanctuary/rituals/[id]/edit-audio', description: 'Edit sound/script', status: 'exists', note: 'Stub' },
     ],
   },
   {
     title: 'Meditations',
     routes: [
-      { path: '/sanctuary/meditations', description: 'List', status: 'to_create' },
-      { path: '/sanctuary/meditations/[id]', description: 'Detail', status: 'to_create' },
-      { path: '/sanctuary/meditations/[id]/edit', description: 'Edit', status: 'to_create' },
+      { path: '/sanctuary/meditations', description: 'List', status: 'exists', note: 'Stub' },
+      { path: '/sanctuary/meditations/[id]', description: 'Detail', status: 'exists', note: 'Stub' },
+      { path: '/sanctuary/meditations/[id]/edit', description: 'Edit', status: 'exists', note: 'Stub' },
       { path: '/sanctuary/meditations/create', description: 'Create', status: 'to_change', note: 'Make conversational' },
-      { path: '/sanctuary/meditations/[id]/edit-audio', description: 'Edit sound/script', status: 'to_create' },
+      { path: '/sanctuary/meditations/[id]/edit-audio', description: 'Edit sound/script', status: 'exists', note: 'Stub' },
     ],
   },
   {
-    title: 'Voice & conversation (to create)',
+    title: 'Voice & conversation',
     routes: [
-      { path: '/speak', description: 'Orb that speaks', status: 'to_create', note: 'Phase 9' },
-      { path: '/create/conversation', description: 'Conversational creation', status: 'to_create' },
+      { path: '/speak', description: 'Orb that speaks', status: 'exists', note: 'Stub — Phase 9' },
+      { path: '/create/conversation', description: 'Conversational creation', status: 'exists', note: 'Stub' },
     ],
   },
   {
     title: 'Marketplace (Phase 14)',
     routes: [
-      { path: '/marketplace', description: 'Discovery', status: 'to_create' },
-      { path: '/marketplace/creator', description: 'Creator dashboard', status: 'to_create' },
+      { path: '/marketplace', description: 'Discovery', status: 'exists', note: 'Stub' },
+      { path: '/marketplace/creator', description: 'Creator dashboard', status: 'exists', note: 'Stub' },
     ],
   },
 ];
