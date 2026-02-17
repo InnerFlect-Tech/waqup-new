@@ -216,10 +216,11 @@ waqup-new/
 
 ### Web design system (packages/web)
 
-- **Shared layout**: `AppHeader` (public / authenticated / simplified), `PageShell` (background + gradient + content container), `GlassCard` (auth/content variants)
+- **Shared layout**: `AppHeader` (public / authenticated / simplified), `PageShell` (background + gradient + content container), `GlassCard` (auth/content variants), `ThemeSelector` (collapsible: single “Theme” button, dropdown on click to avoid overlapping page content)
 - **Design tokens**: `packages/web/src/theme/design-tokens.ts` (CONTENT_MAX_WIDTH, spacing, glass card styles)
 - **Layouts**: Auth (no header), Main/Sanctuary (authenticated header), Marketing (landing header reflects auth state), Onboarding (simplified header)
-- **Reference**: [docs/04-reference/03-web-app-structure.md](./docs/04-reference/03-web-app-structure.md)
+- **Profile page** (`/profile`): User card, unified settings cards (Preferences, Notifications, Credits, Privacy & Security), safe-area padding so fixed Theme button does not overlap content
+- **Reference**: [docs/04-reference/04-pages-comparison.md](./docs/04-reference/04-pages-comparison.md) for page inventory
 
 ---
 
@@ -276,5 +277,5 @@ This project is proprietary and confidential. All rights reserved.
 
 ---
 
-**Last Updated**: February 15, 2026  
+**Last Updated**: February 17, 2026  
 **Repository**: [https://github.com/InnerFlect-Tech/waqup-new](https://github.com/InnerFlect-Tech/waqup-new)

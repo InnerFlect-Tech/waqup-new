@@ -69,9 +69,9 @@ export default function ProfilePage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: '100px' }}>
           {/* Header */}
-          <div style={{ marginBottom: spacing.xl }}>
+          <div style={{ marginBottom: spacing.xxl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
               Profile & Settings
             </Typography>
@@ -145,23 +145,17 @@ export default function ProfilePage() {
             </div>
           </Card>
 
-          {/* Menu Items */}
+          {/* Menu Items - unified card style, 2-column grid on large screens */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
               gap: spacing.lg,
               marginBottom: spacing.xl,
             }}
           >
-            {MENU_ITEMS.map((item, index) => {
+            {MENU_ITEMS.map((item) => {
               const IconComponent = item.icon;
-              // First two: more opaque (darker), last two: more transparent (lighter)
-              const isOpaque = index < 2;
-              const cardBackground = isOpaque ? colors.glass.opaque : colors.glass.transparent;
-              const textColor = isOpaque ? colors.text.onDark : colors.text.primary;
-              const secondaryTextColor = isOpaque ? colors.text.onDark : colors.text.secondary;
-              
               return (
                 <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
                   <Card
@@ -169,12 +163,13 @@ export default function ProfilePage() {
                     pressable
                     style={{
                       padding: spacing.lg,
-                      transition: 'all 0.3s ease',
+                      transition: 'all 0.2s ease',
                       cursor: 'pointer',
-                      background: cardBackground,
+                      background: colors.glass.opaque,
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       border: `1px solid ${colors.glass.border}`,
+                      height: '100%',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
@@ -182,42 +177,29 @@ export default function ProfilePage() {
                         style={{
                           width: '40px',
                           height: '40px',
-                          borderRadius: borderRadius.full,
-                          background: isOpaque 
-                            ? colors.gradients.primary 
-                            : colors.background.tertiary,
+                          borderRadius: borderRadius.md,
+                          background: colors.background.tertiary,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          position: 'relative',
-                          overflow: 'hidden',
+                          flexShrink: 0,
                         }}
                       >
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: `radial-gradient(circle at center, ${colors.mystical.glow}30, transparent)`,
-                            opacity: isOpaque ? 0.5 : 0.3,
-                          }}
+                        <IconComponent
+                          size={20}
+                          color={colors.accent.primary}
+                          strokeWidth={2.5}
                         />
-                        <span style={{ position: 'relative', zIndex: 1 }}>
-                          <IconComponent 
-                            size={20} 
-                            color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                            strokeWidth={2.5}
-                          />
-                        </span>
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <Typography variant="h4" style={{ color: textColor, marginBottom: spacing.xs }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
                           {item.name}
                         </Typography>
-                        <Typography variant="body" style={{ color: secondaryTextColor }}>
+                        <Typography variant="body" style={{ color: colors.text.secondary }}>
                           {item.description}
                         </Typography>
                       </div>
-                      <ChevronRight size={20} color={colors.text.secondary} />
+                      <ChevronRight size={20} color={colors.text.secondary} style={{ flexShrink: 0 }} />
                     </div>
                   </Card>
                 </Link>

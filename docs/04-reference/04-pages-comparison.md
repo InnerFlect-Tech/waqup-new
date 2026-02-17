@@ -46,7 +46,7 @@
 | `/sanctuary` | Sanctuary home (same as or linked from Home) | Exists — clarify relationship with `/home` |
 | `/library` | Library (filters, search, empty state) | Exists |
 | `/create` | Create — entry with three options (Affirmation, Meditation, Ritual) | Exists |
-| `/profile` | Profile — user info, settings list, logout | Exists |
+| `/profile` | Profile — user info, settings list, logout | Exists — unified settings cards; theme selector collapsible so it does not overlap content |
 
 ---
 
@@ -145,5 +145,5 @@
 
 ---
 
-**Last updated**: 2026-02-15  
+**Last updated**: 2026-02-17  
 **Status**: Comparison complete; decisions pending.

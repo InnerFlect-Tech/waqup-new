@@ -75,7 +75,7 @@ waQup will be available on **two platforms**, developed **simultaneously from sc
 - **Recommendation**: Recommend Chrome to users for best experience
 
 **Profile & auth UX**:
-- Profile page (`/profile`) shows the signed-in user from the auth store: display name and email from Supabase `User`, and avatar/name from `user_metadata` (e.g. Google OAuth: `full_name`, `avatar_url` / `picture`). See [Managing User Data](https://supabase.com/docs/guides/auth/managing-user-data).
+- Profile page (`/profile`) shows the signed-in user from the auth store: display name and email from Supabase `User`, and avatar/name from `user_metadata` (e.g. Google OAuth: `full_name`, `avatar_url` / `picture`). See [Managing User Data](https://supabase.com/docs/guides/auth/managing-user-data). The page uses unified settings cards and safe-area padding; the global theme selector is collapsible (single “Theme” button, dropdown on click) so it does not overlap profile content.
 - The landing page (`/`) uses `AppHeader` without a fixed variant so the header reflects auth state: authenticated users see the main nav (Home, Library, Create, Profile, Logout); others see the public header (Login, Sign up).
 
 **Production deployment (OAuth)**:

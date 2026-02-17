@@ -6,6 +6,16 @@
 
 ---
 
+## UI polish (non-step)
+
+### Profile page & Theme selector UX
+- **Status**: ✅ Complete
+- **Completed**: 2026-02-17
+- **Notes**: ThemeSelector is now collapsible (single “Theme” button with palette icon; dropdown on click, close on outside click or theme select) to avoid overlapping profile and other main content. Profile page: unified settings card styling (glass.opaque, consistent icons), increased header-to-content spacing (spacing.xxl), responsive grid for menu items (auto-fill minmax(280px, 1fr)), and right padding so fixed Theme button does not overlap title/content.
+- **Updated**: 2026-02-17
+
+---
+
 ## Phase 0: Research & Planning
 
 ### Step 0.1: Technology Stack Research
