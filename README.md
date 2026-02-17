@@ -135,7 +135,7 @@ STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 STRIPE_SECRET_KEY=your_stripe_secret_key
 ```
 
-**Production (e.g. Vercel)**: Set `NEXT_PUBLIC_APP_URL` to your live URL so OAuth redirects (Google Sign-In, password reset emails) point to the deployed app instead of localhost. Add the same URL’s `/auth/callback` path to your Supabase project’s **Redirect URLs** in Authentication → URL Configuration.
+**Production (e.g. Vercel)**: Set `NEXT_PUBLIC_APP_URL` to your live URL so OAuth redirects (Google Sign-In, password reset emails) point to the deployed app instead of localhost. Add the same URL’s `/auth/callback` path to your Supabase project’s **Redirect URLs** in Authentication → URL Configuration. If the provider redirects to `/login` with tokens in the URL hash (implicit flow), the login page will still establish the session and redirect into the app.
 
 ### Troubleshooting
 

@@ -70,6 +70,44 @@ export default function LoginPage() {
     };
   }, [setError]);
 
+  // Handle OAuth redirect that lands on /login with tokens in hash (implicit flow fallback)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash?.replace(/^#/, '');
+    if (!hash) return;
+    const params = new URLSearchParams(hash);
+    const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
+    if (!access_token || !refresh_token) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        if (!supabase) return;
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+        if (cancelled) return;
+        if (error) {
+          setError(normalizeAuthError(error));
+          return;
+        }
+        if (data?.session) {
+          useAuthStore.getState().setSession(data.session);
+          const next = params.get('next') || '/home';
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          router.replace(next);
+        }
+      } catch (err) {
+        if (!cancelled) setError(normalizeAuthError(err));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [router, setError]);
+
   const handleGoogleSignIn = async () => {
     setError(null);
     setGoogleLoading(true);

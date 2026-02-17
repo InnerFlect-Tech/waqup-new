@@ -78,6 +78,7 @@ waQup will be available on **two platforms**, developed **simultaneously from sc
 - Set `NEXT_PUBLIC_APP_URL` to the deployed base URL (e.g. `https://waqup-new.vercel.app`) in your hosting environment (e.g. Vercel Environment Variables).
 - This ensures Google Sign-In and password-reset flows redirect to the production app; otherwise redirects can fall back to localhost and fail.
 - In Supabase Dashboard → Authentication → URL Configuration, add `https://your-domain.com/auth/callback` to **Redirect URLs**.
+- If the IdP redirects to `/login` with tokens in the URL hash (implicit flow), the login page parses the hash, calls `supabase.auth.setSession()`, and redirects the user into the app.
 
 **Quality Standards**:
 - **Performance**: < 2s first load (Chrome), < 1s subsequent loads
