@@ -116,6 +116,10 @@ See [scripts/README.md](./scripts/README.md) for detailed information about each
 After installation, edit the `.env` file with your credentials:
 
 ```bash
+# App URL (Web) – required for production OAuth (Google Sign-In, password reset)
+# Set to your deployment URL (e.g. https://waqup-new.vercel.app) in Vercel/hosting env
+NEXT_PUBLIC_APP_URL=https://your-app-url.com
+
 # Supabase Configuration
 EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
 EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
@@ -130,6 +134,8 @@ OPENAI_API_KEY=your_openai_api_key
 STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 STRIPE_SECRET_KEY=your_stripe_secret_key
 ```
+
+**Production (e.g. Vercel)**: Set `NEXT_PUBLIC_APP_URL` to your live URL so OAuth redirects (Google Sign-In, password reset emails) point to the deployed app instead of localhost. Add the same URL’s `/auth/callback` path to your Supabase project’s **Redirect URLs** in Authentication → URL Configuration.
 
 ### Troubleshooting
 

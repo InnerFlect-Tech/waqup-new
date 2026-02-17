@@ -76,10 +76,13 @@ export default function LoginPage() {
     try {
       if (!supabase) throw new Error('Authentication service unavailable');
       const returnUrl = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') || '/home' : '/home';
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL ||
+        (typeof window !== 'undefined' ? window.location.origin : '');
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback?next=${encodeURIComponent(returnUrl)}`,
+          redirectTo: `${baseUrl}/auth/callback?next=${encodeURIComponent(returnUrl)}`,
           queryParams: { access_type: 'offline', prompt: 'consent' },
         },
       });

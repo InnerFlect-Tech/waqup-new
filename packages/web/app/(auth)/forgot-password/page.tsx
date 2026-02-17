@@ -42,8 +42,9 @@ export default function ForgotPasswordPage() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setError(null);
-    // For web, use the reset password page URL
-    const redirectTo = `${window.location.origin}/reset-password`;
+    // For web, use the reset password page URL (prefer env so production email links point to deployed URL)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+    const redirectTo = `${baseUrl}/reset-password`;
     const result = await requestPasswordReset(data.email, redirectTo);
     
     if (result.success) {

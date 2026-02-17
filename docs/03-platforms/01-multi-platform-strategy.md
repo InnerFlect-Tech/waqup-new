@@ -74,6 +74,11 @@ waQup will be available on **two platforms**, developed **simultaneously from sc
 - **Phase 2**: Expand to Safari, Firefox, Edge post-launch
 - **Recommendation**: Recommend Chrome to users for best experience
 
+**Production deployment (OAuth)**:
+- Set `NEXT_PUBLIC_APP_URL` to the deployed base URL (e.g. `https://waqup-new.vercel.app`) in your hosting environment (e.g. Vercel Environment Variables).
+- This ensures Google Sign-In and password-reset flows redirect to the production app; otherwise redirects can fall back to localhost and fail.
+- In Supabase Dashboard → Authentication → URL Configuration, add `https://your-domain.com/auth/callback` to **Redirect URLs**.
+
 **Quality Standards**:
 - **Performance**: < 2s first load (Chrome), < 1s subsequent loads
 - **Lighthouse**: > 95 score (Chrome optimized)
