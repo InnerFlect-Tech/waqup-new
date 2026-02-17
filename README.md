@@ -218,7 +218,7 @@ waqup-new/
 
 - **Shared layout**: `AppHeader` (public / authenticated / simplified), `PageShell` (background + gradient + content container), `GlassCard` (auth/content variants)
 - **Design tokens**: `packages/web/src/theme/design-tokens.ts` (CONTENT_MAX_WIDTH, spacing, glass card styles)
-- **Layouts**: Auth (no header), Main/Sanctuary (authenticated header), Marketing (public header), Onboarding (simplified header)
+- **Layouts**: Auth (no header), Main/Sanctuary (authenticated header), Marketing (landing header reflects auth state), Onboarding (simplified header)
 - **Reference**: [docs/04-reference/03-web-app-structure.md](./docs/04-reference/03-web-app-structure.md)
 
 ---

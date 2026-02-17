@@ -76,7 +76,7 @@ export default function LandingPage() {
   return (
     <PageShell intensity="high" bare>
       <ThemeSelector />
-      <AppHeader variant="public" />
+      <AppHeader />
 
       {/* Hero Section */}
         <section

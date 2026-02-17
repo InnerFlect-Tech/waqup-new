@@ -57,12 +57,15 @@ export default function ProfilePage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
+  const authUser = useAuthStore((s) => s.user);
 
-  // TODO: Get actual user data from auth context/store
-  const user = {
-    name: 'User Name',
-    email: 'user@example.com',
-  };
+  const displayName =
+    authUser?.user_metadata?.full_name ??
+    authUser?.user_metadata?.name ??
+    authUser?.email?.split('@')[0] ??
+    'User';
+  const displayEmail = authUser?.email ?? '';
+  const avatarUrl = authUser?.user_metadata?.avatar_url ?? authUser?.user_metadata?.picture ?? null;
 
   return (
     <PageShell intensity="medium">
@@ -96,7 +99,7 @@ export default function ProfilePage() {
                   width: '80px',
                   height: '80px',
                   borderRadius: borderRadius.full,
-                  background: colors.gradients.primary,
+                  background: avatarUrl ? undefined : colors.gradients.primary,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -105,24 +108,38 @@ export default function ProfilePage() {
                   overflow: 'hidden',
                 }}
               >
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
-                    opacity: 0.6,
-                  }}
-                />
-                <span style={{ position: 'relative', zIndex: 1 }}>
-                <User size={40} color={colors.text.onDark} strokeWidth={2.5} />
-              </span>
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt=""
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
+                        opacity: 0.6,
+                      }}
+                    />
+                    <span style={{ position: 'relative', zIndex: 1 }}>
+                      <User size={40} color={colors.text.onDark} strokeWidth={2.5} />
+                    </span>
+                  </>
+                )}
               </div>
               <div style={{ flex: 1 }}>
                 <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                  {user.name}
+                  {displayName}
                 </Typography>
                 <Typography variant="body" style={{ color: colors.text.secondary }}>
-                  {user.email}
+                  {displayEmail || '—'}
                 </Typography>
               </div>
             </div>
