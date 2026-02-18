@@ -3,7 +3,7 @@
 import React from 'react';
 import { Typography, Button, Card } from '@/components';
 import { Icon } from '@/components/ui/Icon';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import Link from 'next/link';
@@ -91,7 +91,7 @@ export default function HomePage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -111,78 +111,47 @@ export default function HomePage() {
               marginBottom: spacing.xl,
             }}
           >
-            {QUICK_ACTIONS.map((action, index) => {
-              // First two: more opaque (darker), last one: more transparent (lighter)
-              const isOpaque = index < 2;
-              const cardBackground = isOpaque ? colors.glass.opaque : colors.glass.transparent;
-              const textColor = isOpaque ? colors.text.onDark : colors.text.primary;
-              const secondaryTextColor = isOpaque ? colors.text.onDark : colors.text.secondary;
-              
-              return (
-                <Link key={action.name} href={action.href} style={{ textDecoration: 'none' }}>
-                  <Card
-                    variant="elevated"
-                    pressable
-                    style={{
-                      padding: spacing.lg,
-                      height: '100%',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer',
-                      background: cardBackground,
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: `1px solid ${colors.glass.border}`,
-                      boxShadow: isOpaque 
-                        ? `0 8px 32px ${colors.mystical.glow}60` 
-                        : `0 4px 16px ${colors.mystical.glow}30`,
-                    }}
-                  >
+            {QUICK_ACTIONS.map((action) => (
+              <Link key={action.name} href={action.href} style={{ textDecoration: 'none' }}>
+                <Card
+                  variant="elevated"
+                  pressable
+                  style={{
+                    padding: spacing.lg,
+                    height: '100%',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer',
+                    background: colors.glass.opaque,
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: `1px solid ${colors.glass.border}`,
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, marginBottom: spacing.sm }}>
                     <div
                       style={{
                         width: '48px',
                         height: '48px',
-                        borderRadius: borderRadius.full,
-                        background: isOpaque 
-                          ? colors.gradients.primary 
-                          : colors.accent.light,
+                        borderRadius: borderRadius.md,
+                        background: colors.background.tertiary,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: isOpaque 
-                          ? `0 4px 12px ${colors.mystical.glow}80` 
-                          : `0 2px 8px ${colors.mystical.glow}40`,
-                        position: 'relative',
-                        overflow: 'hidden',
+                        flexShrink: 0,
                       }}
                     >
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
-                          opacity: 0.6,
-                        }}
-                      />
-                      <span style={{ position: 'relative', zIndex: 1 }}>
-                        <action.icon 
-                          size={24} 
-                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                          strokeWidth={2.5}
-                        />
-                      </span>
+                      <action.icon size={24} color={colors.accent.primary} strokeWidth={2.5} />
                     </div>
-                      <Typography variant="h3" style={{ color: textColor }}>
-                        {action.name}
-                      </Typography>
-                    </div>
-                    <Typography variant="body" style={{ color: secondaryTextColor }}>
-                      {action.description}
+                    <Typography variant="h3" style={{ color: colors.text.primary }}>
+                      {action.name}
                     </Typography>
-                  </Card>
-                </Link>
-              );
-            })}
+                  </div>
+                  <Typography variant="body" style={{ color: colors.text.secondary }}>
+                    {action.description}
+                  </Typography>
+                </Card>
+              </Link>
+            ))}
           </div>
 
           {/* Menu Grid */}
@@ -193,26 +162,20 @@ export default function HomePage() {
               gap: spacing.lg,
             }}
           >
-            {MENU_ITEMS.map((item, index) => {
-              // First two: more opaque (darker), last two: more transparent (lighter)
-              const isOpaque = index < 2;
-              const cardBackground = isOpaque ? colors.glass.opaque : colors.glass.transparent;
-              const textColor = isOpaque ? colors.text.onDark : colors.text.primary;
-              const secondaryTextColor = isOpaque ? colors.text.onDark : colors.text.secondary;
-              
-              return (
+            {MENU_ITEMS.map((item) => (
                 <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
                   <Card
                     variant="default"
                     pressable
                     style={{
                       padding: spacing.lg,
-                      transition: 'all 0.3s ease',
+                      transition: 'all 0.2s ease',
                       cursor: 'pointer',
-                      background: cardBackground,
+                      background: colors.glass.opaque,
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       border: `1px solid ${colors.glass.border}`,
+                      height: '100%',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
@@ -220,36 +183,19 @@ export default function HomePage() {
                         style={{
                           width: '40px',
                           height: '40px',
-                          borderRadius: borderRadius.full,
-                          background: isOpaque 
-                            ? colors.gradients.primary 
-                            : colors.background.tertiary,
+                          borderRadius: borderRadius.md,
+                          background: colors.background.tertiary,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          position: 'relative',
-                          overflow: 'hidden',
+                          flexShrink: 0,
                         }}
                       >
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: `radial-gradient(circle at center, ${colors.mystical.glow}30, transparent)`,
-                            opacity: isOpaque ? 0.5 : 0.3,
-                          }}
-                        />
-                        <span style={{ position: 'relative', zIndex: 1 }}>
-                          <item.icon 
-                            size={20} 
-                            color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                            strokeWidth={2.5}
-                          />
-                        </span>
+                        <item.icon size={20} color={colors.accent.primary} strokeWidth={2.5} />
                       </div>
-                      <div style={{ flex: 1 }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>
-                          <Typography variant="h4" style={{ color: textColor }}>
+                          <Typography variant="h4" style={{ color: colors.text.primary }}>
                             {item.name}
                           </Typography>
                           {item.count !== undefined && (
@@ -257,26 +203,23 @@ export default function HomePage() {
                               style={{
                                 padding: `${spacing.xs} ${spacing.sm}`,
                                 borderRadius: borderRadius.full,
-                                background: isOpaque 
-                                  ? colors.accent.secondary 
-                                  : colors.accent.light,
+                                background: colors.accent.light,
                                 fontSize: '12px',
-                                color: isOpaque ? colors.text.onDark : colors.accent.primary,
+                                color: colors.accent.primary,
                               }}
                             >
                               {item.count}
                             </div>
                           )}
                         </div>
-                        <Typography variant="body" style={{ color: secondaryTextColor }}>
+                        <Typography variant="body" style={{ color: colors.text.secondary }}>
                           {item.description}
                         </Typography>
                       </div>
                     </div>
                   </Card>
                 </Link>
-              );
-            })}
+              ))}
           </div>
 
           {/* Recent Activity Section */}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Typography, Button, Card, Badge } from '@/components';
 import { Icon } from '@/components/ui/Icon';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import Link from 'next/link';
@@ -91,7 +91,7 @@ export default function LibraryPage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
           {/* Header */}
           <div
             style={{

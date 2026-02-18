@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import Link from 'next/link';
 import {
   Sunrise,
@@ -104,6 +104,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
             maxWidth: '1400px',
             margin: '0 auto',
@@ -158,6 +159,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             maxWidth: '1400px',
             margin: '0 auto',
           }}
@@ -256,6 +258,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             maxWidth: '1400px',
             margin: '0 auto',
           }}
@@ -349,6 +352,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             maxWidth: '1400px',
             margin: '0 auto',
           }}
@@ -425,6 +429,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             maxWidth: '1400px',
             margin: '0 auto',
           }}
@@ -497,6 +502,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
             maxWidth: '1400px',
             margin: '0 auto',

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Typography, Button, Card } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import Link from 'next/link';
@@ -51,7 +51,7 @@ export default function CreatePage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -70,14 +70,8 @@ export default function CreatePage() {
               gap: spacing.xl,
             }}
           >
-            {CONTENT_TYPES.map((type, index) => {
+            {CONTENT_TYPES.map((type) => {
               const IconComponent = type.icon;
-              // First card: more opaque (darker), others: more transparent (lighter)
-              const isOpaque = index === 0;
-              const cardBackground = isOpaque ? colors.glass.opaque : colors.glass.transparent;
-              const textColor = isOpaque ? colors.text.onDark : colors.text.primary;
-              const secondaryTextColor = isOpaque ? colors.text.onDark : colors.text.secondary;
-              
               return (
                 <Link key={type.name} href={type.href} style={{ textDecoration: 'none' }}>
                   <Card
@@ -87,15 +81,12 @@ export default function CreatePage() {
                       padding: spacing.xxl,
                       height: '100%',
                       minHeight: '300px',
-                      transition: 'all 0.3s ease',
+                      transition: 'all 0.2s ease',
                       cursor: 'pointer',
-                      background: cardBackground,
+                      background: colors.glass.opaque,
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       border: `1px solid ${colors.glass.border}`,
-                      boxShadow: isOpaque 
-                        ? `0 8px 32px ${colors.mystical.glow}60` 
-                        : `0 4px 16px ${colors.mystical.glow}30`,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
@@ -107,41 +98,21 @@ export default function CreatePage() {
                       style={{
                         width: '80px',
                         height: '80px',
-                        borderRadius: borderRadius.full,
-                        background: isOpaque 
-                          ? colors.gradients.primary 
-                          : colors.accent.light,
+                        borderRadius: borderRadius.lg,
+                        background: colors.background.tertiary,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginBottom: spacing.lg,
-                        boxShadow: isOpaque 
-                          ? `0 4px 12px ${colors.mystical.glow}80` 
-                          : `0 2px 8px ${colors.mystical.glow}40`,
-                        position: 'relative',
-                        overflow: 'hidden',
+                        flexShrink: 0,
                       }}
                     >
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
-                          opacity: 0.6,
-                        }}
-                      />
-                      <span style={{ position: 'relative', zIndex: 1 }}>
-                        <IconComponent 
-                          size={40} 
-                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                          strokeWidth={2.5}
-                        />
-                      </span>
+                      <IconComponent size={40} color={colors.accent.primary} strokeWidth={2.5} />
                     </div>
-                    <Typography variant="h2" style={{ color: textColor, marginBottom: spacing.md }}>
+                    <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
                       {type.name}
                     </Typography>
-                    <Typography variant="body" style={{ color: secondaryTextColor, lineHeight: 1.6 }}>
+                    <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
                       {type.description}
                     </Typography>
                   </Card>

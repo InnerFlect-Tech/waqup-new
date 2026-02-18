@@ -9,6 +9,8 @@ import { borderRadius } from './borders';
 export const CONTENT_MAX_WIDTH = '1400px';
 export const AUTH_CARD_MAX_WIDTH = '480px';
 export const PAGE_PADDING = spacing.xl;
+/** Right padding so fixed Theme button does not overlap page content */
+export const SAFE_AREA_RIGHT = '100px';
 export const SECTION_GAP = spacing.xl;
 export const CARD_PADDING_AUTH = spacing.xxxl;
 export const CARD_PADDING_CONTENT = spacing.xl;

@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Typography, Button, Card } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import { useAuthStore } from '@/stores';
@@ -69,7 +69,7 @@ export default function ProfilePage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: '100px' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xxl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>

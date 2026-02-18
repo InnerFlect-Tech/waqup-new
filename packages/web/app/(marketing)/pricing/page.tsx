@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
 import { Users, Music, Heart, Puzzle, Check } from 'lucide-react';
@@ -78,7 +78,7 @@ export default function PricingPage() {
   return (
     <PageShell intensity="medium" bare>
       {/* Content */}
-        <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, maxWidth: '1400px', margin: '0 auto' }}>
+        <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, paddingRight: SAFE_AREA_RIGHT, maxWidth: '1400px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
             <Typography

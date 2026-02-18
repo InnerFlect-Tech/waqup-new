@@ -4,7 +4,7 @@ import React from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { AppHeader, PageShell, ThemeSelector } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -82,6 +82,7 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
             maxWidth: '1200px',
             margin: '0 auto',
@@ -242,6 +243,7 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             maxWidth: '1400px',
             margin: '0 auto',
           }}
@@ -332,6 +334,7 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             maxWidth: '1400px',
             margin: '0 auto',
           }}
@@ -377,6 +380,7 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxxl} ${spacing.xl}`,
+            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
             maxWidth: '1200px',
             margin: '0 auto',
@@ -423,7 +427,7 @@ export default function LandingPage() {
             marginTop: spacing.xxl,
           }}
         >
-          <div style={{ maxWidth: '1400px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ maxWidth: '1400px', margin: '0 auto', paddingRight: SAFE_AREA_RIGHT, textAlign: 'center' }}>
             <Typography variant="body" style={{ color: colors.text.tertiary }}>
               © 2026 waQup. Transform your mind through voice.
             </Typography>

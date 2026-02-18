@@ -8,6 +8,12 @@
 
 ## UI polish (non-step)
 
+### All-pages safe-area and unified card styling
+- **Status**: ✅ Complete
+- **Completed**: 2026-02-18
+- **Notes**: Added design token SAFE_AREA_RIGHT ('100px') in design-tokens.ts. Applied safe-area padding (paddingTop + paddingRight) to main app pages (home, library, create, profile), PlaceholderPage (sanctuary and other placeholders), marketing (how-it-works, pricing), and landing (hero, features, benefits, CTA, footer) so the fixed Theme button never overlaps content. Unified card styling on Home and Create to match Profile: single glass.opaque style, consistent icon treatment (background.tertiary, accent.primary), no alternating opaque/transparent.
+- **Updated**: 2026-02-18
+
 ### Profile page & Theme selector UX
 - **Status**: ✅ Complete
 - **Completed**: 2026-02-17
