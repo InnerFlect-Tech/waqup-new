@@ -42,11 +42,13 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| `/home` | Home / Sanctuary (roadmap: "Home (Sanctuary)") | Exists — clarify relationship with `/sanctuary` |
-| `/sanctuary` | Sanctuary home (same as or linked from Home) | Exists — clarify relationship with `/home` |
+| `/home` | Home / Sanctuary (roadmap: "Home (Sanctuary)") | Exists — app dashboard; header "Home" link and logo (when authenticated) go here |
+| `/sanctuary` | Sanctuary home (same as or linked from Home) | Exists — content/settings hub; header treats `/sanctuary` as same section as Home (Home nav item active on both) |
 | `/library` | Library (filters, search, empty state) | Exists |
 | `/create` | Create — entry with three options (Affirmation, Meditation, Ritual) | Exists |
 | `/profile` | Profile — user info, settings list, logout | Exists — unified settings cards; theme selector collapsible so it does not overlap content |
+
+**Web header navigation**: Authenticated header uses `usePathname()` from `next/navigation` for active state. "Home" is active when pathname is `/home` or any path under `/sanctuary` so the nav reflects the app’s information architecture (home/sanctuary as one area). Logo links to `/home` when authenticated, to `/` when public.
 
 ---
 

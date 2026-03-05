@@ -220,6 +220,7 @@ waqup-new/
 - **Design tokens**: `packages/web/src/theme/design-tokens.ts` (CONTENT_MAX_WIDTH, PAGE_PADDING, SAFE_AREA_RIGHT, spacing, glass card styles)
 - **Safe-area**: Main, marketing, and landing pages use `SAFE_AREA_RIGHT` so the fixed Theme button never overlaps content; `PlaceholderPage` includes it for sanctuary and other placeholder screens
 - **Layouts**: Auth (no header), Main/Sanctuary (authenticated header), Marketing (landing header reflects auth state), Onboarding (simplified header)
+- **Header nav**: Active state via `usePathname()`; "Home" active on `/home` and `/sanctuary/*`; logo links to `/home` when authenticated, `/` when public.
 - **Unified cards**: Home, Create, and Profile use consistent glass card styling (glass.opaque, tertiary icon background, accent icons)
 - **Reference**: [docs/04-reference/04-pages-comparison.md](./docs/04-reference/04-pages-comparison.md) for page inventory
 

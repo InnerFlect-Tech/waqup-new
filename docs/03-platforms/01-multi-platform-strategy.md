@@ -78,6 +78,10 @@ waQup will be available on **two platforms**, developed **simultaneously from sc
 - Profile page (`/profile`) shows the signed-in user from the auth store: display name and email from Supabase `User`, and avatar/name from `user_metadata` (e.g. Google OAuth: `full_name`, `avatar_url` / `picture`). See [Managing User Data](https://supabase.com/docs/guides/auth/managing-user-data). The page uses unified settings cards and safe-area padding; the global theme selector is collapsible (single “Theme” button, dropdown on click) so it does not overlap profile content.
 - The landing page (`/`) uses `AppHeader` without a fixed variant so the header reflects auth state: authenticated users see the main nav (Home, Library, Create, Profile, Logout); others see the public header (Login, Sign up).
 
+**Header navigation (Web)**:
+- Active link is derived from `usePathname()` (`next/navigation`): exact match for Library, Create, Profile; "Home" is also active when pathname starts with `/sanctuary` so the nav reflects that Sanctuary is part of the home/sanctuary area.
+- Logo: when authenticated, links to `/home` (app dashboard); when public or simplified, links to `/` (landing).
+
 **Production deployment (OAuth)**:
 - Set `NEXT_PUBLIC_APP_URL` to the deployed base URL (e.g. `https://waqup-new.vercel.app`) in your hosting environment (e.g. Vercel Environment Variables).
 - This ensures Google Sign-In and password-reset flows redirect to the production app; otherwise redirects can fall back to localhost and fail.

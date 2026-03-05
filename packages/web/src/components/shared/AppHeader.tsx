@@ -35,16 +35,22 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ variant: variantOverride }
     margin: '0 auto',
   };
 
-  const linkStyle = (href: string): React.CSSProperties => ({
+  const isActive = (href: string, pathPrefix?: boolean): boolean => {
+    if (pathname === href) return true;
+    if (pathPrefix && href === '/home' && pathname.startsWith('/sanctuary')) return true;
+    return false;
+  };
+
+  const linkStyle = (href: string, pathPrefix?: boolean): React.CSSProperties => ({
     textDecoration: 'none',
-    color: pathname === href ? colors.accent.primary : colors.text.secondary,
-    fontWeight: pathname === href ? 600 : 400,
+    color: isActive(href, pathPrefix) ? colors.accent.primary : colors.text.secondary,
+    fontWeight: isActive(href, pathPrefix) ? 600 : 400,
   });
 
   if (variant === 'simplified') {
     return (
       <nav style={navStyle}>
-        <Logo size="md" />
+        <Logo size="md" href="/" />
         <Link
           href="/"
           style={{
@@ -65,18 +71,18 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ variant: variantOverride }
   if (variant === 'authenticated') {
     return (
       <nav style={navStyle}>
-        <Logo size="md" />
+        <Logo size="md" href="/home" />
         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg }}>
-          <Link href="/home" style={linkStyle('/home')}>
+          <Link href="/home" style={linkStyle('/home', true)}>
             <Typography variant="body">Home</Typography>
           </Link>
-          <Link href="/library" style={linkStyle('/library')}>
+          <Link href="/library" style={linkStyle('/library', false)}>
             <Typography variant="body">Library</Typography>
           </Link>
-          <Link href="/create" style={linkStyle('/create')}>
+          <Link href="/create" style={linkStyle('/create', false)}>
             <Typography variant="body">Create</Typography>
           </Link>
-          <Link href="/profile" style={linkStyle('/profile')}>
+          <Link href="/profile" style={linkStyle('/profile', false)}>
             <Typography variant="body">Profile</Typography>
           </Link>
           {user?.id?.startsWith?.('override-') && <TestLoginButton />}
@@ -106,12 +112,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ variant: variantOverride }
   // public
   return (
     <nav style={navStyle}>
-      <Logo size="md" />
+      <Logo size="md" href="/" />
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg }}>
-        <Link href="/how-it-works" style={linkStyle('/how-it-works')}>
+        <Link href="/how-it-works" style={linkStyle('/how-it-works', false)}>
           <Typography variant="body">How It Works</Typography>
         </Link>
-        <Link href="/pricing" style={linkStyle('/pricing')}>
+        <Link href="/pricing" style={linkStyle('/pricing', false)}>
           <Typography variant="body">Pricing</Typography>
         </Link>
         <Link href="/login" style={{ textDecoration: 'none' }}>
