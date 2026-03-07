@@ -1,0 +1,39 @@
+name: Web CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & Type-check (Web)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (root workspace)
+        run: npm ci --ignore-scripts
+
+      - name: Type-check web
+        working-directory: packages/web
+        run: npx tsc --noEmit
+
+      - name: Build web
+        working-directory: packages/web
+        env:
+          # Provide placeholder env vars so the build doesn't throw on missing vars.
+          # Real values are set in Vercel/production — these are build-time only.
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: placeholder-anon-key
+          NEXT_PUBLIC_APP_URL: https://placeholder.example.com
+        run: npm run build
