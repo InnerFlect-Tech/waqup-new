@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -75,7 +75,7 @@ export default function SignupScreen({ navigation }: Props) {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.container}>
-              <Card variant="elevated" style={[styles.card, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+              <Card variant="elevated" style={styles.card}>
                 <Typography variant="h2" style={[styles.successTitle, { color: colors.text.primary }]}>
                   Check Your Email
                 </Typography>
@@ -132,7 +132,7 @@ export default function SignupScreen({ navigation }: Props) {
                   },
                 ]}
               >
-                wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
+                {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
               </Typography>
               <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
                 Create your account
@@ -140,7 +140,7 @@ export default function SignupScreen({ navigation }: Props) {
             </View>
 
             {/* Signup Form */}
-            <Card variant="elevated" style={[styles.card, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+            <Card variant="elevated" style={styles.card}>
               {error && (
                 <View style={[styles.errorContainer, { backgroundColor: `${colors.error}20`, borderColor: colors.error }]}>
                   <Typography variant="body" style={{ color: colors.error }}>

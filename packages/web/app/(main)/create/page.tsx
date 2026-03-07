@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { Typography, Button, Card } from '@/components';
-import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
+import { spacing, borderRadius } from '@/theme';
+import { GRID_CARD_MIN } from '@/theme';
 import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
+import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -51,7 +52,7 @@ export default function CreatePage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
+      <PageContent>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -66,12 +67,17 @@ export default function CreatePage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
               gap: spacing.xl,
             }}
           >
-            {CONTENT_TYPES.map((type) => {
+            {CONTENT_TYPES.map((type, index) => {
               const IconComponent = type.icon;
+              const isOpaque = index === 0;
+              const cardBackground = colors.glass.light;
+              const textColor = colors.text.primary;
+              const secondaryTextColor = colors.text.secondary;
+              
               return (
                 <Link key={type.name} href={type.href} style={{ textDecoration: 'none' }}>
                   <Card
@@ -81,12 +87,15 @@ export default function CreatePage() {
                       padding: spacing.xxl,
                       height: '100%',
                       minHeight: '300px',
-                      transition: 'all 0.2s ease',
+                      transition: 'all 0.3s ease',
                       cursor: 'pointer',
-                      background: colors.glass.opaque,
+                      background: cardBackground,
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       border: `1px solid ${colors.glass.border}`,
+                      boxShadow: isOpaque 
+                        ? `0 8px 32px ${colors.accent.primary}60` 
+                        : `0 4px 16px ${colors.accent.primary}30`,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
@@ -98,21 +107,41 @@ export default function CreatePage() {
                       style={{
                         width: '80px',
                         height: '80px',
-                        borderRadius: borderRadius.lg,
-                        background: colors.background.tertiary,
+                        borderRadius: borderRadius.full,
+                        background: isOpaque 
+                          ? colors.gradients.primary 
+                          : colors.accent.light,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginBottom: spacing.lg,
-                        flexShrink: 0,
+                        boxShadow: isOpaque 
+                          ? `0 4px 12px ${colors.accent.primary}80` 
+                          : `0 2px 8px ${colors.accent.primary}40`,
+                        position: 'relative',
+                        overflow: 'hidden',
                       }}
                     >
-                      <IconComponent size={40} color={colors.accent.primary} strokeWidth={2.5} />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
+                          opacity: 0.6,
+                        }}
+                      />
+                      <span style={{ position: 'relative', zIndex: 1 }}>
+                        <IconComponent 
+                          size={40} 
+                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
+                          strokeWidth={2.5}
+                        />
+                      </span>
                     </div>
-                    <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
+                    <Typography variant="h2" style={{ color: textColor, marginBottom: spacing.md }}>
                       {type.name}
                     </Typography>
-                    <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
+                    <Typography variant="body" style={{ color: secondaryTextColor, lineHeight: 1.6 }}>
                       {type.description}
                     </Typography>
                   </Card>
@@ -121,8 +150,22 @@ export default function CreatePage() {
             })}
           </div>
 
-          {/* Back Link */}
+          {/* Voice alternative */}
           <div style={{ marginTop: spacing.xl, textAlign: 'center' }}>
+            <Link href="/create/conversation" style={{ textDecoration: 'none', marginRight: spacing.md }}>
+              <Button variant="outline" size="md">
+                Or speak to create
+              </Button>
+            </Link>
+            <Link href="/speak" style={{ textDecoration: 'none' }}>
+              <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
+                Voice mode
+              </Button>
+            </Link>
+          </div>
+
+          {/* Back Link */}
+          <div style={{ marginTop: spacing.lg, textAlign: 'center' }}>
             <Link href="/home" style={{ textDecoration: 'none' }}>
               <Button
                 variant="ghost"
@@ -135,7 +178,7 @@ export default function CreatePage() {
               </Button>
             </Link>
           </div>
-        </div>
+      </PageContent>
     </PageShell>
   );
 }

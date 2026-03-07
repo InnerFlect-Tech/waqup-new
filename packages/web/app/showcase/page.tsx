@@ -11,8 +11,9 @@ import {
   Progress,
 } from '@/components';
 import { spacing, typography, borderRadius } from '@/theme';
+import { CONTENT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
-import { PageShell, ThemeSelector, SpeakingAnimation, AppHeader } from '@/components';
+import { PageShell, PageContent, SpeakingAnimation } from '@/components';
 import Link from 'next/link';
 
 export default function ShowcasePage() {
@@ -25,9 +26,7 @@ export default function ShowcasePage() {
 
   return (
     <PageShell intensity="medium" bare>
-      <ThemeSelector />
-      <AppHeader variant="public" />
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl, textAlign: 'center' }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -48,7 +47,7 @@ export default function ShowcasePage() {
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)',
                 border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
               }}
             >
               <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -95,7 +94,7 @@ export default function ShowcasePage() {
                         backdropFilter: 'blur(10px)',
                         WebkitBackdropFilter: 'blur(10px)',
                         boxShadow: isSelected && isOpaque 
-                          ? `0 4px 12px ${colors.mystical.glow}60` 
+                          ? `0 4px 12px ${colors.accent.primary}60` 
                           : 'none',
                       }}
                     >
@@ -220,7 +219,7 @@ export default function ShowcasePage() {
                       borderRadius: borderRadius.md,
                       background: colors.accent.primary,
                       filter: `blur(${colors.mystical.blur})`,
-                      boxShadow: `0 0 ${colors.mystical.blur} ${colors.mystical.glow}`,
+                      boxShadow: `0 0 ${colors.mystical.blur} ${colors.accent.primary}`,
                     }}
                   />
                   <Typography variant="small" style={{ color: colors.text.primary }}>
@@ -266,7 +265,7 @@ export default function ShowcasePage() {
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)',
                 border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
                 padding: spacing.lg,
               }}
             >
@@ -288,7 +287,7 @@ export default function ShowcasePage() {
                   position: 'relative',
                   background: colors.background.primary,
                   border: `1px solid ${colors.border.light}`,
-                  boxShadow: `0 2px 8px ${colors.mystical.glow}10`,
+                  boxShadow: `0 2px 8px ${colors.accent.primary}10`,
                 }}
               >
                 <SpeakingAnimation isSpeaking={isSpeaking} pageDuration={5000} />
@@ -333,7 +332,7 @@ export default function ShowcasePage() {
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)',
                 border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
               }}
             >
               <Typography variant="h3" style={{ color: colors.text.primary }}>Elevated Card</Typography>

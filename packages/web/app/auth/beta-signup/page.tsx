@@ -38,10 +38,10 @@ export default function BetaSignupPage() {
                   <Sparkles size={48} color={colors.accent.primary} />
                 </div>
                 <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md, textAlign: 'center' }}>
-                  You're on the list
+                  You&apos;re on the list
                 </Typography>
                 <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center' }}>
-                  We'll notify you when the beta opens.
+                  We&apos;ll notify you when the beta opens.
                 </Typography>
               </>
             ) : (

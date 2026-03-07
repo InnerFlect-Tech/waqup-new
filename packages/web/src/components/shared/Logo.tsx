@@ -47,7 +47,7 @@ export const Logo: React.FC<LogoProps> = (props) => {
     lg: { icon: '48px', fontSize: '32px', gap: spacing.lg },
   };
 
-  const { icon, fontSize, gap } = sizeMap[size];
+  const { fontSize } = sizeMap[size];
 
   const logoContent = (
     <div
@@ -62,21 +62,34 @@ export const Logo: React.FC<LogoProps> = (props) => {
       <div
         style={{
           color: colors.text.primary,
-          fontWeight: 300, // Very thin weight (light) - matches example
-          letterSpacing: '-1px', // Tighter letter spacing like the large centered logo
+          fontWeight: 300,
+          letterSpacing: size === 'lg' ? '-2px' : '-1px',
           fontSize: fontSize,
           lineHeight: 1,
           fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-          // Ensure consistent thin thickness across all characters
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
-          fontFeatureSettings: '"liga" 1, "kern" 1', // Enable ligatures and kerning for consistent rendering
           textRendering: 'optimizeLegibility',
-          // Match the style from the example - very thin, elegant, consistent
         }}
       >
         <span style={{ fontWeight: 300, color: colors.text.primary }}>wa</span>
-        <span style={{ color: colors.accent.tertiary, fontWeight: 300 }}>Q</span>
+        {size === 'lg' ? (
+          // Hero logo: gradient Q from purple-400 to indigo-400
+          <span
+            style={{
+              fontWeight: 300,
+              background: 'linear-gradient(to right, #c084fc, #818cf8)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+            }}
+          >
+            Q
+          </span>
+        ) : (
+          <span style={{ color: colors.accent.tertiary, fontWeight: 300 }}>Q</span>
+        )}
         <span style={{ fontWeight: 300, color: colors.text.primary }}>up</span>
       </div>
     </div>

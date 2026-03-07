@@ -216,4 +216,4 @@ try {
 - **Multi-Platform Strategy**: See `../03-platforms/01-multi-platform-strategy.md`
 - **Browser Optimization**: See `../03-platforms/02-browser-optimization-strategy.md`
 - **Roadmap**: See `../../rebuild-roadmap/01-planning/01-roadmap.md`
-- **Product Docs**: See `../../docs/internal/`
+- **Product Docs**: See `../01-core/`

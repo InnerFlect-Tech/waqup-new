@@ -158,8 +158,8 @@ const useAuthStore = create<AuthState>((set) => ({
 
 ## References
 
-- **Full Details**: See `../../../docs/internal/05-system-architecture.md`
-- **Audio Details**: See `../../../docs/internal/audio-generation.md`
+- **Architecture**: See `02-architecture.md`
+- **Audio**: See `../01-core/06-audio-generation-summary.md`
 - **Implementation**: See [03-implementation.md](./03-implementation.md)
 - **Multi-Platform Strategy**: See `../03-platforms/01-multi-platform-strategy.md`
 - **Browser Optimization**: See `../03-platforms/02-browser-optimization-strategy.md`

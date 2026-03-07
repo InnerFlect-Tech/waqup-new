@@ -31,7 +31,7 @@
 - `docs/02-mobile/02-architecture.md` - Mobile architecture
 - `docs/02-mobile/03-implementation.md` - Implementation guide
 - `docs/01-core/README.md` - Reference to core product docs
-- `../../docs/internal/` - Complete product documentation
+- `docs/01-core/` - Complete product documentation (pipelines, audio, marketplace, LLM)
 
 **Current Research Findings**:
 - React Native + Expo chosen for cross-platform development
@@ -112,7 +112,7 @@
 
 **Deliverables**:
 - ✅ Technology decision document (`docs/02-mobile/01-technology-stack.md`)
-- ✅ Scientific references document (`docs/01-core/README.md` → `../../docs/internal/02-scientific-foundations.md`)
+- ✅ Scientific references (pipelines reference voice-first; see `docs/01-core/`)
 - ✅ App store requirements checklist (documented in roadmap)
 
 **Success Criteria**: 

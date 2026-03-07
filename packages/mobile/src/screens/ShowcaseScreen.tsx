@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import {
   Typography,
   Button,
@@ -12,7 +12,7 @@ import {
 import { Screen } from '@/components/layout';
 import { spacing, typography, borderRadius, shadows } from '@/theme';
 import { useTheme } from '@/theme';
-import type { Theme } from '@/theme/themes';
+import type { Theme } from '@/theme';
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +29,7 @@ export default function ShowcaseScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Typography variant="h1" style={[styles.title, { color: colors.text.primary }]}>
-            wa<span style={{ color: colors.accent.tertiary }}>Q</span>up Design System
+            {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up Design System'}
           </Typography>
           <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
             Complete UI Component Library & Design Tokens

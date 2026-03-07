@@ -1,16 +1,14 @@
 'use client';
 
-import React from 'react';
-import { PlaceholderPage } from '@/components';
-
-const AFFIRMATION_STEPS = ['select', 'theme', 'voice', 'audio', 'mix', 'complete'];
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AffirmationsCreatePage() {
-  return (
-    <PlaceholderPage
-      title="Create Affirmation"
-      description={`Steps: ${AFFIRMATION_STEPS.join(', ')}`}
-      backHref="/sanctuary/affirmations"
-    />
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/sanctuary/affirmations/create/init');
+  }, [router]);
+
+  return null;
 }

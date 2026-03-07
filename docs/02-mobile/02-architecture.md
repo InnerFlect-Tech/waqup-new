@@ -140,6 +140,6 @@ User Taps Play → Audio Service → Load from Storage → Play → Track Progre
 
 ## References
 
-- **Full Architecture**: See `../../../docs/internal/05-system-architecture.md`
+- **Tech stack**: See `01-technology-stack.md`
 - **Implementation**: See [03-implementation.md](./03-implementation.md)
 - **Multi-Platform Strategy**: See `../03-platforms/01-multi-platform-strategy.md`

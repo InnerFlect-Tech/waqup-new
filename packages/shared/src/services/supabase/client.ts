@@ -4,7 +4,7 @@ import type { SupabaseClientOptions } from '@supabase/supabase-js';
 export interface SupabaseConfig {
   url: string;
   key: string;
-  storage?: any; // AsyncStorage for mobile, undefined for web
+  storage?: { getItem: (key: string) => Promise<string | null>; setItem: (key: string, value: string) => Promise<void>; removeItem: (key: string) => Promise<void> };
 }
 
 export function createSupabaseClient(config: SupabaseConfig): SupabaseClient {
@@ -28,7 +28,7 @@ export function createSupabaseClient(config: SupabaseConfig): SupabaseClient {
 
 export async function testSupabaseConnection(
   client: SupabaseClient
-): Promise<{ success: boolean; error?: any }> {
+): Promise<{ success: boolean; error?: string }> {
   try {
     // Simple query to test connection
     const { error } = await client.from('users').select('count').limit(1);
@@ -36,6 +36,6 @@ export async function testSupabaseConnection(
     return { success: true };
   } catch (error) {
     console.error('Supabase connection test failed:', error);
-    return { success: false, error };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }

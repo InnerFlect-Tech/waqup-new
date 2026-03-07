@@ -3,8 +3,8 @@
 import React from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
-import { spacing, SAFE_AREA_RIGHT } from '@/theme';
+import { PageShell, PageContent } from '@/components';
+import { spacing } from '@/theme';
 import Link from 'next/link';
 
 interface PlaceholderPageProps {
@@ -27,7 +27,7 @@ export function PlaceholderPage({
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
+      <PageContent>
           <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
             {title}
           </Typography>
@@ -44,7 +44,7 @@ export function PlaceholderPage({
               </Button>
             </Link>
           </div>
-        </div>
+      </PageContent>
     </PageShell>
   );
 }

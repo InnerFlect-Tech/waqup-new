@@ -6,9 +6,7 @@
  */
 
 export * from './auth';
-
-// Content types will be added here
-// export type ContentItem = { ... };
+export * from './content';
 
 // Credit types will be added here
 // export type CreditTransaction = { ... };

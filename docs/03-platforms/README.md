@@ -50,7 +50,7 @@ See `../01-core/` for:
 1. **For Mobile Development**: See `../02-mobile/` (mobile-specific)
 2. **For Multi-Platform Strategy**: Read [01 Multi-Platform Strategy](./01-multi-platform-strategy.md)
 3. **For Browser Optimization**: Read [02 Browser Optimization Strategy](./02-browser-optimization-strategy.md)
-4. **For Product Context**: See `../01-core/` → `../../docs/internal/`
+4. **For Product Context**: See `../01-core/`
 
 ---
 

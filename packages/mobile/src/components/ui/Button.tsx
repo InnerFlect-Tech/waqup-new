@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { TouchableOpacity, TouchableOpacityProps, StyleSheet, ViewStyle } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps, StyleSheet, ViewStyle, View, Platform } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/theme';
@@ -110,9 +110,18 @@ export const Button: React.FC<ButtonProps> = ({
   );
 
   if (variant === 'primary' || variant === 'secondary') {
+    const webPrimaryStyle: ViewStyle =
+      Platform.OS === 'web' && variant === 'primary'
+        ? ({
+            // @ts-ignore — web-only CSS property
+            background: 'linear-gradient(to right, #9333EA, #4F46E5)',
+            backgroundColor: undefined,
+          } as ViewStyle)
+        : {};
+
     return (
       <AnimatedTouchableOpacity
-        style={[animatedStyle, buttonStyle]}
+        style={[animatedStyle, buttonStyle, webPrimaryStyle]}
         disabled={disabled || loading}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -122,9 +131,13 @@ export const Button: React.FC<ButtonProps> = ({
         accessibilityLabel={typeof children === 'string' ? children : undefined}
         {...props}
       >
-        <BlurView intensity={80} style={styles.blurContainer}>
-          {content}
-        </BlurView>
+        {Platform.OS === 'web' ? (
+          <View style={styles.webContainer}>{content}</View>
+        ) : (
+          <BlurView intensity={80} style={styles.blurContainer}>
+            {content}
+          </BlurView>
+        )}
       </AnimatedTouchableOpacity>
     );
   }
@@ -183,6 +196,13 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius: borderRadius.md,
     overflow: 'hidden',
+  },
+  webContainer: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: borderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
   buttonText: {
     textAlign: 'center',

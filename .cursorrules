@@ -29,10 +29,9 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 - **Keep schemas coherent** - verify database schemas at each phase
 
 ### 3. Documentation First
-- **Base all work on existing docs** in `../../docs/` and `docs/`
+- **Base all work on existing docs** in `docs/`
 - **Use Context7 to query docs** - fastest and most accurate
-- **Reference scientific foundations** from `../../docs/internal/02-scientific-foundations.md`
-- **Follow product constitution** from `../../docs/internal/01-product-constitution.md`
+- **Reference pipelines & principles** from `docs/01-core/`
 - **Update docs as you go** - keep documentation in sync with code
 
 ### 4. Production Quality
@@ -78,35 +77,16 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 
 **IMPORTANT**: Always use Context7 to query documentation when needed. Reference ALL docs below.
 
-#### 1. Core Product Docs (`../../docs/internal/`)
-**Location**: `../../docs/internal/` (main waQup project - use Context7 to query)
+#### 1. Core Product Docs (`docs/01-core/`)
+**Location**: `docs/01-core/` (this project - all docs in-repo only)
 
-**Core Documents (01-07)**:
-- `01-product-constitution.md` - Core identity, principles, boundaries, invariants
-- `02-scientific-foundations.md` - Scientific backing, neuroplasticity, subconscious mind
-- `03-conversational-system.md` - Conversation flows, content types, state machine
-- `04-ai-voice-ethics.md` - AI voice guidelines, ethical boundaries, privacy
-- `05-system-architecture.md` - Complete system architecture, APIs, infrastructure
-- `06-value-economy.md` - Credits system, tokens, economic model
-- `07-roadmap.md` - Product roadmap, milestones, development phases
-
-**Technical Reference**:
-- `database.md` - Complete database schema, tables, RLS policies, storage
-- `flows.md` - User flows, ritual creation flow, affirmation flow
-- `system-spec.md` - Technical specifications, requirements, implementation status
-- `system-audit.md` - Implementation status, review, audit
-- `undocumented-features.md` - Complete catalog of implemented features
-
-**Audio & AI**:
-- `audio-generation.md` - Voice cloning, TTS, ElevenLabs integration, implementation flow
-- `elevenlabs-advantages.md` - Why ElevenLabs, enterprise features, advantages
-- `audio-generation-improvements.md` - Cost optimizations, GPT-4o-mini, Batch API
-- `audio-generation-best-option-analysis.md` - TTS comparison, alternatives analysis
-- `audio-generation-tested-alternatives.md` - Tested alternatives and results
-
-**Platform & Features**:
-- `marketplace-platform.md` - Marketplace features, viral distribution, verified content
-- `voice-interaction-design.md` - Voice interaction patterns, design principles
+- `02-pipeline-affirmations.md` - Affirmation creation steps
+- `03-pipeline-meditations.md` - Meditation creation steps
+- `04-pipeline-rituals.md` - Ritual creation steps
+- `05-pipelines-overview.md` - Three content types, shared Audio page
+- `06-audio-generation-summary.md` - TTS, ElevenLabs, recording
+- `07-marketplace-summary.md` - Discovery, creator, verification, viral
+- `08-llm-conversation-summary.md` - Conversation flow, state machine
 
 #### 2. Mobile-Specific Docs (`docs/02-mobile/`)
 **Location**: `docs/02-mobile/` (this project)
@@ -126,7 +106,7 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 #### 4. Reference Guides (`docs/04-reference/`)
 **Location**: `docs/04-reference/` (this project)
 
-- `01-context7-usage.md` - How to use Context7 for documentation queries
+- `02-context7-usage.md` - How to use Context7 for documentation queries
 - `02-cursor-rules-guide.md` - Cursor rules explained and how to use them
 
 #### 5. Roadmap & Planning (`rebuild-roadmap/`)
@@ -165,48 +145,40 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 1. **For Product Understanding**:
    ```
    Use Context7 to query: "What are the three content types in waQup and how do they differ?"
-   Reference: ../../docs/internal/01-product-constitution.md
+   Reference: docs/01-core/05-pipelines-overview.md
    ```
 
-2. **For Scientific Backing**:
-   ```
-   Use Context7 to query: "What is the scientific foundation for voice-first design?"
-   Reference: ../../docs/internal/02-scientific-foundations.md
-   ```
-
-3. **For Technical Architecture**:
+2. **For Conversation System**:
    ```
    Use Context7 to query: "How does the conversation system work?"
-   Reference: ../../docs/internal/03-conversational-system.md
+   Reference: docs/01-core/08-llm-conversation-summary.md
    ```
 
-4. **For Database Schema**:
+3. **For Database Schema**:
    ```
    Use Context7 to query: "What is the database schema for content items?"
-   Reference: ../../docs/internal/database.md
-   OR
    Reference: rebuild-roadmap/01-planning/02-schema-verification.md
    ```
 
-5. **For Audio Generation**:
+4. **For Audio Generation**:
    ```
    Use Context7 to query: "How does ElevenLabs voice cloning work?"
-   Reference: ../../docs/internal/audio-generation.md
+   Reference: docs/01-core/06-audio-generation-summary.md
    ```
 
-6. **For Technology Stack**:
+5. **For Technology Stack**:
    ```
    Use Context7 to query: "What is the finalized tech stack for mobile?"
    Reference: docs/02-mobile/01-technology-stack.md
    ```
 
-7. **For Implementation Details**:
+6. **For Implementation Details**:
    ```
    Use Context7 to query: "What are the implementation patterns for React Native?"
    Reference: docs/02-mobile/03-implementation.md
    ```
 
-8. **For Architecture**:
+7. **For Architecture**:
    ```
    Use Context7 to query: "What is the mobile app architecture?"
    Reference: docs/02-mobile/02-architecture.md
@@ -222,13 +194,13 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 
 1. **Primary**: Use Context7 to query docs (fastest, most accurate)
 2. **Secondary**: Read files directly if Context7 unavailable
-3. **Reference**: Use `../../docs/internal/` for full context
+3. **All docs**: This repo only — `docs/` and `rebuild-roadmap/`
 4. **Mobile**: Use `docs/02-mobile/` for mobile-specific information
 
 ### When Creating New Docs
 
 - **Use Context7 first** - query existing docs for patterns
-- **Reference existing docs** - adapt from `../../docs/`
+- **Reference existing docs** - adapt from `docs/`
 - **Follow numbering** - use numbered format (01-, 02-, etc.)
 - **Keep structure consistent** - follow existing patterns
 - **Update changelog** - document what was created
@@ -966,7 +938,7 @@ try {
 - **Guided Meditations** - State induction (medium)
 - **Rituals** - Identity encoding (deepest)
 
-**Reference**: Use Context7 to query `../../docs/internal/01-product-constitution.md`
+**Reference**: Use Context7 to query `docs/01-core/05-pipelines-overview.md`
 
 ### Conversation Over Forms
 - **No static forms** - all creation through dialogue
@@ -1194,20 +1166,18 @@ const useAuthStore = create<AuthState>((set) => ({
 4. **Tech Stack**: `docs/02-mobile/01-technology-stack.md` - finalized decisions
 5. **Architecture**: `docs/02-mobile/02-architecture.md` - system structure
 6. **Implementation**: `docs/02-mobile/03-implementation.md` - patterns & guide
-7. **Context7 Guide**: `docs/04-reference/01-context7-usage.md` - Context7 usage
+7. **Context7 Guide**: `docs/04-reference/02-context7-usage.md` - Context7 usage
 8. **Cursor Rules Guide**: `docs/04-reference/02-cursor-rules-guide.md` - Rules guide
 9. **Multi-Platform Strategy**: `docs/03-platforms/01-multi-platform-strategy.md` - Platform strategy
 10. **Browser Optimization**: `docs/03-platforms/02-browser-optimization-strategy.md` - Browser strategy
 
 ### Reference (Main Project - Use Context7)
-9. **Product Constitution**: `../../docs/internal/01-product-constitution.md` - Core principles
-10. **Scientific Foundations**: `../../docs/internal/02-scientific-foundations.md` - Research backing
-11. **System Architecture**: `../../docs/internal/05-system-architecture.md` - Full architecture
-12. **Database**: `../../docs/internal/database.md` - Complete schema
-13. **User Flows**: `../../docs/internal/flows.md` - User journeys
-14. **Audio Generation**: `../../docs/internal/audio-generation.md` - Voice cloning, TTS
-15. **Conversational System**: `../../docs/internal/03-conversational-system.md` - Conversation flows
-16. **All Other Docs**: `../../docs/internal/` - Complete reference (20+ files)
+9. **Core product, pipelines**: `docs/01-core/` - Pipelines, audio, marketplace, LLM
+10. **Architecture**: `docs/02-mobile/02-architecture.md` - App architecture
+11. **Schema**: `rebuild-roadmap/01-planning/02-schema-verification.md` - Database
+12. **Audio**: `docs/01-core/06-audio-generation-summary.md` - TTS, ElevenLabs
+13. **Conversation**: `docs/01-core/08-llm-conversation-summary.md` - Conversation flows
+14. **All docs**: `docs/` and `rebuild-roadmap/` - This repo only
 
 **Use Context7 to query these docs when needed!**
 
@@ -1237,27 +1207,27 @@ const useAuthStore = create<AuthState>((set) => ({
 5. **Check phase analysis** - `rebuild-roadmap/02-phases/`
    - Detailed steps for each phase
 
-6. **Use Context7 for main docs** - `../../docs/internal/`
+6. **Use Context7 for main docs** - `docs/01-core/`
    - Product constitution
    - Scientific foundations
    - System architecture
    - Database schema
    - User flows
    - Audio generation
-   - All other internal docs (20+ files)
+   - All in-repo docs (docs/, rebuild-roadmap/)
 
 ### Context7 Query Examples
 
 **For Product Questions**:
 ```
 Use Context7: "What are the core principles of waQup?"
-Reference: ../../docs/internal/01-product-constitution.md
+Reference: docs/01-core/05-pipelines-overview.md
 ```
 
 **For Technical Questions**:
 ```
 Use Context7: "How does the Supabase integration work?"
-Reference: ../../docs/internal/05-system-architecture.md
+Reference: docs/02-mobile/02-architecture.md
 ```
 
 **For Database Questions**:
@@ -1289,13 +1259,10 @@ Reference: docs/02-mobile/01-technology-stack.md
 ## Current Development Status
 
 ### Active Phase
-**Phase 1: Project Foundation** - Step 1.1
+**Web**: Phases 1–5 done; next: conversational create flows, Phase 7 API  
+**Mobile**: Phases 1–3 done; next: Phase 4 (Sanctuary, content)
 
-**Current Task**: Initialize All Platform Projects (Mobile + Web)
-
-**Status**: ⏳ Ready to Start
-
-**Next Actions**: See `NEXT_STEPS.md` and `TASKS.md` for immediate tasks
+**Status**: See `docs/04-reference/09-current-vs-final-solution.md` and `rebuild-roadmap/03-tracking/01-changelog.md`
 
 ---
 
@@ -1337,13 +1304,10 @@ npm run dev:web
 ## Development Status
 
 ### Current Phase
-**Phase 1: Project Foundation** - Step 1.1
+**Web**: Phases 1–5 done; next: conversational create flows, Phase 7 API  
+**Mobile**: Phases 1–3 done; next: Phase 4 (Sanctuary, content)
 
-**Current Task**: Initialize All Platform Projects (Mobile + Web)
-
-**Status**: 🚀 Building Now
-
-**Next Actions**: See `NEXT_STEPS.md` and `TASKS.md` for immediate tasks
+**Status**: See `docs/04-reference/09-current-vs-final-solution.md` and changelog
 
 ---
 

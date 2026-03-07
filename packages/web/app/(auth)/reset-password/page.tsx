@@ -76,7 +76,7 @@ export default function ResetPasswordPage() {
 
   if (!hasValidSession) {
     return (
-      <PageShell intensity="medium" maxWidth={480} centered>
+      <PageShell intensity="medium" maxWidth={480} centered plain>
         <div style={{ width: '100%' }}>
           <GlassCard variant="auth" style={{ textAlign: 'center' }}>
               <AlertCircle size={64} color={colors.error} style={{ margin: '0 auto', marginBottom: spacing.lg }} />
@@ -105,7 +105,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <PageShell intensity="medium" maxWidth={480} centered>
+    <PageShell intensity="medium" maxWidth={480} centered plain>
       <div style={{ width: '100%' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>

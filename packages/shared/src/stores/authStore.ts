@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { User, Session } from '@supabase/supabase-js';
-import type { AuthStore, AuthActions, AuthState } from '../types/auth';
-import { createAuthService, type AuthService } from '../services/auth/authService';
+import type { AuthStore, AuthState } from '../types/auth';
+import { createAuthService } from '../services/auth/authService';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
@@ -243,11 +243,11 @@ export function createAuthStore(options: CreateAuthStoreOptions) {
 
         // Store unsubscribe function for cleanup
         return unsubscribe;
-      } catch (error: any) {
+      } catch (error) {
         set({
           isLoading: false,
           isInitialized: true,
-          error: error.message || 'Failed to initialize auth',
+          error: error instanceof Error ? error.message : 'Failed to initialize auth',
         });
         return () => {}; // Return no-op unsubscribe
       }

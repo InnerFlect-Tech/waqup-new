@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextInput, TextInputProps, View, StyleSheet, ViewStyle } from 'react-native';
+import { TextInput, TextInputProps, View, Platform, StyleSheet, ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { colors, spacing, borderRadius } from '@/theme';
+import { useTheme } from '@/theme';
+import { spacing, borderRadius } from '@/theme';
 import { Typography } from './Typography';
 
 export interface InputProps extends TextInputProps {
@@ -23,50 +24,90 @@ export const Input: React.FC<InputProps> = ({
   style,
   ...props
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const [focused, setFocused] = useState(false);
 
-  const inputContainerStyle = [
-    styles.inputContainer,
-    focused && styles.inputContainerFocused,
-    error && styles.inputContainerError,
-    containerStyle,
-  ];
+  const borderColor = error
+    ? colors.error
+    : focused
+      ? colors.accent.primary
+      : colors.border.light;
+
+  const inputContainerStyle: ViewStyle = {
+    borderRadius: borderRadius.md,
+    borderWidth: focused ? 2 : 1,
+    borderColor,
+    overflow: 'hidden',
+    ...containerStyle,
+  };
+
+  const innerContent = (
+    <>
+      {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
+      <TextInput
+        style={[
+          styles.input,
+          leftIcon ? styles.inputWithLeftIcon : null,
+          rightIcon ? styles.inputWithRightIcon : null,
+          { color: colors.text.primary },
+          style,
+        ]}
+        placeholderTextColor={colors.text.secondary}
+        onFocus={(e) => {
+          setFocused(true);
+          props.onFocus?.(e);
+        }}
+        onBlur={(e) => {
+          setFocused(false);
+          props.onBlur?.(e);
+        }}
+        accessibilityLabel={label}
+        accessibilityHint={helperText || error}
+        {...props}
+      />
+      {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
+    </>
+  );
 
   return (
     <View style={styles.container}>
       {label && (
-        <Typography variant="captionBold" color="primary" style={styles.label}>
+        <Typography
+          variant="caption"
+          color="secondary"
+          style={[styles.label, { fontWeight: '500' }]}
+        >
           {label}
         </Typography>
       )}
       <View style={inputContainerStyle}>
-        <BlurView intensity={80} style={styles.blurContainer}>
-          {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
-          <TextInput
+        {Platform.OS === 'web' ? (
+          <View
             style={[
-              styles.input,
-              leftIcon ? styles.inputWithLeftIcon : null,
-              rightIcon ? styles.inputWithRightIcon : null,
-              style,
+              styles.blurContainer,
+              {
+                backgroundColor: colors.glass.light,
+                // @ts-ignore — web-only CSS property
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+              },
             ]}
-            placeholderTextColor={colors.text.tertiary}
-            onFocus={(e) => {
-              setFocused(true);
-              props.onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setFocused(false);
-              props.onBlur?.(e);
-            }}
-            accessibilityLabel={label}
-            accessibilityHint={helperText || error}
-            {...props}
-          />
-          {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
-        </BlurView>
+          >
+            {innerContent}
+          </View>
+        ) : (
+          <BlurView
+            intensity={80}
+            tint="dark"
+            style={[styles.blurContainer, { backgroundColor: colors.glass.light }]}
+          >
+            {innerContent}
+          </BlurView>
+        )}
       </View>
       {error && (
-        <Typography variant="small" color="primary" style={[styles.helperText, styles.errorText]}>
+        <Typography variant="small" style={[styles.helperText, { color: colors.error }]}>
           {error}
         </Typography>
       )}
@@ -86,23 +127,9 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: spacing.sm,
   },
-  inputContainer: {
-    borderRadius: borderRadius.md,
-    borderWidth: 1,
-    borderColor: colors.border.light,
-    overflow: 'hidden',
-  },
-  inputContainerFocused: {
-    borderColor: colors.accent.primary,
-    borderWidth: 2,
-  },
-  inputContainerError: {
-    borderColor: colors.error,
-  },
   blurContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.glass.light,
     minHeight: 44,
   },
   input: {
@@ -110,7 +137,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     fontSize: 16,
-    color: colors.text.primary,
     minHeight: 44,
   },
   inputWithLeftIcon: {
@@ -129,8 +155,5 @@ const styles = StyleSheet.create({
   },
   helperText: {
     marginTop: spacing.xs,
-  },
-  errorText: {
-    color: colors.error,
   },
 });

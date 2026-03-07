@@ -3,8 +3,7 @@
 import React from 'react';
 import { useTheme } from '@/theme';
 import { AnimatedBackground } from './AnimatedBackground';
-import { spacing } from '@/theme';
-import { CONTENT_MAX_WIDTH, PAGE_PADDING } from '@/theme';
+import { CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
 
 export interface PageShellProps {
   children: React.ReactNode;
@@ -16,6 +15,8 @@ export interface PageShellProps {
   centered?: boolean;
   /** Skip content container wrapper (use when page needs custom layout) */
   bare?: boolean;
+  /** Plain dark background with no animated orbs — used on auth pages */
+  plain?: boolean;
 }
 
 export const PageShell: React.FC<PageShellProps> = ({
@@ -24,6 +25,7 @@ export const PageShell: React.FC<PageShellProps> = ({
   maxWidth = CONTENT_MAX_WIDTH,
   centered = false,
   bare = false,
+  plain = false,
 }) => {
   const { theme } = useTheme();
   const colors = theme.colors;
@@ -32,7 +34,10 @@ export const PageShell: React.FC<PageShellProps> = ({
     position: 'relative',
     zIndex: 1,
     minHeight: '100vh',
-    padding: PAGE_PADDING,
+    paddingTop: centered ? PAGE_PADDING : PAGE_TOP_PADDING,
+    paddingLeft: PAGE_PADDING,
+    paddingRight: PAGE_PADDING,
+    paddingBottom: PAGE_PADDING,
     ...(centered && {
       display: 'flex',
       alignItems: 'center',
@@ -58,12 +63,12 @@ export const PageShell: React.FC<PageShellProps> = ({
         overflow: 'hidden',
       }}
     >
-      <AnimatedBackground intensity={intensity} color="primary" />
+      {!plain && <AnimatedBackground intensity={intensity} color="primary" />}
       <div
         style={{
           position: 'fixed',
           inset: 0,
-          background: colors.gradients.mystical,
+          background: plain ? colors.background.primary : colors.gradients.mystical,
           pointerEvents: 'none',
           zIndex: 0,
         }}

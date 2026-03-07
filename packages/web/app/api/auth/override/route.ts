@@ -3,8 +3,13 @@ import { NextResponse } from 'next/server';
 /**
  * Override login: validate credentials against env and allow bypassing Supabase.
  * Use only for dev/admin access. Set OVERRIDE_LOGIN_EMAIL and OVERRIDE_LOGIN_PASSWORD in env.
+ * Disabled in production.
  */
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   try {
     const body = await request.json();
     const email = typeof body?.email === 'string' ? body.email.trim() : '';

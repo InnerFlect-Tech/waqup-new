@@ -5,7 +5,7 @@
  * Platforms import from here: import { getContent } from '@waqup/shared/services'
  */
 
-// Supabase services
+// Supabase services (client factory, content CRUD)
 export * from './supabase';
 
 // Auth services

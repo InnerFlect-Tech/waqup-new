@@ -1,29 +1,24 @@
 'use client';
 
 import React from 'react';
-import { PlaceholderPage } from '@/components';
-import Link from 'next/link';
-import { Button } from '@/components';
-import { useTheme } from '@/theme';
-import { spacing } from '@/theme';
+import { ContentListPage } from '@/components/content';
+import { useContent } from '@/hooks';
 
 export default function MeditationsListPage() {
-  const { theme } = useTheme();
-  const colors = theme.colors;
+  const { items, isLoading, error, refetch } = useContent('meditation');
 
   return (
-    <PlaceholderPage
+    <ContentListPage
       title="Meditations"
-      description="Your guided meditations for state induction. (Stub — to be implemented)"
+      description="Your guided meditations for state induction."
+      contentType="meditation"
+      createHref="/sanctuary/meditations/create"
       backHref="/sanctuary"
-    >
-      <div style={{ marginTop: spacing.lg }}>
-        <Link href="/sanctuary/meditations/create" style={{ textDecoration: 'none' }}>
-          <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
-            Create Meditation
-          </Button>
-        </Link>
-      </div>
-    </PlaceholderPage>
+      content={items}
+      createLabel="Create Meditation"
+      isLoading={isLoading}
+      error={error}
+      onRetry={refetch}
+    />
   );
 }

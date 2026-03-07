@@ -1,0 +1,141 @@
+'use client';
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Typography, Button } from '@/components';
+import { useTheme } from '@/theme';
+import { spacing, borderRadius } from '@/theme';
+import type { LucideIcon } from 'lucide-react';
+
+export interface CreateFlowStep {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+export interface CreateFlowInitStepProps {
+  title: string;
+  description: string;
+  steps: CreateFlowStep[];
+  tips?: string[];
+  nextHref: string;
+  nextLabel?: string;
+}
+
+export function CreateFlowInitStep({
+  title,
+  description,
+  steps,
+  tips,
+  nextHref,
+  nextLabel = 'Begin Journey →',
+}: CreateFlowInitStepProps) {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
+  return (
+    <div style={{ maxWidth: '48rem', margin: '0 auto' }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{ marginBottom: spacing.xl, textAlign: 'center' }}
+      >
+        <Typography variant="h1" style={{ marginBottom: spacing.md, color: colors.text.primary, fontWeight: 300 }}>
+          {title}
+        </Typography>
+        <Typography variant="body" style={{ color: colors.text.secondary }}>
+          {description}
+        </Typography>
+      </motion.div>
+
+      <div style={{ marginBottom: spacing.xl }}>
+        <div
+          style={{
+            padding: spacing.xl,
+            borderRadius: borderRadius.xl,
+            background: colors.glass.light,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: `1px solid ${colors.glass.border}`,
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
+            {steps.map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                style={{ display: 'flex', gap: spacing.lg }}
+              >
+                <div style={{ flexShrink: 0 }}>
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: borderRadius.full,
+                      background: `${colors.accent.tertiary}30`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <step.icon size={24} color={colors.accent.tertiary} strokeWidth={2.5} />
+                  </div>
+                </div>
+                <div>
+                  <Typography variant="h3" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontWeight: 300 }}>
+                    {step.title}
+                  </Typography>
+                  <Typography variant="body" style={{ color: colors.text.secondary }}>
+                    {step.description}
+                  </Typography>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {tips && tips.length > 0 && (
+            <div
+              style={{
+                marginTop: spacing.xl,
+                padding: spacing.md,
+                borderRadius: borderRadius.lg,
+                background: colors.glass.transparent,
+              }}
+            >
+              <Typography variant="h4" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontWeight: 300 }}>
+                Before You Begin:
+              </Typography>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: spacing.lg,
+                  color: colors.text.secondary,
+                  lineHeight: 1.8,
+                }}
+              >
+                {tips.map((tip, i) => (
+                  <li key={i}>
+                    <Typography variant="body" style={{ color: colors.text.secondary }}>
+                      {tip}
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Link href={nextHref} style={{ textDecoration: 'none' }}>
+          <Button variant="primary" size="lg" style={{ background: colors.gradients.primary }}>
+            {nextLabel}
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}

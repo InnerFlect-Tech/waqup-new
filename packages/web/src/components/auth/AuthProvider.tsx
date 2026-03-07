@@ -16,19 +16,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Initialize auth state on mount
+    // If an override user is stored in localStorage, restore it immediately —
+    // no need to wait for Supabase which may not be configured in dev.
+    const overrideUser = getOverrideUserToRestore();
+    if (overrideUser) {
+      useAuthStore.getState().setUser(overrideUser);
+      useAuthStore.getState().setInitialized(true);
+      setIsReady(true);
+      return;
+    }
+
+    // No override user — run full Supabase auth initialization.
     let unsubscribe: (() => void) | null = null;
-    
     initializeAuth().then((unsub) => {
       unsubscribe = unsub;
-      // If no Supabase session but override is stored, restore override user so pages are visible
-      const overrideUser = getOverrideUserToRestore();
-      if (overrideUser) {
-        useAuthStore.getState().setUser(overrideUser);
-      }
       setIsReady(true);
     });
-    
+
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -77,9 +81,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, isReady, isInitialized, pathname, router]);
 
-  // Show nothing while initializing
   if (!isReady || !isInitialized) {
-    return null; // Or a loading screen component
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#0a0a0f',
+        }}
+      >
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: '50%',
+            border: '2px solid rgba(168,85,247,0.2)',
+            borderTopColor: '#a855f7',
+            animation: 'spin 0.8s linear infinite',
+          }}
+        />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
   }
 
   return <>{children}</>;

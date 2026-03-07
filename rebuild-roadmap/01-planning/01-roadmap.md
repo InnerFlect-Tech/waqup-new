@@ -1,8 +1,8 @@
 # waQup Production Rebuild Roadmap
 
-**Goal**: Rebuild waQup from scratch as a production-ready mobile app for iOS and Android app stores, with high-quality design, fast performance, and scientific backing.
+**Goal**: Rebuild waQup from scratch as a **multi-platform** app: **Mobile** (iOS + Android via Expo) and **Web** (desktop browsers via Next.js), with production-ready design, performance, and scientific backing.
 
-**Approach**: Each step is independently runnable with clear, visible UI differences. We build incrementally, testing at each stage.
+**Approach**: Each step is independently runnable with clear, visible UI differences. We build incrementally, testing at each stage. **Parallel development** – Mobile and Web developed simultaneously.
 
 **Important**: For detailed analysis of each phase with "now/after" comparisons, schema verification, and step-by-step implementation details, see:
 - [Schema Verification](./02-schema-verification.md) - Complete database schema analysis
@@ -15,6 +15,17 @@
 - [Implementation](../../docs/02-mobile/03-implementation.md) - Implementation guide
 
 **⚠️ IMPORTANT**: Always update [Changelog](../03-tracking/01-changelog.md) when completing or re-running steps!
+
+---
+
+## Current Status (2026-02-16)
+
+| Platform | Phases Done | Active Phase | Next |
+|----------|-------------|--------------|------|
+| **Web** | 1, 2, 3, 4, 5 (partial), 14 (UI) | Phase 6–9 | Make create flows conversational; full API integration |
+| **Mobile** | 1, 2, 3 | Phase 4 | Sanctuary, content list/detail, creation flows |
+
+**Full analysis**: [docs/04-reference/09-current-vs-final-solution.md](../../docs/04-reference/09-current-vs-final-solution.md)
 
 ---
 
@@ -1109,5 +1120,5 @@
 
 ---
 
-**Last Updated**: 2026-02-07
-**Status**: Ready for Implementation
+**Last Updated**: 2026-02-16
+**Status**: In Progress – Web ahead (Sanctuary, content, speak, marketplace); Mobile at Phase 3; both aligned on design system (shared theme)

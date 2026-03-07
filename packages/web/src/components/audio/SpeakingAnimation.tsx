@@ -42,7 +42,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
   // Cycle through 4 pages when speaking
   useEffect(() => {
     if (!isSpeaking) {
-      setIsVisible(false);
+      setIsVisible(false); /* eslint-disable-line react-hooks/set-state-in-effect */
       return;
     }
 
@@ -57,12 +57,16 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
   // Reset to first page when speaking starts
   useEffect(() => {
     if (isSpeaking) {
-      setCurrentPage(0);
+      setCurrentPage(0); /* eslint-disable-line react-hooks/set-state-in-effect */
     }
   }, [isSpeaking]);
 
-  // Generate frequency bars (simulated if not provided)
-  const frequencyBars = frequencyData || Array.from({ length: 12 }, () => Math.random() * 0.6 + 0.2);
+  // Generate frequency bars (simulated if not provided) - deterministic for purity
+  const defaultBars = React.useMemo(
+    () => Array.from({ length: 12 }, (_, i) => 0.2 + ((i * 7) % 5) * 0.1),
+    []
+  );
+  const frequencyBars = frequencyData || defaultBars;
 
   return (
     <div
@@ -193,7 +197,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
           background: ${colors.glass.light};
           backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
           border: 1px solid ${colors.glass.border};
-          box-shadow: 0 4px 16px ${colors.mystical.glow}15;
+          box-shadow: 0 4px 16px ${colors.accent.primary}15;
         }
         .minimal-orb-1 { width: 120px; height: 120px; top: 25%; left: 20%; animation: minimalFloat-1 8s ease-in-out infinite; }
         .minimal-orb-2 { width: 100px; height: 100px; top: 50%; right: 25%; animation: minimalFloat-2 10s ease-in-out infinite; }

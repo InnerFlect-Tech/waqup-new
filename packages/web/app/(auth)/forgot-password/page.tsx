@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
 
   if (emailSent) {
     return (
-      <PageShell intensity="medium" maxWidth={480} centered>
+      <PageShell intensity="medium" maxWidth={480} centered plain>
         <div style={{ width: '100%' }}>
           <GlassCard variant="auth" style={{ textAlign: 'center' }}>
               <CheckCircle2 size={64} color={colors.success} style={{ margin: '0 auto', marginBottom: spacing.lg }} />
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
                 Check Your Email
               </Typography>
               <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, lineHeight: '24px' }}>
-                We've sent a password reset link to <strong>{userEmail}</strong>. Please check your inbox and follow the instructions to reset your password.
+                We&apos;ve sent a password reset link to <strong>{userEmail}</strong>. Please check your inbox and follow the instructions to reset your password.
               </Typography>
               <Button
                 variant="primary"
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <PageShell intensity="medium" maxWidth={480} centered>
+    <PageShell intensity="medium" maxWidth={480} centered plain>
       <div style={{ width: '100%' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
@@ -121,7 +121,7 @@ export default function ForgotPasswordPage() {
               )}
 
               <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, textAlign: 'center', lineHeight: '24px' }}>
-                Enter your email address and we'll send you a link to reset your password.
+                Enter your email address and we&apos;ll send you a link to reset your password.
               </Typography>
 
               <Controller

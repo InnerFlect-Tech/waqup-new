@@ -1,4 +1,5 @@
 import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import type { ReactNode } from 'react';
 
 /**
  * Authentication Types - Shared across platforms
@@ -53,13 +54,13 @@ export interface AuthActions {
 
 export interface AuthStore extends AuthState, AuthActions {}
 
-export interface AuthServiceResult<T = any> {
+export interface AuthServiceResult<T = unknown> {
   data: T | null;
   error: string | null;
   success: boolean;
 }
 
 export interface ProtectedRouteProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
+  children: ReactNode;
+  fallback?: ReactNode;
 }

@@ -154,7 +154,7 @@
 ## References
 
 - [Technology Stack](../../docs/02-mobile/01-technology-stack.md)
-- [Value Economy](../../../docs/internal/06-value-economy.md)
+- [Marketplace Summary](../../docs/01-core/07-marketplace-summary.md) (credits/value)
 - [Roadmap](../01-planning/01-roadmap.md)
 
 ---

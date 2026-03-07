@@ -1,8 +1,12 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import '../src/styles/animations.css';
 import { ThemeProvider } from '@/theme';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import { ThemeSelector, AppLayout } from '@/components';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'waQup',
@@ -33,10 +37,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${inter.className} antialiased`}>
         <ThemeProvider defaultThemeName="mystical-purple">
           <AuthProvider>
-            {children}
+            <ThemeSelector />
+            <AppLayout>{children}</AppLayout>
           </AuthProvider>
         </ThemeProvider>
       </body>

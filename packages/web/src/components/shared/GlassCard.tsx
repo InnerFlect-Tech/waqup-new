@@ -22,19 +22,17 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   const { theme } = useTheme();
   const colors = theme.colors;
   const padding = variant === 'auth' ? CARD_PADDING_AUTH : CARD_PADDING_CONTENT;
-  const glowColor = colors.mystical?.glow ?? 'rgba(0,0,0,0.1)';
-
   return (
     <div
       className={className}
       style={{
         padding,
         borderRadius: GLASS_CARD_STYLES.borderRadius,
-        background: colors.glass.opaque,
+        background: colors.glass.light,
         backdropFilter: GLASS_CARD_STYLES.backdropFilter,
         WebkitBackdropFilter: GLASS_CARD_STYLES.WebkitBackdropFilter,
         border: `${GLASS_CARD_STYLES.borderBase} ${colors.glass.border}`,
-        boxShadow: `0 16px 64px ${glowColor}40`,
+        boxShadow: `0 16px 64px ${colors.accent.primary}40`,
         ...style,
       }}
     >

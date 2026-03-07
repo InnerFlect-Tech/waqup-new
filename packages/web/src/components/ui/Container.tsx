@@ -1,5 +1,9 @@
+'use client';
+
+// TODO: wire up or remove — zero consumers found in the app
 import React from 'react';
-import { colors, spacing } from '@/theme';
+import { spacing } from '@/theme';
+import { useTheme } from '@/theme';
 
 export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'primary' | 'secondary' | 'transparent';
@@ -17,11 +21,14 @@ export const Container: React.FC<ContainerProps> = ({
   className,
   ...props
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
   const containerStyle: React.CSSProperties = {
     width: '100%',
-    ...(variant === 'primary' && { backgroundColor: colors.background.primary }),
-    ...(variant === 'secondary' && { backgroundColor: colors.background.secondary }),
-    ...(variant === 'transparent' && { backgroundColor: 'transparent' }),
+    ...(variant === 'primary' && { background: colors.background.primary }),
+    ...(variant === 'secondary' && { background: colors.background.secondary }),
+    ...(variant === 'transparent' && { background: 'transparent' }),
     ...(padding && { padding: spacing.md }),
     ...(maxWidth !== 'full' && {
       maxWidth: getMaxWidth(maxWidth),

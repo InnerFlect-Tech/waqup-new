@@ -155,7 +155,7 @@
 
 - [Technology Stack](../../docs/02-mobile/01-technology-stack.md)
 - [Implementation Guide](../../docs/02-mobile/03-implementation.md)
-- [Audio Generation](../../../docs/internal/audio-generation.md)
+- [Audio Generation](../../docs/01-core/06-audio-generation-summary.md)
 - [Roadmap](../01-planning/01-roadmap.md)
 
 ---

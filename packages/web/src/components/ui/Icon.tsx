@@ -60,9 +60,7 @@ export const Icon: React.FC<IconProps> = ({
   );
 };
 
-/**
- * Pre-configured icon components for common use cases
- */
+// TODO: wire up or remove — zero consumers found in the app
 export const IconButton: React.FC<IconProps & { onClick?: () => void }> = ({
   name,
   size = 20,

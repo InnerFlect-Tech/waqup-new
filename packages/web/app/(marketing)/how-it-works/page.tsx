@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
-import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
+import { spacing, borderRadius } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM } from '@/theme';
 import Link from 'next/link';
 import {
   Sunrise,
@@ -104,9 +105,8 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -114,7 +114,6 @@ export default function HowItWorksPage() {
             variant="h1"
             style={{
               fontSize: 'clamp(36px, 6vw, 64px)',
-              fontWeight: 300,
               color: colors.text.primary,
               marginBottom: spacing.md,
             }}
@@ -126,7 +125,7 @@ export default function HowItWorksPage() {
             style={{
               fontSize: 'clamp(18px, 2.5vw, 24px)',
               color: colors.text.secondary,
-              maxWidth: '800px',
+              maxWidth: CONTENT_NARROW,
               margin: `0 auto ${spacing.xl} auto`,
               lineHeight: 1.6,
             }}
@@ -159,8 +158,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -168,7 +166,6 @@ export default function HowItWorksPage() {
             variant="h2"
             style={{
               fontSize: 'clamp(28px, 4vw, 40px)',
-              fontWeight: 300,
               color: colors.text.primary,
               textAlign: 'center',
               marginBottom: spacing.xxl,
@@ -189,11 +186,11 @@ export default function HowItWorksPage() {
                     gap: spacing.lg,
                     padding: spacing.xl,
                     borderRadius: borderRadius.xl,
-                    background: colors.glass.opaque,
+                    background: colors.glass.light,
                     backdropFilter: 'blur(20px)',
                     WebkitBackdropFilter: 'blur(20px)',
                     border: `1px solid ${colors.glass.border}`,
-                    boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                    boxShadow: `0 8px 32px ${colors.accent.primary}40`,
                     transition: 'all 0.3s ease',
                   }}
                 >
@@ -208,7 +205,7 @@ export default function HowItWorksPage() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0,
-                        boxShadow: `0 4px 12px ${colors.mystical.glow}60`,
+                        boxShadow: `0 4px 12px ${colors.accent.primary}60`,
                         position: 'relative',
                         overflow: 'hidden',
                       }}
@@ -217,7 +214,7 @@ export default function HowItWorksPage() {
                         style={{
                           position: 'absolute',
                           inset: 0,
-                          background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
+                          background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
                           opacity: 0.6,
                         }}
                       />
@@ -258,8 +255,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -267,7 +263,6 @@ export default function HowItWorksPage() {
             variant="h2"
             style={{
               fontSize: 'clamp(28px, 4vw, 40px)',
-              fontWeight: 300,
               color: colors.text.primary,
               textAlign: 'center',
               marginBottom: spacing.md,
@@ -280,7 +275,7 @@ export default function HowItWorksPage() {
             style={{
               color: colors.text.secondary,
               textAlign: 'center',
-              maxWidth: '800px',
+              maxWidth: CONTENT_NARROW,
               margin: `0 auto ${spacing.xxl} auto`,
             }}
           >
@@ -301,11 +296,11 @@ export default function HowItWorksPage() {
                   style={{
                     padding: spacing.xl,
                     borderRadius: borderRadius.lg,
-                    background: colors.glass.opaque,
+                    background: colors.glass.light,
                     backdropFilter: 'blur(20px)',
                     WebkitBackdropFilter: 'blur(20px)',
                     border: `1px solid ${colors.glass.border}`,
-                    boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                    boxShadow: `0 8px 32px ${colors.accent.primary}40`,
                     transition: 'all 0.3s ease',
                   }}
                 >
@@ -319,7 +314,7 @@ export default function HowItWorksPage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       marginBottom: spacing.md,
-                      boxShadow: `0 4px 12px ${colors.mystical.glow}60`,
+                      boxShadow: `0 4px 12px ${colors.accent.primary}60`,
                       position: 'relative',
                       overflow: 'hidden',
                     }}
@@ -328,7 +323,7 @@ export default function HowItWorksPage() {
                       style={{
                         position: 'absolute',
                         inset: 0,
-                        background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
+                        background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
                         opacity: 0.6,
                       }}
                     />
@@ -352,8 +347,7 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -361,11 +355,11 @@ export default function HowItWorksPage() {
             style={{
               padding: spacing.xxl,
               borderRadius: borderRadius.xl,
-              background: colors.glass.opaque,
+              background: colors.glass.light,
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
+              boxShadow: `0 16px 64px ${colors.accent.primary}40`,
               textAlign: 'center',
             }}
           >
@@ -390,7 +384,6 @@ export default function HowItWorksPage() {
               variant="h2"
               style={{
                 fontSize: 'clamp(28px, 4vw, 40px)',
-                fontWeight: 300,
                 color: colors.text.primary,
                 marginBottom: spacing.md,
               }}
@@ -401,7 +394,7 @@ export default function HowItWorksPage() {
               variant="body"
               style={{
                 color: colors.text.secondary,
-                maxWidth: '600px',
+                maxWidth: CONTENT_MEDIUM,
                 margin: `0 auto ${spacing.xl} auto`,
                 fontSize: '18px',
               }}
@@ -425,76 +418,58 @@ export default function HowItWorksPage() {
           </div>
         </section>
 
-        {/* Testimonials */}
+        {/* Early Access CTA */}
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: spacing.lg,
+              padding: spacing.xxl,
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+              textAlign: 'center',
             }}
           >
-            <div
+            <Typography
+              variant="h2"
               style={{
-                padding: spacing.xl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.opaque,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.glass.border}`,
-                textAlign: 'center',
+                fontSize: 'clamp(24px, 3vw, 36px)',
+                color: colors.text.primary,
+                marginBottom: spacing.md,
               }}
             >
-              <Typography
-                variant="body"
-                style={{
-                  fontSize: '20px',
-                  color: colors.text.primary,
-                  fontStyle: 'italic',
-                  marginBottom: spacing.lg,
-                  lineHeight: 1.6,
-                }}
-              >
-                "waQup has transformed my morning routine. The personalized guidance and beautiful meditations have helped me stay consistent with my practice."
-              </Typography>
-              <Typography variant="body" style={{ color: colors.accent.tertiary, fontWeight: 600 }}>
-                Sarah M. - Founding Member
-              </Typography>
-            </div>
-            <div
+              Be Among the First
+            </Typography>
+            <Typography
+              variant="body"
               style={{
-                padding: spacing.xl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.opaque,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.glass.border}`,
-                textAlign: 'center',
+                fontSize: '18px',
+                color: colors.text.secondary,
+                maxWidth: CONTENT_MEDIUM,
+                margin: `0 auto ${spacing.xl} auto`,
+                lineHeight: 1.7,
               }}
             >
-              <Typography
-                variant="body"
+              waQup is launching soon. Become a founding member, experience the app first-hand, and share your story with the community.
+            </Typography>
+            <Link href="/signup" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="primary"
+                size="lg"
                 style={{
-                  fontSize: '20px',
-                  color: colors.text.primary,
-                  fontStyle: 'italic',
-                  marginBottom: spacing.lg,
-                  lineHeight: 1.6,
+                  background: colors.gradients.primary,
                 }}
               >
-                "The AI-powered recommendations are incredible. It's like having a spiritual guide that truly understands my journey and growth."
-              </Typography>
-              <Typography variant="body" style={{ color: colors.accent.tertiary, fontWeight: 600 }}>
-                Michael R. - Founding Member
-              </Typography>
-            </div>
+                Join as a Founding Member
+              </Button>
+            </Link>
           </div>
         </section>
 
@@ -502,9 +477,8 @@ export default function HowItWorksPage() {
         <section
           style={{
             padding: `${spacing.xxxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -512,7 +486,6 @@ export default function HowItWorksPage() {
             variant="h2"
             style={{
               fontSize: 'clamp(28px, 4vw, 40px)',
-              fontWeight: 300,
               color: colors.text.primary,
               marginBottom: spacing.md,
             }}
@@ -524,7 +497,7 @@ export default function HowItWorksPage() {
             style={{
               fontSize: 'clamp(18px, 2.5vw, 24px)',
               color: colors.text.secondary,
-              maxWidth: '800px',
+              maxWidth: CONTENT_NARROW,
               margin: `0 auto ${spacing.xl} auto`,
             }}
           >

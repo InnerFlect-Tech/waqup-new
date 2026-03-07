@@ -1,188 +1,177 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
-import { spacing, borderRadius } from '@/theme';
+import React, { forwardRef } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 import { useTheme } from '@/theme';
 import { Typography } from './Typography';
 import { Loading } from './Loading';
 import { getTextColor, getTextVariant } from '@waqup/shared/utils';
+import { spacing } from '@/theme';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'text' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        primary: 'border-0',
+        secondary: 'border',
+        outline: 'border',
+        text: 'border-0',
+        ghost: 'border',
+      },
+      size: {
+        sm: 'min-h-[32px] px-4 py-2 text-sm',
+        md: 'min-h-[44px] px-6 py-3 text-base',
+        lg: 'min-h-[52px] px-8 py-4 text-base',
+        icon: 'min-h-[40px] min-w-[40px] p-0',
+      },
+    },
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   loading?: boolean;
   fullWidth?: boolean;
   children: React.ReactNode;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  loading = false,
-  fullWidth = false,
-  disabled,
-  children,
-  className,
-  style,
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const colors = theme.colors;
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = 'primary',
+      size = 'md',
+      loading = false,
+      fullWidth = false,
+      disabled,
+      children,
+      className,
+      style,
+      onMouseEnter,
+      onMouseLeave,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const colors = theme.colors;
 
-  const buttonStyle: React.CSSProperties = useMemo(
-    () => ({
-      ...getBaseStyles(),
-      ...getSizeStyles(size),
-      ...getVariantStyles(variant, colors),
-      ...(fullWidth && { width: '100%' }),
-      ...(disabled || loading ? { opacity: 0.6, cursor: 'not-allowed' } : { cursor: 'pointer' }),
-      transition: 'all 0.2s ease-in-out',
-      ...style,
-    }),
-    [size, variant, fullWidth, disabled, loading, style, colors]
-  );
+    const variantStyle = (): React.CSSProperties => {
+      switch (variant) {
+        case 'primary':
+          return {
+            background: colors.gradients.primary,
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            boxShadow: `0 4px 12px ${colors.accent.primary}60`,
+          };
+        case 'secondary':
+          return {
+            background: colors.glass.light,
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            borderColor: colors.glass.border,
+          };
+        case 'outline':
+          return {
+            borderColor: colors.accent.primary,
+            color: colors.text.primary,
+          };
+        case 'text':
+          return {
+            color: colors.text.primary,
+          };
+        case 'ghost':
+          return {
+            background: colors.glass.transparent,
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            borderColor: colors.glass.border,
+            color: colors.text.primary,
+          };
+        default:
+          return {};
+      }
+    };
 
-  const textColor = useMemo(() => {
-    // For primary buttons, use inverse text for better contrast
-    if (variant === 'primary') {
-      return colors.text.onDark;
-    }
-    return getTextColor(variant) === 'inverse' ? colors.text.onDark : colors.text.primary;
-  }, [variant, colors]);
+    const textColor =
+      variant === 'primary'
+        ? colors.text.onDark
+        : getTextColor(variant ?? 'primary') === 'inverse'
+          ? colors.text.onDark
+          : colors.text.primary;
 
-  const textVariant = useMemo(() => getTextVariant(size), [size]);
+    const textVariant = getTextVariant(size ?? 'md');
 
-  return (
-    <button
-      style={buttonStyle}
-      disabled={disabled || loading}
-      className={className}
-      aria-busy={loading}
-      aria-disabled={disabled || loading}
-      aria-label={typeof children === 'string' ? children : undefined}
-      onMouseEnter={(e) => {
-        if (variant === 'primary' && !disabled && !loading) {
-          e.currentTarget.style.background = colors.gradients.primaryHover;
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (variant === 'primary' && !disabled && !loading) {
-          e.currentTarget.style.background = colors.gradients.primary;
-        }
-      }}
-      {...props}
-    >
-      {loading ? (
-        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Loading variant="spinner" size="sm" color={variant === 'primary' ? 'white' : 'primary'} />
-        </span>
-      ) : (
-        <Typography
-          as="span"
-          variant={textVariant}
-          style={{
-            color: textColor,
-            textAlign: 'center',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: spacing.sm,
-            flexWrap: 'nowrap',
-          }}
-        >
-          {children}
-        </Typography>
-      )}
-    </button>
-  );
-};
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (variant === 'primary' && !disabled && !loading) {
+        e.currentTarget.style.background = colors.gradients.primaryHover;
+      }
+      onMouseEnter?.(e);
+    };
 
-function getBaseStyles(): React.CSSProperties {
-  return {
-    borderRadius: borderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-    borderWidth: 0,
-    borderStyle: 'solid',
-    borderColor: 'transparent',
-    outline: 'none',
-    fontFamily: 'inherit',
-  };
-}
+    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (variant === 'primary' && !disabled && !loading) {
+        e.currentTarget.style.background = colors.gradients.primary;
+      }
+      onMouseLeave?.(e);
+    };
 
-function getSizeStyles(size: string): React.CSSProperties {
-  switch (size) {
-    case 'sm':
-      return {
-        paddingLeft: spacing.md,
-        paddingRight: spacing.md,
-        paddingTop: spacing.sm,
-        paddingBottom: spacing.sm,
-        minHeight: '32px',
-      };
-    case 'lg':
-      return {
-        paddingLeft: spacing.xl,
-        paddingRight: spacing.xl,
-        paddingTop: spacing.lg,
-        paddingBottom: spacing.lg,
-        minHeight: '52px',
-      };
-    default:
-      return {
-        paddingLeft: spacing.lg,
-        paddingRight: spacing.lg,
-        paddingTop: spacing.md,
-        paddingBottom: spacing.md,
-        minHeight: '44px',
-      };
+    return (
+      <button
+        ref={ref}
+        className={cn(
+          buttonVariants({ variant, size }),
+          fullWidth && 'w-full',
+          className
+        )}
+        style={{
+          ...variantStyle(),
+          cursor: disabled || loading ? 'not-allowed' : 'pointer',
+          ...style,
+        }}
+        disabled={disabled || loading}
+        aria-busy={loading}
+        aria-disabled={disabled || loading}
+        aria-label={typeof children === 'string' ? children : undefined}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...props}
+      >
+        {loading ? (
+          <span className="inline-flex items-center justify-center">
+            <Loading
+              variant="spinner"
+              size="sm"
+              color={variant === 'primary' ? 'white' : 'primary'}
+            />
+          </span>
+        ) : (
+          <Typography
+            as="span"
+            variant={textVariant}
+            style={{
+              color: textColor,
+              textAlign: 'center',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.sm,
+              flexWrap: 'nowrap',
+            }}
+          >
+            {children}
+          </Typography>
+        )}
+      </button>
+    );
   }
-}
+);
 
-function getVariantStyles(variant: string, colors: any): React.CSSProperties {
-  switch (variant) {
-    case 'primary':
-      return {
-        background: colors.gradients.primary, // from-purple-600 to-indigo-600
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        boxShadow: `0 4px 12px ${colors.mystical.glow}60`,
-      };
-    case 'secondary':
-      return {
-        backgroundColor: colors.glass.light,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: colors.glass.border,
-      };
-    case 'outline':
-      return {
-        backgroundColor: 'transparent',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: colors.accent.primary,
-        color: colors.text.primary,
-      };
-    case 'text':
-      return {
-        backgroundColor: 'transparent',
-        color: colors.text.primary,
-      };
-    case 'ghost':
-      return {
-        backgroundColor: colors.glass.transparent,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: colors.glass.border,
-        color: colors.text.primary,
-      };
-    default:
-      return {};
-  }
-}
+Button.displayName = 'Button';

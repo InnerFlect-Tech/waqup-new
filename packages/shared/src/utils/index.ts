@@ -6,7 +6,6 @@
  */
 
 export * from './component-helpers';
-
-// Utility functions will be added here
+export * from './content-helpers';
 // export const formatDate = (date: Date) => { ... };
 // export const validateEmail = (email: string) => { ... };

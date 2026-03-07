@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Typography, Button } from '@/components';
-import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
-import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
+import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH, CONTENT_NARROW, GRID_CARD_MIN } from '@/theme';
+import { Typography, Button, PageShell } from '@/components';
 import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
 import { Users, Music, Heart, Puzzle, Check } from 'lucide-react';
@@ -25,6 +23,10 @@ export default function PricingPage() {
   const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async (priceId: string) => {
+    if (!priceId) {
+      setError('Checkout is not configured. Please contact support.');
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
@@ -78,14 +80,13 @@ export default function PricingPage() {
   return (
     <PageShell intensity="medium" bare>
       {/* Content */}
-        <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, paddingRight: SAFE_AREA_RIGHT, maxWidth: '1400px', margin: '0 auto' }}>
+        <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
             <Typography
               variant="h1"
               style={{
                 fontSize: 'clamp(48px, 8vw, 96px)',
-                fontWeight: 300,
                 color: colors.text.primary,
                 letterSpacing: '-2px',
                 marginBottom: spacing.md,
@@ -109,7 +110,7 @@ export default function PricingPage() {
               style={{
                 fontSize: 'clamp(18px, 2.5vw, 24px)',
                 color: colors.text.secondary,
-                maxWidth: '800px',
+                maxWidth: CONTENT_NARROW,
                 margin: `0 auto ${spacing.md} auto`,
               }}
             >
@@ -138,7 +139,7 @@ export default function PricingPage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
               gap: spacing.xl,
               marginBottom: spacing.xxl,
             }}
@@ -148,11 +149,11 @@ export default function PricingPage() {
               style={{
                 padding: spacing.xl,
                 borderRadius: borderRadius.xl,
-                background: colors.glass.opaque,
+                background: colors.glass.light,
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
                 border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
               }}
             >
               <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
@@ -218,11 +219,11 @@ export default function PricingPage() {
               style={{
                 padding: spacing.xl,
                 borderRadius: borderRadius.xl,
-                background: colors.glass.opaque,
+                background: colors.glass.light,
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
                 border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
                 position: 'relative',
                 overflow: 'hidden',
                 opacity: 0.7,
@@ -235,7 +236,7 @@ export default function PricingPage() {
                   right: `-${spacing.xl}`,
                   transform: 'rotate(45deg)',
                   padding: `${spacing.xs} ${spacing.xl}`,
-                  background: colors.glass.opaque,
+                  background: colors.glass.light,
                   border: `1px solid ${colors.glass.border}`,
                   fontSize: '12px',
                   fontWeight: 600,
@@ -284,7 +285,7 @@ export default function PricingPage() {
                     }}
                   >
                     {feature.icon ? (
-                      <feature.icon size={20} color={colors.accent.primary} />
+                      React.createElement(feature.icon, { size: 20, color: colors.accent.primary })
                     ) : (
                       <Check size={20} color={colors.accent.primary} />
                     )}
@@ -314,11 +315,11 @@ export default function PricingPage() {
               style={{
                 padding: spacing.xl,
                 borderRadius: borderRadius.xl,
-                background: colors.glass.opaque,
+                background: colors.glass.light,
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
                 border: `2px solid ${colors.accent.primary}`,
-                boxShadow: `0 16px 64px ${colors.mystical.glow}60`,
+                boxShadow: `0 16px 64px ${colors.accent.primary}60`,
                 position: 'relative',
                 overflow: 'hidden',
                 transform: 'scale(1.05)',
@@ -408,7 +409,7 @@ export default function PricingPage() {
                 size="lg"
                 fullWidth
                 loading={loading}
-                onClick={() => handleCheckout('price_1RYGUgA4pDi5qYtD9ETC1zev')}
+                onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_FOUNDING_PRICE_ID || '')}
                 style={{
                   background: colors.gradients.primary,
                   marginBottom: spacing.md,

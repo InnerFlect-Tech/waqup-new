@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useTheme } from '@/theme';
 import { Screen } from '@/components/layout';
@@ -56,7 +56,7 @@ export default function SetupScreen() {
               },
             ]}
           >
-            wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
+            {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
           </Typography>
           <Typography
             variant="body"

@@ -28,10 +28,10 @@
 - **Status**: ✅ Complete
 - **Completed**: 2026-02-07
 - **Notes**: 
-  - Reviewed all docs in `../../docs/internal/`
+  - Reviewed all docs in `docs/`
   - Researched React Native + Expo
   - Researched Supabase React Native SDK
-  - Documented in `../../docs/02-mobile/01-technology-stack.md`
+  - Documented in `docs/02-mobile/01-technology-stack.md`
 - **Updated**: 2026-02-07
 
 ---
@@ -334,25 +334,25 @@
 ### Documentation: Research Findings
 - **Status**: ✅ Complete
 - **Completed**: 2026-02-07
-- **Notes**: Consolidated into `../../docs/02-mobile/01-technology-stack.md`
+  - **Notes**: Consolidated into `docs/02-mobile/01-technology-stack.md`
 - **Updated**: 2026-02-07
 
 ### Documentation: Technology Decisions
 - **Status**: ✅ Complete
 - **Completed**: 2026-02-07
-- **Notes**: Consolidated into `../../docs/02-mobile/01-technology-stack.md`
+  - **Notes**: Consolidated into `docs/02-mobile/01-technology-stack.md`
 - **Updated**: 2026-02-07
 
 ### Documentation: Mobile Architecture
 - **Status**: ✅ Complete
 - **Completed**: 2026-02-07
-- **Notes**: Moved to `../../docs/02-mobile/02-architecture.md`
+  - **Notes**: Moved to `docs/02-mobile/02-architecture.md`
 - **Updated**: 2026-02-07
 
 ### Documentation: Implementation Notes
 - **Status**: ✅ Complete
 - **Completed**: 2026-02-07
-- **Notes**: Moved to `../../docs/02-mobile/03-implementation.md`
+  - **Notes**: Moved to `docs/02-mobile/03-implementation.md`
 - **Updated**: 2026-02-07
 
 ### Documentation: Schema Verification
@@ -390,6 +390,40 @@
 
 ---
 
+## Phase 4–5 & Sanctuary (Web) – Extended Implementation
+
+### Web: Core Pages + Sanctuary + Content CRUD
+- **Status**: ✅ Complete (Web)
+- **Completed**: 2026-02-16 (documented)
+- **Notes**:
+  - **Phase 4 (Web)**: Home, Library, Create, Profile – full UI with links to Sanctuary
+  - **Sanctuary hub**: `/sanctuary` with settings, credits, progress, referral, reminders, learn
+  - **Affirmations**: List, create (init + steps), [id] detail, edit, edit-audio, record
+  - **Meditations**: List, create (init), [id] detail, edit, edit-audio
+  - **Rituals**: List, create (init, goals), [id] detail, edit, edit-audio, recordings
+  - **Speak / conversation**: `/speak` (orb), `/create/conversation` – full UI
+  - **Marketplace**: `/marketplace`, `/marketplace/creator` – full UI
+  - Create flows use multi-step forms (init, goals); **to change** → conversational (orb/speak)
+- **Mobile**: Phase 4 not started (only basic Home, Library, Create, Profile placeholders)
+- **Updated**: 2026-02-16
+
+---
+
+## Design System Consolidation (Shared Theme)
+
+### Theme moved to @waqup/shared
+- **Status**: ✅ Complete
+- **Completed**: 2026-02-16 (documented)
+- **Notes**:
+  - Canonical theme in `packages/shared/src/theme/` (colors, tokens, types, themes)
+  - Web: `format.ts` (px, shadow CSS), `glass.ts` (backdrop-filter)
+  - Mobile: `format.ts` (RN numbers/objects), `glass.ts` (fallback)
+  - Removed: platform-level `borders.ts`, `colors.ts`, `shadows.ts`, `spacing.ts`, `typography.ts`, `themes.ts`
+  - Ref: `docs/04-reference/07-design-system-cross-platform.md`
+- **Updated**: 2026-02-16
+
+---
+
 ## How to Update
 
 When completing a step:
@@ -405,15 +439,18 @@ When re-running a step:
 
 ---
 
-**Last Updated**: 2026-02-13
+**Last Updated**: 2026-02-16
 
 ---
 
 ## Summary
 
-**Phase 2: Design System & UI Foundation** is now ✅ **Complete** for both Web and Mobile platforms.
+- **Phases 1–3**: ✅ Complete (Mobile + Web)
+- **Phase 2**: Design System ✅ Complete – theme consolidated to `@waqup/shared`
+- **Phase 4–5 (Web)**: ✅ Complete – Sanctuary, content CRUD, speak, marketplace (create flows = forms, to change to conversational)
+- **Phase 4–5 (Mobile)**: ⏳ Pending – needs Sanctuary, content list/detail, creation flows
 
-All steps (2.1, 2.2, 2.3, 2.4) have been completed with:
+**Phase 2 steps** (2.1, 2.2, 2.3, 2.4) completed with:
 - Complete theme system matching old app design
 - All core UI components using theme system
 - Layout components for both platforms

@@ -13,7 +13,7 @@ export default function ConfirmEmailPage() {
   const colors = theme.colors;
 
   return (
-    <PageShell intensity="medium" maxWidth={480} centered>
+    <PageShell intensity="medium" maxWidth={480} centered plain>
       <div style={{ width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>

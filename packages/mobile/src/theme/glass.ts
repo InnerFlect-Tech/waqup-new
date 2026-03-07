@@ -1,12 +1,9 @@
 /**
- * Glass-Morphism Utilities
- * Backdrop blur effects and transparency layers
- * Note: React Native requires expo-blur for backdrop blur
+ * Glass-Morphism - Mobile (no backdrop-filter, use BlurView for blur)
  */
 
-import { colors } from './colors';
-import { borderRadius } from './borders';
-import { shadows } from './shadows';
+import { colors } from '@waqup/shared/theme';
+import { borderRadius, shadows } from './format';
 
 export const glassStyles = {
   light: {
@@ -31,8 +28,3 @@ export const glassStyles = {
     ...shadows.md,
   },
 };
-
-// Note: For actual backdrop blur effect, use BlurView from expo-blur
-// Example:
-// import { BlurView } from 'expo-blur';
-// <BlurView intensity={80} style={glassStyles.light}>...</BlurView>

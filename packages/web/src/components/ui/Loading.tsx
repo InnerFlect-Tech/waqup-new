@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { colors } from '@/theme';
+import { useTheme } from '@/theme';
 
 export interface LoadingProps {
   variant?: 'spinner' | 'dots' | 'skeleton';
@@ -14,36 +14,43 @@ export const Loading: React.FC<LoadingProps> = memo(({
   color = 'primary',
   style,
 }) => {
-  if (variant === 'spinner') {
-    return <SpinnerLoading size={size} color={color} style={style} />;
-  }
+  const { theme } = useTheme();
+  const colors = theme.colors;
 
-  if (variant === 'dots') {
-    return <DotsLoading size={size} color={color} style={style} />;
-  }
-
-  return <SkeletonLoading size={size} style={style} />;
-});
-
-const SpinnerLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; color: 'primary' | 'white' | 'secondary'; style?: React.CSSProperties }> = ({
-  size,
-  color,
-  style,
-}) => {
-  const sizeMap = { sm: 16, md: 24, lg: 32 };
-  const colorMap = {
+  const resolvedColor = {
     primary: colors.accent.primary,
     white: colors.text.inverse,
     secondary: colors.text.secondary,
-  };
+  }[color];
+
+  const borderColor = colors.border.light;
+
+  if (variant === 'spinner') {
+    return <SpinnerLoading size={size} resolvedColor={resolvedColor} style={style} />;
+  }
+
+  if (variant === 'dots') {
+    return <DotsLoading size={size} resolvedColor={resolvedColor} style={style} />;
+  }
+
+  return <SkeletonLoading size={size} borderColor={borderColor} style={style} />;
+});
+Loading.displayName = 'Loading';
+
+const SpinnerLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; resolvedColor: string; style?: React.CSSProperties }> = ({
+  size,
+  resolvedColor,
+  style,
+}) => {
+  const sizeMap = { sm: 16, md: 24, lg: 32 };
 
   return (
     <div
       style={{
         width: sizeMap[size],
         height: sizeMap[size],
-        border: `3px solid ${colorMap[color]}33`,
-        borderTopColor: colorMap[color],
+        border: `3px solid ${resolvedColor}33`,
+        borderTopColor: resolvedColor,
         borderRadius: '50%',
         animation: 'spin 0.6s linear infinite',
         ...style,
@@ -54,62 +61,30 @@ const SpinnerLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; color: 'primary' | 'w
   );
 };
 
-const DotsLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; color: 'primary' | 'white' | 'secondary'; style?: React.CSSProperties }> = ({
+const DotsLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; resolvedColor: string; style?: React.CSSProperties }> = ({
   size,
-  color,
+  resolvedColor,
   style,
 }) => {
   const dotSize = size === 'sm' ? 6 : size === 'md' ? 8 : 10;
-  const colorMap = {
-    primary: colors.accent.primary,
-    white: colors.text.inverse,
-    secondary: colors.text.secondary,
-  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px', ...style }} aria-label="Loading" role="status">
-      <div
-        style={{
-          width: dotSize,
-          height: dotSize,
-          backgroundColor: colorMap[color],
-          borderRadius: '50%',
-          animation: 'dotPulse 1.4s ease-in-out infinite',
-          animationDelay: '0s',
-        }}
-      />
-      <div
-        style={{
-          width: dotSize,
-          height: dotSize,
-          backgroundColor: colorMap[color],
-          borderRadius: '50%',
-          animation: 'dotPulse 1.4s ease-in-out infinite',
-          animationDelay: '0.2s',
-        }}
-      />
-      <div
-        style={{
-          width: dotSize,
-          height: dotSize,
-          backgroundColor: colorMap[color],
-          borderRadius: '50%',
-          animation: 'dotPulse 1.4s ease-in-out infinite',
-          animationDelay: '0.4s',
-        }}
-      />
+      <div style={{ width: dotSize, height: dotSize, backgroundColor: resolvedColor, borderRadius: '50%', animation: 'dotPulse 1.4s ease-in-out infinite', animationDelay: '0s' }} />
+      <div style={{ width: dotSize, height: dotSize, backgroundColor: resolvedColor, borderRadius: '50%', animation: 'dotPulse 1.4s ease-in-out infinite', animationDelay: '0.2s' }} />
+      <div style={{ width: dotSize, height: dotSize, backgroundColor: resolvedColor, borderRadius: '50%', animation: 'dotPulse 1.4s ease-in-out infinite', animationDelay: '0.4s' }} />
     </div>
   );
 };
 
-const SkeletonLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; style?: React.CSSProperties }> = ({ size, style }) => {
+const SkeletonLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; borderColor: string; style?: React.CSSProperties }> = ({ size, borderColor, style }) => {
   const height = size === 'sm' ? 12 : size === 'md' ? 16 : 20;
 
   return (
     <div
       style={{
         height,
-        backgroundColor: colors.border.light,
+        backgroundColor: borderColor,
         borderRadius: '4px',
         width: '100%',
         animation: 'skeletonPulse 1.5s ease-in-out infinite',

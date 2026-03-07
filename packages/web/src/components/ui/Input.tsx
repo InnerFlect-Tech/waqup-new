@@ -57,7 +57,7 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div style={{ marginBottom: spacing.md }}>
       {label && (
-        <Typography variant="captionBold" color="primary" style={{ marginBottom: spacing.sm }}>
+        <Typography variant="caption" color="secondary" style={{ fontWeight: 500, marginBottom: spacing.sm }}>
           {label}
         </Typography>
       )}

@@ -1,9 +1,12 @@
 import React, { memo } from 'react';
-import { typography, colors } from '@/theme';
+import { typography } from '@/theme';
+import { useTheme } from '@/theme';
+
+type TextColorKey = 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'disabled' | 'onDark' | 'onLight';
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'bodyBold' | 'caption' | 'captionBold' | 'small' | 'smallBold';
-  color?: keyof typeof colors.text;
+  color?: TextColorKey;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div';
   children: React.ReactNode;
 }
@@ -17,6 +20,7 @@ export const Typography: React.FC<TypographyProps> = memo(({
   className,
   ...props
 }) => {
+  const { theme } = useTheme();
   const Tag = (as || getDefaultTag(variant)) as React.ElementType;
   
   // Filter out invalid CSS values (NaN, undefined, null)
@@ -28,16 +32,17 @@ export const Typography: React.FC<TypographyProps> = memo(({
   
   const textStyle = {
     ...typography[variant],
-    color: colors.text[color],
+    color: theme.colors.text[color],
     ...cleanStyle,
   };
 
   return (
     <Tag style={textStyle} className={className} {...props}>
       {children}
-    </Tag>
-  );
+  </Tag>
+);
 });
+Typography.displayName = 'Typography';
 
 function getDefaultTag(variant: string): string {
   switch (variant) {

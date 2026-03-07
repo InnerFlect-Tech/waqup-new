@@ -2,88 +2,13 @@
 
 import React from 'react';
 import { Typography, Button, Card } from '@/components';
-import { Icon } from '@/components/ui/Icon';
-import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
+import { spacing, borderRadius } from '@/theme';
+import { GRID_CARD_MIN } from '@/theme';
 import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
+import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
-import { 
-  Sparkles, 
-  Bell, 
-  GraduationCap, 
-  Library, 
-  TrendingUp, 
-  CreditCard, 
-  Settings,
-  Wand2,
-  Brain,
-  Zap
-} from 'lucide-react';
-
-interface QuickAction {
-  name: string;
-  description: string;
-  icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
-  href: string;
-}
-
-interface MenuItem {
-  name: string;
-  description: string;
-  icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
-  href: string;
-  count?: number;
-}
-
-const QUICK_ACTIONS: QuickAction[] = [
-  {
-    name: 'Create New',
-    description: 'Start a new ritual or affirmation',
-    icon: Sparkles,
-    href: '/create',
-  },
-  {
-    name: 'Set Reminder',
-    description: 'Schedule your practice',
-    icon: Bell,
-    href: '/sanctuary/reminders',
-  },
-  {
-    name: 'Learn & Transform',
-    description: 'Understand the science of transformation',
-    icon: GraduationCap,
-    href: '/sanctuary/learn',
-  },
-];
-
-const MENU_ITEMS: MenuItem[] = [
-  {
-    name: 'Library',
-    description: 'Your rituals and affirmations',
-    icon: Library,
-    href: '/library',
-    count: 0,
-  },
-  {
-    name: 'Progress',
-    description: 'Track your transformation journey',
-    icon: TrendingUp,
-    href: '/sanctuary/progress',
-  },
-  {
-    name: 'Credits',
-    description: 'Manage your credits',
-    icon: CreditCard,
-    href: '/sanctuary/credits',
-    count: 50,
-  },
-  {
-    name: 'Settings',
-    description: 'Customize your experience',
-    icon: Settings,
-    href: '/sanctuary/settings',
-  },
-];
+import { Wand2, Brain, Zap } from 'lucide-react';
+import { HOME_QUICK_ACTIONS, SANCTUARY_MENU_ITEMS } from '@/lib';
 
 export default function HomePage() {
   const { theme } = useTheme();
@@ -91,7 +16,7 @@ export default function HomePage() {
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '1400px', margin: '0 auto', paddingTop: spacing.md, paddingRight: SAFE_AREA_RIGHT }}>
+      <PageContent>
           {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
@@ -106,76 +31,111 @@ export default function HomePage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
               gap: spacing.lg,
               marginBottom: spacing.xl,
             }}
           >
-            {QUICK_ACTIONS.map((action) => (
-              <Link key={action.name} href={action.href} style={{ textDecoration: 'none' }}>
-                <Card
-                  variant="elevated"
-                  pressable
-                  style={{
-                    padding: spacing.lg,
-                    height: '100%',
-                    transition: 'all 0.2s ease',
-                    cursor: 'pointer',
-                    background: colors.glass.opaque,
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: `1px solid ${colors.glass.border}`,
-                  }}
-                >
+            {HOME_QUICK_ACTIONS.map((action, index) => {
+              const isOpaque = index < 2;
+              const cardBackground = colors.glass.light;
+              const textColor = colors.text.primary;
+              const secondaryTextColor = colors.text.secondary;
+              
+              return (
+                <Link key={action.name} href={action.href} style={{ textDecoration: 'none' }}>
+                  <Card
+                    variant="elevated"
+                    pressable
+                    style={{
+                      padding: spacing.lg,
+                      height: '100%',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer',
+                      background: cardBackground,
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: `1px solid ${colors.glass.border}`,
+                      boxShadow: isOpaque 
+                        ? `0 8px 32px ${colors.accent.primary}60` 
+                        : `0 4px 16px ${colors.accent.primary}30`,
+                    }}
+                  >
                   <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, marginBottom: spacing.sm }}>
                     <div
                       style={{
                         width: '48px',
                         height: '48px',
-                        borderRadius: borderRadius.md,
-                        background: colors.background.tertiary,
+                        borderRadius: borderRadius.full,
+                        background: isOpaque 
+                          ? colors.gradients.primary 
+                          : colors.accent.light,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        flexShrink: 0,
+                        boxShadow: isOpaque 
+                          ? `0 4px 12px ${colors.accent.primary}80` 
+                          : `0 2px 8px ${colors.accent.primary}40`,
+                        position: 'relative',
+                        overflow: 'hidden',
                       }}
                     >
-                      <action.icon size={24} color={colors.accent.primary} strokeWidth={2.5} />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
+                          opacity: 0.6,
+                        }}
+                      />
+                      <span style={{ position: 'relative', zIndex: 1 }}>
+                        <action.icon 
+                          size={24} 
+                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
+                          strokeWidth={2.5}
+                        />
+                      </span>
                     </div>
-                    <Typography variant="h3" style={{ color: colors.text.primary }}>
-                      {action.name}
+                      <Typography variant="h3" style={{ color: textColor }}>
+                        {action.name}
+                      </Typography>
+                    </div>
+                    <Typography variant="body" style={{ color: secondaryTextColor }}>
+                      {action.description}
                     </Typography>
-                  </div>
-                  <Typography variant="body" style={{ color: colors.text.secondary }}>
-                    {action.description}
-                  </Typography>
-                </Card>
-              </Link>
-            ))}
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Menu Grid */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
               gap: spacing.lg,
             }}
           >
-            {MENU_ITEMS.map((item) => (
+            {SANCTUARY_MENU_ITEMS.map((item, index) => {
+              const isOpaque = index < 2;
+              const cardBackground = colors.glass.light;
+              const textColor = colors.text.primary;
+              const secondaryTextColor = colors.text.secondary;
+              
+              return (
                 <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
                   <Card
                     variant="default"
                     pressable
                     style={{
                       padding: spacing.lg,
-                      transition: 'all 0.2s ease',
+                      transition: 'all 0.3s ease',
                       cursor: 'pointer',
-                      background: colors.glass.opaque,
+                      background: cardBackground,
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       border: `1px solid ${colors.glass.border}`,
-                      height: '100%',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
@@ -183,19 +143,36 @@ export default function HomePage() {
                         style={{
                           width: '40px',
                           height: '40px',
-                          borderRadius: borderRadius.md,
-                          background: colors.background.tertiary,
+                          borderRadius: borderRadius.full,
+                          background: isOpaque 
+                            ? colors.gradients.primary 
+                            : colors.background.tertiary,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          flexShrink: 0,
+                          position: 'relative',
+                          overflow: 'hidden',
                         }}
                       >
-                        <item.icon size={20} color={colors.accent.primary} strokeWidth={2.5} />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: `radial-gradient(circle at center, ${colors.accent.primary}30, transparent)`,
+                            opacity: isOpaque ? 0.5 : 0.3,
+                          }}
+                        />
+                        <span style={{ position: 'relative', zIndex: 1 }}>
+                          <item.icon 
+                            size={20} 
+                            color={isOpaque ? colors.text.onDark : colors.accent.primary}
+                            strokeWidth={2.5}
+                          />
+                        </span>
                       </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>
-                          <Typography variant="h4" style={{ color: colors.text.primary }}>
+                          <Typography variant="h4" style={{ color: textColor }}>
                             {item.name}
                           </Typography>
                           {item.count !== undefined && (
@@ -203,23 +180,26 @@ export default function HomePage() {
                               style={{
                                 padding: `${spacing.xs} ${spacing.sm}`,
                                 borderRadius: borderRadius.full,
-                                background: colors.accent.light,
+                                background: isOpaque 
+                                  ? colors.accent.secondary 
+                                  : colors.accent.light,
                                 fontSize: '12px',
-                                color: colors.accent.primary,
+                                color: isOpaque ? colors.text.onDark : colors.accent.primary,
                               }}
                             >
                               {item.count}
                             </div>
                           )}
                         </div>
-                        <Typography variant="body" style={{ color: colors.text.secondary }}>
+                        <Typography variant="body" style={{ color: secondaryTextColor }}>
                           {item.description}
                         </Typography>
                       </div>
                     </div>
                   </Card>
                 </Link>
-              ))}
+              );
+            })}
           </div>
 
           {/* Recent Activity Section */}
@@ -230,7 +210,7 @@ export default function HomePage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gridTemplateColumns: `repeat(auto-fill, minmax(${GRID_CARD_MIN}, 1fr))`,
                 gap: spacing.lg,
               }}
             >
@@ -251,7 +231,7 @@ export default function HomePage() {
               </Card>
             </div>
           </div>
-        </div>
+      </PageContent>
     </PageShell>
   );
 }

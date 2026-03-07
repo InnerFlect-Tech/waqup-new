@@ -2,7 +2,7 @@
 
 ## Overview
 **Goal**: Implement the three content types (Affirmations, Meditations, Rituals) with proper TypeScript definitions, validation schemas, and creation flow structures
-**Status**: ⏳ Pending → Ready to start after Phase 4
+**Status**: ✅ Complete (Web) | ⏳ Pending (Mobile)
 **Dependencies**: Phase 4 (Core Pages Structure)
 
 ## Changelog
@@ -16,24 +16,14 @@
 
 ## Current State Analysis (NOW)
 
-### Current Implementation
-**Location**: Create screen exists but flows are empty
+### Web (2026-02-16)
+- ✅ Content types defined (`@waqup/shared/types/content.ts`)
+- ✅ Affirmations, Meditations, Rituals: list, create (init+steps), [id] detail, edit, edit-audio
+- ✅ Create flows use multi-step forms; **to change** → conversational (orb/speak)
 
-**What Exists** (After Phase 4):
+### Mobile
 - ✅ Create screen with three options
-- ✅ Navigation to creation flows
-- ❌ No content type definitions
-- ❌ No validation schemas
-- ❌ No creation flow structure
-
-**Current Schema**:
-- content_items table may exist but structure unclear
-
-**Current Features**:
-- Create Screen: ✅ Entry point exists
-- Content Types: ❌ Not defined
-- Validation: ❌ Not implemented
-- Creation Flows: ❌ Empty
+- ❌ No content CRUD, no detail screens, no creation flows
 
 ---
 
@@ -143,11 +133,11 @@
 
 ## References
 
-- [Product Constitution](../../../docs/internal/01-product-constitution.md) - Three content types definition
+- [Pipelines Overview](../../docs/01-core/05-pipelines-overview.md) - Three content types definition
 - [Roadmap](../01-planning/01-roadmap.md)
 - [Phase 4 Analysis](./04-phase-04-core-pages-structure.md)
 
 ---
 
-**Last Updated**: 2026-02-07
-**Status**: ⏳ Pending (Waiting for Phase 4)
+**Last Updated**: 2026-02-16
+**Status**: ✅ Complete (Web) | ⏳ Pending (Mobile)

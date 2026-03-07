@@ -73,7 +73,7 @@ export default function SignupPage() {
                 Check Your Email
               </Typography>
               <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, lineHeight: '24px' }}>
-                We've sent a verification email to <strong>{userEmail}</strong>. Please check your inbox and click the verification link to activate your account.
+                We&apos;ve sent a verification email to <strong>{userEmail}</strong>. Please check your inbox and click the verification link to activate your account.
               </Typography>
               <Button
                 variant="primary"
@@ -81,7 +81,6 @@ export default function SignupPage() {
                 fullWidth
                 onClick={handleResendVerification}
                 style={{
-                  background: colors.gradients.primary,
                   marginBottom: spacing.md,
                 }}
               >
@@ -132,7 +131,7 @@ export default function SignupPage() {
                     padding: spacing.md,
                     borderRadius: borderRadius.md,
                     background: `${colors.error}20`,
-                    border: `1px solid ${colors.error}`,
+                    border: `1px solid ${colors.error}40`,
                     marginBottom: spacing.lg,
                   }}
                 >
@@ -156,7 +155,6 @@ export default function SignupPage() {
                     leftIcon={<Mail size={20} color={colors.text.secondary} />}
                     error={errors.email?.message}
                     containerStyle={{
-                      background: colors.glass.transparent,
                       marginBottom: spacing.lg,
                     }}
                     style={{ color: colors.text.primary }}
@@ -199,7 +197,6 @@ export default function SignupPage() {
                     error={errors.password?.message}
                     helperText="Must contain uppercase, lowercase, and number"
                     containerStyle={{
-                      background: colors.glass.transparent,
                       marginBottom: spacing.lg,
                     }}
                     style={{ color: colors.text.primary }}
@@ -241,7 +238,6 @@ export default function SignupPage() {
                     }
                     error={errors.confirmPassword?.message}
                     containerStyle={{
-                      background: colors.glass.transparent,
                       marginBottom: spacing.md,
                     }}
                     style={{ color: colors.text.primary }}
@@ -300,11 +296,7 @@ export default function SignupPage() {
                 loading={isLoading}
                 fullWidth
                 style={{
-                  background: colors.gradients.primary,
                   marginBottom: spacing.lg,
-                  height: '52px',
-                  fontSize: '16px',
-                  fontWeight: 600,
                 }}
               >
                 {isLoading ? 'Creating account...' : 'Create Account'}

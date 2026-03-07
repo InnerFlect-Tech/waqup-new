@@ -1,14 +1,26 @@
+'use client';
+
 import React, { memo } from 'react';
-import { colors, spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius } from '@/theme';
+import { useTheme } from '@/theme';
+import type { Theme } from '@waqup/shared/theme';
 import { Typography } from './Typography';
-import { getTextColor } from '@waqup/shared/utils';
 
 export interface BadgeProps {
-  variant?: 'default' | 'success' | 'error' | 'warning' | 'info' | 'outline';
+  variant?: 'default' | 'success' | 'error' | 'warning' | 'info' | 'outline' | 'accent';
   size?: 'sm' | 'md';
   children: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
+}
+
+function getTextVariant(variant: BadgeProps['variant']): 'primary' | 'secondary' | 'muted' | 'accent' | 'error' | 'success' | 'warning' {
+  switch (variant) {
+    case 'error': return 'error';
+    case 'success': return 'success';
+    case 'warning': return 'warning';
+    default: return 'primary';
+  }
 }
 
 export const Badge: React.FC<BadgeProps> = memo(({
@@ -18,6 +30,9 @@ export const Badge: React.FC<BadgeProps> = memo(({
   style,
   className,
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
   const badgeStyle: React.CSSProperties = {
     borderRadius: borderRadius.full,
     paddingLeft: size === 'sm' ? spacing.xs : spacing.sm,
@@ -28,40 +43,43 @@ export const Badge: React.FC<BadgeProps> = memo(({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-start',
-    ...getVariantStyles(variant),
+    ...getVariantStyles(variant, colors),
     ...style,
   };
 
-  const textColor = getTextColor(variant);
-
   return (
     <div style={badgeStyle} className={className} role="status" aria-label={typeof children === 'string' ? children : undefined}>
-      <Typography variant="small" color={textColor}>
+      <Typography variant="small" color={getTextVariant(variant)} style={variant === 'accent' ? { color: '#c084fc' } : undefined}>
         {children}
       </Typography>
     </div>
   );
 });
+Badge.displayName = 'Badge';
 
-function getVariantStyles(variant: string): React.CSSProperties {
+function getVariantStyles(variant: BadgeProps['variant'], colors: Theme['colors']): React.CSSProperties {
   switch (variant) {
     case 'default':
-      return { backgroundColor: colors.accent.primary };
+      return { backgroundColor: `${colors.accent.primary}33`, border: `1px solid ${colors.accent.primary}40` };
+    case 'accent':
+      return {
+        backgroundColor: `${colors.accent.tertiary}33`,
+        border: `1px solid ${colors.accent.tertiary}40`,
+      };
     case 'success':
-      return { backgroundColor: colors.success };
+      return { backgroundColor: `${colors.success}26`, border: `1px solid ${colors.success}40` };
     case 'error':
-      return { backgroundColor: colors.error };
+      return { backgroundColor: `${colors.error}26`, border: `1px solid ${colors.error}40` };
     case 'warning':
-      return { backgroundColor: colors.warning };
+      return { backgroundColor: `${colors.warning}26`, border: `1px solid ${colors.warning}40` };
     case 'info':
-      return { backgroundColor: colors.info };
+      return { backgroundColor: `${colors.info}26`, border: `1px solid ${colors.info}40` };
     case 'outline':
       return {
         backgroundColor: 'transparent',
-        border: `1px solid ${colors.accent.primary}`,
+        border: `1px solid ${colors.accent.primary}40`,
       };
     default:
       return {};
   }
 }
-

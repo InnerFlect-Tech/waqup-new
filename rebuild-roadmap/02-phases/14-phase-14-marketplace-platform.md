@@ -201,8 +201,7 @@
 
 ## References
 
-- [Marketplace Platform](../../../docs/internal/marketplace-platform.md)
-- [Value Economy](../../../docs/internal/06-value-economy.md)
+- [Marketplace Summary](../../docs/01-core/07-marketplace-summary.md)
 - [Roadmap](../01-planning/01-roadmap.md)
 - [Phase 7 Analysis](./07-phase-07-api-integration.md)
 - [Phase 10 Analysis](./10-phase-10-payment-credits.md)

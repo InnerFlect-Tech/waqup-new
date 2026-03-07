@@ -17,4 +17,23 @@ if (fs.existsSync(envPath)) {
 }
 
 const { getDefaultConfig } = require('expo/metro-config');
-module.exports = getDefaultConfig(__dirname);
+
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '../..');
+
+const config = getDefaultConfig(projectRoot);
+
+// Monorepo: allow Metro to watch files from the entire workspace
+config.watchFolders = [workspaceRoot];
+
+// Monorepo: resolve modules from workspace root node_modules first, then project
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
+];
+
+// Support package.json `exports` field for @waqup/shared sub-path imports
+// e.g. @waqup/shared/schemas, @waqup/shared/stores, @waqup/shared/theme
+config.resolver.unstable_enablePackageExports = true;
+
+module.exports = config;

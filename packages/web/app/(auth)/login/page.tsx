@@ -8,6 +8,7 @@ import { Typography, Button, Input, Loading } from '@/components';
 import { useTheme } from '@/theme';
 import { Logo, PageShell, GlassCard, TestLoginButton } from '@/components';
 import { spacing, borderRadius } from '@/theme';
+import { AUTH_CARD_MAX_WIDTH } from '@/theme';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
 import { applyOverrideLogin } from '@/lib/auth-override';
@@ -153,7 +154,6 @@ export default function LoginPage() {
       if (json?.ok) {
         const overrideUser = applyOverrideLogin(data.email);
         useAuthStore.getState().setUser(overrideUser);
-        useAuthStore.getState().setSession(null);
         useAuthStore.getState().setError(null);
         router.push('/home');
         return;
@@ -165,7 +165,7 @@ export default function LoginPage() {
   };
 
   return (
-    <PageShell intensity="medium" maxWidth={480} centered>
+    <PageShell intensity="medium" maxWidth={AUTH_CARD_MAX_WIDTH} centered>
       <div style={{ width: '100%' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
@@ -190,7 +190,7 @@ export default function LoginPage() {
                     padding: spacing.md,
                     borderRadius: borderRadius.md,
                     background: `${colors.success}20`,
-                    border: `1px solid ${colors.success}`,
+                    border: `1px solid ${colors.success}40`,
                     marginBottom: spacing.lg,
                   }}
                 >
@@ -206,7 +206,7 @@ export default function LoginPage() {
                     padding: spacing.md,
                     borderRadius: borderRadius.md,
                     background: `${colors.error}20`,
-                    border: `1px solid ${colors.error}`,
+                    border: `1px solid ${colors.error}40`,
                     marginBottom: spacing.lg,
                   }}
                 >
@@ -230,7 +230,6 @@ export default function LoginPage() {
                     leftIcon={<Mail size={20} color={colors.text.secondary} />}
                     error={errors.email?.message}
                     containerStyle={{
-                      background: colors.glass.transparent,
                       marginBottom: spacing.lg,
                     }}
                     style={{ color: colors.text.primary }}
@@ -272,7 +271,6 @@ export default function LoginPage() {
                     }
                     error={errors.password?.message}
                     containerStyle={{
-                      background: colors.glass.transparent,
                       marginBottom: spacing.md,
                     }}
                     style={{ color: colors.text.primary }}
@@ -302,11 +300,7 @@ export default function LoginPage() {
                 fullWidth
                 disabled={googleLoading}
                 style={{
-                  background: colors.gradients.primary,
                   marginBottom: spacing.lg,
-                  height: '52px',
-                  fontSize: '16px',
-                  fontWeight: 600,
                 }}
               >
                 {isLoading ? 'Signing in...' : 'Sign In'}
@@ -363,7 +357,7 @@ export default function LoginPage() {
 
               <div style={{ textAlign: 'center', marginTop: spacing.lg }}>
                 <Typography variant="body" style={{ color: colors.text.secondary }}>
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Link
                     href="/signup"
                     style={{

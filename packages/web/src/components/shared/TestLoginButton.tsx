@@ -19,7 +19,6 @@ export function TestLoginButton() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
-  const setSession = useAuthStore((s) => s.setSession);
   const setError = useAuthStore((s) => s.setError);
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
@@ -31,8 +30,7 @@ export function TestLoginButton() {
     setError(null);
     const overrideUser = applyOverrideLogin(TEST_USER_EMAIL);
     setUser(overrideUser);
-    setSession(null);
-    router.push('/pages');
+    router.push('/sanctuary');
   };
 
   const handleTestLogout = () => {

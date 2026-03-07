@@ -1,10 +1,13 @@
 import React, { memo } from 'react';
-import { Text, TextProps, StyleSheet } from 'react-native';
-import { typography, colors } from '@/theme';
+import { Text, TextProps, StyleSheet, Platform } from 'react-native';
+import { useTheme } from '@/theme';
+import { typography } from '@/theme';
+
+type TextColorKey = 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'disabled' | 'onDark' | 'onLight';
 
 export interface TypographyProps extends TextProps {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'bodyBold' | 'caption' | 'captionBold' | 'small' | 'smallBold';
-  color?: keyof typeof colors.text;
+  color?: TextColorKey;
   children: React.ReactNode;
 }
 
@@ -15,10 +18,25 @@ export const Typography: React.FC<TypographyProps> = memo(({
   children,
   ...props
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
+  const resolvedColor = colors.text[color as keyof typeof colors.text] ?? colors.text.primary;
+
+  const webSmoothingStyle =
+    Platform.OS === 'web'
+      ? ({
+          // @ts-ignore — web-only CSS properties
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        } as object)
+      : {};
+
   const textStyle = [
     styles.base,
     typography[variant],
-    { color: colors.text[color] },
+    { color: resolvedColor },
+    webSmoothingStyle,
     style,
   ];
 

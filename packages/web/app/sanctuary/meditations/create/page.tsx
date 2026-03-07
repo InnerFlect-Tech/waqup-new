@@ -1,14 +1,14 @@
 'use client';
 
-import React from 'react';
-import { PlaceholderPage } from '@/components';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function MeditationsCreatePage() {
-  return (
-    <PlaceholderPage
-      title="Create Meditation"
-      description="Create guided meditations for state induction."
-      backHref="/sanctuary"
-    />
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/sanctuary/meditations/create/init');
+  }, [router]);
+
+  return null;
 }

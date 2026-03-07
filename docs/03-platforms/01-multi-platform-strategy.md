@@ -503,8 +503,7 @@ waqup-app/
 - [Mobile Architecture](../02-mobile/02-architecture.md)
 - [Mobile Implementation](../02-mobile/03-implementation.md)
 - [Browser Optimization Strategy](./02-browser-optimization-strategy.md)
-- [Marketplace Platform](../../../docs/internal/marketplace-platform.md)
-- [Undocumented Features](../../../docs/internal/undocumented-features.md)
+- [Marketplace Summary](../01-core/07-marketplace-summary.md)
 
 ---
 

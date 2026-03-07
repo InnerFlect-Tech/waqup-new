@@ -17,7 +17,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   
   // Prevent hydration mismatch by only rendering on client
   useEffect(() => {
-    setMounted(true);
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- hydration-safe client-only render
   }, []);
 
   if (!mounted) {
@@ -112,8 +112,9 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
       {/* CSS Animations */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes float {
-          0%, 100% { transform: translateY(0px) translateX(0px) scale(0.8); opacity: 0; }
-          50% { transform: translateY(-20px) translateX(10px) scale(1); opacity: 0.1; }
+          0%   { transform: translateY(0px) translateX(0px) scale(0.95); opacity: 0.1; }
+          50%  { transform: translateY(-20px) translateX(10px) scale(1);  opacity: 0.15; }
+          100% { transform: translateY(0px) translateX(0px) scale(0.95); opacity: 0.1; }
         }
       ` }} />
     </div>

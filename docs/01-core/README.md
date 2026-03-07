@@ -1,92 +1,46 @@
 # Core Product Documentation Reference
 
-**Purpose**: Reference guide to main waQup product documentation
-
-**Location**: `../../docs/internal/` (main waQup project)
+**Purpose**: Reference guide to waQup product documentation — all docs live in this repo (`docs/`).
 
 ---
 
-## How to Access
+## In-Repo Product Docs (this folder)
 
-**Direct Access**: `../../docs/internal/`  
-**Use Context7**: Query docs using Context7 (recommended)
+| Doc | Purpose |
+|-----|---------|
+| [02-pipeline-affirmations.md](./02-pipeline-affirmations.md) | Affirmation creation steps (Intent → Script → Voice → Audio → Review) |
+| [03-pipeline-meditations.md](./03-pipeline-meditations.md) | Meditation creation steps (+ Context) |
+| [04-pipeline-rituals.md](./04-pipeline-rituals.md) | Ritual creation steps (+ Context, Personalization) |
+| [05-pipelines-overview.md](./05-pipelines-overview.md) | Overview, shared Audio page, route map |
+| [06-audio-generation-summary.md](./06-audio-generation-summary.md) | TTS (ElevenLabs), recording, Audio page spec |
+| [07-marketplace-summary.md](./07-marketplace-summary.md) | Discovery, creator, verification, viral, revenue |
+| [08-llm-conversation-summary.md](./08-llm-conversation-summary.md) | Conversation flow, state machine, prompts |
 
 ---
 
-## Complete Documentation List
+## Documentation in This Repo
 
-### Core Documents (01-07)
+**All documentation is in `docs/`** — no external doc paths.
 
-1. **01-product-constitution.md**
-   - Core identity, principles, boundaries
-   - Three content types definition
-   - Voice-first design principles
+### Product & Pipelines
+- **01-core/** – Pipelines (affirmations, meditations, rituals), audio, marketplace, LLM
+- **02-mobile/** – Tech stack, architecture, implementation
+- **03-platforms/** – Multi-platform strategy, browser optimization
+- **04-reference/** – Pages, Context7 usage, current vs final, design system
 
-2. **02-scientific-foundations.md**
-   - Scientific backing and research
-   - Neuroplasticity, subconscious mind
-   - Voice prosody effects
-
-3. **03-conversational-system.md**
-   - Conversation flows
-   - Content types (affirmations, meditations, rituals)
-   - State machine
-
-4. **04-ai-voice-ethics.md**
-   - AI voice guidelines
-   - Ethical boundaries
-   - Privacy principles
-
-5. **05-system-architecture.md**
-   - Complete system architecture
-   - APIs, infrastructure
-   - Technology stack
-
-6. **06-value-economy.md**
-   - Credits system
-   - Tokens and economic model
-   - Pricing structure
-
-7. **07-roadmap.md**
-   - Product roadmap
-   - Milestones
-   - Development phases
-
-### Technical Reference
-
-- **database.md** - Database schema, tables, RLS policies
-- **flows.md** - User flows, ritual creation, affirmation flow
-- **system-spec.md** - Technical specifications
-- **system-audit.md** - Implementation status
-- **undocumented-features.md** - Implemented features catalog
-
-### Audio & AI
-
-- **audio-generation.md** - Voice cloning, TTS, ElevenLabs
-- **elevenlabs-advantages.md** - Why ElevenLabs
-- **audio-generation-improvements.md** - Cost optimizations
-- **audio-generation-best-option-analysis.md** - TTS comparison
-- **audio-generation-tested-alternatives.md** - Tested alternatives
-
-### Platform & Features
-
-- **marketplace-platform.md** - Marketplace features
-- **voice-interaction-design.md** - Voice interaction patterns
+### Planning
+- **rebuild-roadmap/** – Roadmap, schema verification, phase analyses, changelog
 
 ---
 
 ## Using Context7
 
-**Recommended**: Use Context7 to query these docs
+Use Context7 to query docs in this repo.
 
 **Example**:
 ```
 Context7 Query: "What are the three content types in waQup?"
-Reference: ../../docs/internal/01-product-constitution.md
+Reference: docs/01-core/05-pipelines-overview.md
 ```
 
-See `../03-reference/01-context7-usage.md` for detailed guide.
-
----
-
-**Purpose**: Reference only - main docs stay in `../../docs/internal/`
+See [../04-reference/02-context7-usage.md](../04-reference/02-context7-usage.md) for detailed guide.

@@ -3,8 +3,9 @@
 import React from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { AppHeader, PageShell, ThemeSelector } from '@/components';
-import { spacing, borderRadius, SAFE_AREA_RIGHT } from '@/theme';
+import { PageShell } from '@/components';
+import { spacing, borderRadius } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM } from '@/theme';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -75,16 +76,13 @@ export default function LandingPage() {
 
   return (
     <PageShell intensity="high" bare>
-      <ThemeSelector />
-      <AppHeader />
 
       {/* Hero Section */}
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
-            maxWidth: '1200px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
             minHeight: '80vh',
             display: 'flex',
@@ -104,7 +102,7 @@ export default function LandingPage() {
               marginBottom: spacing.lg,
             }}
           >
-            <Typography variant="small" style={{ color: colors.accent.tertiary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               AI POWERED
             </Typography>
           </div>
@@ -113,12 +111,11 @@ export default function LandingPage() {
           <div
             style={{
               fontSize: 'clamp(64px, 12vw, 120px)',
-              fontWeight: 300, // Very thin weight (light) - matches example
+              fontWeight: 300,
               lineHeight: 1,
               marginBottom: spacing.lg,
               color: colors.text.primary,
               letterSpacing: '-2px',
-              fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale',
               textRendering: 'optimizeLegibility',
@@ -135,7 +132,7 @@ export default function LandingPage() {
             style={{
               fontSize: 'clamp(20px, 3vw, 32px)',
               color: colors.text.secondary,
-              maxWidth: '800px',
+              maxWidth: CONTENT_NARROW,
               margin: `0 auto ${spacing.xxl} auto`,
               lineHeight: 1.4,
               fontWeight: 300,
@@ -148,14 +145,14 @@ export default function LandingPage() {
           <div
             style={{
               width: '100%',
-              maxWidth: '600px',
+              maxWidth: CONTENT_MEDIUM,
               padding: `${spacing.xxl} ${spacing.xl}`,
               borderRadius: borderRadius.xl,
-              background: colors.glass.opaque,
+              background: colors.glass.light,
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
+              boxShadow: `0 16px 64px ${colors.accent.primary}40`,
               marginBottom: spacing.xxl,
             }}
           >
@@ -170,13 +167,13 @@ export default function LandingPage() {
                   animation: 'pulse 2s ease-in-out infinite',
                 }}
               />
-              <Typography variant="small" style={{ color: colors.success, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <Typography variant="smallBold" style={{ color: colors.success, textTransform: 'uppercase', letterSpacing: '1px' }}>
                 LIMITED TIME OFFER
               </Typography>
             </div>
 
             {/* Become a Founding Member */}
-            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.lg, fontWeight: 300, fontSize: 'clamp(24px, 4vw, 32px)' }}>
+            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.lg, fontSize: 'clamp(24px, 4vw, 32px)' }}>
               Become a Founding Member
             </Typography>
 
@@ -184,19 +181,19 @@ export default function LandingPage() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.xl, flexWrap: 'wrap', marginBottom: spacing.xl }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                 <Shield size={16} color={colors.text.secondary} />
-                <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '14px' }}>
+                <Typography variant="caption" color="secondary">
                   Lifetime Access
                 </Typography>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                 <Star size={16} color={colors.text.secondary} />
-                <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '14px' }}>
+                <Typography variant="caption" color="secondary">
                   Special Pricing
                 </Typography>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                 <Users size={16} color={colors.text.secondary} />
-                <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '14px' }}>
+                <Typography variant="caption" color="secondary">
                   500 Spots Only
                 </Typography>
               </div>
@@ -210,8 +207,6 @@ export default function LandingPage() {
                   size="lg"
                   fullWidth
                   style={{
-                    background: colors.gradients.primary,
-                    padding: `${spacing.md} ${spacing.xl}`,
                     fontSize: '16px',
                     display: 'flex',
                     alignItems: 'center',
@@ -243,16 +238,15 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
           <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
-            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md, fontWeight: 300 }}>
+            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
               Powerful Features for Transformation
             </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: '600px', margin: '0 auto' }}>
+            <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: CONTENT_MEDIUM, margin: '0 auto' }}>
               Everything you need to transform your subconscious mind through voice-first experiences
             </Typography>
           </div>
@@ -272,11 +266,11 @@ export default function LandingPage() {
                   style={{
                     padding: spacing.xl,
                     borderRadius: borderRadius.lg,
-                    background: colors.glass.opaque,
+                    background: colors.glass.light,
                     backdropFilter: 'blur(20px)',
                     WebkitBackdropFilter: 'blur(20px)',
                     border: `1px solid ${colors.glass.border}`,
-                    boxShadow: `0 8px 32px ${colors.mystical.glow}40`,
+                    boxShadow: `0 8px 32px ${colors.accent.primary}40`,
                     transition: 'all 0.3s ease',
                     cursor: 'pointer',
                     display: 'flex',
@@ -284,11 +278,11 @@ export default function LandingPage() {
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-8px)';
-                    e.currentTarget.style.boxShadow = `0 16px 48px ${colors.mystical.glow}60`;
+                    e.currentTarget.style.boxShadow = `0 16px 48px ${colors.accent.primary}60`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = `0 8px 32px ${colors.mystical.glow}40`;
+                    e.currentTarget.style.boxShadow = `0 8px 32px ${colors.accent.primary}40`;
                   }}
                 >
                   <div
@@ -303,14 +297,14 @@ export default function LandingPage() {
                       marginBottom: spacing.lg,
                       position: 'relative',
                       overflow: 'hidden',
-                      boxShadow: `0 4px 12px ${colors.mystical.glow}60`,
+                      boxShadow: `0 4px 12px ${colors.accent.primary}60`,
                     }}
                   >
                     <div
                       style={{
                         position: 'absolute',
                         inset: 0,
-                        background: `radial-gradient(circle at center, ${colors.mystical.glow}40, transparent)`,
+                        background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
                         opacity: 0.6,
                       }}
                     />
@@ -334,8 +328,7 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
-            maxWidth: '1400px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -343,11 +336,11 @@ export default function LandingPage() {
             style={{
               padding: spacing.xxl,
               borderRadius: borderRadius.xl,
-              background: colors.glass.opaque,
+              background: colors.glass.light,
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 16px 64px ${colors.mystical.glow}40`,
+              boxShadow: `0 16px 64px ${colors.accent.primary}40`,
             }}
           >
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: spacing.lg }}>
@@ -380,9 +373,8 @@ export default function LandingPage() {
         <section
           style={{
             padding: `${spacing.xxxl} ${spacing.xl}`,
-            paddingRight: SAFE_AREA_RIGHT,
             textAlign: 'center',
-            maxWidth: '1200px',
+            maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
@@ -392,7 +384,6 @@ export default function LandingPage() {
               color: colors.text.primary,
               marginBottom: spacing.md,
               fontSize: 'clamp(36px, 5vw, 56px)',
-              fontWeight: 300,
             }}
           >
             Ready to Transform Your Mind?
@@ -405,7 +396,6 @@ export default function LandingPage() {
               variant="primary"
               size="lg"
               style={{
-                background: colors.gradients.primary,
                 padding: `${spacing.lg} ${spacing.xxl}`,
                 fontSize: '20px',
                 display: 'inline-flex',
@@ -427,7 +417,7 @@ export default function LandingPage() {
             marginTop: spacing.xxl,
           }}
         >
-          <div style={{ maxWidth: '1400px', margin: '0 auto', paddingRight: SAFE_AREA_RIGHT, textAlign: 'center' }}>
+          <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', textAlign: 'center' }}>
             <Typography variant="body" style={{ color: colors.text.tertiary }}>
               © 2026 waQup. Transform your mind through voice.
             </Typography>

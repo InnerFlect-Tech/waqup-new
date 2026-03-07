@@ -10,8 +10,15 @@
 docs/
 ├── README.md                    # Main documentation overview
 │
-├── 01-core/                    # Core product documentation (references)
-│   └── README.md               # Reference guide to main docs
+├── 01-core/                    # Core product documentation (references + pipelines)
+│   ├── README.md               # Reference guide to main docs
+│   ├── 02-pipeline-affirmations.md
+│   ├── 03-pipeline-meditations.md
+│   ├── 04-pipeline-rituals.md
+│   ├── 05-pipelines-overview.md
+│   ├── 06-audio-generation-summary.md
+│   ├── 07-marketplace-summary.md
+│   └── 08-llm-conversation-summary.md
 │
 ├── 02-mobile/                  # Mobile-specific documentation ONLY
 │   ├── README.md               # Mobile docs overview
@@ -25,7 +32,15 @@ docs/
 │   └── 02-browser-optimization-strategy.md  # Chrome-first browser strategy
 │
 └── 04-reference/               # Reference guides
-    └── 01-showcase-access.md   # Component showcase (Web & Mobile access)
+    ├── 01-showcase-access.md   # Component showcase (Web & Mobile access)
+    ├── 02-context7-usage.md    # How to use Context7 for documentation queries
+    ├── 03-start-here.md        # Developer entry point (quick start, phase, workflow)
+    ├── 04-pages-comparison.md  # Pages: what exists vs what's needed (SSOT)
+    ├── 05-documentation-coverage-analysis.md  # Architecture, LLM, pipelines, marketplace
+    ├── 06-first-commits-vs-now.md             # First-commits vs now, coherence gaps
+    ├── 07-design-system-cross-platform.md    # Design tokens, themes, web/iOS/Android coherence
+    ├── 08-full-codebase-analysis.md          # Duplicates, reductions, best practices (Context7)
+    └── 09-current-vs-final-solution.md       # Implementation status: Web vs Mobile, gaps, roadmap
 ```
 
 ---
@@ -33,9 +48,9 @@ docs/
 ## Hierarchy & Coherence
 
 ### 01-core/ - Core Product Docs
-**Purpose**: Reference to main product documentation  
-**Content**: Links and references to `../../docs/internal/`  
-**Scope**: Product constitution, scientific foundations, system architecture
+**Purpose**: Reference to main product documentation + in-repo pipeline and summary docs  
+**Content**: Pipeline specs (02–04), overview (05), audio (06), marketplace (07), LLM (08) — all in-repo  
+**Scope**: Product constitution, scientific foundations, pipelines, audio, marketplace, conversation
 
 ### 02-mobile/ - Mobile-Specific Docs
 **Purpose**: Mobile app development documentation  
@@ -111,5 +126,5 @@ docs/
 
 ---
 
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-16
 **Status**: ✅ Organized & Coherent

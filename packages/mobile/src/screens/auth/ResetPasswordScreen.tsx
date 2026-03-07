@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -56,7 +56,7 @@ export default function ResetPasswordScreen({ navigation, route }: Props) {
     return (
       <Screen scrollable padding={false}>
         <View style={styles.container}>
-          <Card variant="elevated" style={[styles.card, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+          <Card variant="elevated" style={styles.card}>
             <Typography variant="h2" style={[styles.errorTitle, { color: colors.error }]}>
               Invalid Reset Link
             </Typography>
@@ -103,7 +103,7 @@ export default function ResetPasswordScreen({ navigation, route }: Props) {
                   },
                 ]}
               >
-                wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
+                {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
               </Typography>
               <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
                 Create new password
@@ -111,7 +111,7 @@ export default function ResetPasswordScreen({ navigation, route }: Props) {
             </View>
 
             {/* Reset Password Form */}
-            <Card variant="elevated" style={[styles.card, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+            <Card variant="elevated" style={styles.card}>
               {error && (
                 <View style={[styles.errorContainer, { backgroundColor: `${colors.error}20`, borderColor: colors.error }]}>
                   <Typography variant="body" style={{ color: colors.error }}>

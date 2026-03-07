@@ -1,8 +1,10 @@
 # Pages comparison: what is / what needs to be / comparison
 
-**Purpose**: Single source of truth for which pages exist, which are missing, and which need to be changed. Three columns: **What is** (current app), **What needs to be** (docs/roadmap), **Comparison** (gap or status).
+**Purpose**: Single source of truth for which pages exist, which are missing, and which need to be changed.
 
-**References**: Roadmap `rebuild-roadmap/01-planning/01-roadmap.md`, phases `rebuild-roadmap/02-phases/*`; main product docs `../../docs/internal/` (flows, conversational-system, voice-interaction-design, marketplace-platform); current app `packages/web/app/` and `/pages`.
+**Platforms**: **Web** (Next.js) and **Mobile** (Expo/React Native). Web has full route coverage; Mobile has basic auth + main tabs only.
+
+**References**: Roadmap `rebuild-roadmap/01-planning/01-roadmap.md`, phases `rebuild-roadmap/02-phases/*`; **Current vs Final**: [09-current-vs-final-solution.md](./09-current-vs-final-solution.md).
 
 ---
 
@@ -42,13 +44,11 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| `/home` | Home / Sanctuary (roadmap: "Home (Sanctuary)") | Exists — app dashboard; header "Home" link and logo (when authenticated) go here |
-| `/sanctuary` | Sanctuary home (same as or linked from Home) | Exists — content/settings hub; header treats `/sanctuary` as same section as Home (Home nav item active on both) |
+| `/home` | Home / Sanctuary (roadmap: "Home (Sanctuary)") | Exists — clarify relationship with `/sanctuary` |
+| `/sanctuary` | Sanctuary home (same as or linked from Home) | Exists — clarify relationship with `/home` |
 | `/library` | Library (filters, search, empty state) | Exists |
 | `/create` | Create — entry with three options (Affirmation, Meditation, Ritual) | Exists |
-| `/profile` | Profile — user info, settings list, logout | Exists — unified settings cards; theme selector collapsible so it does not overlap content |
-
-**Web header navigation**: Authenticated header uses `usePathname()` from `next/navigation` for active state. "Home" is active when pathname is `/home` or any path under `/sanctuary` so the nav reflects the app’s information architecture (home/sanctuary as one area). Logo links to `/home` when authenticated, to `/` when public.
+| `/profile` | Profile — user info, settings list, logout | Exists |
 
 ---
 
@@ -69,12 +69,12 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| `/sanctuary/affirmations` | Affirmations list | Exists |
-| — | Affirmation detail (Phase 5.2: audio, Play, Edit, Delete, Share) | **Missing** — add `/sanctuary/affirmations/[id]` |
-| — | Affirmation edit | **Missing** — add `/sanctuary/affirmations/[id]/edit` |
+| `/sanctuary/affirmations` | Affirmations list | Exists (full UI) |
+| `/sanctuary/affirmations/[id]` | Affirmation detail (Phase 5.2: audio, Play, Edit, Delete, Share) | Exists (full UI) |
+| `/sanctuary/affirmations/[id]/edit` | Affirmation edit | Exists (full UI) |
 | `/sanctuary/affirmations/create` | Affirmation creation — **conversational** (Intent, Script, Voice, Review), chat-like, not static forms | **To change** — make conversational (orb/speak) |
 | `/sanctuary/affirmations/record` | Record step | Exists |
-| — | Edit sound/script in pipeline (cool edit-audio step) | **Missing** — add e.g. `/sanctuary/affirmations/[id]/edit-audio` |
+| `/sanctuary/affirmations/[id]/edit-audio` | **Audio page** (edit-audio): volumes, waves, preview — must be cool (immersive, tactile, modern) | Exists (full UI) |
 
 ---
 
@@ -82,12 +82,12 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| `/sanctuary/rituals` | Rituals list | Exists |
-| `/sanctuary/rituals/[id]` | Ritual detail (Phase 5.2) | Exists |
-| `/sanctuary/rituals/[id]/edit` | Ritual edit | Exists |
+| `/sanctuary/rituals` | Rituals list | Exists (full UI) |
+| `/sanctuary/rituals/[id]` | Ritual detail (Phase 5.2) | Exists (full UI) |
+| `/sanctuary/rituals/[id]/edit` | Ritual edit | Exists (full UI) |
 | `/sanctuary/rituals/create` | Ritual creation — **conversational** (Intent, Context, Personalization, Script, Voice, Review) | **To change** — make conversational (orb/speak) |
 | `/sanctuary/rituals/recordings` | Recordings list | Exists |
-| — | Edit sound/script in pipeline | **Missing** — add e.g. `/sanctuary/rituals/[id]/edit-audio` |
+| `/sanctuary/rituals/[id]/edit-audio` | **Audio page** (edit-audio): volumes, waves, preview | Exists (full UI) |
 
 ---
 
@@ -95,11 +95,11 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| — | Meditations list | **Missing** — add `/sanctuary/meditations` |
-| — | Meditation detail (Phase 5.2) | **Missing** — add `/sanctuary/meditations/[id]` |
-| — | Meditation edit | **Missing** — add `/sanctuary/meditations/[id]/edit` |
+| `/sanctuary/meditations` | Meditations list | Exists (full UI) |
+| `/sanctuary/meditations/[id]` | Meditation detail (Phase 5.2) | Exists (full UI) |
+| `/sanctuary/meditations/[id]/edit` | Meditation edit | Exists (full UI) |
 | `/sanctuary/meditations/create` | Meditation creation — **conversational** (Intent, Context, Script, Voice, Review) | **To change** — make conversational (orb/speak) |
-| — | Edit sound/script in pipeline | **Missing** — add e.g. `/sanctuary/meditations/[id]/edit-audio` |
+| `/sanctuary/meditations/[id]/edit-audio` | **Audio page** (edit-audio): volumes, waves, preview | Exists (full UI) |
 
 ---
 
@@ -107,9 +107,9 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| — | **Orb that speaks** — voice-first conversation UI (voice-interaction-design.md, Phase 9) | **Missing** — add e.g. `/speak` or global orb + conversation mode |
-| — | Conversation UI — chat-like interface, state machine, context gathering (03-conversational-system.md) | **Missing** — add e.g. `/create/conversation` or integrate into create flows |
-| SpeakingAnimation (visual orbs) | Visual for “speaking”; not the conversational entry point | Exists as component only — need full speak/conversation experience |
+| `/speak` | **Orb that speaks** — voice-first conversation UI (voice-interaction-design.md, Phase 9) | Exists (full UI) |
+| `/create/conversation` | Conversation UI — chat-like interface, state machine, context gathering (03-conversational-system.md) | Exists (full UI) |
+| SpeakingAnimation (visual orbs) | Visual for “speaking”; not the conversational entry point | Exists as component; used in /speak and content detail |
 
 ---
 
@@ -117,8 +117,8 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| — | Marketplace discovery — browse, search, filter (Phase 14.1) | **Missing** — add `/marketplace` |
-| — | Creator dashboard — publish, pricing, analytics (Phase 14.2) | **Missing** — add e.g. `/marketplace/creator` |
+| `/marketplace` | Marketplace discovery — browse, search, filter (Phase 14.1) | Exists (full UI) |
+| `/marketplace/creator` | Creator dashboard — publish, pricing, analytics (Phase 14.2) | Exists (full UI) |
 | — | Verification flow, viral/share, revenue (Phase 14.3–14.5) | **Missing** — later |
 
 ---
@@ -135,17 +135,22 @@
 
 ## Summary
 
-| Category | What is | What needs to be | Comparison |
-|----------|---------|------------------|------------|
-| **Speak / orb** | No route | Orb that speaks, conversation UI | Create `/speak` or global + conversation |
-| **Marketplace** | No route | Discovery, creator, verification | Create `/marketplace` (and creator, etc.) |
-| **Three pipelines** | Create entry points + placeholder steps | **Conversational** creation (no static forms) | Change: make creation conversational (orb/speak) |
-| **Edit sound in pipelines** | No step/screen | Dedicated edit script/voice/audio in pipeline | Create edit-audio step or page per type |
-| **Meditations** | Create only | List + detail + edit + conversational create | Create list, detail, edit; change create to conversational |
-| **Affirmations** | List, create, record | + detail + edit + conversational create + edit-audio | Create detail, edit, edit-audio; change create to conversational |
-| **Home vs Sanctuary** | `/home` and `/sanctuary` both exist | Roadmap: "Home (Sanctuary)" | Clarify: merge or define distinct roles |
+| Category | Web | Mobile | Final target |
+|----------|-----|--------|--------------|
+| **Speak / orb** | ✅ `/speak`, `/create/conversation` | ❌ | Orb that speaks, conversation UI |
+| **Marketplace** | ✅ discovery, creator | ❌ | Discovery, creator, verification |
+| **Three pipelines** | Create steps exist (forms) | ❌ | **Conversational** creation (orb/speak) |
+| **Audio page (edit-audio)** | ✅ All three edit-audio | ❌ | Volumes, waves, preview |
+| **Affirmations** | ✅ List + detail + edit + edit-audio + create | ❌ | + conversational create |
+| **Meditations** | ✅ List + detail + edit + edit-audio + create | ❌ | Same |
+| **Rituals** | ✅ List + detail + edit + edit-audio + create + recordings | ❌ | Same |
+| **Home vs Sanctuary** | `/home` → `/sanctuary`; both exist | Home only | Home links to Sanctuary hub |
+
+**To change**: Create flows → conversational (orb/speak entry). Mobile needs all content/sanctuary/marketplace pages.
 
 ---
 
-**Last updated**: 2026-02-17  
-**Status**: Comparison complete; decisions pending.
+**Note**: Edit-audio routes = **Audio page** — volumes, waves, effects. See [02-pipeline-affirmations.md](../01-core/02-pipeline-affirmations.md) and [06-audio-generation-summary.md](../01-core/06-audio-generation-summary.md).
+
+**Last updated**: 2026-02-16  
+**Status**: Web – all pages implemented (frontend); Mobile – basic only. See [09-current-vs-final-solution.md](./09-current-vs-final-solution.md).

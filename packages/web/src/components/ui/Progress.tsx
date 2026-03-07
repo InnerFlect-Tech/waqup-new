@@ -1,5 +1,11 @@
+'use client';
+
 import React, { memo } from 'react';
-import { colors, borderRadius } from '@/theme';
+import { borderRadius } from '@/theme';
+import { useTheme } from '@/theme';
+import type { Theme } from '@waqup/shared/theme';
+
+type ThemeColors = Theme['colors'];
 
 export interface ProgressProps {
   variant?: 'linear' | 'circular';
@@ -18,20 +24,25 @@ export const Progress: React.FC<ProgressProps> = memo(({
   style,
   className,
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
   if (variant === 'linear') {
-    return <LinearProgress value={value} size={size} color={color} style={style} className={className} />;
+    return <LinearProgress value={value} size={size} color={color} colors={colors} style={style} className={className} />;
   }
 
-  return <CircularProgress value={value} size={size} color={color} style={style} className={className} />;
+  return <CircularProgress value={value} size={size} color={color} colors={colors} style={style} className={className} />;
 });
+Progress.displayName = 'Progress';
 
-const LinearProgress: React.FC<{ value: number; size: 'sm' | 'md' | 'lg'; color: string; style?: React.CSSProperties; className?: string }> = ({
-  value,
-  size,
-  color,
-  style,
-  className,
-}) => {
+const LinearProgress: React.FC<{
+  value: number;
+  size: 'sm' | 'md' | 'lg';
+  color: string;
+  colors: ThemeColors;
+  style?: React.CSSProperties;
+  className?: string;
+}> = ({ value, size, color, colors, style, className }) => {
   const height = size === 'sm' ? 4 : size === 'md' ? 6 : 8;
   const colorMap = {
     primary: colors.accent.primary,
@@ -47,7 +58,7 @@ const LinearProgress: React.FC<{ value: number; size: 'sm' | 'md' | 'lg'; color:
       style={{
         width: '100%',
         height,
-        backgroundColor: colors.border.light,
+        background: colors.border.light,
         borderRadius: borderRadius.sm,
         overflow: 'hidden',
         ...style,
@@ -62,7 +73,7 @@ const LinearProgress: React.FC<{ value: number; size: 'sm' | 'md' | 'lg'; color:
         style={{
           width: `${progressValue}%`,
           height: '100%',
-          backgroundColor: colorMap[color as keyof typeof colorMap],
+          background: colorMap[color as keyof typeof colorMap],
           borderRadius: borderRadius.sm,
           transition: 'width 0.3s ease-in-out',
         }}
@@ -71,13 +82,14 @@ const LinearProgress: React.FC<{ value: number; size: 'sm' | 'md' | 'lg'; color:
   );
 };
 
-const CircularProgress: React.FC<{ value: number; size: 'sm' | 'md' | 'lg'; color: string; style?: React.CSSProperties; className?: string }> = ({
-  value,
-  size,
-  color,
-  style,
-  className,
-}) => {
+const CircularProgress: React.FC<{
+  value: number;
+  size: 'sm' | 'md' | 'lg';
+  color: string;
+  colors: ThemeColors;
+  style?: React.CSSProperties;
+  className?: string;
+}> = ({ value, size, color, colors, style, className }) => {
   const sizeMap = { sm: 32, md: 48, lg: 64 };
   const radius = sizeMap[size] / 2 - 4;
   const circumference = 2 * Math.PI * radius;

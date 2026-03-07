@@ -7,6 +7,11 @@ import type {
   AuthServiceResult,
 } from '../../types/auth';
 
+/** Safely extract error message from unknown catch clause */
+function toErrorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error ? error.message : fallback;
+}
+
 /**
  * Authentication Service - Shared across platforms
  * Provides auth operations using Supabase Auth
@@ -54,10 +59,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: data.session,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred during login.',
+          error: toErrorMessage(error, 'An unexpected error occurred during login.'),
           data: null,
         };
       }
@@ -97,10 +102,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: { user: authData.user },
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred during signup.',
+          error: toErrorMessage(error, 'An unexpected error occurred during signup.'),
           data: null,
         };
       }
@@ -126,10 +131,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: undefined,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred during logout.',
+          error: toErrorMessage(error, 'An unexpected error occurred during logout.'),
           data: null,
         };
       }
@@ -155,10 +160,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: data.session,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred.',
+          error: toErrorMessage(error, 'An unexpected error occurred.'),
           data: null,
         };
       }
@@ -192,10 +197,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: data.user,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred.',
+          error: toErrorMessage(error, 'An unexpected error occurred.'),
           data: null,
         };
       }
@@ -226,10 +231,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: undefined,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred.',
+          error: toErrorMessage(error, 'An unexpected error occurred.'),
           data: null,
         };
       }
@@ -270,10 +275,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: undefined,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred.',
+          error: toErrorMessage(error, 'An unexpected error occurred.'),
           data: null,
         };
       }
@@ -302,10 +307,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: null,
           data: undefined,
         };
-      } catch (error: any) {
+      } catch (error) {
         return {
           success: false,
-          error: error.message || 'An unexpected error occurred.',
+          error: toErrorMessage(error, 'An unexpected error occurred.'),
           data: null,
         };
       }

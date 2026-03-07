@@ -1,29 +1,24 @@
 'use client';
 
 import React from 'react';
-import { PlaceholderPage } from '@/components';
-import Link from 'next/link';
-import { Button } from '@/components';
-import { useTheme } from '@/theme';
-import { spacing } from '@/theme';
+import { ContentListPage } from '@/components/content';
+import { useContent } from '@/hooks';
 
 export default function AffirmationsListPage() {
-  const { theme } = useTheme();
-  const colors = theme.colors;
+  const { items, isLoading, error, refetch } = useContent('affirmation');
 
   return (
-    <PlaceholderPage
+    <ContentListPage
       title="Affirmations"
       description="Your affirmations for cognitive re-patterning."
+      contentType="affirmation"
+      createHref="/sanctuary/affirmations/create"
       backHref="/sanctuary"
-    >
-      <div style={{ marginTop: spacing.lg }}>
-        <Link href="/sanctuary/affirmations/create" style={{ textDecoration: 'none' }}>
-          <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
-            Create Affirmation
-          </Button>
-        </Link>
-      </div>
-    </PlaceholderPage>
+      content={items}
+      createLabel="Create Affirmation"
+      isLoading={isLoading}
+      error={error}
+      onRetry={refetch}
+    />
   );
 }

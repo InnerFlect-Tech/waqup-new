@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { View, ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming, interpolate } from 'react-native-reanimated';
-import { colors, spacing } from '@/theme';
+import { useTheme, spacing } from '@/theme';
 
 export interface LoadingProps {
   variant?: 'spinner' | 'dots' | 'skeleton';
@@ -16,11 +16,14 @@ export const Loading: React.FC<LoadingProps> = memo(({
   color = 'primary',
   style,
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
   if (variant === 'spinner') {
     const sizeMap = { sm: 'small' as const, md: 'small' as const, lg: 'large' as const };
     const colorMap = {
       primary: colors.accent.primary,
-      white: colors.text.inverse,
+      white: colors.text.onDark,
       secondary: colors.text.secondary,
     };
 
@@ -41,10 +44,12 @@ const DotsLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; color: 'primary' | 'whit
   color,
   style,
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const dotSize = size === 'sm' ? 6 : size === 'md' ? 8 : 10;
   const colorMap = {
     primary: colors.accent.primary,
-    white: colors.text.inverse,
+    white: colors.text.onDark,
     secondary: colors.text.secondary,
   };
 
@@ -80,6 +85,8 @@ const DotsLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; color: 'primary' | 'whit
 };
 
 const SkeletonLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; style?: ViewStyle }> = ({ size, style }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const height = size === 'sm' ? 12 : size === 'md' ? 16 : 20;
   const opacity = useSharedValue(0.3);
 
@@ -92,7 +99,11 @@ const SkeletonLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; style?: ViewStyle }>
   }));
 
   return (
-    <Animated.View style={[styles.skeleton, { height }, animatedStyle, style]} accessibilityRole="progressbar" accessibilityLabel="Loading" />
+    <Animated.View
+      style={[styles.skeleton, { height, backgroundColor: colors.border.light }, animatedStyle, style]}
+      accessibilityRole="progressbar"
+      accessibilityLabel="Loading"
+    />
   );
 };
 
@@ -106,7 +117,6 @@ const styles = StyleSheet.create({
     // Styles applied inline
   },
   skeleton: {
-    backgroundColor: colors.border.light,
     borderRadius: 4,
     width: '100%',
   },

@@ -1,14 +1,8 @@
 /**
- * Theme System - Glass-Morphism Minimalist Design
- * Central export for all theme tokens
+ * Web theme - re-exports shared + platform adapters
  */
 
-export * from './colors';
-export * from './typography';
-export * from './spacing';
-export * from './design-tokens';
-export * from './borders';
-export * from './shadows';
-export * from './glass';
-export * from './themes';
-export * from './ThemeProvider';
+export { colors, themes, defaultTheme } from '@waqup/shared/theme';
+export type { Theme, ThemeVariables } from '@waqup/shared/theme';
+export { spacing, borderRadius, typography, shadows, CONTENT_MAX_WIDTH, AUTH_CARD_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, NAV_HEIGHT, GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH, PAGE_TOP_PADDING, MAX_WIDTH_7XL, PAGE_PADDING, SECTION_GAP, CARD_PADDING_AUTH, CARD_PADDING_CONTENT, INPUT_GAP, GLASS_CARD_STYLES } from './format';
+export { ThemeProvider, useTheme } from './ThemeProvider';
