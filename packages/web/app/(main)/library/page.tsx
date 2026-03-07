@@ -1,179 +1,611 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Typography, Button, Card, Badge, Loading } from '@/components';
+import { Typography, Button, Badge, Loading } from '@/components';
 import { spacing, borderRadius, GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
-import { Music, Sparkles, Brain, Library as LibraryIcon } from 'lucide-react';
+import {
+  Music,
+  Sparkles,
+  Wind,
+  Library as LibraryIcon,
+  Play,
+  Mic,
+  Bot,
+  Clock,
+  Calendar,
+  Plus,
+  RefreshCw,
+} from 'lucide-react';
 import { getContentDetailHref } from '@/components/content';
 import type { ContentItem } from '@waqup/shared/types';
 import { getContentTypeIcon } from '@/lib';
 import { getContentTypeBadgeVariant } from '@waqup/shared/utils';
 import { useContent } from '@/hooks';
 
-type ContentType = 'all' | 'rituals' | 'affirmations' | 'meditations';
+type ContentTypeFilter = 'all' | 'ritual' | 'affirmation' | 'meditation';
 
-const FILTERS: { id: ContentType; label: string; icon: typeof Music }[] = [
+const FILTERS: { id: ContentTypeFilter; label: string; icon: typeof Music }[] = [
   { id: 'all', label: 'All', icon: LibraryIcon },
-  { id: 'rituals', label: 'Rituals', icon: Music },
-  { id: 'affirmations', label: 'Affirmations', icon: Sparkles },
-  { id: 'meditations', label: 'Meditations', icon: Brain },
+  { id: 'affirmation', label: 'Affirmations', icon: Sparkles },
+  { id: 'meditation', label: 'Meditations', icon: Wind },
+  { id: 'ritual', label: 'Rituals', icon: Music },
 ];
 
-const glassCardStyle = (colors: { glass?: { light?: string; border?: string } }) => ({
-  background: colors.glass?.light,
-  backdropFilter: 'blur(10px)',
-  WebkitBackdropFilter: 'blur(10px)',
-  border: `1px solid ${colors.glass?.border}`,
-});
+const TYPE_COLOR: Record<ContentTypeFilter, string> = {
+  all: '',
+  affirmation: '#c084fc',
+  meditation: '#60a5fa',
+  ritual: '#34d399',
+};
+
+function formatDate(iso?: string) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+function ContentCard({
+  item,
+  colors,
+}: {
+  item: ContentItem;
+  colors: ReturnType<typeof useTheme>['theme']['colors'];
+}) {
+  const ItemIcon = getContentTypeIcon(item.type);
+  const typeColor = TYPE_COLOR[item.type as ContentTypeFilter] ?? colors.accent.primary;
+
+  return (
+    <Link href={getContentDetailHref(item.type, item.id)} style={{ textDecoration: 'none' }}>
+      <div
+        className="library-card"
+        style={{
+          position: 'relative',
+          borderRadius: borderRadius.xl,
+          background: colors.glass.light,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: `1px solid ${colors.glass.border}`,
+          overflow: 'hidden',
+          cursor: 'pointer',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+          aspectRatio: '16/9',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: spacing.lg,
+        }}
+      >
+        {/* Ambient glow based on type */}
+        <div
+          style={{
+            position: 'absolute',
+            top: -40,
+            right: -40,
+            width: 120,
+            height: 120,
+            borderRadius: '50%',
+            background: `${typeColor}18`,
+            filter: 'blur(30px)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Top row: badge + icon */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+            <Badge variant={getContentTypeBadgeVariant(item.type)} size="sm">
+              {item.type}
+            </Badge>
+            {item.status === 'draft' && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '2px 8px',
+                  borderRadius: borderRadius.full,
+                  background: `${colors.warning}20`,
+                  border: `1px solid ${colors.warning}30`,
+                  fontSize: '10px',
+                  color: colors.warning,
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase' as const,
+                }}
+              >
+                Draft
+              </div>
+            )}
+          </div>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: borderRadius.full,
+              background: `${typeColor}20`,
+              border: `1px solid ${typeColor}30`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <ItemIcon size={16} color={typeColor} strokeWidth={2} />
+          </div>
+        </div>
+
+        {/* Title + description */}
+        <div style={{ flex: 1, padding: `${spacing.sm} 0`, position: 'relative', zIndex: 1 }}>
+          <Typography
+            variant="h4"
+            style={{
+              color: colors.text.primary,
+              fontWeight: 500,
+              marginBottom: spacing.xs,
+              overflow: 'hidden',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical' as const,
+              lineHeight: 1.4,
+            }}
+          >
+            {item.title}
+          </Typography>
+          {item.description && (
+            <Typography
+              variant="caption"
+              style={{
+                color: colors.text.secondary,
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical' as const,
+                lineHeight: 1.5,
+              }}
+            >
+              {item.description}
+            </Typography>
+          )}
+        </div>
+
+        {/* Bottom metadata row */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            position: 'relative',
+            zIndex: 1,
+            flexWrap: 'wrap',
+            gap: spacing.xs,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
+            {item.frequency && (
+              <span
+                style={{ fontSize: '11px', fontWeight: 600, color: typeColor, letterSpacing: '0.03em' }}
+              >
+                {item.frequency}
+              </span>
+            )}
+            {item.frequency && item.duration && (
+              <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
+            )}
+            {item.duration && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <Clock size={10} color={colors.text.secondary} strokeWidth={2} />
+                <span style={{ fontSize: '11px', color: colors.text.secondary }}>{item.duration}</span>
+              </div>
+            )}
+            {item.voiceType && (
+              <>
+                <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                  {item.voiceType === 'ai' ? (
+                    <Bot size={10} color={colors.accent.secondary} strokeWidth={2} />
+                  ) : (
+                    <Mic size={10} color={colors.accent.primary} strokeWidth={2} />
+                  )}
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      color: item.voiceType === 'ai' ? colors.accent.secondary : colors.accent.primary,
+                    }}
+                  >
+                    {item.voiceType === 'ai' ? 'AI voice' : 'My voice'}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+          {(item.createdAt || item.lastPlayed) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
+              <span style={{ fontSize: '11px', color: colors.text.secondary }}>
+                {item.lastPlayed
+                  ? `Played ${formatDate(item.lastPlayed)}`
+                  : formatDate(item.createdAt)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Hover play overlay */}
+        <div
+          className="library-card-overlay"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)',
+            borderRadius: borderRadius.xl,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: 0,
+            transition: 'opacity 0.25s ease',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        >
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: borderRadius.full,
+              background: 'rgba(255,255,255,0.15)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: `0 8px 24px ${typeColor}50`,
+            }}
+          >
+            <Play size={22} color="#fff" strokeWidth={2} style={{ marginLeft: 2 }} />
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function CreateCard({
+  colors,
+}: {
+  colors: ReturnType<typeof useTheme>['theme']['colors'];
+}) {
+  return (
+    <Link href="/create" style={{ textDecoration: 'none' }}>
+      <div
+        className="library-card"
+        style={{
+          position: 'relative',
+          borderRadius: borderRadius.xl,
+          background: 'transparent',
+          border: `2px dashed ${colors.glass.border}`,
+          overflow: 'hidden',
+          cursor: 'pointer',
+          transition: 'transform 0.2s ease, border-color 0.2s ease',
+          aspectRatio: '16/9',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: spacing.lg,
+          gap: spacing.md,
+        }}
+      >
+        <div
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: borderRadius.full,
+            background: colors.gradients.primary,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: `0 4px 16px ${colors.accent.primary}50`,
+          }}
+        >
+          <Plus size={22} color="#fff" strokeWidth={2.5} />
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <Typography
+            variant="h4"
+            style={{ color: colors.text.primary, fontWeight: 500, marginBottom: spacing.xs }}
+          >
+            Create New
+          </Typography>
+          <Typography variant="caption" style={{ color: colors.text.secondary }}>
+            Add a new affirmation, meditation, or ritual
+          </Typography>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function LibraryPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [contentType, setContentType] = useState<ContentType>('all');
+  const [typeFilter, setTypeFilter] = useState<ContentTypeFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const { items: allContent, isLoading, error, refetch } = useContent();
 
   const filteredContent = useMemo(
     () =>
       allContent.filter((item) => {
-        if (contentType !== 'all' && item.type !== contentType.slice(0, -1)) return false;
-        if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        if (typeFilter !== 'all' && item.type !== typeFilter) return false;
+        if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+          return false;
         return true;
       }),
-    [allContent, contentType, searchQuery]
+    [allContent, typeFilter, searchQuery]
   );
-
-  const getFilterStyle = (id: ContentType) => {
-    const isActive = contentType === id;
-    const accent = id === 'meditations' ? colors.accent.tertiary : id === 'affirmations' ? colors.accent.secondary : colors.accent.primary;
-    const bg = id === 'meditations' && isActive ? `linear-gradient(to right, ${colors.accent.tertiary}, ${colors.accent.secondary})` : isActive ? (id === 'affirmations' ? colors.gradients.secondary : colors.gradients.primary) : id === 'affirmations' || id === 'meditations' ? colors.glass.transparent : colors.glass.opaque;
-    return {
-      padding: `${spacing.xs} ${spacing.md}`,
-      borderRadius: borderRadius.full,
-      border: `1px solid ${isActive ? accent : colors.glass.border}`,
-      background: bg,
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
-      color: isActive ? colors.text.onDark : (id === 'affirmations' || id === 'meditations' ? colors.text.secondary : colors.text.primary),
-      fontSize: '14px',
-      fontWeight: isActive ? 600 : 400,
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      boxShadow: isActive ? `0 4px 12px ${colors.accent.primary}${id === 'all' || id === 'rituals' ? '60' : '40'}` : 'none',
-      display: 'flex',
-      alignItems: 'center',
-      gap: spacing.xs,
-    } as React.CSSProperties;
-  };
 
   return (
     <PageShell intensity="medium">
       <PageContent>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginBottom: spacing.xl }}>
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: spacing.lg,
+            marginBottom: spacing.xl,
+            flexWrap: 'wrap',
+          }}
+        >
           <div>
-            <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>Your Library</Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary }}>All your rituals and affirmations in one place</Typography>
+            <Typography
+              variant="h1"
+              style={{ marginBottom: spacing.xs, color: colors.text.primary, fontWeight: 300 }}
+            >
+              Your Library
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary }}>
+              {allContent.length > 0
+                ? `${allContent.length} creation${allContent.length !== 1 ? 's' : ''} in your library`
+                : 'All your rituals and affirmations in one place'}
+            </Typography>
           </div>
-          <Link href="/create" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>Create New</Button>
+          <Link href="/create" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <Button
+              variant="primary"
+              size="md"
+              style={{
+                background: colors.gradients.primary,
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.xs,
+              }}
+            >
+              <Plus size={16} strokeWidth={2.5} />
+              Create New
+            </Button>
           </Link>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginBottom: spacing.xl }}>
+        {/* Filters + search */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: spacing.md,
+            marginBottom: spacing.xl,
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
-            {FILTERS.map(({ id, label, icon: Icon }) => (
-              <button key={id} onClick={() => setContentType(id)} style={getFilterStyle(id)}>
-                <Icon size={16} color={contentType === id ? colors.text.onDark : (id === 'affirmations' || id === 'meditations' ? colors.text.secondary : colors.text.primary)} strokeWidth={2.5} />
-                {label}
-              </button>
-            ))}
+            {FILTERS.map(({ id, label, icon: Icon }) => {
+              const isActive = typeFilter === id;
+              const accent = TYPE_COLOR[id] || colors.accent.primary;
+              const count = id !== 'all' ? allContent.filter((i) => i.type === id).length : 0;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setTypeFilter(id)}
+                  style={{
+                    padding: `${spacing.xs} ${spacing.md}`,
+                    borderRadius: borderRadius.full,
+                    border: `1px solid ${isActive ? accent : colors.glass.border}`,
+                    background: isActive ? `${accent}20` : colors.glass.light,
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    color: isActive ? accent : colors.text.secondary,
+                    fontSize: '13px',
+                    fontWeight: isActive ? 600 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.xs,
+                  }}
+                >
+                  <Icon
+                    size={13}
+                    color={isActive ? accent : colors.text.secondary}
+                    strokeWidth={2.5}
+                  />
+                  {label}
+                  {count > 0 && (
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        color: isActive ? accent : colors.text.secondary,
+                        borderRadius: borderRadius.full,
+                        padding: '0 4px',
+                      }}
+                    >
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
-          <div style={{ flex: 1, maxWidth: SEARCH_INPUT_MAX_WIDTH }}>
+          <div style={{ maxWidth: SEARCH_INPUT_MAX_WIDTH }}>
             <input
               type="text"
               placeholder="Search your library..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ width: '100%', padding: spacing.sm, borderRadius: borderRadius.md, fontSize: '14px', color: colors.text.primary, outline: 'none', ...glassCardStyle(colors) }}
+              style={{
+                width: '100%',
+                padding: `${spacing.sm} ${spacing.md}`,
+                borderRadius: borderRadius.lg,
+                border: `1px solid ${colors.glass.border}`,
+                background: colors.glass.light,
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+                fontSize: '14px',
+                color: colors.text.primary,
+                outline: 'none',
+                boxSizing: 'border-box' as const,
+              }}
             />
           </div>
         </div>
 
         {isLoading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: `${spacing.xxl} 0` }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: `${spacing.xl} 0` }}>
             <Loading variant="spinner" size="lg" />
           </div>
         ) : error ? (
-          <Card variant="default" style={{ padding: spacing.xl, textAlign: 'center', ...glassCardStyle(colors) }}>
-            <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.error }}>Failed to load library</Typography>
-            <Typography variant="body" style={{ marginBottom: spacing.lg, color: colors.text.secondary }}>{error}</Typography>
-            <Button variant="primary" style={{ background: colors.gradients.primary }} onClick={refetch}>Retry</Button>
-          </Card>
-        ) : filteredContent.length === 0 ? (
-          <Card variant="default" style={{ padding: spacing.xl, textAlign: 'center', ...glassCardStyle(colors) }}>
-            <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
-              {searchQuery || contentType !== 'all' ? 'No content found' : 'Your library is empty'}
+          <div
+            style={{
+              padding: spacing.xl,
+              textAlign: 'center',
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+            }}
+          >
+            <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.error }}>
+              Failed to load library
             </Typography>
-            <Typography variant="body" style={{ marginBottom: spacing.lg, color: colors.text.secondary }}>
-              {searchQuery ? `No items match "${searchQuery}"` : contentType !== 'all' ? `No ${contentType} yet` : 'Start creating your first ritual or affirmation'}
+            <Typography
+              variant="body"
+              style={{ marginBottom: spacing.lg, color: colors.text.secondary }}
+            >
+              {error}
+            </Typography>
+            <Button
+              variant="primary"
+              style={{
+                background: colors.gradients.primary,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: spacing.xs,
+              }}
+              onClick={refetch}
+            >
+              <RefreshCw size={14} strokeWidth={2} />
+              Try again
+            </Button>
+          </div>
+        ) : filteredContent.length === 0 && allContent.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: `${spacing.xl} 0` }}>
+            <LibraryIcon
+              size={56}
+              color={colors.accent.primary}
+              strokeWidth={1}
+              style={{ marginBottom: spacing.lg, opacity: 0.4 }}
+            />
+            <Typography
+              variant="h3"
+              style={{ color: colors.text.primary, fontWeight: 300, marginBottom: spacing.sm }}
+            >
+              Your library is empty
+            </Typography>
+            <Typography
+              variant="body"
+              style={{
+                color: colors.text.secondary,
+                marginBottom: spacing.xl,
+                maxWidth: 360,
+                margin: `0 auto ${spacing.xl}`,
+              }}
+            >
+              Create your first affirmation, meditation, or ritual to start your transformation.
             </Typography>
             <Link href="/create" style={{ textDecoration: 'none' }}>
-              <Button variant="primary" style={{ background: colors.gradients.primary }}>Create New</Button>
+              <Button
+                variant="primary"
+                size="md"
+                style={{
+                  background: colors.gradients.primary,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: spacing.xs,
+                }}
+              >
+                <Plus size={16} strokeWidth={2.5} />
+                Create your first piece
+              </Button>
             </Link>
-          </Card>
+          </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(${GRID_CARD_MIN}, 1fr))`, gap: spacing.lg }}>
-            <Link href="/create" style={{ textDecoration: 'none' }}>
-              <Card variant="default" pressable style={{ aspectRatio: '16/9', padding: spacing.lg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', boxShadow: `0 4px 12px ${colors.accent.primary}60`, ...glassCardStyle(colors), border: `2px dashed ${colors.glass.border}` }}>
-                <IconCircle colors={colors} icon={Sparkles} iconSize={24} boxSize={48} />
-                <Typography variant="h3" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>Create New</Typography>
-                <Typography variant="body" style={{ color: colors.text.secondary }}>Add a new ritual or affirmation</Typography>
-              </Card>
-            </Link>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(auto-fill, minmax(${GRID_CARD_MIN}, 1fr))`,
+              gap: spacing.lg,
+            }}
+          >
+            <CreateCard colors={colors} />
             {filteredContent.map((item) => (
-              <Link key={item.id} href={getContentDetailHref(item.type, item.id)} style={{ textDecoration: 'none' }}>
-                <Card variant="elevated" pressable style={{ aspectRatio: '16/9', padding: spacing.lg, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'all 0.3s ease', cursor: 'pointer', boxShadow: `0 8px 32px ${colors.accent.primary}40`, background: colors.glass.light, backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: `1px solid ${colors.glass.border}` }}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm }}>
-                      <Badge variant={getContentTypeBadgeVariant(item.type)} size="sm">{item.type}</Badge>
-                      <IconCircle colors={colors} icon={getContentTypeIcon(item.type)} iconSize={20} boxSize={40} />
-                    </div>
-                    <Typography variant="h3" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>{item.title}</Typography>
-                    <Typography variant="body" style={{ marginBottom: spacing.md, color: colors.text.secondary }}>{item.description}</Typography>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, fontSize: '12px', color: colors.text.tertiary }}>
-                      {item.frequency && <><span style={{ color: colors.accent.primary }}>{item.frequency}</span><span>•</span></>}
-                      <span>{item.duration}</span>
-                    </div>
-                    {item.lastPlayed && <div style={{ fontSize: '12px', color: colors.text.tertiary }}>Last played: {new Date(item.lastPlayed).toLocaleDateString()}</div>}
-                  </div>
-                  <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${colors.background.primary}80, transparent)`, borderRadius: borderRadius.md, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: spacing.md, opacity: 0, transition: 'opacity 0.3s ease', pointerEvents: 'none' }} className="library-hover-overlay">
-                    <Button variant="primary" size="sm" style={{ background: colors.gradients.primary }}>Play Now</Button>
-                  </div>
-                </Card>
-              </Link>
+              <ContentCard key={item.id} item={item} colors={colors} />
             ))}
           </div>
         )}
 
-        <style dangerouslySetInnerHTML={{ __html: '.library-hover-overlay { pointer-events: none; } [class*="Card"]:hover .library-hover-overlay { opacity: 1; }' }} />
+        {!isLoading && !error && filteredContent.length === 0 && allContent.length > 0 && (
+          <div
+            style={{
+              padding: spacing.xl,
+              textAlign: 'center',
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+              marginTop: spacing.lg,
+            }}
+          >
+            <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+              No results
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary }}>
+              {searchQuery ? `Nothing matches "${searchQuery}"` : `No ${typeFilter}s yet`}
+            </Typography>
+          </div>
+        )}
+
+        <style>{`
+          .library-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.2) !important;
+          }
+          .library-card:hover .library-card-overlay {
+            opacity: 1 !important;
+          }
+        `}</style>
       </PageContent>
     </PageShell>
-  );
-}
-
-function IconCircle({ colors, icon: Icon, iconSize, boxSize }: { colors: Record<string, unknown>; icon: typeof Music; iconSize: number; boxSize: number }) {
-  const c = colors as { gradients?: { primary: string }; mystical?: { glow: string }; text?: { onDark: string } };
-  return (
-    <div style={{ width: boxSize, height: boxSize, borderRadius: borderRadius.full, background: c.gradients?.primary ?? '', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 4px 12px ${c.mystical?.glow ?? ''}60`, position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at center, ${c.mystical?.glow ?? ''}40, transparent)`, opacity: 0.6 }} />
-      <span style={{ position: 'relative', zIndex: 1 }}>
-        <Icon size={iconSize} color={c.text?.onDark ?? '#fff'} strokeWidth={2.5} />
-      </span>
-    </div>
   );
 }

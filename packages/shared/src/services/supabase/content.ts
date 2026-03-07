@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { ContentItem, ContentItemType } from '../../types/content';
+import type { ContentItem, ContentItemType, ContentStatus, VoiceType, AudioSettings } from '../../types/content';
 
 export interface ContentServiceResult<T> {
   data: T | null;
@@ -14,7 +14,10 @@ export interface CreateContentInput {
   duration?: string;
   frequency?: string;
   script?: string;
-  status?: 'draft' | 'complete';
+  status?: ContentStatus;
+  audioUrl?: string;
+  voiceType?: VoiceType;
+  audioSettings?: AudioSettings;
 }
 
 export interface UpdateContentInput {
@@ -23,10 +26,14 @@ export interface UpdateContentInput {
   duration?: string;
   frequency?: string;
   script?: string;
-  status?: 'draft' | 'complete';
+  status?: ContentStatus;
+  audioUrl?: string;
+  voiceType?: VoiceType;
+  audioSettings?: AudioSettings;
 }
 
 function mapRow(row: Record<string, unknown>): ContentItem {
+  const audioSettings = row.audio_settings as Record<string, number> | null;
   return {
     id: row.id as string,
     type: row.type as ContentItemType,
@@ -36,6 +43,18 @@ function mapRow(row: Record<string, unknown>): ContentItem {
     frequency: (row.frequency as string) || undefined,
     lastPlayed: (row.last_played_at as string) || undefined,
     script: (row.script as string) || undefined,
+    status: ((row.status as string) || 'draft') as ContentStatus,
+    audioUrl: (row.audio_url as string) || undefined,
+    voiceType: (row.voice_type as VoiceType) || undefined,
+    audioSettings: audioSettings
+      ? {
+          volumeVoice: audioSettings.volumeVoice ?? 80,
+          volumeAmbient: audioSettings.volumeAmbient ?? 40,
+          volumeMaster: audioSettings.volumeMaster ?? 100,
+        }
+      : undefined,
+    createdAt: (row.created_at as string) || undefined,
+    updatedAt: (row.updated_at as string) || undefined,
   };
 }
 
@@ -44,9 +63,22 @@ export function createContentService(client: SupabaseClient) {
     type?: ContentItemType
   ): Promise<ContentServiceResult<ContentItem[]>> {
     try {
+      // Get the authenticated user explicitly so we can filter by user_id at the
+      // query level. This works alongside (not instead of) RLS, ensuring the
+      // library works correctly on all environments regardless of RLS config.
+      const {
+        data: { user },
+      } = await client.auth.getUser();
+
+      if (!user) {
+        // Not signed in — return empty list gracefully rather than an error
+        return { data: [], error: null, success: true };
+      }
+
       let query = client
         .from('content_items')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (type) {
@@ -64,7 +96,7 @@ export function createContentService(client: SupabaseClient) {
         error: null,
         success: true,
       };
-    } catch (err) {
+    } catch {
       return { data: null, error: 'Failed to fetch content', success: false };
     }
   }
@@ -84,7 +116,7 @@ export function createContentService(client: SupabaseClient) {
       }
 
       return { data: mapRow(data), error: null, success: true };
-    } catch (err) {
+    } catch {
       return { data: null, error: 'Failed to fetch content item', success: false };
     }
   }
@@ -112,6 +144,9 @@ export function createContentService(client: SupabaseClient) {
           frequency: input.frequency || null,
           script: input.script || null,
           status: input.status || 'draft',
+          audio_url: input.audioUrl || null,
+          voice_type: input.voiceType || null,
+          audio_settings: input.audioSettings || null,
         })
         .select()
         .single();
@@ -121,7 +156,7 @@ export function createContentService(client: SupabaseClient) {
       }
 
       return { data: mapRow(data), error: null, success: true };
-    } catch (err) {
+    } catch {
       return { data: null, error: 'Failed to create content', success: false };
     }
   }
@@ -131,15 +166,16 @@ export function createContentService(client: SupabaseClient) {
     input: UpdateContentInput
   ): Promise<ContentServiceResult<ContentItem>> {
     try {
-      const updatePayload: Record<string, unknown> = {
-        updated_at: new Date().toISOString(),
-      };
+      const updatePayload: Record<string, unknown> = {};
       if (input.title !== undefined) updatePayload.title = input.title;
       if (input.description !== undefined) updatePayload.description = input.description;
       if (input.duration !== undefined) updatePayload.duration = input.duration;
       if (input.frequency !== undefined) updatePayload.frequency = input.frequency;
       if (input.script !== undefined) updatePayload.script = input.script;
       if (input.status !== undefined) updatePayload.status = input.status;
+      if (input.audioUrl !== undefined) updatePayload.audio_url = input.audioUrl;
+      if (input.voiceType !== undefined) updatePayload.voice_type = input.voiceType;
+      if (input.audioSettings !== undefined) updatePayload.audio_settings = input.audioSettings;
 
       const { data, error } = await client
         .from('content_items')
@@ -153,7 +189,7 @@ export function createContentService(client: SupabaseClient) {
       }
 
       return { data: mapRow(data), error: null, success: true };
-    } catch (err) {
+    } catch {
       return { data: null, error: 'Failed to update content', success: false };
     }
   }
@@ -170,7 +206,7 @@ export function createContentService(client: SupabaseClient) {
       }
 
       return { data: null, error: null, success: true };
-    } catch (err) {
+    } catch {
       return { data: null, error: 'Failed to delete content', success: false };
     }
   }
@@ -187,7 +223,7 @@ export function createContentService(client: SupabaseClient) {
       }
 
       return { data: null, error: null, success: true };
-    } catch (err) {
+    } catch {
       return { data: null, error: 'Failed to record play', success: false };
     }
   }
