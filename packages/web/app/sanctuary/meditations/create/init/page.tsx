@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Target, MapPin, FileText, Mic } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
+import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 
 const MEDITATION_STEPS = [
   {
@@ -35,6 +36,9 @@ const TIPS = [
 ];
 
 export default function MeditationCreateInitPage() {
+  const { setCurrentStep } = useContentCreation();
+  useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
+
   return (
     <CreateFlowInitStep
       title="Create Your Meditation"

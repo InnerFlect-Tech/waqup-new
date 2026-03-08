@@ -17,9 +17,11 @@ import {
   Mic,
 } from 'lucide-react';
 import { Button, TestLoginButton } from '@/components';
-import { useTheme } from '@/theme';
+import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT } from '@/theme';
 import { useAuthStore } from '@/stores';
-import { MAX_WIDTH_7XL, NAV_HEIGHT } from '@/theme';
+import { SANCTUARY_MENU_ITEMS } from '@/lib';
+
+const CREDITS_BALANCE = SANCTUARY_MENU_ITEMS.find((m) => m.name === 'Credits')?.count ?? 50;
 
 interface NavItem {
   name: string;
@@ -170,14 +172,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </h1>
               </div>
 
-              <div className="hidden md:flex items-center gap-4">
-                {NAV_ITEMS.map((item) => (
-                  <Button
-                    key={item.path}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.push(item.path)}
-                    className="flex items-center gap-2"
+              <div className="hidden md:flex items-center gap-6">
+                <div className="flex items-center gap-4">
+                  {NAV_ITEMS.map((item) => (
+                    <Button
+                      key={item.path}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => router.push(item.path)}
+                      className="flex items-center gap-2"
                     style={
                       pathname === item.path
                         ? { color: colors.text.primary, background: colors.glass.border }
@@ -187,27 +190,28 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {item.icon}
                     <span>{item.name}</span>
                   </Button>
-                ))}
-
+                  ))}
+                </div>
                 <div className="relative">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-3"
                   >
                     <User className="w-5 h-5" style={{ color: colors.text.primary }} />
                     <span className="hidden sm:inline" style={{ color: colors.text.primary }}>
                       {user?.email}
                     </span>
                     <span
-                      className="px-2 py-1 rounded-full text-sm"
+                      className="rounded-full text-sm"
                       style={{
+                        padding: `${spacing.xs} ${spacing.sm}`,
                         background: `${colors.accent.tertiary}30`,
                         color: colors.accent.tertiary,
                       }}
                     >
-                      50 Credits
+                      {CREDITS_BALANCE} Credits
                     </span>
                   </Button>
 
@@ -242,7 +246,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             <span
                               style={{ color: colors.accent.tertiary }}
                             >
-                              50 Credits
+                              {CREDITS_BALANCE} Credits
                             </span>
                           )}
                         </Button>
@@ -335,7 +339,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     <span>{item.name}</span>
                   </div>
                   {item.showBalance && (
-                    <span style={{ color: colors.accent.tertiary }}>50 Credits</span>
+                    <span style={{ color: colors.accent.tertiary }}>{CREDITS_BALANCE} Credits</span>
                   )}
                 </Button>
               ))}

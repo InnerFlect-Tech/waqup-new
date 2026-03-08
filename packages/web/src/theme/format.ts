@@ -44,6 +44,14 @@ export const CARD_PADDING_AUTH = spacing.xl;
 export const CARD_PADDING_CONTENT = spacing.xl;
 export const INPUT_GAP = spacing.lg;
 
+/** Semantic spacing helpers - use for consistent UI patterns */
+export const ICON_TEXT_GAP = spacing.sm;
+export const LIST_ITEM_PADDING_H = spacing.lg;
+export const LIST_ITEM_PADDING_V = spacing.md;
+export const CARD_INTERNAL_PADDING = spacing.lg;
+export const BADGE_PADDING_H = spacing.sm;
+export const BADGE_PADDING_V = spacing.xs;
+
 export const GLASS_CARD_STYLES = {
   borderRadius: borderRadius.lg,
   backdropFilter: 'blur(20px)',

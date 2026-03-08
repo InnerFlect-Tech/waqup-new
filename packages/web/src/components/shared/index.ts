@@ -1,4 +1,5 @@
 export * from './AnimatedBackground';
+export * from './CreateProgressBar';
 export * from './ThemeSelector';
 export * from './Logo';
 export * from './PlaceholderPage';

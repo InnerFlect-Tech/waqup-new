@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '@/theme';
+import { useTheme, spacing } from '@/theme';
 
 export interface SpeakingAnimationProps {
   /** Whether audio is currently playing/speaking */
@@ -205,7 +205,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
         @keyframes minimalFloat-1 { 0%, 100% { transform: translate(0, 0); opacity: 0.6; } 50% { transform: translate(20px, -20px); opacity: 0.8; } }
         @keyframes minimalFloat-2 { 0%, 100% { transform: translate(0, 0); opacity: 0.5; } 50% { transform: translate(-25px, 25px); opacity: 0.7; } }
         @keyframes minimalFloat-3 { 0%, 100% { transform: translate(0, 0); opacity: 0.6; } 50% { transform: translate(15px, -15px); opacity: 0.8; } }
-        .clean-frequency-container { position: relative; width: 80%; max-width: 400px; height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
+        .clean-frequency-container { position: relative; width: 80%; max-width: 400px; height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: ${spacing.sm}; }
         .clean-frequency-bar {
           flex: 1; max-width: 24px; height: var(--bar-height); min-height: 20px;
           background: ${colors.gradients.primary}; border-radius: 4px 4px 0 0;

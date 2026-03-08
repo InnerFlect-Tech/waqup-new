@@ -2,15 +2,25 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Typography, Button, Card } from '@/components';
+import { motion } from 'framer-motion';
+import { Typography, Button } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { useAuthStore } from '@/stores';
 import { clearStoredOverride } from '@/lib/auth-override';
 import Link from 'next/link';
-import { User, LogOut, ChevronRight } from 'lucide-react';
+import { LogOut, ChevronRight } from 'lucide-react';
 import { PROFILE_MENU_ITEMS } from '@/lib';
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
 
 export default function ProfilePage() {
   const { theme } = useTheme();
@@ -25,194 +35,188 @@ export default function ProfilePage() {
     authUser?.email?.split('@')[0] ||
     'User';
   const displayEmail = authUser?.email || '';
+  const initials = getInitials(displayName);
+  const memberSince = authUser?.created_at
+    ? new Date(authUser.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : 'Recently';
+
+  const STATS = [
+    { label: 'Content', value: '—' },
+    { label: 'Credits', value: '50' },
+    { label: 'Member since', value: memberSince },
+  ];
 
   return (
     <PageShell intensity="medium">
       <PageContent>
-          {/* Header */}
-          <div style={{ marginBottom: spacing.xl }}>
-            <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
-              Profile & Settings
-            </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary }}>
-              Manage your account and preferences
-            </Typography>
+        {/* Avatar + name card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            padding: spacing.xxl,
+            borderRadius: borderRadius.xl,
+            background: `linear-gradient(145deg, ${colors.accent.primary}18, ${colors.glass.light})`,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: `1px solid ${colors.accent.primary}30`,
+            boxShadow: `0 16px 48px ${colors.accent.primary}20`,
+            marginBottom: spacing.xl,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xl }}>
+            {/* Initials avatar */}
+            <div
+              style={{
+                width: 88,
+                height: 88,
+                borderRadius: borderRadius.full,
+                background: colors.gradients.primary,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: `0 8px 24px ${colors.accent.primary}50`,
+                fontSize: 28,
+                fontWeight: 600,
+                color: colors.text.onDark,
+                letterSpacing: '0.05em',
+              }}
+            >
+              {initials}
+            </div>
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.xs, fontWeight: 300 }}>
+                {displayName}
+              </Typography>
+              <Typography variant="body" style={{ color: colors.text.secondary }}>
+                {displayEmail}
+              </Typography>
+            </div>
           </div>
 
-          {/* User Info Card */}
-          <Card
-            variant="elevated"
-            style={{
-              padding: spacing.xl,
-              marginBottom: spacing.xl,
-              background: colors.glass.light,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 8px 32px ${colors.accent.primary}40`,
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg }}>
-              <div
-                style={{
-                  width: '80px',
-                  height: '80px',
-                  borderRadius: borderRadius.full,
-                  background: colors.gradients.primary,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: `0 4px 12px ${colors.accent.primary}60`,
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
-                    opacity: 0.6,
-                  }}
-                />
-                <span style={{ position: 'relative', zIndex: 1 }}>
-                <User size={40} color={colors.text.onDark} strokeWidth={2.5} />
-              </span>
-              </div>
-              <div style={{ flex: 1 }}>
-                <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                  {displayName}
-                </Typography>
-                <Typography variant="body" style={{ color: colors.text.secondary }}>
-                  {displayEmail}
-                </Typography>
-              </div>
-            </div>
-          </Card>
-
-          {/* Menu Items */}
+          {/* Stats row */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: spacing.lg,
-              marginBottom: spacing.xl,
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: spacing.md,
+              marginTop: spacing.xl,
+              paddingTop: spacing.xl,
+              borderTop: `1px solid ${colors.glass.border}`,
             }}
           >
-            {PROFILE_MENU_ITEMS.map((item, index) => {
-              const IconComponent = item.icon;
-              const isOpaque = index < 2;
-              const cardBackground = colors.glass.light;
-              const textColor = colors.text.primary;
-              const secondaryTextColor = colors.text.secondary;
-              
-              return (
-                <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
-                  <Card
-                    variant="default"
-                    pressable
+            {STATS.map((stat) => (
+              <div key={stat.label} style={{ textAlign: 'center' }}>
+                <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
+                  {stat.value}
+                </Typography>
+                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+                  {stat.label}
+                </Typography>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Menu Items */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: spacing.md,
+            marginBottom: spacing.xl,
+          }}
+        >
+          {PROFILE_MENU_ITEMS.map((item, index) => {
+            const IconComponent = item.icon;
+
+            return (
+              <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + index * 0.06 }}
+                  whileHover={{ scale: 1.015 }}
+                  style={{
+                    padding: spacing.lg,
+                    borderRadius: borderRadius.lg,
+                    background: colors.glass.light,
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: `1px solid ${colors.glass.border}`,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.md,
+                    transition: 'border-color 0.2s ease',
+                  }}
+                >
+                  <div
                     style={{
-                      padding: spacing.lg,
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer',
-                      background: cardBackground,
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: `1px solid ${colors.glass.border}`,
+                      width: 40,
+                      height: 40,
+                      borderRadius: borderRadius.md,
+                      background: index < 2 ? colors.gradients.primary : colors.glass.medium,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-                      <div
-                        style={{
-                          width: '40px',
-                          height: '40px',
-                          borderRadius: borderRadius.full,
-                          background: isOpaque 
-                            ? colors.gradients.primary 
-                            : colors.background.tertiary,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          position: 'relative',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            background: `radial-gradient(circle at center, ${colors.accent.primary}30, transparent)`,
-                            opacity: isOpaque ? 0.5 : 0.3,
-                          }}
-                        />
-                        <span style={{ position: 'relative', zIndex: 1 }}>
-                          <IconComponent 
-                            size={20} 
-                            color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                            strokeWidth={2.5}
-                          />
-                        </span>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <Typography variant="h4" style={{ color: textColor, marginBottom: spacing.xs }}>
-                          {item.name}
-                        </Typography>
-                        <Typography variant="body" style={{ color: secondaryTextColor }}>
-                          {item.description}
-                        </Typography>
-                      </div>
-                      <ChevronRight size={20} color={colors.text.secondary} />
-                    </div>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
+                    <IconComponent size={20} color={index < 2 ? colors.text.onDark : colors.accent.primary} strokeWidth={2.5} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, marginBottom: spacing.xs }}>
+                      {item.name}
+                    </Typography>
+                    <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+                      {item.description}
+                    </Typography>
+                  </div>
+                  <ChevronRight size={18} color={colors.text.secondary} style={{ opacity: 0.5, flexShrink: 0 }} />
+                </motion.div>
+              </Link>
+            );
+          })}
+        </div>
 
-          {/* Logout Button */}
-          <Card
-            variant="default"
-            style={{
-              padding: spacing.lg,
-              background: colors.glass.light,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: `1px solid ${colors.glass.border}`,
+        {/* Sign out */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          style={{
+            padding: spacing.lg,
+            borderRadius: borderRadius.lg,
+            border: `1px solid ${colors.error}30`,
+            background: `${colors.error}08`,
+          }}
+        >
+          <Button
+            variant="outline"
+            size="lg"
+            fullWidth
+            style={{ borderColor: colors.error, color: colors.error }}
+            onClick={async () => {
+              clearStoredOverride();
+              await useAuthStore.getState().logout();
+              router.push('/login');
             }}
           >
-            <Button
-              variant="outline"
-              size="lg"
-              fullWidth
-              style={{
-                borderColor: colors.error,
-                color: colors.error,
-              }}
-              onClick={async () => {
-                clearStoredOverride();
-                await useAuthStore.getState().logout();
-                router.push('/login');
-              }}
-            >
-              <LogOut size={20} color={colors.error} style={{ marginRight: spacing.sm }} />
-              Sign Out
-            </Button>
-          </Card>
+            <LogOut size={18} style={{ marginRight: spacing.sm }} />
+            Sign Out
+          </Button>
+        </motion.div>
 
-          {/* Back Link */}
-          <div style={{ marginTop: spacing.xl, textAlign: 'center' }}>
-            <Link href="/home" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="ghost"
-                size="md"
-                style={{
-                  color: colors.text.secondary,
-                }}
-              >
-                Back to Home
-              </Button>
-            </Link>
-          </div>
+        <div style={{ marginTop: spacing.xl, textAlign: 'center' }}>
+          <Link href="/sanctuary" style={{ textDecoration: 'none' }}>
+            <Button variant="ghost" size="sm" style={{ color: colors.text.secondary }}>
+              ← Back to Sanctuary
+            </Button>
+          </Link>
+        </div>
       </PageContent>
     </PageShell>
   );

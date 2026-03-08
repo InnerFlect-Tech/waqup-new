@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { ContentCreationProvider } from '@/lib/contexts/ContentCreationContext';
+import { ContentCreationProvider, useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { PageShell } from '@/components';
+import { CreateProgressBar } from './CreateProgressBar';
 import { spacing } from '@/theme';
 import type { ContentItemType } from '@waqup/shared/types';
 
@@ -15,6 +16,16 @@ const PADDING_STYLE: React.CSSProperties = {
   paddingRight: spacing.md,
 };
 
+function LayoutInner({ children }: { children: React.ReactNode }) {
+  const { currentStep } = useContentCreation();
+  return (
+    <div style={PADDING_STYLE}>
+      <CreateProgressBar currentStep={currentStep} />
+      {children}
+    </div>
+  );
+}
+
 export function ContentCreateLayout({
   contentType,
   children,
@@ -25,9 +36,7 @@ export function ContentCreateLayout({
   return (
     <ContentCreationProvider contentType={contentType}>
       <PageShell intensity="medium">
-        <div style={PADDING_STYLE}>
-          {children}
-        </div>
+        <LayoutInner>{children}</LayoutInner>
       </PageShell>
     </ContentCreationProvider>
   );

@@ -18,21 +18,30 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: packages/web/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('packages/web/**', 'packages/shared/**') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Install dependencies (root workspace)
         run: npm ci --ignore-scripts
+
+      - name: Build shared
+        run: npm run build:shared
 
       - name: Type-check web
         working-directory: packages/web
         run: npx tsc --noEmit
 
-      - name: Build web
+      - name: Build web (production)
         working-directory: packages/web
         env:
-          # Provide placeholder env vars so the build doesn't throw on missing vars.
-          # Real values are set in Vercel/production — these are build-time only.
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: placeholder-anon-key
           NEXT_PUBLIC_APP_URL: https://placeholder.example.com

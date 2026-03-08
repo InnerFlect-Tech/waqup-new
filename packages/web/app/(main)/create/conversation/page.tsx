@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button } from '@/components';
 import { PageShell } from '@/components';
 import Link from 'next/link';
-import { Sparkles, Brain, Music } from 'lucide-react';
+import { Sparkles, Brain, Music, Send, ArrowLeft } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 
@@ -15,11 +16,17 @@ interface Message {
 }
 
 const MOCK_RESPONSES: Record<string, string> = {
-  default: "I'd love to help you create something. What kind of content would you like to make? Affirmation, meditation, or ritual?",
-  affirmation: "Great choice! Affirmations help with cognitive re-patterning. What area of your life would you like to focus on?",
-  meditation: "Meditations are perfect for state induction. What mood or goal are you aiming for?",
-  ritual: "Rituals combine voice, intention, and structure. What moment or transition would you like to ritualize?",
+  default: "I'd love to help you create something meaningful. What would you like to make today — an affirmation, a meditation, or a ritual?",
+  affirmation: "Affirmations are powerful for cognitive re-patterning. What area of your life would you like to focus on — confidence, abundance, relationships, or something else?",
+  meditation: "Meditations are perfect for shifting your state. What are you looking for — better sleep, calm focus, stress relief, or something else?",
+  ritual: "Rituals combine voice, intention, and structure for the deepest transformation. What moment or transition in your life would you like to ritualize?",
 };
+
+const TYPE_BUTTONS = [
+  { type: 'affirmation' as const, label: 'Affirmation', icon: Sparkles, color: '#c084fc' },
+  { type: 'meditation' as const, label: 'Meditation', icon: Brain, color: '#60a5fa' },
+  { type: 'ritual' as const, label: 'Ritual', icon: Music, color: '#34d399' },
+];
 
 export default function CreateConversationPage() {
   const { theme } = useTheme();
@@ -29,150 +36,210 @@ export default function CreateConversationPage() {
   ]);
   const [input, setInput] = useState('');
   const [selectedType, setSelectedType] = useState<'affirmation' | 'meditation' | 'ritual' | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
-    const userMsg: Message = { id: String(Date.now()), role: 'user', content: input.trim() };
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    const userMsg: Message = { id: String(Date.now()), role: 'user', content: trimmed };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
+    setIsTyping(true);
 
-    // Mock assistant response
-    const type = selectedType ?? (input.toLowerCase().includes('affirmation') ? 'affirmation' : input.toLowerCase().includes('meditation') ? 'meditation' : input.toLowerCase().includes('ritual') ? 'ritual' : 'default');
+    const type =
+      selectedType ??
+      (trimmed.toLowerCase().includes('affirmation')
+        ? 'affirmation'
+        : trimmed.toLowerCase().includes('meditation')
+        ? 'meditation'
+        : trimmed.toLowerCase().includes('ritual')
+        ? 'ritual'
+        : 'default');
     const replyContent = MOCK_RESPONSES[type] ?? MOCK_RESPONSES.default;
+
     setTimeout(() => {
+      setIsTyping(false);
       setMessages((prev) => [
         ...prev,
         { id: String(Date.now() + 1), role: 'assistant', content: replyContent },
       ]);
-    }, 500);
+    }, 900);
   };
 
   const handleTypeSelect = (type: 'affirmation' | 'meditation' | 'ritual') => {
     setSelectedType(type);
-    setInput(`I want to create a ${type}`);
+    const label = type.charAt(0).toUpperCase() + type.slice(1);
+    const msg: Message = { id: String(Date.now()), role: 'user', content: `I want to create a ${label}` };
+    setMessages((prev) => [...prev, msg]);
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      setMessages((prev) => [
+        ...prev,
+        { id: String(Date.now() + 1), role: 'assistant', content: MOCK_RESPONSES[type] },
+      ]);
+    }, 800);
+    inputRef.current?.focus();
   };
 
   return (
     <PageShell intensity="medium">
-      <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-        <Link href="/create" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.lg }}>
-          <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary }}>
-            ← Back to create
+      <div
+        style={{
+          maxWidth: 680,
+          margin: '0 auto',
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          paddingTop: 80,
+          paddingBottom: spacing.xl,
+          paddingLeft: spacing.md,
+          paddingRight: spacing.md,
+        }}
+      >
+        {/* Header */}
+        <div style={{ marginBottom: spacing.lg }}>
+          <Link href="/create" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
+            <ArrowLeft size={16} color={colors.text.secondary} />
+            <Typography variant="small" style={{ color: colors.text.secondary }}>
+              Back to Create
+            </Typography>
+          </Link>
+          <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.xs, fontWeight: 300 }}>
+            Let&apos;s create together
           </Typography>
-        </Link>
-
-        <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
-          Conversational creation
-        </Typography>
-        <Typography variant="body" style={{ marginBottom: spacing.lg, color: colors.text.secondary }}>
-          Chat-like creation for affirmations, meditations, rituals. No static forms.
-        </Typography>
-
-        <div style={{ marginBottom: spacing.lg, display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
-          <button
-            onClick={() => handleTypeSelect('affirmation')}
-            style={{
-              padding: `${spacing.xs} ${spacing.md}`,
-              borderRadius: borderRadius.full,
-              border: `1px solid ${selectedType === 'affirmation' ? colors.accent.secondary : colors.glass.border}`,
-              background: selectedType === 'affirmation' ? colors.gradients.secondary : colors.glass.light,
-              color: selectedType === 'affirmation' ? colors.text.onDark : colors.text.secondary,
-              fontSize: '14px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: spacing.xs,
-            }}
-          >
-            <Sparkles size={16} />
-            Affirmation
-          </button>
-          <button
-            onClick={() => handleTypeSelect('meditation')}
-            style={{
-              padding: `${spacing.xs} ${spacing.md}`,
-              borderRadius: borderRadius.full,
-              border: `1px solid ${selectedType === 'meditation' ? colors.accent.tertiary : colors.glass.border}`,
-              background: selectedType === 'meditation' ? colors.gradients.secondary : colors.glass.light,
-              color: selectedType === 'meditation' ? colors.text.onDark : colors.text.secondary,
-              fontSize: '14px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: spacing.xs,
-            }}
-          >
-            <Brain size={16} />
-            Meditation
-          </button>
-          <button
-            onClick={() => handleTypeSelect('ritual')}
-            style={{
-              padding: `${spacing.xs} ${spacing.md}`,
-              borderRadius: borderRadius.full,
-              border: `1px solid ${selectedType === 'ritual' ? colors.accent.primary : colors.glass.border}`,
-              background: selectedType === 'ritual' ? colors.gradients.primary : colors.glass.light,
-              color: selectedType === 'ritual' ? colors.text.onDark : colors.text.primary,
-              fontSize: '14px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: spacing.xs,
-            }}
-          >
-            <Music size={16} />
-            Ritual
-          </button>
+          <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
+            Tell us what you need — no forms, just conversation
+          </Typography>
         </div>
 
-        {/* Message list */}
-        <div
-          style={{
-            minHeight: '200px',
-            maxHeight: '400px',
-            overflowY: 'auto',
-            marginBottom: spacing.lg,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: spacing.md,
-          }}
-        >
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
+        {/* Type selector */}
+        <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.lg }}>
+          {TYPE_BUTTONS.map(({ type, label, icon: Icon, color }) => (
+            <button
+              key={type}
+              onClick={() => handleTypeSelect(type)}
               style={{
-                alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '85%',
-                padding: spacing.md,
-                borderRadius: borderRadius.md,
-                background: msg.role === 'user' ? colors.gradients.primary : colors.glass.light,
-                color: msg.role === 'user' ? colors.text.onDark : colors.text.primary,
-                border: msg.role === 'assistant' ? `1px solid ${colors.glass.border}` : 'none',
-                backdropFilter: 'blur(10px)',
+                padding: `${spacing.xs}px ${spacing.md}px`,
+                borderRadius: borderRadius.full,
+                border: `1px solid ${selectedType === type ? color : colors.glass.border}`,
+                background: selectedType === type ? `${color}20` : 'transparent',
+                color: selectedType === type ? color : colors.text.secondary,
+                fontSize: 13,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.sm,
+                transition: 'all 0.2s',
               }}
             >
-              <Typography variant="body" style={{ margin: 0 }}>
-                {msg.content}
-              </Typography>
-            </div>
+              <Icon size={14} />
+              {label}
+            </button>
           ))}
         </div>
 
+        {/* Messages */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: spacing.md,
+            paddingBottom: spacing.md,
+            scrollbarWidth: 'none',
+          }}
+        >
+          {messages.map((msg) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 12, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.25 }}
+              style={{
+                alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                maxWidth: '82%',
+                padding: `${spacing.md}px ${spacing.lg}px`,
+                borderRadius: msg.role === 'user' ? `${borderRadius.xl}px ${borderRadius.xl}px 4px ${borderRadius.xl}px` : `${borderRadius.xl}px ${borderRadius.xl}px ${borderRadius.xl}px 4px`,
+                background: msg.role === 'user' ? colors.gradients.primary : colors.glass.light,
+                color: msg.role === 'user' ? colors.text.onDark : colors.text.primary,
+                border: msg.role === 'assistant' ? `1px solid ${colors.glass.border}` : 'none',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                lineHeight: 1.6,
+                fontSize: 15,
+              }}
+            >
+              {msg.content}
+            </motion.div>
+          ))}
+
+          {/* Typing indicator */}
+          <AnimatePresence>
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                style={{
+                  alignSelf: 'flex-start',
+                  padding: `${spacing.md}px ${spacing.lg}px`,
+                  borderRadius: `${borderRadius.xl}px ${borderRadius.xl}px ${borderRadius.xl}px 4px`,
+                  background: colors.glass.light,
+                  border: `1px solid ${colors.glass.border}`,
+                  display: 'flex',
+                  gap: spacing.sm,
+                  alignItems: 'center',
+                }}
+              >
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
+                    transition={{ duration: 1.2, delay: i * 0.2, repeat: Infinity }}
+                    style={{ width: 7, height: 7, borderRadius: '50%', background: colors.accent.primary }}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div ref={bottomRef} />
+        </div>
+
         {/* Input */}
-        <div style={{ display: 'flex', gap: spacing.sm }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: spacing.sm,
+            padding: `${spacing.sm}px`,
+            borderRadius: borderRadius.xl,
+            background: colors.glass.light,
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: `1px solid ${colors.glass.border}`,
+          }}
+        >
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             placeholder="Type your message..."
             style={{
               flex: 1,
-              padding: spacing.md,
-              borderRadius: borderRadius.md,
-              border: `1px solid ${colors.glass.border}`,
-              background: colors.glass.light,
-              fontSize: '14px',
+              padding: `${spacing.sm}px ${spacing.md}px`,
+              background: 'transparent',
+              border: 'none',
+              fontSize: 15,
               color: colors.text.primary,
               outline: 'none',
             }}
@@ -180,10 +247,16 @@ export default function CreateConversationPage() {
           <Button
             variant="primary"
             size="md"
-            style={{ background: colors.gradients.primary }}
             onClick={handleSend}
+            disabled={!input.trim() || isTyping}
+            style={{
+              background: input.trim() ? colors.gradients.primary : colors.glass.medium,
+              minWidth: 44,
+              padding: `0 ${spacing.md}px`,
+              transition: 'background 0.2s',
+            }}
           >
-            Send
+            <Send size={16} />
           </Button>
         </div>
       </div>

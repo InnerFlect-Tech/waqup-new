@@ -29,12 +29,20 @@ export function ContentEditPage({
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
   const [script, setScript] = useState(initialScript);
-  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const handleSave = () => {
-    onSave?.({ title, description, script });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const handleSave = async () => {
+    if (!onSave) return;
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await onSave({ title, description, script });
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -100,19 +108,25 @@ export function ContentEditPage({
           </div>
         </div>
 
+        {saveError && (
+          <Typography variant="small" style={{ color: colors.error, marginBottom: spacing.md }}>
+            {saveError}
+          </Typography>
+        )}
         <div style={{ display: 'flex', gap: spacing.sm }}>
           <Link href={backHref} style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="md">
+            <Button variant="outline" size="md" disabled={saving}>
               Cancel
             </Button>
           </Link>
           <Button
             variant="primary"
             size="md"
+            loading={saving}
             style={{ background: colors.gradients.primary }}
             onClick={handleSave}
           >
-            {saved ? 'Saved!' : 'Save'}
+            {saving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </PageContent>

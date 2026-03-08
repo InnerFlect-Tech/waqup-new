@@ -201,7 +201,7 @@ function ContentCard({
               <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
             )}
             {item.duration && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
                 <Clock size={10} color={colors.text.secondary} strokeWidth={2} />
                 <span style={{ fontSize: '11px', color: colors.text.secondary }}>{item.duration}</span>
               </div>
@@ -209,7 +209,7 @@ function ContentCard({
             {item.voiceType && (
               <>
                 <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
                   {item.voiceType === 'ai' ? (
                     <Bot size={10} color={colors.accent.secondary} strokeWidth={2} />
                   ) : (
@@ -228,7 +228,7 @@ function ContentCard({
             )}
           </div>
           {(item.createdAt || item.lastPlayed) && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
               <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
               <span style={{ fontSize: '11px', color: colors.text.secondary }}>
                 {item.lastPlayed
@@ -272,7 +272,7 @@ function ContentCard({
               boxShadow: `0 8px 24px ${typeColor}50`,
             }}
           >
-            <Play size={22} color="#fff" strokeWidth={2} style={{ marginLeft: 2 }} />
+            <Play size={22} color="#fff" strokeWidth={2} style={{ marginLeft: spacing.xs }} />
           </div>
         </div>
       </div>

@@ -8,6 +8,11 @@ const nextConfig = {
     // Monorepo: root must include where next/package.json is resolvable
     root: path.join(__dirname, '../..'),
   },
+  // Production optimizations
+  output: 'standalone',
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+  },
 };
 
 module.exports = nextConfig;

@@ -1,13 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button } from '@/components';
 import { SpeakingAnimation } from '@/components/audio';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
-import { Mic, MicOff } from 'lucide-react';
+import { Mic, MicOff, MessageSquare } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
+
+const STATUS_MESSAGES = {
+  idle: { text: 'Tap to speak', sub: 'Tell us what you want to create or how you feel' },
+  listening: { text: 'Listening...', sub: 'Speak freely, we are here' },
+  speaking: { text: 'Processing...', sub: 'Creating something for you' },
+};
 
 export default function SpeakPage() {
   const { theme } = useTheme();
@@ -16,70 +23,125 @@ export default function SpeakPage() {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const handleMicClick = () => {
-    setIsListening(!isListening);
-    if (!isListening) {
-      // Simulate: after "listening" we "speak"
-      setTimeout(() => setIsSpeaking(true), 1000);
-    } else {
+    if (isListening) {
+      setIsListening(false);
       setIsSpeaking(false);
+    } else {
+      setIsListening(true);
+      setIsSpeaking(false);
+      setTimeout(() => setIsSpeaking(true), 1200);
     }
   };
 
-  const statusText = isSpeaking ? 'Speaking...' : isListening ? 'Listening...' : 'Tap to speak';
+  const status = isSpeaking ? 'speaking' : isListening ? 'listening' : 'idle';
+  const { text, sub } = STATUS_MESSAGES[status];
+  const isActive = isListening || isSpeaking;
 
   return (
-    <PageShell intensity="medium">
-      <PageContent width="medium" centered>
-        <Link href="/home" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.lg, textAlign: 'left' }}>
-          <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary }}>
-            ← Back
-          </Typography>
-        </Link>
+    <PageShell intensity="strong">
+      <PageContent width="medium">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: spacing.xxl }}>
+          <Link href="/sanctuary" style={{ textDecoration: 'none', alignSelf: 'flex-start', marginBottom: spacing.xl }}>
+            <Typography variant="small" style={{ color: colors.text.secondary }}>
+              ← Sanctuary
+            </Typography>
+          </Link>
 
-        <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
-          Speak
-        </Typography>
-        <Typography variant="body" style={{ marginBottom: spacing.xl, color: colors.text.secondary }}>
-          Voice-first conversation — tap to speak
-        </Typography>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ textAlign: 'center', marginBottom: spacing.xxl }}
+          >
+            <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+              Speak
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary }}>
+              Voice-first creation — just talk, we&apos;ll handle the rest
+            </Typography>
+          </motion.div>
 
-        <div
-          style={{
-            marginBottom: spacing.xl,
-            borderRadius: borderRadius.lg,
-            overflow: 'hidden',
-            minHeight: '320px',
-          }}
-        >
-          <SpeakingAnimation isSpeaking={isSpeaking || isListening} style={{ minHeight: '320px' }} />
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.lg }}>
-          <Typography variant="body" style={{ color: colors.text.secondary }}>
-            {statusText}
-          </Typography>
-          <button
-            onClick={handleMicClick}
+          {/* Animation area */}
+          <div
             style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: borderRadius.full,
-              border: 'none',
-              background: isListening || isSpeaking ? colors.gradients.primary : colors.glass.light,
-              color: isListening || isSpeaking ? colors.text.onDark : colors.text.primary,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: isListening || isSpeaking ? `0 4px 20px ${colors.accent.primary}60` : 'none',
-              transition: 'all 0.2s ease',
+              width: '100%',
+              maxWidth: 400,
+              marginBottom: spacing.xxl,
+              borderRadius: borderRadius.xl,
+              overflow: 'hidden',
+              position: 'relative',
             }}
           >
-            {isListening || isSpeaking ? <MicOff size={36} strokeWidth={2.5} /> : <Mic size={36} strokeWidth={2.5} />}
-          </button>
+            <SpeakingAnimation isSpeaking={isActive} style={{ minHeight: 280, borderRadius: borderRadius.xl }} />
+          </div>
+
+          {/* Status text */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={status}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              style={{ textAlign: 'center', marginBottom: spacing.xl }}
+            >
+              <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 400 }}>
+                {text}
+              </Typography>
+              <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
+                {sub}
+              </Typography>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Mic button with pulse rings */}
+          <div style={{ position: 'relative', marginBottom: spacing.xxl }}>
+            {isActive && (
+              <>
+                {[1, 2].map((ring) => (
+                  <motion.div
+                    key={ring}
+                    animate={{ scale: [1, 1.8 + ring * 0.3], opacity: [0.35, 0] }}
+                    transition={{ duration: 1.6, delay: ring * 0.4, repeat: Infinity, ease: 'easeOut' }}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      borderRadius: borderRadius.full,
+                      border: `2px solid ${colors.accent.primary}`,
+                      pointerEvents: 'none',
+                    }}
+                  />
+                ))}
+              </>
+            )}
+            <motion.button
+              whileTap={{ scale: 0.93 }}
+              onClick={handleMicClick}
+              style={{
+                width: 88,
+                height: 88,
+                borderRadius: borderRadius.full,
+                border: 'none',
+                background: isActive ? colors.gradients.primary : colors.glass.light,
+                backdropFilter: isActive ? undefined : 'blur(12px)',
+                color: isActive ? colors.text.onDark : colors.text.primary,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: isActive ? `0 8px 32px ${colors.accent.primary}60` : `0 4px 16px rgba(0,0,0,0.3)`,
+                transition: 'background 0.3s ease, box-shadow 0.3s ease',
+                position: 'relative',
+              }}
+            >
+              {isActive ? <MicOff size={36} strokeWidth={2} /> : <Mic size={36} strokeWidth={2} />}
+            </motion.button>
+          </div>
+
+          {/* Type alternative */}
           <Link href="/create/conversation" style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="md">
-              Or type to create
+            <Button variant="ghost" size="md" style={{ color: colors.text.secondary, gap: spacing.sm }}>
+              <MessageSquare size={16} />
+              Prefer to type?
             </Button>
           </Link>
         </div>

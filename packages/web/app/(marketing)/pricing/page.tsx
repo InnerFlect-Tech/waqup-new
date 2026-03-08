@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH, CONTENT_NARROW, GRID_CARD_MIN } from '@/theme';
+import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH, GRID_CARD_MIN } from '@/theme';
 import { Typography, Button, PageShell } from '@/components';
-import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
-import { Users, Music, Heart, Puzzle, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
+import { PLANS, type PlanId } from '@waqup/shared/constants';
 
 // Initialize Stripe
 const getStripe = () => {
@@ -16,25 +16,32 @@ const getStripe = () => {
   return loadStripe(publishableKey);
 };
 
+const STRIPE_PRICE_IDS: Record<PlanId, string> = {
+  starter: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID || '',
+  growth: process.env.NEXT_PUBLIC_STRIPE_GROWTH_PRICE_ID || '',
+  devotion: process.env.NEXT_PUBLIC_STRIPE_DEVOTION_PRICE_ID || '',
+};
+
 export default function PricingPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<PlanId | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleCheckout = async (priceId: string) => {
+  const handleCheckout = async (planId: PlanId) => {
+    const priceId = STRIPE_PRICE_IDS[planId];
     if (!priceId) {
       setError('Checkout is not configured. Please contact support.');
       return;
     }
     try {
-      setLoading(true);
+      setLoading(planId);
       setError(null);
-      
+
       const protocol = window.location.protocol;
       const host = window.location.host;
       const apiUrl = `${protocol}//${host}/api/create-checkout-session`;
-      
+
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -57,7 +64,7 @@ export default function PricingPage() {
       }
 
       const stripe = await getStripe();
-      
+
       if (!stripe) {
         throw new Error('Failed to initialize Stripe');
       }
@@ -69,374 +76,209 @@ export default function PricingPage() {
       if (stripeError) {
         throw new Error(stripeError.message || 'Failed to redirect to checkout');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Checkout error:', err);
-      setError(err.message || 'Something went wrong. Please try again.');
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
   return (
     <PageShell intensity="medium" bare>
-      {/* Content */}
-        <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
-            <Typography
-              variant="h1"
-              style={{
-                fontSize: 'clamp(48px, 8vw, 96px)',
-                color: colors.text.primary,
-                letterSpacing: '-2px',
-                marginBottom: spacing.md,
-              }}
-            >
-              wa<span style={{ color: colors.accent.primary }}>Q</span>up
-            </Typography>
-            <Typography
-              variant="h2"
-              style={{
-                fontSize: 'clamp(32px, 5vw, 56px)',
-                fontWeight: 600,
-                color: colors.text.primary,
-                marginBottom: spacing.md,
-              }}
-            >
-              Founding Members Special
-            </Typography>
-            <Typography
-              variant="body"
-              style={{
-                fontSize: 'clamp(18px, 2.5vw, 24px)',
-                color: colors.text.secondary,
-                maxWidth: CONTENT_NARROW,
-                margin: `0 auto ${spacing.md} auto`,
-              }}
-            >
-              Daily rituals and unlimited affirmations to transform your consciousness
-            </Typography>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: spacing.sm,
-                padding: `${spacing.sm} ${spacing.lg}`,
-                borderRadius: borderRadius.full,
-                background: `${colors.accent.primary}20`,
-                border: `1px solid ${colors.accent.primary}40`,
-                marginTop: spacing.lg,
-              }}
-            >
-              <Users size={20} color={colors.accent.primary} />
-              <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 600 }}>
-                Only <span style={{ fontWeight: 700 }}>500</span> spots available at this price
-              </Typography>
-            </div>
-          </div>
-
-          {/* Pricing Cards */}
-          <div
+      <div style={{ padding: `${spacing.xxl} ${spacing.xl}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
+          <Typography
+            variant="h1"
             style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
-              gap: spacing.xl,
-              marginBottom: spacing.xxl,
+              fontSize: 'clamp(48px, 8vw, 96px)',
+              color: colors.text.primary,
+              letterSpacing: '-2px',
+              marginBottom: spacing.md,
             }}
           >
-            {/* Free Trial */}
-            <div
-              style={{
-                padding: spacing.xl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.light,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
-              }}
-            >
-              <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
-                Free Trial
-              </Typography>
-              <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
-                <Typography
-                  variant="h1"
-                  style={{
-                    fontSize: 'clamp(36px, 5vw, 48px)',
-                    fontWeight: 700,
-                    color: colors.text.primary,
-                    marginBottom: spacing.xs,
-                  }}
-                >
-                  $0
-                </Typography>
-                <Typography variant="body" style={{ color: colors.accent.primary }}>
-                  7 Days Access
-                </Typography>
-              </div>
+            wa<span style={{ color: colors.accent.primary }}>Q</span>up
+          </Typography>
+          <Typography
+            variant="h2"
+            style={{
+              fontSize: 'clamp(32px, 5vw, 56px)',
+              fontWeight: 600,
+              color: colors.text.primary,
+              marginBottom: spacing.md,
+            }}
+          >
+            Choose your plan
+          </Typography>
+          <Typography
+            variant="body"
+            style={{
+              fontSize: 'clamp(18px, 2.5vw, 24px)',
+              color: colors.text.secondary,
+              maxWidth: 560,
+              margin: '0 auto',
+            }}
+          >
+            Credits power your content creation. Practice is always free.
+          </Typography>
+        </div>
 
-              <ul style={{ listStyle: 'none', padding: 0, margin: `0 0 ${spacing.xl} 0` }}>
-                {[
-                  '1 Daily Ritual',
-                  '5 Affirmations Daily',
-                  'Basic Meditation Library',
-                  'Featured Creator Content',
-                ].map((feature) => (
-                  <li
-                    key={feature}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: spacing.sm,
-                      marginBottom: spacing.md,
-                      color: colors.text.secondary,
-                    }}
-                  >
-                    <Check size={20} color={colors.accent.primary} />
-                    <Typography variant="body">{feature}</Typography>
-                  </li>
-                ))}
-              </ul>
-
-              <Link href="/signup" style={{ textDecoration: 'none' }}>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  fullWidth
-                  style={{
-                    borderColor: colors.glass.border,
-                    background: colors.glass.transparent,
-                  }}
-                >
-                  Start Free Trial
-                </Button>
-              </Link>
-            </div>
-
-            {/* Regular Monthly (Coming Soon) */}
-            <div
-              style={{
-                padding: spacing.xl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.light,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.glass.border}`,
-                boxShadow: `0 8px 32px ${colors.accent.primary}40`,
-                position: 'relative',
-                overflow: 'hidden',
-                opacity: 0.7,
-              }}
-            >
+        {/* Pricing Cards */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
+            gap: spacing.xl,
+            marginBottom: spacing.xxl,
+          }}
+        >
+          {PLANS.map((plan) => {
+            const isPopular = plan.badge === 'Most Popular';
+            return (
               <div
+                key={plan.id}
                 style={{
-                  position: 'absolute',
-                  top: spacing.lg,
-                  right: `-${spacing.xl}`,
-                  transform: 'rotate(45deg)',
-                  padding: `${spacing.xs} ${spacing.xl}`,
+                  padding: spacing.xl,
+                  borderRadius: borderRadius.xl,
                   background: colors.glass.light,
-                  border: `1px solid ${colors.glass.border}`,
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  color: colors.text.primary,
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: isPopular ? `2px solid ${colors.accent.primary}` : `1px solid ${colors.glass.border}`,
+                  boxShadow: isPopular
+                    ? `0 16px 64px ${colors.accent.primary}60`
+                    : `0 8px 32px ${colors.accent.primary}40`,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transform: isPopular ? 'scale(1.05)' : undefined,
                 }}
               >
-                Coming Soon
-              </div>
-
-              <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
-                Regular Monthly
-              </Typography>
-              <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
-                <Typography
-                  variant="h1"
-                  style={{
-                    fontSize: 'clamp(48px, 6vw, 64px)',
-                    fontWeight: 700,
-                    color: colors.text.primary,
-                    marginBottom: spacing.xs,
-                  }}
-                >
-                  $16.99
-                </Typography>
-                <Typography variant="body" style={{ color: colors.accent.primary }}>
-                  per month
-                </Typography>
-              </div>
-
-              <ul style={{ listStyle: 'none', padding: 0, margin: `0 0 ${spacing.xl} 0` }}>
-                {[
-                  { icon: Music, text: '1 Daily Ritual + History Access' },
-                  { icon: Heart, text: 'Unlimited Affirmations' },
-                  { icon: Puzzle, text: 'Create Custom Meditations' },
-                  { text: 'Full Creator Library Access' },
-                  { text: 'Download for Offline Use' },
-                ].map((feature, index) => (
-                  <li
-                    key={index}
+                {plan.badge && (
+                  <div
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: spacing.sm,
-                      marginBottom: spacing.md,
-                      color: colors.text.secondary,
+                      position: 'absolute',
+                      top: spacing.lg,
+                      right: `-${spacing.xl}`,
+                      transform: 'rotate(45deg)',
+                      padding: `${spacing.xs} ${spacing.xl}`,
+                      background: `${colors.accent.primary}20`,
+                      border: `1px solid ${colors.accent.primary}40`,
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      color: colors.accent.primary,
                     }}
                   >
-                    {feature.icon ? (
-                      React.createElement(feature.icon, { size: 20, color: colors.accent.primary })
-                    ) : (
-                      <Check size={20} color={colors.accent.primary} />
-                    )}
-                    <Typography variant="body">{feature.text}</Typography>
-                  </li>
-                ))}
-              </ul>
+                    {plan.badge}
+                  </div>
+                )}
 
-              <Button
-                variant="outline"
-                size="lg"
-                fullWidth
-                disabled
-                style={{
-                  borderColor: colors.glass.border,
-                  background: colors.glass.transparent,
-                  opacity: 0.5,
-                  cursor: 'not-allowed',
-                }}
-              >
-                Not Available Yet
-              </Button>
-            </div>
+                <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
+                  {plan.name}
+                </Typography>
 
-            {/* Founding Member */}
-            <div
-              style={{
-                padding: spacing.xl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.light,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `2px solid ${colors.accent.primary}`,
-                boxShadow: `0 16px 64px ${colors.accent.primary}60`,
-                position: 'relative',
-                overflow: 'hidden',
-                transform: 'scale(1.05)',
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: spacing.lg,
-                  right: `-${spacing.xl}`,
-                  transform: 'rotate(45deg)',
-                  padding: `${spacing.xs} ${spacing.xl}`,
-                  background: `${colors.accent.primary}20`,
-                  border: `1px solid ${colors.accent.primary}40`,
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  color: colors.accent.primary,
-                }}
-              >
-                Limited Time
-              </div>
-
-              <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
-                Founding Member
-              </Typography>
-              <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>
-                  <Typography
-                    variant="body"
-                    style={{
-                      fontSize: '24px',
-                      fontWeight: 300,
-                      color: colors.text.tertiary,
-                      textDecoration: 'line-through',
-                    }}
-                  >
-                    $16.99/mo
-                  </Typography>
+                <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
                   <Typography
                     variant="h1"
                     style={{
-                      fontSize: 'clamp(48px, 6vw, 64px)',
+                      fontSize: 'clamp(36px, 5vw, 48px)',
                       fontWeight: 700,
                       color: colors.text.primary,
+                      marginBottom: spacing.xs,
                     }}
                   >
-                    $6.99
+                    €{plan.price}
                   </Typography>
-                  <Typography variant="body" style={{ color: colors.text.tertiary }}>
-                    /mo
+                  <Typography variant="body" style={{ color: colors.text.secondary }}>
+                    {plan.billingCycle === 'week' ? '/week' : '/month'}
                   </Typography>
+                  {plan.trialDays && (
+                    <Typography
+                      variant="body"
+                      style={{
+                        color: colors.accent.primary,
+                        fontWeight: 600,
+                        marginTop: spacing.sm,
+                      }}
+                    >
+                      {plan.trialDays}-day free trial
+                    </Typography>
+                  )}
                 </div>
-                <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 700 }}>
-                  Locked-in For Life
+
+                <Typography
+                  variant="body"
+                  style={{
+                    color: colors.text.secondary,
+                    marginBottom: spacing.lg,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {plan.description}
                 </Typography>
-                <Typography variant="small" style={{ color: colors.text.tertiary, marginTop: spacing.xs }}>
-                  First 500 Members Only
-                </Typography>
+
+                <ul style={{ listStyle: 'none', padding: 0, margin: `0 0 ${spacing.xl} 0` }}>
+                  {plan.features.map((feature) => (
+                    <li
+                      key={feature}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: spacing.sm,
+                        marginBottom: spacing.md,
+                        color: colors.text.secondary,
+                      }}
+                    >
+                      <Check size={20} color={colors.accent.primary} />
+                      <Typography variant="body">{feature}</Typography>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button
+                  variant={isPopular ? 'primary' : 'outline'}
+                  size="lg"
+                  fullWidth
+                  loading={loading === plan.id}
+                  onClick={() => handleCheckout(plan.id)}
+                  style={
+                    isPopular
+                      ? { background: colors.gradients.primary }
+                      : {
+                          borderColor: colors.glass.border,
+                          background: colors.glass.transparent,
+                        }
+                  }
+                >
+                  {loading === plan.id ? 'Processing...' : plan.ctaLabel}
+                </Button>
               </div>
-
-              <ul style={{ listStyle: 'none', padding: 0, margin: `0 0 ${spacing.xl} 0` }}>
-                {[
-                  'Everything in Regular Plan',
-                  'Priority Support',
-                  'Early Access to New Features',
-                  'Exclusive Founding Member Badge',
-                  'Price Never Increases',
-                ].map((feature) => (
-                  <li
-                    key={feature}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: spacing.sm,
-                      marginBottom: spacing.md,
-                      color: colors.text.secondary,
-                    }}
-                  >
-                    <Check size={20} color={colors.accent.primary} />
-                    <Typography variant="body">{feature}</Typography>
-                  </li>
-                ))}
-              </ul>
-
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
-                loading={loading}
-                onClick={() => handleCheckout(process.env.NEXT_PUBLIC_STRIPE_FOUNDING_PRICE_ID || '')}
-                style={{
-                  background: colors.gradients.primary,
-                  marginBottom: spacing.md,
-                }}
-              >
-                {loading ? 'Processing...' : 'Become a Founding Member'}
-              </Button>
-
-              {error && (
-                <Typography variant="small" style={{ color: colors.error, textAlign: 'center', marginTop: spacing.sm }}>
-                  {error}
-                </Typography>
-              )}
-
-              <Typography variant="small" style={{ color: colors.text.tertiary, textAlign: 'center', marginTop: spacing.md }}>
-                30-day money-back guarantee
-              </Typography>
-            </div>
-          </div>
-
-          {/* Social Proof */}
-          <div style={{ textAlign: 'center', marginTop: spacing.xl }}>
-            <Typography variant="body" style={{ color: colors.text.tertiary }}>
-              Join 1,000+ users transforming their consciousness
-            </Typography>
-          </div>
+            );
+          })}
         </div>
+
+        {error && (
+          <Typography
+            variant="small"
+            style={{
+              color: colors.error,
+              textAlign: 'center',
+              marginBottom: spacing.lg,
+              padding: spacing.md,
+              background: `${colors.error}15`,
+              borderRadius: borderRadius.md,
+            }}
+          >
+            {error}
+          </Typography>
+        )}
+
+        {/* Footer */}
+        <div style={{ textAlign: 'center', marginTop: spacing.xl }}>
+          <Typography variant="body" style={{ color: colors.text.tertiary }}>
+            Practice is always free. Credits are only used when you create new content.
+          </Typography>
+        </div>
+      </div>
     </PageShell>
   );
 }

@@ -12,6 +12,7 @@
     "./types": "./src/types/index.ts",
     "./utils": "./src/utils/index.ts",
     "./schemas": "./src/schemas/index.ts",
+    "./constants": "./src/constants/index.ts",
     "./*": "./src/*/index.ts"
   },
   "scripts": {

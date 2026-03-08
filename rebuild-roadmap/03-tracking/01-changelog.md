@@ -6,7 +6,23 @@
 
 ---
 
+## Local Development Setup (non-step)
+
+### Full local Supabase development environment
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Supabase CLI initialized; migrations in `supabase/migrations/` (content_items + audio columns); seed data (dev user dev@local.test/password123 + sample content); `.env.local.example` for web and mobile; NPM scripts (supabase:start, supabase:stop, supabase:status, supabase:reset, dev:local); docs at `docs/04-reference/12-local-development.md`. Requires Docker for `supabase start`.
+- **Updated**: 2026-03-08
+
+---
+
 ## UI polish (non-step)
+
+### UI spacing and padding consistency
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-08
+- **Notes**: Replaced magic numbers with design tokens across all web pages and components. Created `docs/04-reference/13-spacing-usage-guide.md` and semantic helpers (ICON_TEXT_GAP, LIST_ITEM_PADDING, CARD_INTERNAL_PADDING) in theme. Fixed: AppLayout nav bar (gap between nav group and profile, credits badge padding), Credits page (transaction row padding, amount margin), Sanctuary page (stats strip gap, menu item badge padding), ContentListPage/library/marketplace/join (gap: 3 → spacing.xs), and 20+ files with marginBottom/marginTop/gap magic numbers. Verification: no remaining `gap: [0-9]` or `marginBottom: [0-9]` in style objects.
+- **Updated**: 2026-03-08
 
 ### All-pages safe-area and unified card styling
 - **Status**: ✅ Complete

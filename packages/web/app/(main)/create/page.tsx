@@ -1,183 +1,236 @@
 'use client';
 
-import React from 'react';
-import { Typography, Button, Card } from '@/components';
+import React, { useState } from 'react';
+import { Typography, Button } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { GRID_CARD_MIN } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
-import { 
-  Sparkles, 
-  Brain,
-  Music,
-  Wand2,
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Sparkles, Brain, Music, CreditCard, Wand2 } from 'lucide-react';
 
-interface ContentType {
+interface ContentTypeCard {
   name: string;
+  tagline: string;
   description: string;
   icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
   href: string;
-  color: string;
+  credits: number;
+  accentColor: string;
+  depth: string;
 }
 
-const CONTENT_TYPES: ContentType[] = [
+const CONTENT_TYPES: ContentTypeCard[] = [
   {
-    name: 'Create Affirmation',
-    description: 'Powerful statements to rewire your subconscious mind',
+    name: 'Affirmation',
+    tagline: 'Cognitive re-patterning',
+    description: 'Rewire subconscious beliefs through positive, present-tense statements delivered in your own voice.',
     icon: Sparkles,
     href: '/sanctuary/affirmations/create',
-    color: 'primary',
+    credits: 5,
+    accentColor: '#c084fc',
+    depth: 'Shallow → Medium depth',
   },
   {
-    name: 'Create Meditation',
-    description: 'Guided meditations for deep relaxation and transformation',
+    name: 'Meditation',
+    tagline: 'State induction',
+    description: 'Guided visualization and relaxation sequences that shift your mental and emotional state.',
     icon: Brain,
     href: '/sanctuary/meditations/create',
-    color: 'secondary',
+    credits: 8,
+    accentColor: '#60a5fa',
+    depth: 'Medium depth',
   },
   {
-    name: 'Create Ritual',
-    description: 'Personalized rituals combining voice, frequencies, and intention',
+    name: 'Ritual',
+    tagline: 'Identity encoding',
+    description: 'The deepest practice — combines voice, sacred frequencies, and structured intention for lasting transformation.',
     icon: Music,
     href: '/sanctuary/rituals/create',
-    color: 'tertiary',
+    credits: 12,
+    accentColor: '#34d399',
+    depth: 'Deepest',
   },
 ];
 
 export default function CreatePage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <PageShell intensity="medium">
       <PageContent>
-          {/* Header */}
-          <div style={{ marginBottom: spacing.xl }}>
-            <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
-              Create New Content
-            </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary }}>
-              Choose the type of content you want to create
-            </Typography>
-          </div>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ marginBottom: spacing.xxl }}
+        >
+          <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontWeight: 300 }}>
+            Create New Content
+          </Typography>
+          <Typography variant="body" style={{ color: colors.text.secondary }}>
+            Choose what you want to create. Each type serves a different depth of transformation.
+          </Typography>
+        </motion.div>
 
-          {/* Content Type Cards */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
-              gap: spacing.xl,
-            }}
-          >
-            {CONTENT_TYPES.map((type, index) => {
-              const IconComponent = type.icon;
-              const isOpaque = index === 0;
-              const cardBackground = colors.glass.light;
-              const textColor = colors.text.primary;
-              const secondaryTextColor = colors.text.secondary;
-              
-              return (
-                <Link key={type.name} href={type.href} style={{ textDecoration: 'none' }}>
-                  <Card
-                    variant="elevated"
-                    pressable
+        {/* Content Type Cards */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: spacing.xl,
+            marginBottom: spacing.xxl,
+          }}
+        >
+          {CONTENT_TYPES.map((type, index) => {
+            const IconComponent = type.icon;
+            const isHovered = hovered === type.name;
+
+            return (
+              <Link key={type.name} href={type.href} style={{ textDecoration: 'none' }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.4 }}
+                  onMouseEnter={() => setHovered(type.name)}
+                  onMouseLeave={() => setHovered(null)}
+                  style={{
+                    padding: spacing.xxl,
+                    borderRadius: borderRadius.xl,
+                    background: isHovered
+                      ? `linear-gradient(145deg, ${type.accentColor}18, ${colors.glass.light})`
+                      : colors.glass.light,
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: `1px solid ${isHovered ? type.accentColor + '50' : colors.glass.border}`,
+                    boxShadow: isHovered
+                      ? `0 16px 48px ${type.accentColor}30`
+                      : `0 4px 24px rgba(0,0,0,0.2)`,
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 320,
+                    transform: isHovered ? 'translateY(-4px)' : 'none',
+                  }}
+                >
+                  {/* Icon */}
+                  <div
                     style={{
-                      padding: spacing.xxl,
-                      height: '100%',
-                      minHeight: '300px',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer',
-                      background: cardBackground,
-                      backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: `1px solid ${colors.glass.border}`,
-                      boxShadow: isOpaque 
-                        ? `0 8px 32px ${colors.accent.primary}60` 
-                        : `0 4px 16px ${colors.accent.primary}30`,
+                      width: 72,
+                      height: 72,
+                      borderRadius: borderRadius.xl,
+                      background: isHovered
+                        ? `linear-gradient(135deg, ${type.accentColor}60, ${type.accentColor}30)`
+                        : `${type.accentColor}20`,
                       display: 'flex',
-                      flexDirection: 'column',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      textAlign: 'center',
+                      marginBottom: spacing.xl,
+                      boxShadow: isHovered ? `0 8px 24px ${type.accentColor}40` : 'none',
+                      transition: 'all 0.25s ease',
                     }}
                   >
-                    <div
-                      style={{
-                        width: '80px',
-                        height: '80px',
-                        borderRadius: borderRadius.full,
-                        background: isOpaque 
-                          ? colors.gradients.primary 
-                          : colors.accent.light,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: spacing.lg,
-                        boxShadow: isOpaque 
-                          ? `0 4px 12px ${colors.accent.primary}80` 
-                          : `0 2px 8px ${colors.accent.primary}40`,
-                        position: 'relative',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background: `radial-gradient(circle at center, ${colors.accent.primary}40, transparent)`,
-                          opacity: 0.6,
-                        }}
-                      />
-                      <span style={{ position: 'relative', zIndex: 1 }}>
-                        <IconComponent 
-                          size={40} 
-                          color={isOpaque ? colors.text.onDark : colors.accent.primary}
-                          strokeWidth={2.5}
-                        />
-                      </span>
-                    </div>
-                    <Typography variant="h2" style={{ color: textColor, marginBottom: spacing.md }}>
-                      {type.name}
-                    </Typography>
-                    <Typography variant="body" style={{ color: secondaryTextColor, lineHeight: 1.6 }}>
-                      {type.description}
-                    </Typography>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
+                    <IconComponent size={36} color={type.accentColor} strokeWidth={2} />
+                  </div>
 
-          {/* Voice alternative */}
-          <div style={{ marginTop: spacing.xl, textAlign: 'center' }}>
-            <Link href="/create/conversation" style={{ textDecoration: 'none', marginRight: spacing.md }}>
-              <Button variant="outline" size="md">
-                Or speak to create
+                  {/* Type badge */}
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      color: type.accentColor,
+                      marginBottom: spacing.sm,
+                    }}
+                  >
+                    {type.tagline}
+                  </span>
+
+                  <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+                    {type.name}
+                  </Typography>
+                  <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.7, flex: 1 }}>
+                    {type.description}
+                  </Typography>
+
+                  {/* Footer: depth + credits */}
+                  <div
+                    style={{
+                      marginTop: spacing.xl,
+                      paddingTop: spacing.md,
+                      borderTop: `1px solid ${colors.glass.border}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Typography variant="small" style={{ color: colors.text.secondary }}>
+                      {type.depth}
+                    </Typography>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                      <CreditCard size={13} color={type.accentColor} strokeWidth={2} />
+                      <Typography variant="small" style={{ color: type.accentColor, fontWeight: 600 }}>
+                        {type.credits} credits
+                      </Typography>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Voice alternative */}
+        <div
+          style={{
+            padding: spacing.xl,
+            borderRadius: borderRadius.xl,
+            background: colors.glass.light,
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: `1px solid ${colors.glass.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: spacing.md,
+          }}
+        >
+          <div>
+            <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+              Not sure what to create?
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
+              Tell us what you&apos;re going through — we&apos;ll guide you to the right practice.
+            </Typography>
+          </div>
+          <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+            <Link href="/create/conversation" style={{ textDecoration: 'none' }}>
+              <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
+                <Wand2 size={16} style={{ marginRight: spacing.sm }} />
+                Let&apos;s talk
               </Button>
             </Link>
             <Link href="/speak" style={{ textDecoration: 'none' }}>
-              <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
+              <Button variant="outline" size="md">
                 Voice mode
               </Button>
             </Link>
           </div>
+        </div>
 
-          {/* Back Link */}
-          <div style={{ marginTop: spacing.lg, textAlign: 'center' }}>
-            <Link href="/home" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="ghost"
-                size="md"
-                style={{
-                  color: colors.text.secondary,
-                }}
-              >
-                Back to Home
-              </Button>
-            </Link>
-          </div>
+        <div style={{ marginTop: spacing.lg, textAlign: 'center' }}>
+          <Link href="/sanctuary" style={{ textDecoration: 'none' }}>
+            <Button variant="ghost" size="sm" style={{ color: colors.text.secondary }}>
+              ← Back to Sanctuary
+            </Button>
+          </Link>
+        </div>
       </PageContent>
     </PageShell>
   );

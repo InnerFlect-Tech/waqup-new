@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AudioPage } from '@/components/audio';
 import { getMockContent } from '@/components/content/mockContent';
+import { spacing } from '@/theme';
 
 export default function AffirmationEditAudioPage() {
   const params = useParams();
@@ -13,7 +14,7 @@ export default function AffirmationEditAudioPage() {
 
   if (!item) {
     return (
-      <div style={{ padding: 24, textAlign: 'center' }}>
+      <div style={{ padding: spacing.lg, textAlign: 'center' }}>
         Affirmation not found. <Link href="/sanctuary/affirmations">Back to affirmations</Link>
       </div>
     );

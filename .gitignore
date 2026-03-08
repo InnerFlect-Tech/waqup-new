@@ -60,3 +60,6 @@ temp/
 
 # SpecStory (conversation history – ignore all)
 .specstory/
+
+# Supabase local secrets
+supabase/.env

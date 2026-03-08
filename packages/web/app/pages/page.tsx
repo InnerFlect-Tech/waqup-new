@@ -38,7 +38,7 @@ function RouteCard({ route, colors }: { route: { path: string; description: stri
         color: colors.text.primary,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexWrap: 'wrap', marginBottom: 2 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexWrap: 'wrap', marginBottom: spacing.xs }}>
         <Typography variant="small" style={{ fontWeight: 600, fontSize: '13px' }}>
           {route.path}
         </Typography>
@@ -50,7 +50,7 @@ function RouteCard({ route, colors }: { route: { path: string; description: stri
         {route.description}
       </Typography>
       {route.note && (
-        <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginTop: 2, fontStyle: 'italic', fontSize: '11px' }}>
+        <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginTop: spacing.xs, fontStyle: 'italic', fontSize: '11px' }}>
           {route.note}
         </Typography>
       )}
