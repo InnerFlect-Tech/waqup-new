@@ -12,17 +12,16 @@ import {
   X,
   LogOut,
   User,
-  CreditCard,
   Share2,
   Mic,
   FileText,
 } from 'lucide-react';
-import { Button, TestLoginButton } from '@/components';
-import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT } from '@/theme';
+import { Button, Logo, QCoin } from '@/components';
+import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, HEADER_PADDING_X, HEADER_PADDING_X_SM } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { SANCTUARY_MENU_ITEMS } from '@/lib';
 
-const CREDITS_BALANCE = SANCTUARY_MENU_ITEMS.find((m) => m.name === 'Credits')?.count ?? 50;
+const CREDITS_BALANCE = SANCTUARY_MENU_ITEMS.find((m) => m.name === 'Qs')?.count ?? 50;
 
 interface NavItem {
   name: string;
@@ -51,9 +50,9 @@ const NAV_ITEMS: NavItem[] = [
 
 const USER_MENU_ITEMS: UserMenuItem[] = [
   {
-    name: 'Credits',
+    name: 'Qs',
     path: '/sanctuary/credits',
-    icon: <CreditCard className="w-4 h-4" />,
+    icon: <QCoin size="sm" />,
     showBalance: true,
   },
   {
@@ -65,8 +64,9 @@ const USER_MENU_ITEMS: UserMenuItem[] = [
   { name: 'Settings', path: '/sanctuary/settings', icon: <Settings className="w-4 h-4" /> },
 ];
 
-/** Routes that redirect logged-in users to sanctuary (pricing is excluded so users can upgrade) */
-const ROUTES_REDIRECT_WHEN_LOGGED_IN = ['/', '/how-it-works'];
+/** Routes that redirect logged-in users to sanctuary (pricing is excluded so users can upgrade).
+ * Homepage (/) and how-it-works are excluded so the marketing site stays accessible when logged in. */
+const ROUTES_REDIRECT_WHEN_LOGGED_IN: string[] = [];
 const ONBOARDING_ROUTES = [
   '/onboarding',
   '/onboarding/profile',
@@ -150,38 +150,32 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <motion.nav
           initial={{ y: -100 }}
           animate={{ y: 0 }}
-          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200 px-6 sm:px-8"
-          style={isScrolled
-            ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
-            : { background: 'transparent' }
-          }
+          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
+          style={{
+            ...(isScrolled
+              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
+              : { background: 'transparent' }),
+            paddingLeft: HEADER_PADDING_X,
+            paddingRight: HEADER_PADDING_X,
+          }}
         >
           <div
-            className="mx-auto pl-28 pr-6 sm:pl-32 sm:pr-8 lg:pl-36 lg:pr-10"
-            style={{ maxWidth: MAX_WIDTH_7XL }}
+            className="mx-auto"
+            style={{
+              maxWidth: MAX_WIDTH_7XL,
+              paddingLeft: HEADER_PADDING_X_SM,
+              paddingRight: HEADER_PADDING_X_SM,
+            }}
           >
             <div
-              className="flex items-center justify-between"
-              style={{ height: NAV_HEIGHT, columnGap: spacing.xxxl }}
+              className="flex items-center justify-between flex-nowrap"
+              style={{ height: NAV_HEIGHT, columnGap: spacing.xxxl, minHeight: NAV_HEIGHT }}
             >
-              <div
-                className="flex-shrink-0 cursor-pointer"
-                onClick={() => router.push('/sanctuary')}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) =>
-                  e.key === 'Enter' && router.push('/sanctuary')
-                }
-              >
-                <h1
-                  className="text-2xl font-light tracking-widest"
-                  style={{ color: colors.text.primary }}
-                >
-                  wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
-                </h1>
+              <div className="flex-shrink-0">
+                <Logo size="md" href="/sanctuary" />
               </div>
 
-              <div className="hidden md:flex items-center" style={{ gap: spacing.xl }}>
+              <div className="hidden md:flex items-center flex-shrink-0" style={{ gap: spacing.xl }}>
                 <div className="flex items-center" style={{ gap: spacing.lg }}>
                   {navItems.map((item) => (
                     <Button
@@ -215,14 +209,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                       {user?.email}
                     </span>
                     <span
-                      className="rounded-full text-sm"
+                      className="rounded-full text-sm whitespace-nowrap shrink-0"
                       style={{
                         padding: `${spacing.xs} ${spacing.sm}`,
                         background: `${colors.accent.tertiary}30`,
                         color: colors.accent.tertiary,
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
                       }}
                     >
-                      {CREDITS_BALANCE} Credits
+                      {CREDITS_BALANCE} Qs
                     </span>
                   </Button>
 
@@ -233,58 +229,60 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         marginTop: spacing.sm,
                         padding: `${spacing.sm} ${spacing.md}`,
                         background: 'rgba(0,0,0,0.9)',
-                        border: `1px solid ${colors.glass.border}`,
+                        border: '1px solid rgba(255,255,255,0.12)',
                       }}
                     >
                       {USER_MENU_ITEMS.map((item) => (
-                        <Button
+                        <button
                           key={item.path}
-                          variant="ghost"
-                          className="w-full justify-between text-sm"
+                          type="button"
+                          className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
                           style={{
                             padding: `${spacing.md} ${spacing.lg}`,
                             gap: spacing.sm,
                             color: item.highlight
                               ? colors.accent.tertiary
-                              : colors.text.secondary,
+                              : colors.text.onDark,
+                            background: 'transparent',
                           }}
                           onClick={() => {
                             router.push(item.path);
                             setShowProfileMenu(false);
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                             {item.icon}
-                            <span>{item.name}</span>
-                          </div>
+                            {item.name}
+                          </span>
                           {item.showBalance && (
-                            <span
-                              style={{ color: colors.accent.tertiary }}
-                            >
-                              {CREDITS_BALANCE} Credits
+                            <span style={{ color: colors.accent.tertiary }}>
+                              {CREDITS_BALANCE} Qs
                             </span>
                           )}
-                        </Button>
+                        </button>
                       ))}
 
                       <div
                         style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }}
                       />
 
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start text-sm"
-                        style={{ padding: `${spacing.md} ${spacing.lg}`, color: colors.text.secondary }}
+                      <button
+                        type="button"
+                        className="w-full flex items-center gap-2 text-sm rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
+                        style={{
+                          padding: `${spacing.md} ${spacing.lg}`,
+                          color: colors.text.onDark,
+                          background: 'transparent',
+                        }}
                         onClick={handleSignOut}
                       >
                         <LogOut className="w-4 h-4" />
                         Sign out
-                      </Button>
+                      </button>
                     </div>
                   )}
                 </div>
 
-                {user?.id?.startsWith?.('override-') && <TestLoginButton />}
               </div>
 
               <div className="md:hidden">
@@ -335,39 +333,44 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               />
 
               {USER_MENU_ITEMS.map((item) => (
-                <Button
+                <button
                   key={item.path}
-                  variant="ghost"
-                  className="w-full justify-between"
+                  type="button"
+                  className="w-full flex items-center justify-between rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
                   style={{
                     padding: `${spacing.md} ${spacing.lg}`,
                     gap: spacing.sm,
-                    color: item.highlight ? colors.accent.tertiary : colors.text.secondary,
+                    color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
+                    background: 'transparent',
                   }}
                   onClick={() => {
                     router.push(item.path);
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     {item.icon}
-                    <span>{item.name}</span>
-                  </div>
+                    {item.name}
+                  </span>
                   {item.showBalance && (
-                    <span style={{ color: colors.accent.tertiary }}>{CREDITS_BALANCE} Credits</span>
+                    <span style={{ color: colors.accent.tertiary }}>{CREDITS_BALANCE} Qs</span>
                   )}
-                </Button>
+                </button>
               ))}
 
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-sm"
-                style={{ color: colors.text.secondary, gap: spacing.sm }}
+              <button
+                type="button"
+                className="w-full flex items-center gap-2 text-sm rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
+                style={{
+                  padding: `${spacing.md} ${spacing.lg}`,
+                  color: colors.text.onDark,
+                  background: 'transparent',
+                }}
                 onClick={handleSignOut}
               >
                 <LogOut className="w-4 h-4" />
                 Sign out
-              </Button>
+              </button>
             </div>
           </motion.div>
         </motion.nav>
@@ -382,33 +385,29 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <motion.nav
           initial={{ y: -100 }}
           animate={{ y: 0 }}
-          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200 pl-6"
-        style={isScrolled
-          ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
-          : { background: 'transparent' }
-        }
-      >
+          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
+          style={{
+            paddingLeft: HEADER_PADDING_X,
+            paddingRight: HEADER_PADDING_X,
+            ...(isScrolled
+              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
+              : { background: 'transparent' }),
+          }}
+        >
           <div
-            className="mx-auto pl-28 pr-6 sm:pl-32 sm:pr-8 lg:pl-36 lg:pr-10"
-            style={{ maxWidth: MAX_WIDTH_7XL }}
+            className="mx-auto"
+            style={{
+              maxWidth: MAX_WIDTH_7XL,
+              paddingLeft: HEADER_PADDING_X_SM,
+              paddingRight: HEADER_PADDING_X_SM,
+            }}
         >
           <div
             className="flex items-center justify-between gap-x-16"
             style={{ height: NAV_HEIGHT }}
           >
-            <div
-              className="flex-shrink-0 cursor-pointer"
-              onClick={() => router.push('/')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && router.push('/')}
-            >
-              <h1
-                className="text-2xl font-light tracking-widest"
-                style={{ color: colors.text.primary }}
-              >
-                wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
-              </h1>
+            <div className="flex-shrink-0">
+              <Logo size="md" href="/" />
             </div>
 
             <div className="hidden md:flex items-center gap-6">
@@ -489,7 +488,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             opacity: isMobileMenuOpen ? 1 : 0,
           }}
           className="md:hidden overflow-hidden backdrop-blur-lg"
-          style={{ background: 'rgba(0,0,0,0.8)' }}
+          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
         >
           <div style={{ padding: `${spacing.sm} ${spacing.sm} ${spacing.md} ${spacing.sm}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
             <Button
