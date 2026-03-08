@@ -25,7 +25,7 @@ const funnelStages = [
   { stage: 'Awareness', desc: 'Landing page, social, content', metric: 'Visitors', color: 'primary' },
   { stage: 'Consideration', desc: 'How it works, pricing', metric: 'Leads', color: 'secondary' },
   { stage: 'Trial / Signup', desc: 'Free signup, onboarding', metric: 'Signups', color: 'tertiary' },
-  { stage: 'Conversion', desc: 'First content, credits purchase', metric: 'Customers', color: 'primary' },
+  { stage: 'Conversion', desc: 'First content, Qs purchase', metric: 'Customers', color: 'primary' },
   { stage: 'Retention', desc: 'Daily use, referrals', metric: 'LTV', color: 'secondary' },
 ];
 
@@ -66,7 +66,7 @@ const profitablePaths = [
   {
     icon: Share2,
     title: 'Referral Loop',
-    desc: 'User shares link → Friend signs up → Both earn 10 credits. Viral coefficient & LTV boost.',
+    desc: 'User shares link → Friend signs up → Both earn 10 Qs. Viral coefficient & LTV boost.',
     highlight: 'High margin',
     color: 'tertiary',
   },

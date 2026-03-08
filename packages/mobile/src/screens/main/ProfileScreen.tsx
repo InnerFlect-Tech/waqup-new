@@ -4,21 +4,21 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography, Card, Button } from '@/components';
+import { Typography, Card, Button, QCoin } from '@/components';
 import { useAuthStore } from '@/stores/authStore';
 
 type Props = BottomTabScreenProps<MainTabParamList, 'Profile'>;
 
-const MENU_ITEMS = [
-  { label: 'Account Settings', icon: '⚙️', description: 'Email, password, notifications' },
-  { label: 'Credits', icon: '💎', description: 'Balance and purchase history' },
-  { label: 'Progress', icon: '📈', description: 'Your practice journey' },
-  { label: 'Reminders', icon: '🔔', description: 'Daily practice reminders' },
-];
-
 export default function ProfileScreen({ navigation }: Props) {
   const { theme } = useTheme();
   const colors = theme.colors;
+
+  const MENU_ITEMS: Array<{ label: string; icon?: string; iconNode?: React.ReactNode; description: string }> = [
+    { label: 'Account Settings', icon: '⚙️', description: 'Email, password, notifications' },
+    { label: 'Qs', iconNode: <QCoin size="md" />, description: 'Balance and purchase history' },
+    { label: 'Progress', icon: '📈', description: 'Your practice journey' },
+    { label: 'Reminders', icon: '🔔', description: 'Daily practice reminders' },
+  ];
   const { user, logout } = useAuthStore();
 
   const displayName =
@@ -95,9 +95,13 @@ export default function ProfileScreen({ navigation }: Props) {
                   },
                 ]}
               >
-                <Typography variant="h2" style={{ fontSize: 24 }}>
-                  {item.icon}
-                </Typography>
+                {item.iconNode ? (
+                  <QCoin size="md" />
+                ) : (
+                  <Typography variant="h2" style={{ fontSize: 24 }}>
+                    {item.icon}
+                  </Typography>
+                )}
                 <View style={{ flex: 1 }}>
                   <Typography variant="h4" style={{ color: colors.text.primary }}>
                     {item.label}

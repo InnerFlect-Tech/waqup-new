@@ -105,6 +105,7 @@ export function useAudioAnalyzer({
         }
 
         const analyser = analyserRef.current;
+        analyser.smoothingTimeConstant = smoothingTimeConstant;
 
         if (dataArrayRef.current?.length !== analyser.frequencyBinCount) {
           dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);

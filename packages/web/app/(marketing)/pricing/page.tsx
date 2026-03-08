@@ -120,7 +120,7 @@ export default function PricingPage() {
               margin: '0 auto',
             }}
           >
-            Credits power your content creation. Practice is always free.
+            Qs power your content creation. Practice is always free.
           </Typography>
         </div>
 

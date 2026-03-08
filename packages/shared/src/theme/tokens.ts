@@ -67,4 +67,7 @@ export const layout = {
   searchInputMaxWidth: 400,
   pageTopPadding: 96,
   maxWidth7xl: 1280,
+  /** Header horizontal padding - base and sm breakpoint (lateral space for logo and right buttons) */
+  headerPaddingX: 48,
+  headerPaddingXSm: 64,
 } as const;

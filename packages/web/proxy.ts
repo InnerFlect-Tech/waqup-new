@@ -49,12 +49,19 @@ function isPublic(pathname: string): boolean {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Block dev-only utility pages in production
-  if (
-    process.env.NODE_ENV === 'production' &&
-    DEV_ONLY_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'))
-  ) {
-    return NextResponse.redirect(new URL('/', request.url))
+  // Block dev-only utility pages in production (unless test session)
+  if (process.env.NODE_ENV === 'production') {
+    const isDevPath = DEV_ONLY_PATHS.some(
+      (p) => pathname === p || pathname.startsWith(p + '/')
+    )
+    if (isDevPath) {
+      const testLoginEnabled =
+        process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true'
+      const testSessionCookie = request.cookies.get('waqup_test_session')?.value
+      if (!(testLoginEnabled && testSessionCookie === '1')) {
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+    }
   }
 
   // Pass through public routes and anything not in the protected list

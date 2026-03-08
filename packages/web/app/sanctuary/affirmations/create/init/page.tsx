@@ -6,6 +6,7 @@ import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { useCreateInitGate } from '@/hooks';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
+import { formatQs } from '@waqup/shared/utils';
 
 const AFFIRMATION_STEPS = [
   {
@@ -46,8 +47,10 @@ export default function AffirmationCreateInitPage() {
   const costs = CONTENT_CREDIT_COSTS.affirmation;
   const creditRange =
     costs.withAi > costs.base
-      ? `${costs.base}–${costs.withAi} credits`
-      : `${costs.base} credit${costs.base > 1 ? 's' : ''}`;
+      ? `${costs.base}–${costs.withAi} Qs`
+      : costs.base === 1
+        ? '1 Q'
+        : `${costs.base} Qs`;
 
   if (!shouldShow) return null;
 

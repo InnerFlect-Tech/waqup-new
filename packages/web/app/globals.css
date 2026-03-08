@@ -20,8 +20,8 @@ html {
 }
 
 body {
-  color: #ffffff;
-  background: #000000;
+  color: var(--theme-text-primary, #ffffff);
+  background: var(--theme-bg-primary, #000000);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "rlig" 1, "calt" 1;
@@ -73,7 +73,7 @@ a {
   animation: slideUp 0.5s ease-out;
 }
 
-/* Custom scrollbar — matches @waqup-app dark theme */
+/* Custom scrollbar — theme-aware (dark: light thumb; light: dark thumb) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -84,12 +84,12 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--theme-glass-border, rgba(255, 255, 255, 0.15));
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-text-tertiary, rgba(255, 255, 255, 0.25));
 }
 
 /* Gradient text utility — matches @waqup-app .gradient-text */

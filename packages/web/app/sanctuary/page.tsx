@@ -25,7 +25,7 @@ export default function SanctuaryHomePage() {
   const STATS = [
     { label: 'Library', value: '—', icon: Library },
     { label: 'Streak', value: '—', icon: Zap },
-    { label: 'Credits', value: '50', icon: TrendingUp },
+    { label: 'Qs', value: '50', icon: TrendingUp },
   ];
 
   return (
@@ -228,7 +228,7 @@ export default function SanctuaryHomePage() {
                       flexShrink: 0,
                     }}
                   >
-                    <item.icon size={20} color={index < 2 ? colors.text.onDark : colors.accent.primary} strokeWidth={2.5} />
+                    {item.iconNode ?? <item.icon size={20} color={index < 2 ? colors.text.onDark : colors.accent.primary} strokeWidth={2.5} />}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>

@@ -29,7 +29,7 @@ export const PLANS: Plan[] = [
     creditsPerPeriod: 11,
     description: 'Begin your practice with a weekly commitment.',
     features: [
-      '11 credits per week',
+      '11 Qs per week',
       'All content types',
       'Voice recording',
       'Audio mixing',
@@ -45,7 +45,7 @@ export const PLANS: Plan[] = [
     creditsPerPeriod: 33,
     description: 'A monthly rhythm for dedicated practitioners.',
     features: [
-      '33 credits per month',
+      '33 Qs per month',
       'All content types',
       'Priority support',
       '7-day free trial included',
@@ -64,7 +64,7 @@ export const PLANS: Plan[] = [
     description:
       'Devotion is not a plan. It is a statement. Built for practitioners who show up every day with intention — and expect depth, precision, and priority in return.',
     features: [
-      '99 credits per month',
+      '99 Qs per month',
       'Priority AI processing',
       'Premium voice models',
       'Early access to new features',

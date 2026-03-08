@@ -60,40 +60,45 @@ function darken(color: string, amount: number): string {
 export function generateTheme(name: string, vars: ThemeVariables): Theme {
   const baseIsDark = isDark(vars.base);
   const bgPrimary = vars.base;
-  const bgSecondary = baseIsDark ? lighten(vars.base, 15) : darken(vars.base, 10);
-  const bgTertiary = baseIsDark ? lighten(vars.base, 25) : darken(vars.base, 20);
-  const glassBg = withOpacity(vars.text, vars.glass);
-  const glassDarkBg = withOpacity(vars.base, vars.glass * 0.5);
-  const glassOpaque = withOpacity(vars.text, vars.glass * 2);
-  const glassTransparent = withOpacity(vars.text, vars.glass * 0.5);
-
+  const bgSecondary = baseIsDark ? lighten(vars.base, 15) : darken(vars.base, 8);
+  const bgTertiary = baseIsDark ? lighten(vars.base, 25) : darken(vars.base, 16);
   const textPrimary = getOptimalTextColor(bgPrimary);
-  const textSecondary = baseIsDark ? withOpacity(textPrimary, 0.6) : withOpacity(textPrimary, 0.5);
-  const textTertiary = baseIsDark ? withOpacity(textPrimary, 0.4) : withOpacity(textPrimary, 0.3);
+  const textSecondary = baseIsDark ? withOpacity(textPrimary, 0.65) : '#525252';
+  const textTertiary = baseIsDark ? withOpacity(textPrimary, 0.45) : '#737373';
   const textInverse = baseIsDark ? '#000000' : '#FFFFFF';
-  const textDisabled = withOpacity(textPrimary, 0.3);
+  const textDisabled = withOpacity(textPrimary, 0.35);
   const textOnDark = '#FFFFFF';
   const textOnLight = '#000000';
 
   const accentPrimary = vars.primary;
   const accentSecondary = vars.secondary;
-  const accentTertiary = '#A855F7';
-  const accentLight = withOpacity('#A855F7', 0.2); // purple-500 at 20% — matches icon containers in reference
+  const accentTertiary = baseIsDark ? '#A855F7' : vars.primary;
+  const accentLight = withOpacity(accentPrimary, 0.15);
 
-  const glassLight = withOpacity(vars.text, vars.glass);
-  const glassMedium = withOpacity(vars.text, vars.glass * 0.6);
-  const glassDark = withOpacity(vars.base, vars.glass * 0.1);
-  const glassBorder = withOpacity(vars.text, vars.glass * 2);
-  const glassBorderDark = withOpacity(vars.base, vars.glass * 0.15);
-  const glassOpaqueStyle = withOpacity(vars.text, vars.glass * 2);
-  const glassTransparentStyle = withOpacity(vars.text, vars.glass * 0.5);
+  // Glass: dark themes use dark translucent overlays; light themes use white/light tints
+  const glassBg = baseIsDark ? withOpacity(vars.text, vars.glass) : withOpacity('#FFFFFF', 0.92);
+  const glassDarkBg = baseIsDark ? withOpacity(vars.base, vars.glass * 0.5) : withOpacity('#FFFFFF', 0.85);
+  const glassOpaque = baseIsDark ? withOpacity(vars.text, Math.min(1, vars.glass * 2)) : withOpacity('#FFFFFF', 0.98);
+  const glassTransparent = baseIsDark ? withOpacity(vars.text, vars.glass * 0.5) : withOpacity('#FFFFFF', 0.6);
+
+  const glassLight = baseIsDark ? withOpacity(vars.text, vars.glass) : withOpacity('#FFFFFF', 0.92);
+  const glassMedium = baseIsDark ? withOpacity(vars.text, vars.glass * 0.6) : withOpacity('#FFFFFF', 0.85);
+  const glassDark = baseIsDark ? withOpacity(vars.base, vars.glass * 0.1) : withOpacity('#000000', 0.03);
+  const glassBorder = baseIsDark ? withOpacity(vars.text, Math.min(1, vars.glass * 2)) : 'rgba(0, 0, 0, 0.08)';
+  const glassBorderDark = baseIsDark ? withOpacity(vars.base, vars.glass * 0.15) : 'rgba(0, 0, 0, 0.06)';
+  const glassOpaqueStyle = baseIsDark ? withOpacity(vars.text, Math.min(1, vars.glass * 2)) : withOpacity('#FFFFFF', 0.98);
+  const glassTransparentStyle = baseIsDark ? withOpacity(vars.text, vars.glass * 0.5) : withOpacity('#FFFFFF', 0.7);
 
   const purple900_20 = withOpacity('#581C87', 0.2);
   const gradientPrimary = `linear-gradient(to right, ${vars.primary}, ${vars.secondary})`;
   const gradientPrimaryHover = 'linear-gradient(to right, #A855F7, #6366F1)';
   const gradientSecondary = `linear-gradient(to bottom right, ${vars.primary}, ${vars.secondary})`;
-  const gradientBackground = `linear-gradient(to bottom right, ${bgPrimary}, ${purple900_20}, ${bgPrimary})`;
-  const gradientMystical = `radial-gradient(circle at center, ${withOpacity(vars.primary, vars.mystical * 0.1)}, transparent)`;
+  const gradientBackground = baseIsDark
+    ? `linear-gradient(to bottom right, ${bgPrimary}, ${purple900_20}, ${bgPrimary})`
+    : `linear-gradient(to bottom right, ${bgPrimary}, ${withOpacity(bgSecondary, 0.5)}, ${bgPrimary})`;
+  const gradientMystical = baseIsDark
+    ? `radial-gradient(circle at center, ${withOpacity(vars.primary, vars.mystical * 0.1)}, transparent)`
+    : `radial-gradient(circle at center, ${withOpacity(vars.primary, 0.03)}, transparent)`;
 
   const mysticalGlow = withOpacity(vars.primary, vars.mystical * 0.4);
   const mysticalBlur = `${vars.mystical * 100}px`;
@@ -124,7 +129,7 @@ const themeDefs: [string, ThemeVariables][] = [
   ['Serene Green', { primary: '#10B981', secondary: '#14B8A6', base: '#064E3B', text: '#ECFDF5', glass: 0.15, mystical: 0.15 }],
   ['Golden Sunset', { primary: '#F59E0B', secondary: '#EF4444', base: '#1C1917', text: '#FEF3C7', glass: 0.15, mystical: 0.2 }],
   ['Cosmic Dark', { primary: '#8B5CF6', secondary: '#EC4899', base: '#030712', text: '#E0E7FF', glass: 0.2, mystical: 0.4 }],
-  ['Minimalist Light', { primary: '#4A90E2', secondary: '#7B68EE', base: '#FAFAFA', text: '#1A1A1A', glass: 0.7, mystical: 0.05 }],
+  ['Minimalist Light', { primary: '#2563EB', secondary: '#0EA5E9', base: '#F1F5F9', text: '#0F172A', glass: 0.12, mystical: 0.04 }],
 ];
 
 export const themes: Record<string, Theme> = Object.fromEntries(

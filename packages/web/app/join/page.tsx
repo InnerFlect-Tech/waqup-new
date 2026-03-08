@@ -30,7 +30,7 @@ const PERKS = [
   },
   {
     icon: Zap,
-    title: '500 credits on joining',
+    title: '500 Qs on joining',
     description: 'Enough to create hundreds of affirmations, meditations, and rituals.',
     color: '#c084fc',
   },
@@ -335,7 +335,7 @@ function JoinPageInner() {
                   >
                     <Gift size={14} color="#34d399" />
                     <Typography variant="small" style={{ color: '#34d399', margin: 0 }}>
-                      Referred by <strong>{refCode}</strong> — extra 10 credits for you both!
+                      Referred by <strong>{refCode}</strong> — extra 10 Qs for you both!
                     </Typography>
                   </div>
                 )}

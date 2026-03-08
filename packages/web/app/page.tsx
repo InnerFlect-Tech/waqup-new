@@ -60,7 +60,7 @@ export default function LandingPage() {
     {
       icon: Zap,
       title: 'Practice is Free',
-      description: 'Unlimited replay of your content. Credits only used for creation, never for practice',
+      description: 'Unlimited replay of your content. Qs only used for creation, never for practice',
       color: colors.accent.tertiary,
     },
   ];

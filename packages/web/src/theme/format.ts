@@ -45,7 +45,11 @@ export const NAV_HEIGHT = px(layout.navHeight);
 export const GRID_CARD_MIN = px(layout.gridCardMin);
 export const SEARCH_INPUT_MAX_WIDTH = px(layout.searchInputMaxWidth);
 export const PAGE_TOP_PADDING = px(layout.pageTopPadding);
+/** Vertical padding (top + bottom) for full-height layouts - use in calc(100dvh - PAGE_VERTICAL_PADDING_PX) */
+export const PAGE_VERTICAL_PADDING_PX = layout.pageTopPadding + 32;
 export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
+export const HEADER_PADDING_X = px(layout.headerPaddingX);
+export const HEADER_PADDING_X_SM = px(layout.headerPaddingXSm);
 export const PAGE_PADDING = spacing.xl;
 export const SECTION_GAP = spacing.xl;
 export const CARD_PADDING_AUTH = spacing.xl;

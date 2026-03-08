@@ -6,3 +6,4 @@ export * from './Loading';
 export * from './Badge';
 export * from './Container';
 export * from './Progress';
+export * from './QCoin';

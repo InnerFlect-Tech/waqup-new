@@ -4,8 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CreditCard } from 'lucide-react';
-import { Typography, Button } from '@/components';
+import { Typography, Button, QCoin } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import type { LucideIcon } from 'lucide-react';
@@ -23,7 +22,7 @@ export interface CreateFlowInitStepProps {
   tips?: string[];
   nextHref: string;
   nextLabel?: string;
-  /** Credit cost range, e.g. "1–2 credits" (base with AI) */
+  /** Credit cost range, e.g. "1–2 Qs" (base with AI) */
   creditRange?: string;
   /** Called when user clicks Begin (e.g. to mark init as seen) */
   onBegin?: () => void;
@@ -74,7 +73,7 @@ export function CreateFlowInitStep({
               border: `1px solid ${colors.accent.primary}40`,
             }}
           >
-            <CreditCard size={14} color={colors.accent.primary} strokeWidth={2} />
+            <QCoin size="sm" />
             <Typography variant="small" style={{ color: colors.accent.primary, fontWeight: 600 }}>
               {creditRange}
             </Typography>

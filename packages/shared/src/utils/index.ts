@@ -7,5 +7,6 @@
 
 export * from './component-helpers';
 export * from './content-helpers';
+export * from './credits-format';
 // export const formatDate = (date: Date) => { ... };
 // export const validateEmail = (email: string) => { ... };

@@ -6,6 +6,7 @@ import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { useCreateInitGate } from '@/hooks';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
+import { formatQs } from '@waqup/shared/utils';
 
 const MEDITATION_STEPS = [
   {
@@ -46,8 +47,8 @@ export default function MeditationCreateInitPage() {
   const costs = CONTENT_CREDIT_COSTS.meditation;
   const creditRange =
     costs.withAi > costs.base
-      ? `${costs.base}–${costs.withAi} credits`
-      : `${costs.base} credit${costs.base > 1 ? 's' : ''}`;
+      ? `${costs.base}–${costs.withAi} Qs`
+      : formatQs(costs.base);
 
   if (!shouldShow) return null;
 

@@ -42,7 +42,7 @@ export default function ProfilePage() {
 
   const STATS = [
     { label: 'Content', value: '—' },
-    { label: 'Credits', value: '50' },
+    { label: 'Qs', value: '50' },
     { label: 'Member since', value: memberSince },
   ];
 

@@ -2,13 +2,17 @@
  * Shared navigation config - menu items, quick actions
  */
 
+import React from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Sparkles, Bell, GraduationCap, TrendingUp, CreditCard, Settings, Plus, BookOpen, Shield, Mic } from 'lucide-react';
+import { QCoin } from '@/components';
 
 export interface MenuItem {
   name: string;
   description: string;
   icon: LucideIcon;
+  /** Optional custom icon (e.g. QCoin for Qs) - used instead of icon when present */
+  iconNode?: React.ReactNode;
   href: string;
   count?: number;
 }
@@ -23,7 +27,7 @@ export interface QuickAction {
 export const SANCTUARY_MENU_ITEMS: MenuItem[] = [
   { name: 'My Voice', description: 'Set up your cloned voice for TTS', icon: Mic, href: '/sanctuary/voice' },
   { name: 'Progress', description: 'Track your transformation journey', icon: TrendingUp, href: '/sanctuary/progress' },
-  { name: 'Credits', description: 'Manage your credits', icon: CreditCard, href: '/sanctuary/credits', count: 50 },
+  { name: 'Qs', description: 'Manage your Qs', icon: CreditCard, iconNode: <QCoin size="sm" />, href: '/sanctuary/credits', count: 50 },
   { name: 'Settings', description: 'Customize your experience', icon: Settings, href: '/sanctuary/settings' },
 ];
 
@@ -37,7 +41,7 @@ export const HOME_QUICK_ACTIONS: QuickAction[] = [
 export const PROFILE_MENU_ITEMS: MenuItem[] = [
   { name: 'Preferences', description: 'Customize your experience', icon: Settings, href: '/sanctuary/settings' },
   { name: 'Notifications', description: 'Manage your notification settings', icon: Bell, href: '/sanctuary/reminders' },
-  { name: 'Credits', description: 'View and manage your credits', icon: CreditCard, href: '/sanctuary/credits' },
+  { name: 'Qs', description: 'View and manage your Qs', icon: CreditCard, iconNode: <QCoin size="sm" />, href: '/sanctuary/credits' },
   { name: 'Privacy & Security', description: 'Manage your privacy settings', icon: Shield, href: '/sanctuary/settings' },
 ];
 

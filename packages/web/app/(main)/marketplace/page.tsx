@@ -417,7 +417,7 @@ export default function MarketplacePage() {
         >
           <Typography variant="body" style={{ color: colors.text.secondary }}>
             <span style={{ color: colors.accent.primary, fontWeight: 600 }}>Creator publishing coming soon.</span>
-            {' '}Share your own content and earn credits when others practice with it.
+            {' '}Share your own content and earn Qs when others practice with it.
           </Typography>
         </div>
       </PageContent>

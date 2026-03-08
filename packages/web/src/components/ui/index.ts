@@ -7,3 +7,4 @@ export * from './Badge';
 export * from './Container';
 export * from './Progress';
 export * from './Icon';
+export * from './QCoin';

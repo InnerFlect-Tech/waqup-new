@@ -31,6 +31,8 @@
     "build:shared": "npm run build --workspace=packages/shared",
     "build:mobile": "npm run build --workspace=packages/mobile",
     "build:web": "npm run build --workspace=packages/web",
+    "start:web": "npm run start --workspace=packages/web",
+    "prod:web": "npm run build:web && npm run start:web",
     "build:all": "npm run build:shared && npm run build:mobile && npm run build:web",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",

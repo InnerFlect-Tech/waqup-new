@@ -63,3 +63,4 @@ temp/
 
 # Supabase local secrets
 supabase/.env
+.vercel

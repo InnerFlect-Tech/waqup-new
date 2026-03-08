@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Typography, Button, Badge, Loading } from '@/components';
+import { useAuthStore } from '@/stores';
 import { spacing, borderRadius, GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
@@ -18,6 +19,7 @@ import {
   Calendar,
   Plus,
   RefreshCw,
+  Database,
 } from 'lucide-react';
 import { getContentDetailHref } from '@/components/content';
 import type { ContentItem } from '@waqup/shared/types';
@@ -336,12 +338,34 @@ function CreateCard({
   );
 }
 
+const IS_DEV = process.env.NODE_ENV === 'development';
+
 export default function LibraryPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const [typeFilter, setTypeFilter] = useState<ContentTypeFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [seedLoading, setSeedLoading] = useState(false);
+  const [seedError, setSeedError] = useState<string | null>(null);
   const { items: allContent, isLoading, error, refetch } = useContent();
+
+  const handleSeed = async () => {
+    setSeedLoading(true);
+    setSeedError(null);
+    try {
+      const res = await fetch('/api/dev/seed', { method: 'POST' });
+      const json = await res.json();
+      if (res.ok) {
+        await refetch();
+      } else {
+        setSeedError(json.error || 'Failed to add example content');
+      }
+    } catch {
+      setSeedError('Failed to add example content');
+    } finally {
+      setSeedLoading(false);
+    }
+  };
 
   const filteredContent = useMemo(
     () =>
@@ -542,21 +566,54 @@ export default function LibraryPage() {
             >
               Create your first affirmation, meditation, or ritual to start your transformation.
             </Typography>
-            <Link href="/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="primary"
-                size="md"
-                style={{
-                  background: colors.gradients.primary,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: spacing.xs,
-                }}
-              >
-                <Plus size={16} strokeWidth={2.5} />
-                Create your first piece
-              </Button>
-            </Link>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.md }}>
+              <Link href="/create" style={{ textDecoration: 'none' }}>
+                <Button
+                  variant="primary"
+                  size="md"
+                  style={{
+                    background: colors.gradients.primary,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: spacing.xs,
+                  }}
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                  Create your first piece
+                </Button>
+              </Link>
+              {process.env.NODE_ENV === 'development' && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={handleSeed}
+                    disabled={seedLoading}
+                    style={{
+                      borderColor: colors.glass.border,
+                      color: colors.text.secondary,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: spacing.xs,
+                    }}
+                  >
+                    {seedLoading ? (
+                      <>
+                        <RefreshCw size={14} className="animate-spin" style={{ animation: 'spin 1s linear infinite' }} />
+                        Adding...
+                      </>
+                    ) : (
+                      <>Add example content</>
+                    )}
+                  </Button>
+                  {seedError && (
+                    <Typography variant="caption" style={{ color: colors.error, maxWidth: 320, textAlign: 'center' }}>
+                      {seedError}
+                    </Typography>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         ) : (
           <div

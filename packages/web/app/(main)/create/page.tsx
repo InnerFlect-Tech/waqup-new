@@ -7,8 +7,10 @@ import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Sparkles, Brain, Music, CreditCard, Wand2 } from 'lucide-react';
+import { Sparkles, Brain, Music, Wand2 } from 'lucide-react';
 import { CONTENT_CREDIT_COSTS, type ContentItemType } from '@waqup/shared/constants';
+import { formatQs } from '@waqup/shared/utils';
+import { QCoin } from '@/components';
 
 interface ContentTypeCard {
   type: ContentItemType;
@@ -177,10 +179,10 @@ export default function CreatePage() {
                       {card.depth}
                     </Typography>
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                      <CreditCard size={13} color={card.accentColor} strokeWidth={2} />
+                      <QCoin size="sm" color={card.accentColor} />
                       <Typography variant="small" style={{ color: card.accentColor, fontWeight: 600 }}>
-                        {costs.base} credit{costs.base > 1 ? 's' : ''}
-                        {costs.withAi > costs.base ? ` (${costs.withAi} with AI)` : ''}
+                        {formatQs(costs.base)}
+                        {costs.withAi > costs.base ? ` (${formatQs(costs.withAi)} with AI)` : ''}
                       </Typography>
                     </div>
                   </div>

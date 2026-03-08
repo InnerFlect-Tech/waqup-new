@@ -9,6 +9,7 @@ import { Sparkles, Brain, Music, Send, ArrowLeft } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
+import { formatQs } from '@waqup/shared/utils';
 
 interface Message {
   id: string;
@@ -126,8 +127,8 @@ export default function CreateConversationPage() {
             const costs = CONTENT_CREDIT_COSTS[type];
             const creditsLabel =
               costs.base === costs.withAi
-                ? `${costs.base} credit${costs.base > 1 ? 's' : ''}`
-                : `${costs.base}–${costs.withAi} credits`;
+                ? formatQs(costs.base)
+                : `${costs.base}–${costs.withAi} Qs`;
             return (
               <button
                 key={type}

@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button } from '@/components';
+import { Typography, Button, QCoin } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { Copy, Check, Twitter, Mail, MessageCircle, Gift, Users, CreditCard } from 'lucide-react';
+import { Copy, Check, Twitter, Mail, MessageCircle, Gift, Users } from 'lucide-react';
 import { useAuthStore } from '@/stores';
 
 function generateReferralCode(email: string): string {
@@ -18,10 +18,16 @@ function generateReferralCode(email: string): string {
   return `${base}${suffix}`.toUpperCase();
 }
 
-const REWARD_STEPS = [
+const REWARD_STEPS: Array<{
+  icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+  iconNode?: React.ReactNode;
+  label: string;
+  sub: string;
+  color: string;
+}> = [
   { icon: Users, label: 'Friend signs up', sub: 'Using your link', color: '#c084fc' },
   { icon: Gift, label: 'They get onboarded', sub: 'Complete their profile', color: '#60a5fa' },
-  { icon: CreditCard, label: 'You both earn', sub: '10 credits each', color: '#34d399' },
+  { icon: Gift, iconNode: <QCoin size="md" color="#34d399" />, label: 'You both earn', sub: '10 Qs each', color: '#34d399' },
 ];
 
 export default function ReferralPage() {
@@ -80,7 +86,7 @@ export default function ReferralPage() {
           Share & Earn
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
-          Invite friends to waQup. When they join and complete onboarding, you both get 10 credits.
+          Invite friends to waQup. When they join and complete onboarding, you both get 10 Qs.
         </Typography>
 
         {/* How it works */}
@@ -123,7 +129,7 @@ export default function ReferralPage() {
                       marginBottom: spacing.md,
                     }}
                   >
-                    <step.icon size={22} color={step.color} strokeWidth={2} />
+                    {step.iconNode ?? <step.icon size={22} color={step.color} strokeWidth={2} />}
                   </div>
                   <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, marginBottom: spacing.xs }}>
                     {step.label}

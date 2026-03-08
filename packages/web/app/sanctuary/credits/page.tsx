@@ -2,30 +2,30 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button } from '@/components';
+import { Typography, Button, QCoin } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { CreditCard, Sparkles, Users, Zap, Plus, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import { Sparkles, Users, Zap, Plus, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 
 const EARN_METHODS = [
   {
     icon: Sparkles,
     title: 'Create content',
-    description: 'Earn 2 credits back when you create and publish an affirmation, meditation, or ritual.',
+    description: 'Earn 2 Qs back when you create and publish an affirmation, meditation, or ritual.',
     credits: '+2',
   },
   {
     icon: Users,
     title: 'Refer a friend',
-    description: 'You and your friend each get 10 credits when they join and complete onboarding.',
+    description: 'You and your friend each get 10 Qs when they join and complete onboarding.',
     credits: '+10',
   },
   {
     icon: Zap,
     title: 'Practice streak',
-    description: 'Keep a 7-day streak to earn a 5-credit bonus. Streaks reset at midnight.',
+    description: 'Keep a 7-day streak to earn a 5 Qs bonus. Streaks reset at midnight.',
     credits: '+5',
   },
 ];
@@ -35,7 +35,7 @@ const MOCK_TRANSACTIONS = [
   { id: 2, label: 'Referral bonus', type: 'credit', amount: 10, date: 'Yesterday' },
   { id: 3, label: 'Created meditation', type: 'debit', amount: -8, date: '2 days ago' },
   { id: 4, label: '7-day streak bonus', type: 'credit', amount: 5, date: '3 days ago' },
-  { id: 5, label: 'Welcome credits', type: 'credit', amount: 50, date: 'Feb 28' },
+  { id: 5, label: 'Welcome Qs', type: 'credit', amount: 50, date: 'Feb 28' },
 ];
 
 export default function CreditsPage() {
@@ -52,10 +52,10 @@ export default function CreditsPage() {
         </Link>
 
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
-          Credits
+          Your Qs
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
-          Credits power your content creation. Practice is always free.
+          Qs power your content creation. Practice is always free.
         </Typography>
 
         {/* Balance card */}
@@ -72,17 +72,17 @@ export default function CreditsPage() {
             textAlign: 'center',
           }}
         >
-          <CreditCard size={32} color={colors.accent.primary} strokeWidth={1.5} style={{ marginBottom: spacing.md }} />
+          <QCoin size="lg" style={{ marginBottom: spacing.md }} />
           <div style={{ fontSize: 64, fontWeight: 200, color: colors.text.primary, lineHeight: 1, marginBottom: spacing.sm }}>
             50
           </div>
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl }}>
-            credits available
+            Qs available
           </Typography>
           <Link href="/pricing" style={{ textDecoration: 'none' }}>
             <Button variant="primary" size="lg">
               <Plus size={20} />
-              Get more credits
+              Get more Qs
             </Button>
           </Link>
         </motion.div>
@@ -93,7 +93,7 @@ export default function CreditsPage() {
             variant="h4"
             style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
           >
-            How to earn credits
+            How to earn Qs
           </Typography>
           <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
             {EARN_METHODS.map((method, index) => (

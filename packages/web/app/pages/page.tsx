@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Typography, Badge } from '@/components';
 import { useTheme, type Theme } from '@/theme';
-import { PageShell } from '@/components';
+import { PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
+import { CONTENT_MAX_WIDTH } from '@/theme';
 import { getRouteGroupsForPages, pathToHref, type RouteStatus, type RouteGroup } from '@/lib';
 import Link from 'next/link';
 
@@ -36,6 +37,15 @@ function RouteCard({ route, colors }: { route: { path: string; description: stri
         border: `1px solid ${isAction ? colors.warning ?? colors.glass.border : colors.glass.border}`,
         textDecoration: 'none',
         color: colors.text.primary,
+        transition: 'background 0.2s, border-color 0.2s, box-shadow 0.2s',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = colors.glass.light;
+        e.currentTarget.style.boxShadow = `0 4px 12px ${colors.accent.primary}20`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = isAction ? `${colors.warning}12` : 'transparent';
+        e.currentTarget.style.boxShadow = 'none';
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexWrap: 'wrap', marginBottom: spacing.xs }}>
@@ -64,21 +74,117 @@ const CARD_GRID_STYLE: React.CSSProperties = {
   gap: spacing.sm,
 };
 
+const SECTION_FLOW = ['Landing & Marketing', 'Auth', 'Onboarding', 'Main', 'Sanctuary', 'Utility (public by exception)', 'Voice & conversation', 'Marketplace (Phase 14)'];
+
 export default function PagesIndexPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const { public: WITHOUT_AUTH, protected: WITH_AUTH } = getRouteGroupsForPages();
 
+  const stats = useMemo(() => {
+    const allRoutes = [...(WITHOUT_AUTH as RouteGroup[]).flatMap((g) => g.routes), ...(WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes)];
+    const byStatus: Record<RouteStatus, number> = { exists: 0, to_create: 0, to_delete: 0, to_change: 0 };
+    for (const r of allRoutes) {
+      byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
+    }
+    return {
+      total: allRoutes.length,
+      public: (WITHOUT_AUTH as RouteGroup[]).flatMap((g) => g.routes).length,
+      protected: (WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes).length,
+      byStatus,
+    };
+  }, [WITHOUT_AUTH, WITH_AUTH]);
+
   return (
     <PageShell intensity="medium" bare>
-      <div style={{ padding: spacing.xl }}>
-        <div style={{ maxWidth: 720, margin: '0 auto' }}>
-          <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontSize: '1.5rem' }}>
+      <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
+        <div style={{ marginBottom: spacing.xl }}>
+          <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
             All Pages
           </Typography>
-          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, fontSize: '14px' }}>
+          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
             By auth: public (no login) vs protected (login required). Status: exists / to create / to change.
           </Typography>
+
+          {/* Route count summary */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: spacing.md, marginBottom: spacing.xl }}>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.accent.tertiary }}>{stats.total}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>Total routes</Typography>
+            </GlassCard>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.text.primary }}>{stats.public}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>Public</Typography>
+            </GlassCard>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.text.primary }}>{stats.protected}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>Protected</Typography>
+            </GlassCard>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.success }}>{stats.byStatus.exists}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>Exists</Typography>
+            </GlassCard>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.info }}>{stats.byStatus.to_create}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>To create</Typography>
+            </GlassCard>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.warning }}>{stats.byStatus.to_change}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>To change</Typography>
+            </GlassCard>
+          </div>
+
+          {/* Status distribution bar */}
+          <GlassCard variant="content" style={{ marginBottom: spacing.xl }}>
+            <Typography variant="h4" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>Status distribution</Typography>
+            <div style={{ display: 'flex', height: 24, borderRadius: borderRadius.sm, overflow: 'hidden', background: colors.background.secondary }}>
+              <div style={{ width: `${(stats.byStatus.exists / stats.total) * 100}%`, background: colors.success, minWidth: stats.byStatus.exists ? 4 : 0 }} title={`Exists: ${stats.byStatus.exists}`} />
+              <div style={{ width: `${(stats.byStatus.to_create / stats.total) * 100}%`, background: colors.info, minWidth: stats.byStatus.to_create ? 4 : 0 }} title={`To create: ${stats.byStatus.to_create}`} />
+              <div style={{ width: `${(stats.byStatus.to_change / stats.total) * 100}%`, background: colors.warning, minWidth: stats.byStatus.to_change ? 4 : 0 }} title={`To change: ${stats.byStatus.to_change}`} />
+              <div style={{ width: `${(stats.byStatus.to_delete / stats.total) * 100}%`, background: colors.error, minWidth: stats.byStatus.to_delete ? 4 : 0 }} title={`To delete: ${stats.byStatus.to_delete}`} />
+            </div>
+            <div style={{ display: 'flex', gap: spacing.lg, marginTop: spacing.sm, flexWrap: 'wrap' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, fontSize: 12, color: colors.text.secondary }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: colors.success }} /> Exists
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, fontSize: 12, color: colors.text.secondary }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: colors.info }} /> To create
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, fontSize: 12, color: colors.text.secondary }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: colors.warning }} /> To change
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, fontSize: 12, color: colors.text.secondary }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: colors.error }} /> To delete
+              </span>
+            </div>
+          </GlassCard>
+
+          {/* Section flow diagram */}
+          <GlassCard variant="content" style={{ marginBottom: spacing.xl }}>
+            <Typography variant="h4" style={{ marginBottom: spacing.md, color: colors.text.primary }}>Section flow</Typography>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm, alignItems: 'center' }}>
+              {SECTION_FLOW.map((section, i) => (
+                <React.Fragment key={section}>
+                  <div
+                    style={{
+                      padding: `${spacing.xs} ${spacing.sm}`,
+                      borderRadius: borderRadius.sm,
+                      background: colors.glass.light,
+                      border: `1px solid ${colors.glass.border}`,
+                      fontSize: 12,
+                      color: colors.text.secondary,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {section}
+                  </div>
+                  {i < SECTION_FLOW.length - 1 && (
+                    <span style={{ color: colors.text.tertiary, fontSize: 14 }}>→</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </GlassCard>
 
           <div
             style={{
@@ -93,44 +199,46 @@ export default function PagesIndexPage() {
           >
             <strong style={{ color: colors.text.primary }}>Exceptions:</strong> All of &quot;Without auth&quot; are public. In &quot;With auth&quot;, only routes under /home, /library, /create, /profile, /sanctuary require login. <em>/pages</em>, <em>/showcase</em>, <em>/sitemap-view</em> and <em>/onboarding/*</em> are public by design (dev/testing or first-time flow).
           </div>
+        </div>
 
-          <Typography variant="h2" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
-            Without auth (public)
-          </Typography>
-          {(WITHOUT_AUTH as RouteGroup[]).map((group) => (
-            <div key={group.title} style={{ marginBottom: spacing.lg }}>
-              <Typography variant="body" style={{ marginBottom: spacing.xs, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
-                {group.title}
-              </Typography>
-              <div style={CARD_GRID_STYLE}>
-                {group.routes.map((route) => (
-                  <RouteCard key={route.path} route={route} colors={colors} />
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <Typography variant="h2" style={{ marginTop: spacing.xl, marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
-            With auth (protected)
-          </Typography>
-          {(WITH_AUTH as RouteGroup[]).map((group) => (
-            <div key={group.title} style={{ marginBottom: spacing.lg }}>
-              <Typography variant="body" style={{ marginBottom: spacing.xs, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
-                {group.title}
-              </Typography>
-              <div style={CARD_GRID_STYLE}>
-                {group.routes.map((route) => (
-                  <RouteCard key={route.path} route={route} colors={colors} />
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <Link href="/" style={{ textDecoration: 'none', fontSize: '13px', marginTop: spacing.lg, display: 'inline-block' }}>
-            <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 500 }}>
-              Back to Home
+        <Typography variant="h2" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
+          Without auth (public)
+        </Typography>
+        {(WITHOUT_AUTH as RouteGroup[]).map((group) => (
+          <GlassCard key={group.title} variant="content" style={{ marginBottom: spacing.lg }}>
+            <Typography variant="body" style={{ marginBottom: spacing.sm, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
+              {group.title}
             </Typography>
-          </Link>
+            <div style={CARD_GRID_STYLE}>
+              {group.routes.map((route) => (
+                <RouteCard key={route.path} route={route} colors={colors} />
+              ))}
+            </div>
+          </GlassCard>
+        ))}
+
+        <Typography variant="h2" style={{ marginTop: spacing.xl, marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
+          With auth (protected)
+        </Typography>
+        {(WITH_AUTH as RouteGroup[]).map((group) => (
+          <GlassCard key={group.title} variant="content" style={{ marginBottom: spacing.lg }}>
+            <Typography variant="body" style={{ marginBottom: spacing.sm, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
+              {group.title}
+            </Typography>
+            <div style={CARD_GRID_STYLE}>
+              {group.routes.map((route) => (
+                <RouteCard key={route.path} route={route} colors={colors} />
+              ))}
+            </div>
+          </GlassCard>
+        ))}
+
+        {/* Utility nav */}
+        <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+          <Link href="/" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>← Home</Link>
+          <Link href="/showcase" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Showcase</Link>
+          <Link href="/system" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>System</Link>
+          <Link href="/sitemap-view" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Sitemap</Link>
         </div>
       </div>
     </PageShell>

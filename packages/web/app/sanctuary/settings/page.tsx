@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button } from '@/components';
+import { Typography, Button, TestLoginButton } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
@@ -42,7 +42,7 @@ const THEME_DISPLAY: Record<string, { label: string; dot: string }> = {
   'serene-green': { label: 'Serene', dot: '#10B981' },
   'golden-sunset': { label: 'Golden', dot: '#F59E0B' },
   'cosmic-dark': { label: 'Cosmic', dot: '#8B5CF6' },
-  'minimalist-light': { label: 'Light', dot: '#4A90E2' },
+  'minimalist-light': { label: 'Light', dot: '#2563EB' },
 };
 
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
@@ -237,19 +237,31 @@ export default function SettingsPage() {
           <Typography variant="body" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
             Show create-flow tips again on your next visit to any create flow. Use this to test the first-time experience.
           </Typography>
-          <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => {
-                clearCreateInitSeen();
-              }}
-            >
-              Show create-flow tips again
-            </Button>
-            <Link href="/sanctuary/affirmations/create/init" style={{ textDecoration: 'none' }}>
-              <Button variant="outline" size="md" onClick={() => clearCreateInitSeen()}>
-                Try it now →
+          {user?.id?.startsWith?.('override-') && (
+            <div style={{ marginBottom: spacing.md }}>
+              <TestLoginButton />
+            </div>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+            <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => {
+                  clearCreateInitSeen();
+                }}
+              >
+                Show create-flow tips again
+              </Button>
+              <Link href="/sanctuary/affirmations/create/init" style={{ textDecoration: 'none' }}>
+                <Button variant="outline" size="md" onClick={() => clearCreateInitSeen()}>
+                  Try it now →
+                </Button>
+              </Link>
+            </div>
+            <Link href="/speak/test" style={{ textDecoration: 'none' }}>
+              <Button variant="ghost" size="md" style={{ color: colors.text.secondary, alignSelf: 'flex-start' }}>
+                Orb test mode →
               </Button>
             </Link>
           </div>

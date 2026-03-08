@@ -13,6 +13,9 @@ const ENABLE_TEST_LOGIN = process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true';
 /**
  * Temporary test login/logout button. No database — sets a fake user in the store.
  * Only rendered when NEXT_PUBLIC_ENABLE_TEST_LOGIN=true. Remove when done testing.
+ *
+ * Uses full page navigation (window.location) after test login so the cookie is
+ * reliably sent with the next request — fixes mobile Safari / client-nav timing.
  */
 export function TestLoginButton() {
   const { theme } = useTheme();
@@ -28,9 +31,27 @@ export function TestLoginButton() {
 
   const handleTestLogin = () => {
     setError(null);
-    const overrideUser = applyOverrideLogin(TEST_USER_EMAIL);
-    setUser(overrideUser);
-    router.push('/sanctuary');
+    applyOverrideLogin(TEST_USER_EMAIL);
+    setUser({
+      id: `override-${TEST_USER_EMAIL}`,
+      email: TEST_USER_EMAIL,
+      aud: 'override',
+      role: 'override',
+      email_confirmed_at: new Date().toISOString(),
+      confirmed_at: new Date().toISOString(),
+      last_sign_in_at: new Date().toISOString(),
+      app_metadata: {},
+      user_metadata: {},
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      is_anonymous: false,
+    } as ReturnType<typeof applyOverrideLogin>);
+    // Full page navigation ensures cookie is sent with request (fixes mobile)
+    if (typeof window !== 'undefined') {
+      window.location.href = '/sanctuary';
+    } else {
+      router.push('/sanctuary');
+    }
   };
 
   const handleTestLogout = () => {
@@ -42,7 +63,10 @@ export function TestLoginButton() {
   const buttonStyle: React.CSSProperties = {
     borderColor: theme.colors.warning ?? theme.colors.accent.secondary,
     color: theme.colors.warning ?? theme.colors.accent.secondary,
-    fontSize: '13px',
+    fontSize: '14px',
+    minHeight: 44,
+    minWidth: 44,
+    padding: '10px 20px',
   };
 
   if (isOverrideUser) {
@@ -50,7 +74,7 @@ export function TestLoginButton() {
       <Button
         type="button"
         variant="outline"
-        size="sm"
+        size="md"
         onClick={handleTestLogout}
         style={buttonStyle}
       >
@@ -63,7 +87,7 @@ export function TestLoginButton() {
     <Button
       type="button"
       variant="outline"
-      size="sm"
+      size="md"
       onClick={handleTestLogin}
       style={buttonStyle}
     >

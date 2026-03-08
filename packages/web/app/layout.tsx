@@ -4,7 +4,7 @@ import './globals.css';
 import '../src/styles/animations.css';
 import { ThemeProvider } from '@/theme';
 import { AuthProvider } from '@/components/auth/AuthProvider';
-import { ThemeSelector, AppLayout } from '@/components';
+import { AppLayout } from '@/components';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,7 +40,6 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider defaultThemeName="mystical-purple">
           <AuthProvider>
-            <ThemeSelector />
             <AppLayout>{children}</AppLayout>
           </AuthProvider>
         </ThemeProvider>
