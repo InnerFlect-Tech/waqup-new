@@ -4,7 +4,7 @@ This guide explains how to run waQup fully on localhost using Supabase CLI, so y
 
 ## Prerequisites
 
-- **Node.js** >= 20.9 (or 22+)
+- **Node.js** >= 24.0.0
 - **Docker** (Desktop, OrbStack, or Podman) — required for Supabase local stack
 - **npm** >= 10
 
@@ -38,6 +38,7 @@ This guide explains how to run waQup fully on localhost using Supabase CLI, so y
 | `npm run supabase:stop` | Stop local Supabase |
 | `npm run supabase:status` | Show URLs and keys |
 | `npm run supabase:reset` | Reset DB (apply migrations + seed) |
+| `npm run supabase:diff` | Diff local schema vs linked remote (verify parity) |
 | `npm run dev:local` | Start Supabase, then web app |
 | `npm run dev:web` | Start Next.js dev server |
 
@@ -103,11 +104,21 @@ Set `NEXT_PUBLIC_ENABLE_TEST_LOGIN=true` to show a "Test login (no DB)" button f
 2. Set `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` to your local Supabase values.
 3. **Emulator access**: Use `localhost` or `10.0.2.2` (Android) so the emulator can reach `127.0.0.1:54321`.
 
-## Database Migrations
+## Database Migrations and Schema Parity
 
+**Single source of truth**: All schema changes live in `supabase/migrations/`. Local and production use the same migrations; only environment variables differ.
+
+### Workflow
+
+1. **Develop locally**: Create migrations with `supabase migration new <name>`, add SQL, then `npm run supabase:reset` to apply.
+2. **Test**: Verify schema and seed data locally.
+3. **Deploy**: `supabase link --project-ref <id>` (if not linked), then `supabase db push` to deploy to Supabase Cloud.
+
+### Verification
+
+- **Check for drift**: Run `npm run supabase:diff` (or `supabase db diff`) to compare local schema against linked remote. Fix any unapplied migrations before deploying.
 - Migrations live in `supabase/migrations/`.
 - Apply locally: `npm run supabase:reset` (resets DB and runs migrations + seed).
-- Deploy to Supabase Cloud: `supabase link --project-ref <id>` then `supabase db push`.
 
 ## Seed Data
 

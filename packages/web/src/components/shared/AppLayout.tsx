@@ -15,6 +15,7 @@ import {
   CreditCard,
   Share2,
   Mic,
+  FileText,
 } from 'lucide-react';
 import { Button, TestLoginButton } from '@/components';
 import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT } from '@/theme';
@@ -91,6 +92,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+
+  const ENABLE_TEST_LOGIN = process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true';
+  const isTestSession = ENABLE_TEST_LOGIN || user?.id?.startsWith?.('override-');
+  const navItems: NavItem[] = [
+    ...NAV_ITEMS,
+    ...(isTestSession ? [{ name: 'Pages', path: '/pages', icon: <FileText className="w-5 h-5" /> }] : []),
+  ];
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -174,7 +182,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
               <div className="hidden md:flex items-center gap-6">
                 <div className="flex items-center gap-4">
-                  {NAV_ITEMS.map((item) => (
+                  {navItems.map((item) => (
                     <Button
                       key={item.path}
                       variant="ghost"
@@ -300,7 +308,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {NAV_ITEMS.map((item) => (
+              {navItems.map((item) => (
                 <Button
                   key={item.path}
                   variant="ghost"
@@ -420,6 +428,28 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 Pricing
               </Button>
               <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/funnels')}
+                style={{
+                  color: pathname === '/funnels' ? colors.text.primary : colors.text.secondary,
+                  background: pathname === '/funnels' ? colors.glass.border : undefined,
+                }}
+              >
+                Funnels
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/investors')}
+                style={{
+                  color: pathname === '/investors' ? colors.text.primary : colors.text.secondary,
+                  background: pathname === '/investors' ? colors.glass.border : undefined,
+                }}
+              >
+                Investors
+              </Button>
+              <Button
                 variant="primary"
                 size="sm"
                 onClick={() => router.push('/login')}
@@ -471,6 +501,22 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               style={{ color: colors.text.secondary }}
             >
               Pricing
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => router.push('/funnels')}
+              className="w-full justify-start"
+              style={{ color: colors.text.secondary }}
+            >
+              Funnels
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => router.push('/investors')}
+              className="w-full justify-start"
+              style={{ color: colors.text.secondary }}
+            >
+              Investors
             </Button>
             <Button
               variant="primary"

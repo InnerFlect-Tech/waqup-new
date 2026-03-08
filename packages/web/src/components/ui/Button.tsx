@@ -18,7 +18,7 @@ const buttonVariants = cva(
         secondary: 'border',
         outline: 'border',
         text: 'border-0',
-        ghost: 'border',
+        ghost: 'border-0',
       },
       size: {
         sm: 'min-h-[32px] px-4 py-2 text-sm',
@@ -69,7 +69,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             background: colors.gradients.primary,
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
-            boxShadow: `0 4px 12px ${colors.accent.primary}60`,
+            boxShadow: `0 2px 8px ${colors.accent.primary}40`,
           };
         case 'secondary':
           return {
@@ -92,7 +92,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             background: colors.glass.transparent,
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
-            borderColor: colors.glass.border,
             color: colors.text.primary,
           };
         default:

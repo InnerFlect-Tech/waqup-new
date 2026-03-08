@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const DEV_ONLY_PATHS = ['/showcase', '/pages', '/sitemap-view']
+const DEV_ONLY_PATHS = ['/showcase', '/pages', '/sitemap-view', '/system']
 
 const PROTECTED_PREFIXES = [
   '/home',
@@ -24,6 +24,8 @@ const PUBLIC_PREFIXES = [
   '/auth',
   '/how-it-works',
   '/pricing',
+  '/funnels',
+  '/investors',
   '/terms',
   '/privacy',
   '/_next',

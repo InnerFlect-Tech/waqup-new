@@ -6,6 +6,16 @@
 
 ---
 
+## EBADENGINE and version consistency (non-step)
+
+### Node version alignment and deprecated package mitigation
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Aligned Node/npm version requirements across project. Added `.nvmrc` (24) for local consistency. Updated README.md, docs/04-reference/12-local-development.md, scripts/README.md to require Node.js >= 24.0.0 (was 20.9/22). Added npm override for `glob@^10.4.5` to mitigate deprecated glob@7.2.3/inflight warnings from transitive deps (Jest, React Native). CI already uses Node 24. Verified: build:shared and build:web succeed.
+- **Updated**: 2026-03-08
+
+---
+
 ## Local Development Setup (non-step)
 
 ### Full local Supabase development environment

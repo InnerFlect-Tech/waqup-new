@@ -4,7 +4,7 @@
 
 [![Repository](https://img.shields.io/badge/repository-GitHub-blue)](https://github.com/InnerFlect-Tech/waqup-new)
 [![License](https://img.shields.io/badge/license-UNLICENSED-lightgrey)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-20.9.0%2B%20or%2022.0.0%2B-brightgreen)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/node-24.0.0%2B-brightgreen)](https://nodejs.org/)
 [![npm](https://img.shields.io/badge/npm-%3E%3D10.0.0-red)](https://www.npmjs.com/)
 
 ---
@@ -46,7 +46,7 @@ cd waqup-new
 ```
 
 The master installation script will:
-1. ✅ **Verify Prerequisites**: Check Node.js (>=20.9.0 or >=22.0.0), npm (>=10.0.0), Git
+1. ✅ **Verify Prerequisites**: Check Node.js (>= 24.0.0), npm (>=10.0.0), Git
 2. ✅ **Install Dependencies**: Install all root, mobile, and web dependencies
 3. ✅ **Setup Environment**: Create `.env` file from `.env.example`
 4. ✅ **Verify Installation**: Run TypeScript compilation checks
@@ -86,7 +86,7 @@ See [scripts/README.md](./scripts/README.md) for detailed information about each
 ### Prerequisites
 
 **Required for All Platforms**:
-- **Node.js**: 20.9.0+ (LTS) or Node.js 22.0.0+ (LTS)
+- **Node.js**: 24.0.0+
 - **npm**: 10.0.0+ (comes with Node.js)
 - **Git**: Latest version
 
@@ -160,9 +160,9 @@ The installation scripts use `--no-audit --no-fund` flags to prevent hanging. If
 4. Run installation again
 
 **Node.js version issues**:
-- Ensure Node.js version is 20.9.0+ or 22.0.0+
-- Use `nvm` (Node Version Manager) to switch versions if needed
-- macOS: `brew install node@22` or download from nodejs.org
+- Ensure Node.js version is 24.0.0+
+- Use `nvm` (Node Version Manager): run `nvm use` in project root (uses `.nvmrc`)
+- macOS: `brew install node@24` or download from nodejs.org
 - Windows: Download installer from nodejs.org
 
 ---
@@ -187,7 +187,7 @@ The installation scripts use `--no-audit --no-fund` flags to prevent hanging. If
 - **Mobile**: Expo SDK 54, React Native, TypeScript 5.9.3
 - **Web**: Next.js 16.1.6, React 19.2.3, TypeScript 5.9.3
 - **Shared**: Supabase, Zustand, React Query, Zod
-- **Runtime**: Node.js 20.9.0+ or 22.0.0+ (LTS), npm 10+
+- **Runtime**: Node.js 24.0.0+, npm 10+
 
 ---
 

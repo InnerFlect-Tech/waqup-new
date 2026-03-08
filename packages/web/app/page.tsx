@@ -201,7 +201,7 @@ export default function LandingPage() {
 
             {/* CTA Buttons */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-              <Link href="/signup" style={{ textDecoration: 'none' }}>
+              <Link href="/join" style={{ textDecoration: 'none' }}>
                 <Button
                   variant="primary"
                   size="lg"

@@ -65,9 +65,19 @@ begin
     script,
     duration,
     frequency,
-    status
+    status,
+    audio_url,
+    voice_type
   ) values
-    (v_user_id, 'affirmation', 'Morning confidence', 'Start each day with intention', 'I am capable and ready for today.', '2 min', 'daily', 'complete'),
-    (v_user_id, 'meditation', 'Calm breath', 'A short breathing exercise', null, '5 min', 'daily', 'draft'),
-    (v_user_id, 'ritual', 'Evening wind-down', 'Transition from day to rest', null, '10 min', 'daily', 'draft');
+    (v_user_id, 'affirmation', 'Morning confidence', 'Start each day with intention', 'I am capable and ready for today.', '2 min', 'daily', 'complete', null, 'elevenlabs'),
+    (v_user_id, 'affirmation', 'Abundance mindset', 'Shift into prosperity consciousness', 'I attract abundance in all areas of my life.', '1 min', 'daily', 'complete', 'https://example.com/audio/abundance.mp3', 'elevenlabs'),
+    (v_user_id, 'affirmation', 'Self-worth', 'Affirm your inherent value', 'I am worthy of love, respect, and success.', '2 min', 'twice daily', 'draft', null, null),
+    (v_user_id, 'affirmation', 'Gratitude anchor', 'Ground in appreciation', 'I am grateful for this moment and all it brings.', '1 min', 'daily', 'complete', null, 'elevenlabs'),
+    (v_user_id, 'meditation', 'Calm breath', 'A short breathing exercise', 'Breathe in for four counts, hold for four, breathe out for six.', '5 min', 'daily', 'draft', null, null),
+    (v_user_id, 'meditation', 'Body scan', 'Progressive relaxation from head to toe', null, '15 min', 'weekly', 'complete', 'https://example.com/audio/body-scan.mp3', 'elevenlabs'),
+    (v_user_id, 'meditation', 'Loving kindness', 'Metta practice for self and others', 'May I be well. May I be at peace. May all beings be free from suffering.', '10 min', 'daily', 'complete', null, null),
+    (v_user_id, 'meditation', 'Morning clarity', 'Set intention for the day ahead', null, '7 min', 'daily', 'draft', null, null),
+    (v_user_id, 'ritual', 'Evening wind-down', 'Transition from day to rest', null, '10 min', 'daily', 'draft', null, null),
+    (v_user_id, 'ritual', 'New moon intention', 'Monthly ritual for setting intentions', 'I release what no longer serves me. I welcome new possibilities.', '20 min', 'monthly', 'complete', null, 'elevenlabs'),
+    (v_user_id, 'ritual', 'Sunday reset', 'Weekly reflection and planning', null, '30 min', 'weekly', 'draft', null, null);
 end $$;

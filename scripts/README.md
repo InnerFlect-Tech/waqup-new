@@ -61,7 +61,7 @@ chmod +x scripts/*.sh
 ## Script Details
 
 ### 01: Verify Prerequisites
-- Checks Node.js version (>=20.9.0 or >=22.0.0)
+- Checks Node.js version (>= 24.0.0)
 - Checks npm version (>=10.0.0)
 - Checks Git installation
 - Checks Expo CLI (optional)

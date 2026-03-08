@@ -1,8 +1,8 @@
 # Schema Verification
 
-**Purpose**: In-repo reference for database tables used by the rebuild. Full schema, RLS, and migrations live in the main project.
+**Purpose**: In-repo reference for database tables used by the rebuild.
 
-**In-repo reference**: Schema defined here. Extend as needed for new tables.
+**Canonical schema source**: `supabase/migrations/` — all schema changes must be versioned there. Deploy with `supabase db push`. Local and production stay in sync via the same migration files.
 
 **Last updated**: 2026-02-16
 

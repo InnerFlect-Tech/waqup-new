@@ -6,6 +6,8 @@ const STATIC_ROUTES = [
   '',
   '/how-it-works',
   '/pricing',
+  '/funnels',
+  '/investors',
   '/login',
   '/signup',
   '/confirm-email',

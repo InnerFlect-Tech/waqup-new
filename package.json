@@ -9,7 +9,8 @@
   "overrides": {
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "rimraf": "^5.0.0"
+    "rimraf": "^5.0.0",
+    "glob": "^10.4.5"
   },
   "engines": {
     "node": ">=24.0.0",
@@ -20,6 +21,7 @@
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
     "supabase:reset": "supabase db reset",
+    "supabase:diff": "supabase db diff",
     "dev:local": "supabase start && npm run dev:web",
     "dev:mobile": "npm run start --workspace=packages/mobile",
     "dev:web": "npm run dev --workspace=packages/web",

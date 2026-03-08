@@ -12,6 +12,8 @@ const nextConfig = {
   output: 'standalone',
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
+    // Fix ChunkLoadError 404 with Turbopack + dynamic imports (Next.js 16.1)
+    turbopackClientSideNestedAsyncChunking: true,
   },
 };
 
