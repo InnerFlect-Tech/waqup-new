@@ -114,7 +114,7 @@ export function ContentIntentStep({ backHref, nextHref, scienceInsightOverride }
             <Typography
               variant="small"
               style={{
-                color: value.length > MAX_CHARS * 0.9 ? colors.accent.error ?? '#ef4444' : colors.text.secondary,
+                color: value.length > MAX_CHARS * 0.9 ? '#ef4444' : colors.text.secondary,
                 fontSize: 12,
                 opacity: 0.7,
               }}

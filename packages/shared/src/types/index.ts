@@ -9,3 +9,4 @@ export * from './auth';
 export * from './content';
 export * from './reminder';
 export * from './orb.types';
+export * from './audio';

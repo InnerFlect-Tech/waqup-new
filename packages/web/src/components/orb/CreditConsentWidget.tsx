@@ -46,7 +46,7 @@ export function CreditConsentWidget({
         maxWidth: '82%',
         borderRadius: `${borderRadius.xl} ${borderRadius.xl} ${borderRadius.xl} ${spacing.xs}`,
         background: colors.glass.light,
-        border: `1px solid ${colors.mystical?.orbGlow ?? colors.glass.border}`,
+        border: `1px solid ${colors.mystical?.glow ?? colors.glass.border}`,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
         overflow: 'hidden',

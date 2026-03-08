@@ -7,16 +7,68 @@ import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { Bell, Plus, Trash2, Pencil, Clock } from 'lucide-react';
+import {
+  Bell,
+  Plus,
+  Trash2,
+  Pencil,
+  Clock,
+  Moon,
+  Sunrise,
+  Check,
+  BookOpen,
+} from 'lucide-react';
 import { useReminders } from '@/hooks';
 import type { UserReminder, CreateReminderInput } from '@waqup/shared/types';
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6];
 
 const TIME_PRESETS = [
-  { label: 'Morning', time: '07:00' },
-  { label: 'Noon', time: '12:00' },
-  { label: 'Evening', time: '18:00' },
+  { label: 'After waking', time: '07:00' },
+  { label: 'Mid-morning', time: '09:00' },
+  { label: 'Midday', time: '12:00' },
+  { label: 'Afternoon', time: '15:00' },
+  { label: 'Before sleep', time: '21:30' },
+];
+
+interface RecommendedSession {
+  id: string;
+  title: string;
+  timeLabel: string;
+  time: string;
+  label: string;
+  science: string;
+  durations: string[];
+  color: string;
+  Icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+}
+
+const RECOMMENDED_SESSIONS: RecommendedSession[] = [
+  {
+    id: 'morning',
+    title: 'Morning Practice',
+    timeLabel: 'After waking · 7:00 AM',
+    time: '07:00',
+    label: 'Morning practice',
+    science:
+      'Just after waking, your critical mind is still quiet — the ideal window for planting new beliefs.',
+    durations: ['20 min', '40 min', '1 hr'],
+    color: '#f97316',
+    Icon: Sunrise,
+  },
+  {
+    id: 'evening',
+    title: 'Evening Practice',
+    timeLabel: 'Before sleep · 9:30 PM',
+    time: '21:30',
+    label: 'Evening practice',
+    science:
+      'Sleep consolidates what you hear last. Content before sleep has disproportionate influence on encoding.',
+    durations: ['20 min', '40 min', '1 hr'],
+    color: '#a78bfa',
+    Icon: Moon,
+  },
 ];
 
 function formatDays(days: number[]): string {
@@ -154,6 +206,7 @@ export default function SanctuaryRemindersPage() {
   const [formEnabled, setFormEnabled] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [quickAddingId, setQuickAddingId] = useState<string | null>(null);
 
   const resetForm = useCallback(() => {
     setFormLabel('Practice reminder');
@@ -200,6 +253,20 @@ export default function SanctuaryRemindersPage() {
     setShowAddForm(false);
   };
 
+  const handleQuickAdd = async (session: RecommendedSession) => {
+    setQuickAddingId(session.id);
+    await createReminder({
+      label: session.label,
+      time: session.time,
+      daysOfWeek: ALL_DAYS,
+      enabled: true,
+    });
+    setQuickAddingId(null);
+  };
+
+  const isSessionActive = (session: RecommendedSession) =>
+    reminders.some((r) => r.time === session.time && r.enabled);
+
   const sectionStyle: React.CSSProperties = {
     padding: spacing.xl,
     borderRadius: borderRadius.xl,
@@ -228,11 +295,12 @@ export default function SanctuaryRemindersPage() {
           </Typography>
         </Link>
 
+        {/* Headline */}
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
-          Reminders
+          Time your practice well
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
-          Schedule your practice sessions. Get gentle nudges at your preferred times.
+          Consistency matters more than duration. Two short sessions daily — at the right moments — rewire your brain faster than anything else.
         </Typography>
 
         {/* Notification permission */}
@@ -253,7 +321,7 @@ export default function SanctuaryRemindersPage() {
             </Typography>
             <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md, fontSize: 14 }}>
               {permission === 'denied'
-                ? 'You previously blocked notifications. Enable them in your browser settings (address bar or site settings) to receive reminders.'
+                ? 'You previously blocked notifications. Enable them in your browser settings to receive reminders.'
                 : 'Allow browser notifications to receive reminders when the app is open.'}
             </Typography>
             {permission !== 'denied' && (
@@ -272,12 +340,388 @@ export default function SanctuaryRemindersPage() {
           </motion.div>
         )}
 
-        {/* Add reminder button */}
+        {/* Recommended sessions */}
+        <div style={{ marginBottom: spacing.xl }}>
+          <Typography
+            variant="h4"
+            style={{
+              color: colors.text.secondary,
+              marginBottom: spacing.md,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              fontSize: 11,
+            }}
+          >
+            Recommended sessions
+          </Typography>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: spacing.md,
+              marginBottom: spacing.md,
+            }}
+          >
+            {RECOMMENDED_SESSIONS.map((session, index) => {
+              const active = isSessionActive(session);
+              const loading = quickAddingId === session.id;
+              const SessionIcon = session.Icon;
+
+              return (
+                <motion.div
+                  key={session.id}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.08 }}
+                  style={{
+                    padding: spacing.xl,
+                    borderRadius: borderRadius.xl,
+                    background: active
+                      ? `linear-gradient(145deg, ${session.color}18, ${colors.glass.light})`
+                      : colors.glass.light,
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: `1px solid ${active ? session.color + '50' : colors.glass.border}`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.md,
+                    transition: 'border-color 0.2s, background 0.2s',
+                  }}
+                >
+                  {/* Icon + title row */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: borderRadius.md,
+                        background: `${session.color}20`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <SessionIcon size={22} color={session.color} strokeWidth={1.8} />
+                    </div>
+                    {active && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          padding: `${spacing.xs} ${spacing.sm}`,
+                          borderRadius: borderRadius.full,
+                          background: `${session.color}20`,
+                          border: `1px solid ${session.color}40`,
+                        }}
+                      >
+                        <Check size={11} color={session.color} strokeWidth={2.5} />
+                        <Typography
+                          variant="small"
+                          style={{ color: session.color, fontSize: 10, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', margin: 0 }}
+                        >
+                          Active
+                        </Typography>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title + time */}
+                  <div>
+                    <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, marginBottom: spacing.xs, fontWeight: 600 }}>
+                      {session.title}
+                    </Typography>
+                    <Typography variant="small" style={{ color: session.color, margin: 0, fontWeight: 500, opacity: 0.9 }}>
+                      {session.timeLabel}
+                    </Typography>
+                  </div>
+
+                  {/* Science blurb */}
+                  <Typography
+                    variant="small"
+                    style={{ color: colors.text.secondary, margin: 0, lineHeight: 1.55, fontSize: 13 }}
+                  >
+                    {session.science}
+                  </Typography>
+
+                  {/* Duration hints */}
+                  <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
+                    {session.durations.map((d) => (
+                      <span
+                        key={d}
+                        style={{
+                          padding: `3px ${spacing.sm}`,
+                          borderRadius: borderRadius.full,
+                          background: `${session.color}12`,
+                          border: `1px solid ${session.color}25`,
+                          color: session.color,
+                          fontSize: 11,
+                          fontWeight: 500,
+                          opacity: 0.85,
+                        }}
+                      >
+                        {d}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <button
+                    type="button"
+                    disabled={active || loading}
+                    onClick={() => handleQuickAdd(session)}
+                    style={{
+                      marginTop: spacing.xs,
+                      padding: `${spacing.sm} ${spacing.md}`,
+                      borderRadius: borderRadius.lg,
+                      border: `1px solid ${active ? session.color + '30' : session.color + '60'}`,
+                      background: active ? `${session.color}10` : `${session.color}20`,
+                      color: active ? session.color : colors.text.primary,
+                      cursor: active ? 'default' : 'pointer',
+                      fontSize: 13,
+                      fontWeight: 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: spacing.xs,
+                      transition: 'background 0.2s, opacity 0.2s',
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    {active ? (
+                      <>
+                        <Check size={14} color={session.color} strokeWidth={2} />
+                        <span style={{ color: session.color }}>Reminder set</span>
+                      </>
+                    ) : loading ? (
+                      <span>Adding…</span>
+                    ) : (
+                      <>
+                        <Plus size={14} strokeWidth={2} />
+                        Add {session.id} reminder
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Science callout strip */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            style={{
+              padding: `${spacing.md} ${spacing.lg}`,
+              borderRadius: borderRadius.lg,
+              background: `${colors.accent.primary}0A`,
+              border: `1px solid ${colors.accent.primary}20`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing.md,
+            }}
+          >
+            <BookOpen size={16} color={colors.accent.primary} strokeWidth={1.8} style={{ flexShrink: 0, opacity: 0.8 }} />
+            <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, lineHeight: 1.5, fontSize: 13 }}>
+              The moments just after waking and before sleep are your brain's most receptive windows for new beliefs.{' '}
+              <Link
+                href="/sanctuary/learn"
+                style={{ color: colors.accent.primary, textDecoration: 'none', fontWeight: 500 }}
+                className="hover:opacity-80"
+              >
+                Learn the science →
+              </Link>
+            </Typography>
+          </motion.div>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div style={{ ...sectionStyle, borderColor: colors.error, background: `${colors.error}15` }}>
+            <Typography variant="body" style={{ color: colors.error }}>{error}</Typography>
+          </div>
+        )}
+
+        {/* Loading */}
+        {isLoading && (
+          <div style={{ ...sectionStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.md, minHeight: 120 }}>
+            <Loading variant="spinner" size="lg" color="primary" />
+            <Typography variant="body" style={{ color: colors.text.secondary }}>Loading reminders…</Typography>
+          </div>
+        )}
+
+        {/* Reminders list */}
+        {!isLoading && reminders.length > 0 && (
+          <div style={{ marginBottom: spacing.xl }}>
+            <Typography
+              variant="h4"
+              style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
+            >
+              Your reminders
+            </Typography>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+              {reminders.map((r, index) => (
+                <motion.div
+                  key={r.id}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{ scale: 1.01 }}
+                  style={{
+                    padding: spacing.lg,
+                    borderRadius: borderRadius.lg,
+                    background: colors.glass.light,
+                    backdropFilter: 'blur(12px)',
+                    border: `1px solid ${colors.glass.border}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.md,
+                    opacity: r.enabled ? 1 : 0.6,
+                  }}
+                >
+                  <Bell size={20} color={colors.accent.primary} strokeWidth={2} style={{ flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
+                      {r.label}
+                    </Typography>
+                    <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+                      {formatTime12h(r.time)} · {formatDays(r.daysOfWeek)}
+                      {!r.enabled && (
+                        <span
+                          style={{
+                            marginLeft: spacing.sm,
+                            fontSize: 10,
+                            fontWeight: 600,
+                            color: colors.text.secondary,
+                            opacity: 0.8,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                          }}
+                        >
+                          Paused
+                        </span>
+                      )}
+                    </Typography>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                    <Toggle
+                      value={r.enabled}
+                      onChange={(v) => updateReminder(r.id, { enabled: v })}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => startEdit(r)}
+                      style={{ padding: spacing.sm }}
+                      aria-label="Edit reminder"
+                    >
+                      <Pencil size={18} style={{ color: colors.text.secondary }} />
+                    </Button>
+                    {deletingId === r.id ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                        <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>Delete?</Typography>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={async () => {
+                            await deleteReminder(r.id);
+                            setDeletingId(null);
+                          }}
+                          style={{ color: colors.error, padding: `${spacing.xs} ${spacing.sm}` }}
+                        >
+                          Yes
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDeletingId(null)}
+                          style={{ padding: `${spacing.xs} ${spacing.sm}` }}
+                        >
+                          No
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeletingId(r.id)}
+                        style={{ padding: spacing.sm, color: colors.error }}
+                        aria-label="Delete reminder"
+                      >
+                        <Trash2 size={18} />
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty state — only shown when no reminders and no form open */}
+        {!isLoading && reminders.length === 0 && !showAddForm && !editingId && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              padding: spacing.xxl,
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: `1px solid ${colors.glass.border}`,
+              textAlign: 'center',
+              marginBottom: spacing.xl,
+            }}
+          >
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: borderRadius.full,
+                background: `${colors.accent.primary}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+                marginBottom: spacing.md,
+              }}
+            >
+              <Bell size={32} color={colors.accent.primary} strokeWidth={1.5} style={{ opacity: 0.8 }} />
+            </div>
+            <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+              No reminders yet
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14, marginBottom: spacing.xs }}>
+              Use the recommended sessions above, or add a custom one.
+            </Typography>
+          </motion.div>
+        )}
+
+        {/* Custom reminder entry — secondary action */}
         {!showAddForm && !editingId && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: spacing.xl }}>
-            <Button variant="primary" size="lg" onClick={() => setShowAddForm(true)}>
-              <Plus size={20} />
-              Add reminder
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            style={{ marginBottom: spacing.xl }}
+          >
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={() => setShowAddForm(true)}
+              style={{
+                border: `1px dashed ${colors.glass.border}`,
+                color: colors.text.secondary,
+                width: '100%',
+                justifyContent: 'center',
+              }}
+            >
+              <Plus size={16} />
+              Add custom reminder
             </Button>
           </motion.div>
         )}
@@ -291,8 +735,17 @@ export default function SanctuaryRemindersPage() {
               exit={{ opacity: 0, height: 0 }}
               style={sectionStyle}
             >
-              <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
-                {editingId ? 'Edit reminder' : 'New reminder'}
+              <Typography
+                variant="h4"
+                style={{
+                  color: colors.text.secondary,
+                  marginBottom: spacing.lg,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  fontSize: 11,
+                }}
+              >
+                {editingId ? 'Edit reminder' : 'Custom reminder'}
               </Typography>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
@@ -443,172 +896,6 @@ export default function SanctuaryRemindersPage() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Error */}
-        {error && (
-          <div style={{ ...sectionStyle, borderColor: colors.error, background: `${colors.error}15` }}>
-            <Typography variant="body" style={{ color: colors.error }}>{error}</Typography>
-          </div>
-        )}
-
-        {/* Loading */}
-        {isLoading && (
-          <div style={{ ...sectionStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.md, minHeight: 120 }}>
-            <Loading variant="spinner" size="lg" color="primary" />
-            <Typography variant="body" style={{ color: colors.text.secondary }}>Loading reminders…</Typography>
-          </div>
-        )}
-
-        {/* Reminders list */}
-        {!isLoading && reminders.length > 0 && (
-          <div style={{ marginBottom: spacing.xxl }}>
-            <Typography
-              variant="h4"
-              style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
-            >
-              Your reminders
-            </Typography>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-              {reminders.map((r, index) => (
-                <motion.div
-                  key={r.id}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ scale: 1.01 }}
-                  style={{
-                    padding: spacing.lg,
-                    borderRadius: borderRadius.lg,
-                    background: colors.glass.light,
-                    backdropFilter: 'blur(12px)',
-                    border: `1px solid ${colors.glass.border}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.md,
-                    opacity: r.enabled ? 1 : 0.6,
-                  }}
-                >
-                  <Bell size={20} color={colors.accent.primary} strokeWidth={2} style={{ flexShrink: 0 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
-                      {r.label}
-                    </Typography>
-                    <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                      {formatTime12h(r.time)} · {formatDays(r.daysOfWeek)}
-                      {!r.enabled && (
-                        <span
-                          style={{
-                            marginLeft: spacing.sm,
-                            fontSize: 10,
-                            fontWeight: 600,
-                            color: colors.text.secondary,
-                            opacity: 0.8,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.05em',
-                          }}
-                        >
-                          Paused
-                        </span>
-                      )}
-                    </Typography>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                    <Toggle
-                      value={r.enabled}
-                      onChange={(v) => updateReminder(r.id, { enabled: v })}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => startEdit(r)}
-                      style={{ padding: spacing.sm }}
-                      aria-label="Edit reminder"
-                    >
-                      <Pencil size={18} style={{ color: colors.text.secondary }} />
-                    </Button>
-                    {deletingId === r.id ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                        <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>Delete?</Typography>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={async () => {
-                            await deleteReminder(r.id);
-                            setDeletingId(null);
-                          }}
-                          style={{ color: colors.error, padding: `${spacing.xs} ${spacing.sm}` }}
-                        >
-                          Yes
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setDeletingId(null)}
-                          style={{ padding: `${spacing.xs} ${spacing.sm}` }}
-                        >
-                          No
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeletingId(r.id)}
-                        style={{ padding: spacing.sm, color: colors.error }}
-                        aria-label="Delete reminder"
-                      >
-                        <Trash2 size={18} />
-                      </Button>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!isLoading && reminders.length === 0 && !showAddForm && !editingId && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{
-              padding: spacing.xxl,
-              borderRadius: borderRadius.xl,
-              background: colors.glass.light,
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              border: `1px solid ${colors.glass.border}`,
-              textAlign: 'center',
-            }}
-          >
-            <div
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: borderRadius.full,
-                background: `${colors.accent.primary}20`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto',
-                marginBottom: spacing.md,
-              }}
-            >
-              <Bell size={32} color={colors.accent.primary} strokeWidth={1.5} style={{ opacity: 0.8 }} />
-            </div>
-            <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
-              No reminders yet
-            </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14, marginBottom: spacing.xl }}>
-              Add a reminder to get gentle nudges at your preferred times.
-            </Typography>
-            <Button variant="primary" size="md" onClick={() => setShowAddForm(true)}>
-              <Plus size={18} />
-              Add your first reminder
-            </Button>
-          </motion.div>
-        )}
       </PageContent>
     </PageShell>
   );

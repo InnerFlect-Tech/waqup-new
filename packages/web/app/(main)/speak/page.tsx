@@ -41,14 +41,14 @@ const STATUS_MESSAGES = {
 export default function SpeakPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [orbVariant, setOrbVariant] = useState<OrbVariant>('three');
+  const [orbVariant, setOrbVariant] = useState<OrbVariant>('singularity');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   /** Once user taps to start, we keep listening (always-on). Gate needed for mic permission. */
   const [hasStartedListening, setHasStartedListening] = useState(false);
 
   const OrbComponent =
-    orbVariant === 'three' ? VoiceOrb : orbVariant === 'p5' ? VoiceOrbP5 : VoiceOrbOGL;
+    orbVariant === 'singularity' ? VoiceOrb : orbVariant === 'aurora' ? VoiceOrbP5 : VoiceOrbOGL;
 
   const handleMicClick = () => {
     if (!hasStartedListening) {
@@ -96,12 +96,6 @@ export default function SpeakPage() {
             boxSizing: 'border-box',
           }}
         >
-          <Link href="/sanctuary" style={{ textDecoration: 'none', alignSelf: 'flex-start', marginBottom: spacing.xl }}>
-            <Typography variant="small" style={{ color: colors.text.secondary }}>
-              ← Sanctuary
-            </Typography>
-          </Link>
-
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -127,7 +121,7 @@ export default function SpeakPage() {
             }}
           >
             <Typography variant="small" style={{ color: colors.text.secondary, fontWeight: 600 }}>
-              Try different orbs
+              Visual style
             </Typography>
             <div
               style={{
@@ -137,7 +131,7 @@ export default function SpeakPage() {
                 flexWrap: 'wrap',
               }}
             >
-              {(['three', 'p5', 'ogl'] as const).map((v) => (
+              {(['singularity', 'aurora', 'nebula'] as const).map((v) => (
                 <button
                   key={v}
                   onClick={() => setOrbVariant(v)}

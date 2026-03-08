@@ -49,7 +49,7 @@ export default function RitualCreateGoalsPage() {
   const handleContinue = () => {
     const goalLabels = GOALS.filter((g) => selected.includes(g.id)).map((g) => g.label);
     setIntent(`Goals: ${goalLabels.join(', ')}`);
-    router.push('/create/conversation');
+    router.push('/sanctuary/rituals/create/context');
   };
 
   return (

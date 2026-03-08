@@ -47,7 +47,7 @@ export function CreateFlowInitStep({
 
   const handleBegin = () => {
     onBegin?.();
-    router.push(nextHref);
+    if (nextHref) router.push(nextHref);
   };
 
   return (

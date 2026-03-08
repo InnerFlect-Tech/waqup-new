@@ -1,15 +1,18 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/theme';
-import { MainTabParamList } from './types';
+import { MainTabParamList, MainStackParamList } from './types';
 import { HomeScreen, LibraryScreen, CreateScreen, ProfileScreen } from '@/screens';
-// Icons will be imported from @expo/vector-icons
-// For now, using React Navigation's default icons
+import ContentDetailScreen from '@/screens/content/ContentDetailScreen';
+import CreateModeScreen from '@/screens/content/CreateModeScreen';
+import ContentCreateScreen from '@/screens/content/ContentCreateScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
+const Stack = createNativeStackNavigator<MainStackParamList>();
 
-export default function MainNavigator() {
+function MainTabs() {
   const { theme } = useTheme();
   const colors = theme.colors;
 
@@ -36,34 +39,33 @@ export default function MainNavigator() {
         ),
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-        }}
-      />
-      <Tab.Screen
-        name="Library"
-        component={LibraryScreen}
-        options={{
-          tabBarLabel: 'Library',
-        }}
-      />
-      <Tab.Screen
-        name="Create"
-        component={CreateScreen}
-        options={{
-          tabBarLabel: 'Create',
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: 'Profile',
-        }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
+      <Tab.Screen name="Library" component={LibraryScreen} options={{ tabBarLabel: 'Library' }} />
+      <Tab.Screen name="Create" component={CreateScreen} options={{ tabBarLabel: 'Create' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
     </Tab.Navigator>
+  );
+}
+
+export default function MainNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Tabs" component={MainTabs} />
+      <Stack.Screen
+        name="ContentDetail"
+        component={ContentDetailScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="CreateMode"
+        component={CreateModeScreen}
+        options={{ animation: 'slide_from_bottom', presentation: 'modal' }}
+      />
+      <Stack.Screen
+        name="ContentCreate"
+        component={ContentCreateScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+    </Stack.Navigator>
   );
 }

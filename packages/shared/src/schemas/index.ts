@@ -6,6 +6,4 @@
  */
 
 export * from './auth.schemas';
-
-// Content schemas will be added here
-// export const contentSchema = z.object({ ... });
+export * from './content.schemas';

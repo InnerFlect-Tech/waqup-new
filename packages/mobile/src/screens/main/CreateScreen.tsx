@@ -1,37 +1,64 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { MainTabParamList } from '@/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MainStackParamList, ContentItemType } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card } from '@/components';
 
-type Props = BottomTabScreenProps<MainTabParamList, 'Create'>;
+interface ContentTypeConfig {
+  type: ContentItemType;
+  icon: string;
+  color: string;
+  title: string;
+  description: string;
+  depth: string;
+  time: string;
+  credits: string;
+}
 
-const CONTENT_TYPES = [
+const CONTENT_TYPES: ContentTypeConfig[] = [
   {
-    type: 'Affirmation',
+    type: 'affirmation',
     icon: '✨',
-    description: 'Cognitive re-patterning for lasting belief change',
+    color: '#c084fc',
+    title: 'Affirmation',
+    description: 'Cognitive re-patterning for lasting belief change. Repeated short-form audio designed to shift your self-concept.',
     depth: 'Shallow → Medium',
+    time: '2–5 min',
+    credits: '1–2 Qs',
   },
   {
-    type: 'Meditation',
+    type: 'meditation',
     icon: '🧘',
-    description: 'Guided state induction for deep relaxation',
+    color: '#60a5fa',
+    title: 'Guided Meditation',
+    description: 'State induction for deep relaxation and mental clarity. Extended guided journey into stillness.',
     depth: 'Medium depth',
+    time: '10–30 min',
+    credits: '2–4 Qs',
   },
   {
-    type: 'Ritual',
+    type: 'ritual',
     icon: '🔮',
-    description: 'Identity encoding for transformational change',
+    color: '#34d399',
+    title: 'Ritual',
+    description: 'Identity encoding for transformational change. The deepest practice for permanent behaviour shifts.',
     depth: 'Deepest',
+    time: '15–45 min',
+    credits: '5–10 Qs',
   },
 ];
 
-export default function CreateScreen({ navigation }: Props) {
+export default function CreateScreen() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
+
+  const handleTypePress = (contentType: ContentItemType) => {
+    navigation.navigate('CreateMode', { contentType });
+  };
 
   return (
     <Screen scrollable padding={false}>
@@ -47,13 +74,17 @@ export default function CreateScreen({ navigation }: Props) {
             Create
           </Typography>
           <Typography variant="body" style={{ color: colors.text.secondary, marginTop: spacing.xs }}>
-            Choose what you would like to create
+            What would you like to create today?
           </Typography>
         </View>
 
         <View style={styles.cards}>
           {CONTENT_TYPES.map((ct) => (
-            <TouchableOpacity key={ct.type} activeOpacity={0.8}>
+            <TouchableOpacity
+              key={ct.type}
+              onPress={() => handleTypePress(ct.type)}
+              activeOpacity={0.8}
+            >
               <Card
                 variant="elevated"
                 style={[
@@ -64,19 +95,52 @@ export default function CreateScreen({ navigation }: Props) {
                   },
                 ]}
               >
-                <View style={styles.typeCardContent}>
-                  <Typography variant="h1" style={{ fontSize: 40 }}>
-                    {ct.icon}
+                {/* Left accent bar */}
+                <View style={[styles.accentBar, { backgroundColor: ct.color }]} />
+
+                <View style={styles.typeCardBody}>
+                  {/* Top row */}
+                  <View style={styles.typeCardHeader}>
+                    <View style={[styles.iconCircle, { backgroundColor: ct.color + '22' }]}>
+                      <Typography variant="h2" style={{ fontSize: 28 }}>
+                        {ct.icon}
+                      </Typography>
+                    </View>
+                    <View style={{ flex: 1, marginLeft: spacing.md }}>
+                      <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+                        {ct.title}
+                      </Typography>
+                      <View style={styles.metaRow}>
+                        <Typography variant="small" style={{ color: ct.color }}>
+                          {ct.depth}
+                        </Typography>
+                        <Typography variant="small" style={{ color: colors.text.secondary }}>
+                          {'  ·  '}
+                        </Typography>
+                        <Typography variant="small" style={{ color: colors.text.secondary }}>
+                          {ct.time}
+                        </Typography>
+                      </View>
+                    </View>
+                    <View style={[styles.creditsBadge, { backgroundColor: ct.color + '22', borderColor: ct.color + '44' }]}>
+                      <Typography variant="small" style={{ color: ct.color, fontWeight: '600' }}>
+                        {ct.credits}
+                      </Typography>
+                    </View>
+                  </View>
+
+                  {/* Description */}
+                  <Typography
+                    variant="body"
+                    style={{ color: colors.text.secondary, marginTop: spacing.md, lineHeight: 22 }}
+                  >
+                    {ct.description}
                   </Typography>
-                  <View style={styles.typeCardText}>
-                    <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                      {ct.type}
-                    </Typography>
-                    <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
-                      {ct.description}
-                    </Typography>
-                    <Typography variant="small" style={{ color: colors.accent.primary }}>
-                      {ct.depth}
+
+                  {/* CTA hint */}
+                  <View style={styles.ctaRow}>
+                    <Typography variant="captionBold" style={{ color: ct.color }}>
+                      Choose creation mode →
                     </Typography>
                   </View>
                 </View>
@@ -85,22 +149,16 @@ export default function CreateScreen({ navigation }: Props) {
           ))}
         </View>
 
-        <Card
-          variant="default"
-          style={{
-            padding: spacing.lg,
-            backgroundColor: colors.glass.transparent,
-            borderColor: colors.glass.border,
-            borderWidth: 1,
-            borderRadius: borderRadius.lg,
-            alignItems: 'center',
-            marginTop: spacing.md,
-          }}
+        <View
+          style={[
+            styles.freeNote,
+            { backgroundColor: colors.glass.transparent, borderColor: colors.glass.border },
+          ]}
         >
-          <Typography variant="caption" style={{ color: colors.text.tertiary ?? colors.text.secondary, textAlign: 'center' }}>
-            Full creation flow coming in the next update.{'\n'}All practices are free to replay.
+          <Typography variant="caption" style={{ color: colors.text.secondary, textAlign: 'center' }}>
+            🎧  Unlimited replay is always free. Credits are only used for creation.
           </Typography>
-        </Card>
+        </View>
       </ScrollView>
     </Screen>
   );
@@ -110,6 +168,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: spacing.xl,
     paddingTop: spacing.xl,
+    paddingBottom: spacing.xxxl,
   },
   header: {
     marginBottom: spacing.xxl,
@@ -118,16 +177,50 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
   },
   typeCard: {
-    padding: spacing.lg,
     borderRadius: borderRadius.xl,
     borderWidth: 1,
+    flexDirection: 'row',
+    overflow: 'hidden',
   },
-  typeCardContent: {
+  accentBar: {
+    width: 4,
+    borderTopLeftRadius: borderRadius.xl,
+    borderBottomLeftRadius: borderRadius.xl,
+  },
+  typeCardBody: {
+    flex: 1,
+    padding: spacing.lg,
+  },
+  typeCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  iconCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: borderRadius.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.lg,
+    marginTop: spacing.xs,
   },
-  typeCardText: {
-    flex: 1,
+  creditsBadge: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: borderRadius.sm,
+    borderWidth: 1,
+  },
+  ctaRow: {
+    marginTop: spacing.md,
+    flexDirection: 'row',
+  },
+  freeNote: {
+    marginTop: spacing.lg,
+    padding: spacing.md,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
   },
 });

@@ -7,3 +7,5 @@ export * from './Badge';
 export * from './Container';
 export * from './Progress';
 export * from './QCoin';
+export * from './Toast';
+export * from './ErrorBoundary';

@@ -1,123 +1,83 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Renderer, Camera, Sphere, Program, Mesh, Transform, Texture } from 'ogl';
-import { useTheme } from '@/theme';
+import React, { useEffect, useRef, useCallback } from 'react';
 
-export type VoiceSource = 'user' | 'ai' | 'idle';
-
-export interface VoiceOrbOGLProps {
+interface VoiceOrbOGLProps {
   isActive: boolean;
-  voiceSource?: VoiceSource;
-  frequencyDataRef: React.RefObject<Uint8Array | null>;
+  voiceSource?: 'user' | 'ai' | 'idle';
+  frequencyDataRef?: React.RefObject<Uint8Array | null>;
   style?: React.CSSProperties;
   className?: string;
 }
 
-const FREQ_TEXTURE_SIZE = 128;
+// ── Lightweight 2D Perlin noise (deterministic) ────────────────────────────
+function fade(t: number) { return t * t * t * (t * (t * 6 - 15) + 10); }
+function lerp(a: number, b: number, t: number) { return a + t * (b - a); }
 
-function hexToVec3(hex: string): [number, number, number] {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (result) {
-    return [
-      parseInt(result[1], 16) / 255,
-      parseInt(result[2], 16) / 255,
-      parseInt(result[3], 16) / 255,
-    ];
+const PERM = new Uint8Array(512);
+(function buildPerm() {
+  const p = new Uint8Array(256);
+  for (let i = 0; i < 256; i++) p[i] = i;
+  for (let i = 255; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [p[i], p[j]] = [p[j], p[i]];
   }
-  const rgba = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(hex);
-  if (rgba) {
-    return [
-      parseInt(rgba[1], 10) / 255,
-      parseInt(rgba[2], 10) / 255,
-      parseInt(rgba[3], 10) / 255,
-    ];
-  }
-  return [0.58, 0.4, 0.9];
+  for (let i = 0; i < 512; i++) PERM[i] = p[i & 255];
+})();
+
+function grad2(hash: number, x: number, y: number): number {
+  const h = hash & 3;
+  const u = h < 2 ? x : y;
+  const v = h < 2 ? y : x;
+  return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
 }
 
-const VERTEX_SHADER = `
-  attribute vec3 position;
-  attribute vec3 normal;
+function perlin2(x: number, y: number): number {
+  const xi = Math.floor(x) & 255;
+  const yi = Math.floor(y) & 255;
+  const xf = x - Math.floor(x);
+  const yf = y - Math.floor(y);
+  const u  = fade(xf);
+  const v  = fade(yf);
+  const aa = PERM[PERM[xi]     + yi];
+  const ab = PERM[PERM[xi]     + yi + 1];
+  const ba = PERM[PERM[xi + 1] + yi];
+  const bb = PERM[PERM[xi + 1] + yi + 1];
+  return lerp(
+    lerp(grad2(aa, xf,     yf),     grad2(ba, xf - 1, yf),     u),
+    lerp(grad2(ab, xf,     yf - 1), grad2(bb, xf - 1, yf - 1), u),
+    v
+  );
+}
 
-  uniform mat4 modelViewMatrix;
-  uniform mat4 projectionMatrix;
-  uniform mat3 normalMatrix;
+// ── Particle ────────────────────────────────────────────────────────────────
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  maxLife: number;
+  hue: number;
+  speed: number;
+}
 
-  varying vec3 vNormal;
-  varying vec3 vViewPosition;
+function makeParticle(cx: number, cy: number, orbitR: number): Particle {
+  const angle = Math.random() * Math.PI * 2;
+  const r = orbitR * (0.55 + Math.random() * 0.45);
+  return {
+    x:       cx + Math.cos(angle) * r,
+    y:       cy + Math.sin(angle) * r,
+    vx:      0,
+    vy:      0,
+    life:    Math.random() * 180,
+    maxLife: 100 + Math.random() * 180,
+    hue:     240 + Math.random() * 80, // navy → purple → magenta
+    speed:   0.6 + Math.random() * 1.2,
+  };
+}
 
-  void main() {
-    vNormal = normalize(normalMatrix * normal);
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    vViewPosition = -mvPosition.xyz;
-    gl_Position = projectionMatrix * mvPosition;
-  }
-`;
-
-const FRAGMENT_SHADER = `
-  precision highp float;
-
-  uniform float uTime;
-  uniform float uIntensity;
-  uniform float uVoiceSource;
-  uniform vec3 uColorUser1;
-  uniform vec3 uColorUser2;
-  uniform vec3 uColorAI1;
-  uniform vec3 uColorAI2;
-  uniform sampler2D uFrequencyTexture;
-
-  varying vec3 vNormal;
-  varying vec3 vViewPosition;
-
-  void main() {
-    vec3 viewDir = normalize(vViewPosition);
-    float fresnel = pow(1.0 - abs(dot(viewDir, vNormal)), 2.8);
-
-    if (fresnel < 0.48) {
-      gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    } else {
-      float theta = atan(vNormal.z, vNormal.x);
-      float thetaNorm = (theta / 3.14159265 + 1.0) * 0.5;
-      float freq = texture2D(uFrequencyTexture, vec2(thetaNorm, 0.5)).r;
-      float segments = 64.0;
-      float bar = floor(thetaNorm * segments) / segments;
-      float barFreq = texture2D(uFrequencyTexture, vec2(bar + 0.5 / segments, 0.5)).r;
-      float segMask = smoothstep(0.02, 0.04, abs(thetaNorm - bar - 0.5 / segments));
-      freq = mix(freq, barFreq, segMask * 0.7);
-
-      vec3 userColor = mix(uColorUser1, uColorUser2, fresnel);
-      vec3 aiColor = mix(uColorAI1, uColorAI2, fresnel);
-      float userMix = step(0.5, uVoiceSource) * (1.0 - step(1.5, uVoiceSource));
-      vec3 themeColor = mix(aiColor, userColor, userMix);
-
-      vec3 orange = vec3(1.0, 0.4, 0.2);
-      vec3 pink = vec3(1.0, 0.4, 0.6);
-      vec3 magenta = vec3(0.9, 0.2, 0.7);
-      vec3 blue = vec3(0.3, 0.5, 1.0);
-      vec3 violet = vec3(0.5, 0.2, 0.9);
-      float t = thetaNorm;
-      vec3 gradientColor;
-      if (t < 0.25) gradientColor = mix(orange, pink, t * 4.0);
-      else if (t < 0.5) gradientColor = mix(pink, magenta, (t - 0.25) * 4.0);
-      else if (t < 0.75) gradientColor = mix(magenta, blue, (t - 0.5) * 4.0);
-      else gradientColor = mix(blue, violet, (t - 0.75) * 4.0);
-      vec3 baseColor = mix(themeColor, gradientColor, 0.6);
-
-      float innerEdge = smoothstep(0.48, 0.52, fresnel);
-      float outerGlow = smoothstep(0.45, 0.85, fresnel);
-      float ringIntensity = 0.75 + freq * 0.75 + uIntensity * 0.5;
-      float pulse = 0.93 + 0.07 * sin(uTime * 1.5) * (1.0 - uIntensity * 0.4);
-      vec3 ringColor = baseColor * ringIntensity * pulse;
-      ringColor = pow(ringColor, vec3(0.9));
-      vec3 haloColor = baseColor * 0.25 * outerGlow * (1.0 - innerEdge * 0.5);
-      vec3 color = ringColor * innerEdge + haloColor;
-
-      float alpha = 0.9 * innerEdge + 0.35 * outerGlow * (1.0 - innerEdge) + freq * 0.25 + uIntensity * 0.2;
-      gl_FragColor = vec4(color, min(alpha, 1.0));
-    }
-  }
-`;
+const PARTICLE_COUNT = 600;
 
 export function VoiceOrbOGL({
   isActive,
@@ -126,214 +86,179 @@ export function VoiceOrbOGL({
   style,
   className,
 }: VoiceOrbOGLProps) {
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
+  const rafRef       = useRef<number>(0);
+  const timeRef      = useRef(0);
+  const particlesRef = useRef<Particle[]>([]);
 
-  const colorUserPrimary = theme.colors.accent.primary;
-  const colorUserSecondary = theme.colors.accent.secondary;
-  const colorAIPrimary = theme.colors.mystical.orb;
-  const colorAISecondary = theme.colors.mystical.glow;
-
-  const [webglSupported, setWebglSupported] = useState(true);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      queueMicrotask(() => setWebglSupported(!!gl));
-    } catch {
-      queueMicrotask(() => setWebglSupported(false));
-    }
+  // Init particles lazily after we know size
+  const initParticles = useCallback((cx: number, cy: number, orbitR: number) => {
+    particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () =>
+      makeParticle(cx, cy, orbitR)
+    );
   }, []);
 
-  useEffect(() => {
-    if (!containerRef.current || !webglSupported) return;
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    const container = containerRef.current;
-    const w = container.clientWidth || 400;
-    const h = container.clientHeight || 360;
-    const dpr = Math.min(window.devicePixelRatio, 2);
+    const w  = canvas.width;
+    const h  = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    const orbitR = Math.min(w, h) * 0.40;
 
-    const renderer = new Renderer({
-      canvas: document.createElement('canvas'),
-      width: w,
-      height: h,
-      dpr,
-      alpha: true,
-      antialias: true,
-    });
-    const gl = renderer.gl;
-    container.appendChild(gl.canvas);
-    gl.canvas.style.width = '100%';
-    gl.canvas.style.height = '100%';
-    gl.canvas.style.display = 'block';
+    timeRef.current += 0.016;
+    const t = timeRef.current;
 
-    const camera = new Camera(gl, { fov: 50 });
-    camera.position.set(0, 0, 3.6);
-    camera.lookAt([0, 0, 0]);
-
-    const scene = new Transform();
-
-    const texData = new Uint8Array(FREQ_TEXTURE_SIZE * 4);
-    const freqTexture = new Texture(gl, {
-      image: texData,
-      width: FREQ_TEXTURE_SIZE,
-      height: 1,
-      format: gl.RGBA,
-      type: gl.UNSIGNED_BYTE,
-      generateMipmaps: false,
-      wrapS: gl.CLAMP_TO_EDGE,
-      wrapT: gl.CLAMP_TO_EDGE,
-    });
-
-    const uVoiceSource = voiceSource === 'user' ? 1 : voiceSource === 'ai' ? 2 : 0;
-    const program = new Program(gl, {
-      vertex: VERTEX_SHADER,
-      fragment: FRAGMENT_SHADER,
-      uniforms: {
-        uTime: { value: 0 },
-        uIntensity: { value: 0 },
-        uVoiceSource: { value: uVoiceSource },
-        uColorUser1: { value: hexToVec3(colorUserPrimary) },
-        uColorUser2: { value: hexToVec3(colorUserSecondary) },
-        uColorAI1: { value: hexToVec3(colorAIPrimary) },
-        uColorAI2: { value: hexToVec3(colorAISecondary) },
-        uFrequencyTexture: { value: freqTexture },
-      },
-      transparent: true,
-      depthWrite: false,
-      cullFace: null,
-    });
-
-    const geometry = new Sphere(gl, { radius: 1.6, widthSegments: 64, heightSegments: 64 });
-    const mesh = new Mesh(gl, { geometry, program });
-    mesh.setParent(scene);
-
+    // Audio intensity
     let intensity = 0;
-    let rafId: number;
-
-    const resize = () => {
-      const cw = container.clientWidth || 400;
-      const ch = container.clientHeight || 360;
-      renderer.setSize(cw, ch);
-      camera.perspective({ aspect: gl.canvas.width / gl.canvas.height });
-    };
-
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(container);
-    resize();
-
-    const startTime = performance.now() / 1000;
-    const update = () => {
-      rafId = requestAnimationFrame(update);
-      const t = performance.now() / 1000 - startTime;
-
-      program.uniforms.uTime.value = t;
-      program.uniforms.uVoiceSource.value = voiceSource === 'user' ? 1 : voiceSource === 'ai' ? 2 : 0;
-
+    if (frequencyDataRef?.current) {
       const data = frequencyDataRef.current;
-      if (data && data.length > 0) {
-        const binCount = data.length;
-        for (let i = 0; i < FREQ_TEXTURE_SIZE; i++) {
-          const srcStart = Math.floor((i / FREQ_TEXTURE_SIZE) * binCount);
-          const srcEnd = Math.floor(((i + 1) / FREQ_TEXTURE_SIZE) * binCount);
-          let sum = 0;
-          for (let j = srcStart; j < srcEnd && j < binCount; j++) {
-            const voiceBoost = j >= 4 && j <= 140 ? 1.4 : 1;
-            sum += data[j] * voiceBoost;
-          }
-          const count = srcEnd - srcStart;
-          const avg = count > 0 ? sum / count : 0;
-          const val = Math.min(255, Math.floor(avg));
-          texData[i * 4] = val;
-          texData[i * 4 + 1] = val;
-          texData[i * 4 + 2] = val;
-          texData[i * 4 + 3] = 255;
-        }
-        let s = 0;
-        for (let i = 0; i < data.length; i++) s += data[i];
-        intensity += (Math.min(1, s / data.length / 128) - intensity) * 0.22;
-      } else {
-        const idleVal = Math.floor(20 + 15 * Math.sin(t * 0.8));
-        for (let i = 0; i < FREQ_TEXTURE_SIZE; i++) {
-          texData[i * 4] = idleVal;
-          texData[i * 4 + 1] = idleVal;
-          texData[i * 4 + 2] = idleVal;
-          texData[i * 4 + 3] = 255;
-        }
-        intensity += (0.15 + 0.05 * Math.sin(t * 0.8) - intensity) * 0.22;
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) sum += data[i];
+      intensity = Math.min(1, (sum / data.length) / 128);
+    }
+    const turbulence = isActive ? 0.8 + intensity * 2.5 : 0.4;
+
+    // Hue bias per voice source
+    const hueOffset = voiceSource === 'ai' ? 40 : voiceSource === 'user' ? 0 : 20;
+
+    // Fade trails
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    ctx.fillRect(0, 0, w, h);
+
+    // Lazy init
+    if (particlesRef.current.length === 0) initParticles(cx, cy, orbitR);
+
+    // Update + draw particles
+    particlesRef.current.forEach((p, i) => {
+      // Flow field direction from Perlin noise
+      const nx = p.x / w * 3.0 + t * 0.25;
+      const ny = p.y / h * 3.0 + t * 0.18;
+      const angle = perlin2(nx, ny) * Math.PI * 4 * turbulence;
+
+      p.vx += Math.cos(angle) * 0.06 * p.speed;
+      p.vy += Math.sin(angle) * 0.06 * p.speed;
+
+      // Gentle pull toward orbit ring
+      const dx = p.x - cx;
+      const dy = p.y - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const pull = (dist - orbitR * 0.78) * 0.003;
+      p.vx -= (dx / dist) * pull;
+      p.vy -= (dy / dist) * pull;
+
+      // Damping
+      p.vx *= 0.96;
+      p.vy *= 0.96;
+
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life++;
+
+      // Respawn when dead or outside outer boundary
+      if (p.life >= p.maxLife || dist > orbitR * 1.25) {
+        particlesRef.current[i] = makeParticle(cx, cy, orbitR);
+        return;
       }
-      freqTexture.needsUpdate = true;
-      freqTexture.image = texData;
 
-      program.uniforms.uIntensity.value = intensity;
-      mesh.rotation.y += 0.008;
-      mesh.scale.set(1 + intensity * 0.2);
+      const lifeFrac  = p.life / p.maxLife;
+      const alpha     = Math.sin(lifeFrac * Math.PI) * (isActive ? 0.65 + intensity * 0.35 : 0.35);
+      const hue       = (p.hue + hueOffset) % 360;
+      const lightness = 55 + lifeFrac * 25;
 
-      renderer.render({ scene, camera });
-    };
-    update();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.2 + lifeFrac * 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${hue},90%,${lightness}%,${alpha})`;
+      ctx.fill();
+    });
 
-    return () => {
-      cancelAnimationFrame(rafId);
-      resizeObserver.disconnect();
-      if (container.contains(gl.canvas)) {
-        container.removeChild(gl.canvas);
-      }
-    };
-  }, [
-    webglSupported,
-    colorUserPrimary,
-    colorUserSecondary,
-    colorAIPrimary,
-    colorAISecondary,
-    voiceSource,
-    frequencyDataRef,
-  ]);
+    // ── Outer glow ring ──────────────────────────────────────────────────
+    const glowR    = orbitR * (1.05 + intensity * 0.08);
+    const ringGrad = ctx.createRadialGradient(cx, cy, orbitR * 0.9, cx, cy, glowR);
+    const rimHue   = voiceSource === 'ai' ? 220 : voiceSource === 'user' ? 260 : 270;
+    ringGrad.addColorStop(0,   `hsla(${rimHue},85%,60%,${0.12 + intensity * 0.2})`);
+    ringGrad.addColorStop(1,   `hsla(${rimHue},85%,60%,0)`);
+    ctx.fillStyle = ringGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
+    ctx.fill();
 
-  if (!webglSupported) {
-    return (
-      <div
-        className={className}
-        style={{
-          minHeight: 360,
-          background: 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 16,
-          ...style,
-        }}
-        aria-label="Voice visualization (WebGL not supported)"
-      >
-        <div
-          style={{
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            background: `radial-gradient(circle at 30% 30%, ${colorAIPrimary}, ${colorAISecondary})`,
-            opacity: isActive ? 0.8 : 0.4,
-            transition: 'opacity 0.3s ease',
-          }}
-        />
-      </div>
-    );
-  }
+    // ── Event horizon (black center) ────────────────────────────────────
+    const voidR    = orbitR * 0.48;
+    const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, voidR * 1.12);
+    voidGrad.addColorStop(0,    'rgba(0,0,0,1)');
+    voidGrad.addColorStop(0.85, 'rgba(0,0,0,1)');
+    voidGrad.addColorStop(1,    'rgba(0,0,0,0.7)');
+    ctx.fillStyle = voidGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, voidR * 1.12, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ── Inner rim glow ───────────────────────────────────────────────────
+    ctx.shadowColor = `hsl(${rimHue},85%,65%)`;
+    ctx.shadowBlur  = 16 + intensity * 28;
+    ctx.strokeStyle = `hsla(${rimHue},85%,65%,${0.55 + intensity * 0.45})`;
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, voidR, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    rafRef.current = requestAnimationFrame(draw);
+  }, [isActive, voiceSource, frequencyDataRef, initParticles]);
+
+  // Resize observer
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas    = canvasRef.current;
+    if (!container || !canvas) return;
+
+    const ro = new ResizeObserver(() => {
+      const { width, height } = container.getBoundingClientRect();
+      canvas.width  = width  * devicePixelRatio;
+      canvas.height = height * devicePixelRatio;
+      canvas.style.width  = `${width}px`;
+      canvas.style.height = `${height}px`;
+      // Reset particles on resize
+      particlesRef.current = [];
+    });
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
+
+  // Animation loop
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [draw]);
 
   return (
     <div
       ref={containerRef}
       className={className}
       style={{
-        position: 'relative',
         width: '100%',
-        minHeight: 360,
+        height: '100%',
+        minHeight: 320,
+        position: 'relative',
         background: 'transparent',
-        overflow: 'hidden',
         ...style,
       }}
-      aria-label="Voice visualization (OGL)"
-    />
+    >
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      />
+    </div>
   );
 }

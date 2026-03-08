@@ -1,34 +1,198 @@
+// @ts-nocheck - R3F Three.js elements extend JSX; TS augmentation not fully picked up
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useTheme } from '@/theme';
+import React, { useRef, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
 
-/** p5 instance - typed loosely to avoid static p5 module resolution in monorepo builds */
-type P5Sketch = (p: import('p5')) => void;
+const R3FCanvas = dynamic(
+  () => import('@react-three/fiber').then((mod) => mod.Canvas),
+  { ssr: false }
+);
 
-export type VoiceSource = 'user' | 'ai' | 'idle';
-
-export interface VoiceOrbP5Props {
+interface VoiceOrbP5Props {
   isActive: boolean;
-  voiceSource?: VoiceSource;
-  frequencyDataRef: React.RefObject<Uint8Array | null>;
+  voiceSource?: 'user' | 'ai' | 'idle';
+  frequencyDataRef?: React.RefObject<Uint8Array | null>;
   style?: React.CSSProperties;
   className?: string;
 }
 
-const PARTICLE_COUNT = 350;
-const BASE_RADIUS = 1.2;
+const VERTEX_SHADER = `
+  varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vWorldPos;
 
-function parseColorToRgb(color: string): [number, number, number] {
-  const hex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
-  if (hex) {
-    return [parseInt(hex[1], 16) / 255, parseInt(hex[2], 16) / 255, parseInt(hex[3], 16) / 255];
+  void main() {
+    vUv = uv;
+    vNormal = normalize(normalMatrix * normal);
+    vWorldPos = (modelMatrix * vec4(position, 1.0)).xyz;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
-  const rgba = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(color);
-  if (rgba) {
-    return [parseInt(rgba[1], 10) / 255, parseInt(rgba[2], 10) / 255, parseInt(rgba[3], 10) / 255];
+`;
+
+const FRAGMENT_SHADER = `
+  uniform float uTime;
+  uniform float uIntensity;
+  uniform float uVoiceSource; // 0=idle, 1=user, 2=ai
+  varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vWorldPos;
+
+  // Hash-based noise
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
-  return [0.6, 0.4, 0.9];
+
+  float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+      mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+      f.y
+    );
+  }
+
+  float fbm(vec2 p) {
+    float v = 0.0;
+    float a = 0.5;
+    for (int i = 0; i < 5; i++) {
+      v += a * noise(p);
+      p  = p * 2.3 + vec2(1.7, 9.2);
+      a *= 0.5;
+    }
+    return v;
+  }
+
+  vec3 auroraColor(float t, float voiceSrc) {
+    // user: teal → violet → emerald
+    // ai:   electric blue → purple → cyan
+    // idle: deep violet → teal
+    if (voiceSrc > 1.5) {
+      // ai
+      return mix(
+        mix(vec3(0.0, 0.6, 1.0), vec3(0.55, 0.15, 0.9), t),
+        vec3(0.0, 0.9, 0.85),
+        smoothstep(0.6, 1.0, t)
+      );
+    } else if (voiceSrc > 0.5) {
+      // user
+      return mix(
+        mix(vec3(0.05, 0.6, 0.52), vec3(0.48, 0.2, 0.9), t),
+        vec3(0.06, 0.72, 0.42),
+        smoothstep(0.6, 1.0, t)
+      );
+    } else {
+      // idle
+      return mix(vec3(0.27, 0.08, 0.55), vec3(0.04, 0.5, 0.52), t);
+    }
+  }
+
+  void main() {
+    // Fresnel for edge glow
+    vec3 viewDir = normalize(cameraPosition - vWorldPos);
+    float fresnel = pow(1.0 - dot(vNormal, viewDir), 2.8);
+
+    // Aurora bands — layered fbm waves along Y with time drift
+    float y   = vUv.y;
+    float slow = uTime * 0.12;
+    float fast = uTime * 0.31;
+
+    float band1 = fbm(vec2(vUv.x * 2.2 + slow,  y * 4.0 + slow * 0.7));
+    float band2 = fbm(vec2(vUv.x * 3.8 - fast,  y * 6.5 + fast * 0.4));
+    float band3 = fbm(vec2(vUv.x * 1.6 + slow * 0.5, y * 2.8 - slow * 0.3));
+
+    // Vertical wave envelope: bands concentrated in a drifting horizontal strip
+    float envelope1 = exp(-8.0 * pow(y - 0.35 - 0.15 * sin(slow), 2.0));
+    float envelope2 = exp(-10.0 * pow(y - 0.65 + 0.12 * cos(fast * 0.7), 2.0));
+    float envelope3 = exp(-6.0  * pow(y - 0.50 + 0.08 * sin(slow * 1.3), 2.0));
+
+    float aurora = band1 * envelope1 * 1.4
+                 + band2 * envelope2 * 1.1
+                 + band3 * envelope3 * 0.9;
+
+    aurora = clamp(aurora, 0.0, 1.0);
+    aurora = aurora * (0.5 + uIntensity * 0.8); // audio reactive
+
+    // Color
+    vec3 col = auroraColor(aurora, uVoiceSource);
+
+    // Add fresnel rim glow
+    vec3 rimCol = uVoiceSource > 1.5
+      ? vec3(0.15, 0.5, 1.0)
+      : uVoiceSource > 0.5
+        ? vec3(0.2, 0.85, 0.6)
+        : vec3(0.45, 0.15, 0.8);
+
+    col += rimCol * fresnel * (0.5 + uIntensity * 0.5);
+
+    // Black void center (additive approach: dark interior, bright edges)
+    float centerMask = 1.0 - smoothstep(0.05, 0.45, 1.0 - fresnel);
+    col *= centerMask;
+    col += rimCol * fresnel * fresnel * 0.4;
+
+    float alpha = clamp(aurora * 0.9 + fresnel * 0.7, 0.0, 1.0);
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+function AuroraOrb({
+  isActive,
+  voiceSource = 'idle',
+  frequencyDataRef,
+}: {
+  isActive: boolean;
+  voiceSource: 'user' | 'ai' | 'idle';
+  frequencyDataRef?: React.RefObject<Uint8Array | null>;
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  const uniforms = useMemo(
+    () => ({
+      uTime:        { value: 0 },
+      uIntensity:   { value: 0 },
+      uVoiceSource: { value: 0 },
+    }),
+    []
+  );
+
+  useFrame((_, delta) => {
+    uniforms.uTime.value += delta;
+
+    const srcMap = { idle: 0, user: 1, ai: 2 };
+    uniforms.uVoiceSource.value = srcMap[voiceSource] ?? 0;
+
+    let intensity = 0;
+    if (frequencyDataRef?.current) {
+      const data = frequencyDataRef.current;
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) sum += data[i];
+      intensity = Math.min(1, (sum / data.length) / 128);
+    }
+    const target = isActive ? 0.25 + intensity * 0.75 : 0.1;
+    uniforms.uIntensity.value += (target - uniforms.uIntensity.value) * 0.08;
+
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta * 0.06;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[1.6, 96, 96]} />
+      <shaderMaterial
+        vertexShader={VERTEX_SHADER}
+        fragmentShader={FRAGMENT_SHADER}
+        uniforms={uniforms}
+        transparent
+        side={THREE.FrontSide}
+        depthWrite={false}
+      />
+    </mesh>
+  );
 }
 
 export function VoiceOrbP5({
@@ -38,206 +202,28 @@ export function VoiceOrbP5({
   style,
   className,
 }: VoiceOrbP5Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const sketchRef = useRef<{ remove: () => void } | null>(null);
-  const { theme } = useTheme();
-
-  const colorUserPrimary = theme.colors.accent.primary;
-  const colorUserSecondary = theme.colors.accent.secondary;
-  const colorAIPrimary = theme.colors.mystical.orb;
-  const colorAISecondary = theme.colors.mystical.glow;
-
-  const [webglSupported, setWebglSupported] = useState(true);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      queueMicrotask(() => setWebglSupported(!!gl));
-    } catch {
-      queueMicrotask(() => setWebglSupported(false));
-    }
-  }, []);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !webglSupported) return;
-
-    const loadP5 = async () => {
-      const p5Module = await import('p5');
-      const P5 = p5Module.default;
-
-      const particles: Array<{
-        angle: number;
-        tilt: number;
-        phase: number;
-        binIndex: number;
-      }> = [];
-
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push({
-          angle: (i / PARTICLE_COUNT) * Math.PI * 2,
-          tilt: Math.random() * Math.PI * 0.4 - Math.PI * 0.2,
-          phase: Math.random() * Math.PI * 2,
-          binIndex: Math.floor((i / PARTICLE_COUNT) * 64) % 64,
-        });
-      }
-
-      const sketch: P5Sketch = (p) => {
-        p.setup = () => {
-          const w = containerRef.current?.clientWidth ?? 400;
-          const h = containerRef.current?.clientHeight ?? 360;
-          p.createCanvas(w, h, p.WEBGL);
-          p.noStroke();
-        };
-
-        p.draw = () => {
-          const w = containerRef.current?.clientWidth ?? 400;
-          const h = containerRef.current?.clientHeight ?? 360;
-          if (p.width !== w || p.height !== h) {
-            p.resizeCanvas(w, h);
-          }
-
-          p.background(0, 0);
-          p.push();
-
-          const data = frequencyDataRef.current;
-          let avgFreq = 0.2;
-          const freqBins: number[] = [];
-          if (data && data.length > 0) {
-            const binCount = 64;
-            for (let b = 0; b < binCount; b++) {
-              const start = Math.floor((b / binCount) * data.length);
-              const end = Math.floor(((b + 1) / binCount) * data.length);
-              let sum = 0;
-              for (let j = start; j < end && j < data.length; j++) {
-                const boost = j >= 4 && j <= 140 ? 1.4 : 1;
-                sum += data[j] * boost;
-              }
-              const val = (end - start) > 0 ? sum / (end - start) / 255 : 0.2;
-              freqBins.push(Math.min(1, val));
-            }
-            let s = 0;
-            for (let i = 0; i < data.length; i++) s += data[i];
-            avgFreq = Math.min(1, s / data.length / 128);
-          } else {
-            const idle = 0.15 + 0.08 * Math.sin(p.frameCount * 0.03);
-            for (let b = 0; b < 64; b++) freqBins.push(idle);
-            avgFreq = idle;
-          }
-
-          const time = p.frameCount * 0.016;
-          const intensity = avgFreq;
-
-          const [r1, g1, b1] =
-            voiceSource === 'user' ? parseColorToRgb(colorUserPrimary) : parseColorToRgb(colorAIPrimary);
-          const [r2, g2, b2] =
-            voiceSource === 'user' ? parseColorToRgb(colorUserSecondary) : parseColorToRgb(colorAISecondary);
-
-          p.rotateY(time * 0.3);
-          p.rotateX(0.2);
-
-          // Dark sphere at center (black-hole void)
-          p.fill(0, 0, 0, 255);
-          p.sphere(60);
-
-          for (let i = 0; i < particles.length; i++) {
-            const pt = particles[i];
-            const binVal = freqBins[pt.binIndex] ?? 0.2;
-            const radius = BASE_RADIUS + binVal * 0.5 + intensity * 0.3;
-            const x = Math.cos(pt.angle + time * 0.5) * radius * 80;
-            const z = Math.sin(pt.angle + time * 0.5) * radius * 80;
-            const y = Math.sin(pt.tilt + time * 0.2) * radius * 40;
-
-            const mixT = (pt.angle / (Math.PI * 2) + 0.5) % 1;
-            const r = r1 + (r2 - r1) * mixT;
-            const g = g1 + (g2 - g1) * mixT;
-            const b = b1 + (b2 - b1) * mixT;
-
-            const size = 2 + binVal * 4 + intensity * 2;
-            const alpha = 0.4 + binVal * 0.5 + (isActive ? 0.2 : 0);
-
-            p.push();
-            p.translate(x, y, z);
-            p.fill(r * 255, g * 255, b * 255, alpha * 255);
-            p.sphere(size);
-            p.pop();
-          }
-
-          p.pop();
-        };
-
-        p.windowResized = () => {
-          const w = containerRef.current?.clientWidth ?? 400;
-          const h = containerRef.current?.clientHeight ?? 360;
-          p.resizeCanvas(w, h);
-        };
-      };
-
-      sketchRef.current = new P5(sketch, container);
-    };
-
-    loadP5();
-    return () => {
-      if (sketchRef.current) {
-        sketchRef.current.remove();
-        sketchRef.current = null;
-      }
-    };
-  }, [
-    webglSupported,
-    colorUserPrimary,
-    colorUserSecondary,
-    colorAIPrimary,
-    colorAISecondary,
-    voiceSource,
-    isActive,
-    frequencyDataRef,
-  ]);
-
-  if (!webglSupported) {
-    return (
-      <div
-        className={className}
-        style={{
-          minHeight: 360,
-          background: 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 16,
-          ...style,
-        }}
-        aria-label="Voice visualization (WebGL not supported)"
-      >
-        <div
-          style={{
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            background: `radial-gradient(circle at 30% 30%, ${colorAIPrimary}, ${colorAISecondary})`,
-            opacity: isActive ? 0.8 : 0.4,
-            transition: 'opacity 0.3s ease',
-          }}
-        />
-      </div>
-    );
-  }
-
   return (
     <div
-      ref={containerRef}
       className={className}
       style={{
-        position: 'relative',
         width: '100%',
-        minHeight: 360,
+        height: '100%',
+        minHeight: 320,
         background: 'transparent',
-        overflow: 'hidden',
         ...style,
       }}
-      aria-label="Voice visualization (p5.js)"
-    />
+    >
+      <R3FCanvas
+        camera={{ position: [0, 0, 4.2], fov: 45 }}
+        gl={{ antialias: true, alpha: true }}
+        style={{ background: 'transparent' }}
+      >
+        <AuroraOrb
+          isActive={isActive}
+          voiceSource={voiceSource}
+          frequencyDataRef={frequencyDataRef}
+        />
+      </R3FCanvas>
+    </div>
   );
 }

@@ -6,27 +6,35 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import type { CreationStep } from '@/lib/contexts/ContentCreationContext';
 
-const STEPS: { key: CreationStep; label: string }[] = [
-  { key: 'init', label: 'Intro' },
-  { key: 'intent', label: 'Create' },
-  { key: 'review', label: 'Review' },
-  { key: 'voice', label: 'Voice' },
-  { key: 'complete', label: 'Done' },
+export interface ProgressStep {
+  key: string;
+  label: string;
+  /** All CreationStep values that map to this high-level step */
+  maps: CreationStep[];
+}
+
+const DEFAULT_STEPS: ProgressStep[] = [
+  { key: 'intro', label: 'Intro', maps: ['init'] },
+  { key: 'create', label: 'Create', maps: ['intent', 'context', 'personalization'] },
+  { key: 'generate', label: 'Generate', maps: ['script', 'review'] },
+  { key: 'voice', label: 'Voice', maps: ['voice', 'audio'] },
+  { key: 'done', label: 'Done', maps: ['complete'] },
 ];
 
-function stepToIndex(step: CreationStep): number {
-  const idx = STEPS.findIndex((s) => s.key === step);
+function resolveIndex(step: CreationStep, steps: ProgressStep[]): number {
+  const idx = steps.findIndex((s) => s.maps.includes(step));
   return idx === -1 ? 0 : idx;
 }
 
 interface CreateProgressBarProps {
   currentStep: CreationStep;
+  steps?: ProgressStep[];
 }
 
-export function CreateProgressBar({ currentStep }: CreateProgressBarProps) {
+export function CreateProgressBar({ currentStep, steps = DEFAULT_STEPS }: CreateProgressBarProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const currentIndex = stepToIndex(currentStep);
+  const currentIndex = resolveIndex(currentStep, steps);
 
   return (
     <div
@@ -43,14 +51,13 @@ export function CreateProgressBar({ currentStep }: CreateProgressBarProps) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-        {STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const isPast = index < currentIndex;
           const isActive = index === currentIndex;
           const isFuture = index > currentIndex;
 
           return (
             <React.Fragment key={step.key}>
-              {/* Step circle + label */}
               <div
                 style={{
                   display: 'flex',
@@ -65,9 +72,7 @@ export function CreateProgressBar({ currentStep }: CreateProgressBarProps) {
                   initial={false}
                   animate={{
                     scale: isActive ? 1.15 : 1,
-                    boxShadow: isActive
-                      ? `0 0 12px ${colors.accent.primary}80`
-                      : 'none',
+                    boxShadow: isActive ? `0 0 12px ${colors.accent.primary}80` : 'none',
                   }}
                   transition={{ duration: 0.25 }}
                   style={{
@@ -107,8 +112,6 @@ export function CreateProgressBar({ currentStep }: CreateProgressBarProps) {
                     fontWeight: isActive ? 600 : 400,
                     color: isActive
                       ? colors.accent.primary
-                      : isPast
-                      ? colors.text.secondary
                       : colors.text.secondary,
                     letterSpacing: '0.02em',
                     whiteSpace: 'nowrap',
@@ -119,8 +122,7 @@ export function CreateProgressBar({ currentStep }: CreateProgressBarProps) {
                 </span>
               </div>
 
-              {/* Connecting line */}
-              {index < STEPS.length - 1 && (
+              {index < steps.length - 1 && (
                 <div
                   style={{
                     flex: 1,

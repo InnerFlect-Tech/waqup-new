@@ -1,24 +1,28 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { MainTabParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, Button, QCoin } from '@/components';
 import { useAuthStore } from '@/stores/authStore';
 
-type Props = BottomTabScreenProps<MainTabParamList, 'Profile'>;
+interface MenuItem {
+  label: string;
+  description: string;
+  icon: string;
+  color?: string;
+}
 
-export default function ProfileScreen({ navigation }: Props) {
+const MENU_ITEMS: MenuItem[] = [
+  { label: 'Account Settings', description: 'Email, password, notifications', icon: '⚙️' },
+  { label: 'Progress', description: 'Your practice journey & streaks', icon: '📈' },
+  { label: 'Reminders', description: 'Daily practice reminders', icon: '🔔' },
+  { label: 'Voice Settings', description: 'Your cloned ElevenLabs voice', icon: '🎙️' },
+  { label: 'Privacy & Data', description: 'Data export and deletion', icon: '🔒' },
+];
+
+export default function ProfileScreen() {
   const { theme } = useTheme();
   const colors = theme.colors;
-
-  const MENU_ITEMS: Array<{ label: string; icon?: string; iconNode?: React.ReactNode; description: string }> = [
-    { label: 'Account Settings', icon: '⚙️', description: 'Email, password, notifications' },
-    { label: 'Qs', iconNode: <QCoin size="md" />, description: 'Balance and purchase history' },
-    { label: 'Progress', icon: '📈', description: 'Your practice journey' },
-    { label: 'Reminders', icon: '🔔', description: 'Daily practice reminders' },
-  ];
   const { user, logout } = useAuthStore();
 
   const displayName =
@@ -28,6 +32,7 @@ export default function ProfileScreen({ navigation }: Props) {
     user?.email?.split('@')[0] ||
     'User';
   const displayEmail = user?.email || '';
+  const initials = displayName.charAt(0).toUpperCase();
 
   const handleLogout = () => {
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
@@ -48,6 +53,7 @@ export default function ProfileScreen({ navigation }: Props) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        {/* Header */}
         <View style={styles.header}>
           <Typography
             variant="h1"
@@ -57,31 +63,66 @@ export default function ProfileScreen({ navigation }: Props) {
           </Typography>
         </View>
 
+        {/* User card */}
         <Card
           variant="elevated"
-          style={[
-            styles.userCard,
-            {
-              backgroundColor: colors.glass.opaque,
-              borderColor: colors.glass.border,
-            },
-          ]}
+          style={[styles.userCard, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
         >
-          <View style={[styles.avatar, { backgroundColor: colors.accent.primary }]}>
-            <Typography variant="h2" style={{ color: colors.text.onDark }}>
-              {displayName.charAt(0).toUpperCase()}
-            </Typography>
+          <View style={styles.userCardTop}>
+            <View style={[styles.avatar, { backgroundColor: colors.accent.primary }]}>
+              <Typography variant="h2" style={{ color: colors.text.onDark, fontSize: 28 }}>
+                {initials}
+              </Typography>
+            </View>
+            <View style={{ flex: 1, marginLeft: spacing.lg }}>
+              <Typography variant="h3" style={{ color: colors.text.primary }}>
+                {displayName}
+              </Typography>
+              {displayEmail ? (
+                <Typography variant="caption" style={{ color: colors.text.secondary, marginTop: spacing.xs }}>
+                  {displayEmail}
+                </Typography>
+              ) : null}
+            </View>
           </View>
-          <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-            {displayName}
-          </Typography>
-          {displayEmail ? (
-            <Typography variant="body" style={{ color: colors.text.secondary }}>
-              {displayEmail}
-            </Typography>
-          ) : null}
+
+          {/* Credits section */}
+          <View
+            style={[
+              styles.creditsRow,
+              { backgroundColor: colors.glass.transparent, borderTopColor: colors.glass.border },
+            ]}
+          >
+            <View style={styles.creditItem}>
+              <View style={styles.creditLabel}>
+                <QCoin size="sm" />
+                <Typography variant="captionBold" style={{ color: colors.text.secondary, marginLeft: spacing.xs }}>
+                  Credits
+                </Typography>
+              </View>
+              <Typography variant="h3" style={{ color: colors.text.primary }}>
+                0
+              </Typography>
+            </View>
+            <View style={[styles.creditDivider, { backgroundColor: colors.glass.border }]} />
+            <View style={styles.creditItem}>
+              <Typography variant="captionBold" style={{ color: colors.text.secondary }}>
+                Plan
+              </Typography>
+              <Typography variant="captionBold" style={{ color: colors.accent.tertiary }}>
+                Free
+              </Typography>
+            </View>
+            <View style={[styles.creditDivider, { backgroundColor: colors.glass.border }]} />
+            <TouchableOpacity style={styles.creditItem} activeOpacity={0.8}>
+              <Typography variant="captionBold" style={{ color: colors.accent.primary }}>
+                Get Credits →
+              </Typography>
+            </TouchableOpacity>
+          </View>
         </Card>
 
+        {/* Menu items */}
         <View style={styles.menuSection}>
           {MENU_ITEMS.map((item) => (
             <TouchableOpacity key={item.label} activeOpacity={0.8}>
@@ -89,28 +130,21 @@ export default function ProfileScreen({ navigation }: Props) {
                 variant="default"
                 style={[
                   styles.menuCard,
-                  {
-                    backgroundColor: colors.glass.opaque,
-                    borderColor: colors.glass.border,
-                  },
+                  { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border },
                 ]}
               >
-                {item.iconNode ? (
-                  <QCoin size="md" />
-                ) : (
-                  <Typography variant="h2" style={{ fontSize: 24 }}>
-                    {item.icon}
-                  </Typography>
-                )}
+                <Typography variant="h2" style={{ fontSize: 24 }}>
+                  {item.icon}
+                </Typography>
                 <View style={{ flex: 1 }}>
-                  <Typography variant="h4" style={{ color: colors.text.primary }}>
+                  <Typography variant="captionBold" style={{ color: colors.text.primary }}>
                     {item.label}
                   </Typography>
-                  <Typography variant="caption" style={{ color: colors.text.secondary }}>
+                  <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 2 }}>
                     {item.description}
                   </Typography>
                 </View>
-                <Typography variant="body" style={{ color: colors.text.tertiary ?? colors.text.secondary }}>
+                <Typography variant="body" style={{ color: colors.text.secondary }}>
                   →
                 </Typography>
               </Card>
@@ -118,18 +152,20 @@ export default function ProfileScreen({ navigation }: Props) {
           ))}
         </View>
 
+        {/* Sign out */}
         <Button
           variant="outline"
           size="lg"
           fullWidth
           onPress={handleLogout}
-          style={{
-            borderColor: colors.error,
-            marginTop: spacing.md,
-          }}
+          style={{ borderColor: colors.error, marginTop: spacing.xl }}
         >
           Sign Out
         </Button>
+
+        <Typography variant="small" style={{ color: colors.text.secondary, textAlign: 'center', marginTop: spacing.lg }}>
+          waQup v1.0.0
+        </Typography>
       </ScrollView>
     </Screen>
   );
@@ -145,22 +181,43 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   userCard: {
-    padding: spacing.xl,
     borderRadius: borderRadius.xl,
-    alignItems: 'center',
     borderWidth: 1,
     marginBottom: spacing.xl,
+    overflow: 'hidden',
+  },
+  userCardTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.xl,
   },
   avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.md,
+  },
+  creditsRow: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    paddingVertical: spacing.md,
+  },
+  creditItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  creditLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  creditDivider: {
+    width: 1,
+    marginVertical: spacing.sm,
   },
   menuSection: {
-    gap: spacing.md,
+    gap: spacing.sm,
   },
   menuCard: {
     padding: spacing.lg,

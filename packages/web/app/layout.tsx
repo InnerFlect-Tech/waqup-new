@@ -5,6 +5,8 @@ import '../src/styles/animations.css';
 import { ThemeProvider } from '@/theme';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { AppLayout } from '@/components';
+import { ToastProvider } from '@/components/ui/Toast';
+import { QueryProvider } from '@/components/shared/QueryProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -61,11 +63,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider defaultThemeName="mystical-purple">
-          <AuthProvider>
-            <AppLayout>{children}</AppLayout>
-          </AuthProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider defaultThemeName="mystical-purple">
+            <AuthProvider>
+              <ToastProvider>
+                <AppLayout>{children}</AppLayout>
+              </ToastProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

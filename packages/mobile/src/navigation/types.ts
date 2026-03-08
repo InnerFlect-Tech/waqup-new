@@ -3,6 +3,10 @@
  * Defines all navigation routes and their parameters
  */
 
+import type { ContentItemType } from '@waqup/shared/types';
+
+export type { ContentItemType };
+
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
@@ -21,6 +25,14 @@ export type MainTabParamList = {
   Library: undefined;
   Create: undefined;
   Profile: undefined;
+};
+
+export type MainStackParamList = {
+  Tabs: undefined;
+  ContentDetail: { contentId: string; contentType: ContentItemType };
+  CreateMode: { contentType: ContentItemType };
+  ContentCreate: { contentType: ContentItemType; mode: 'form' | 'chat' | 'agent' };
+  ContentEdit: { contentId: string; contentType: ContentItemType };
 };
 
 // Helper type for navigation props

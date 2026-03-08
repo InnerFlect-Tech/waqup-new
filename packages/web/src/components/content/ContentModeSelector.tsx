@@ -7,7 +7,7 @@ import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { useContentCreation, type CreationMode } from '@/lib/contexts/ContentCreationContext';
-import { LayoutList, Sparkles } from 'lucide-react';
+import { LayoutList, MessageSquare, Mic } from 'lucide-react';
 
 export interface ContentModeSelectorProps {
   formHref: string;
@@ -15,7 +15,7 @@ export interface ContentModeSelectorProps {
   chatHref?: string;
 }
 
-export function ContentModeSelector({ formHref, chatHref = '/create/conversation' }: ContentModeSelectorProps) {
+export function ContentModeSelector({ formHref, chatHref = '/create/conversation', orbHref }: ContentModeSelectorProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
@@ -38,17 +38,25 @@ export function ContentModeSelector({ formHref, chatHref = '/create/conversation
       mode: 'form',
       href: formHref,
       icon: LayoutList,
-      label: 'Step-by-step Form',
+      label: 'Step-by-step',
       tagline: 'Guided prompts — structured and clear',
       color: '#c084fc',
     },
     {
       mode: 'conversation',
       href: chatHref,
-      icon: Sparkles,
+      icon: MessageSquare,
       label: 'Chat with AI',
       tagline: 'Conversational — just talk it through',
       color: '#60a5fa',
+    },
+    {
+      mode: 'orb',
+      href: orbHref ?? chatHref.replace('conversation', 'orb'),
+      icon: Mic,
+      label: 'Speak to Orb',
+      tagline: 'Voice-first — say it aloud',
+      color: '#34d399',
     },
   ];
 
