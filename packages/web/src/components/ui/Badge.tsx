@@ -14,14 +14,22 @@ export interface BadgeProps {
   className?: string;
 }
 
-function getTextVariant(variant: BadgeProps['variant']): 'primary' | 'secondary' | 'muted' | 'accent' | 'error' | 'success' | 'warning' {
+function getTextStyle(variant: BadgeProps['variant'], colors: Theme['colors']): { color?: TextColorKey; style?: React.CSSProperties } {
   switch (variant) {
-    case 'error': return 'error';
-    case 'success': return 'success';
-    case 'warning': return 'warning';
-    default: return 'primary';
+    case 'error':
+      return { color: 'primary', style: { color: colors.error } };
+    case 'success':
+      return { color: 'primary', style: { color: colors.success } };
+    case 'warning':
+      return { color: 'primary', style: { color: colors.warning } };
+    case 'accent':
+      return { color: 'primary', style: { color: '#c084fc' } };
+    default:
+      return { color: 'primary' };
   }
 }
+
+type TextColorKey = 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'disabled' | 'onDark' | 'onLight';
 
 export const Badge: React.FC<BadgeProps> = memo(({
   variant = 'default',
@@ -32,6 +40,7 @@ export const Badge: React.FC<BadgeProps> = memo(({
 }) => {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const textProps = getTextStyle(variant, colors);
 
   const badgeStyle: React.CSSProperties = {
     borderRadius: borderRadius.full,
@@ -49,7 +58,7 @@ export const Badge: React.FC<BadgeProps> = memo(({
 
   return (
     <div style={badgeStyle} className={className} role="status" aria-label={typeof children === 'string' ? children : undefined}>
-      <Typography variant="small" color={getTextVariant(variant)} style={variant === 'accent' ? { color: '#c084fc' } : undefined}>
+      <Typography variant="small" color={textProps.color} style={textProps.style}>
         {children}
       </Typography>
     </div>
