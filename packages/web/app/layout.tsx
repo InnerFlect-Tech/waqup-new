@@ -8,9 +8,32 @@ import { AppLayout } from '@/components';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+const DEFAULT_TITLE = 'waQup';
+const DEFAULT_DESCRIPTION = 'Transform your mind through voice and sacred frequencies';
+const OG_IMAGE = '/android-chrome-512x512.png';
+
 export const metadata: Metadata = {
-  title: 'waQup',
-  description: 'Transform your mind through voice and sacred frequencies',
+  metadataBase: new URL(SITE_URL),
+  title: { default: DEFAULT_TITLE, template: '%s — waQup' },
+  description: DEFAULT_DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: SITE_URL,
+    siteName: DEFAULT_TITLE,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [{ url: OG_IMAGE, width: 512, height: 512, alt: 'waQup' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [OG_IMAGE],
+  },
   icons: {
     icon: [
       { url: '/favicon.ico' },
