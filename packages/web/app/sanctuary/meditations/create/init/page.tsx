@@ -3,8 +3,8 @@
 import React, { useEffect } from 'react';
 import { Target, MapPin, FileText, Mic } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
+import { ContentModeSelector } from '@/components/content/ContentModeSelector';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { useCreateInitGate } from '@/hooks';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 import { formatQs } from '@waqup/shared/utils';
 
@@ -33,14 +33,13 @@ const MEDITATION_STEPS = [
 
 const TIPS = [
   'Find a comfortable, quiet space',
-  'Use headphones for immersive experience',
+  'Use headphones for an immersive experience',
   'Practice at the same time daily for best results',
   'Start with shorter meditations and build up',
 ];
 
 export default function MeditationCreateInitPage() {
   const { setCurrentStep } = useContentCreation();
-  const { shouldShow, markSeen } = useCreateInitGate('/create/conversation');
 
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
 
@@ -50,18 +49,19 @@ export default function MeditationCreateInitPage() {
       ? `${costs.base}–${costs.withAi} Qs`
       : formatQs(costs.base);
 
-  if (!shouldShow) return null;
-
   return (
     <CreateFlowInitStep
       title="Create Your Meditation"
       description="State induction through guided visualization and relaxation"
       steps={MEDITATION_STEPS}
       tips={TIPS}
-      nextHref="/create/conversation"
-      nextLabel="Begin →"
       creditRange={creditRange}
-      onBegin={markSeen}
+      footer={
+        <ContentModeSelector
+          formHref="/sanctuary/meditations/create/intent"
+          chatHref="/create/conversation?type=meditation"
+        />
+      }
     />
   );
 }

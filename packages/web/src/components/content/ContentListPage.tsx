@@ -129,7 +129,7 @@ function ContentCard({
               flexShrink: 0,
             }}
           >
-            {React.createElement(ItemIcon, { size: 16, color: typeColor, strokeWidth: 2 })}
+            {React.createElement(getContentTypeIcon(item.type), { size: 16, color: typeColor, strokeWidth: 2 })}
           </div>
         </div>
 

@@ -24,12 +24,12 @@ const VoiceOrbOGL = dynamic(
   { ssr: false }
 );
 
-type OrbVariant = 'three' | 'p5' | 'ogl';
+type OrbVariant = 'singularity' | 'aurora' | 'nebula';
 
 const ORB_LABELS: Record<OrbVariant, string> = {
-  three: 'Three.js',
-  p5: 'p5.js',
-  ogl: 'OGL',
+  singularity: 'Singularity',
+  aurora: 'Aurora',
+  nebula: 'Nebula',
 };
 
 const STATUS_MESSAGES = {

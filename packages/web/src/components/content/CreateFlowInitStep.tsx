@@ -20,12 +20,14 @@ export interface CreateFlowInitStepProps {
   description: string;
   steps: CreateFlowStep[];
   tips?: string[];
-  nextHref: string;
+  nextHref?: string;
   nextLabel?: string;
   /** Credit cost range, e.g. "1–2 Qs" (base with AI) */
   creditRange?: string;
   /** Called when user clicks Begin (e.g. to mark init as seen) */
   onBegin?: () => void;
+  /** If provided, replaces the default Begin button row */
+  footer?: React.ReactNode;
 }
 
 export function CreateFlowInitStep({
@@ -37,6 +39,7 @@ export function CreateFlowInitStep({
   nextLabel = 'Begin Journey →',
   creditRange,
   onBegin,
+  footer,
 }: CreateFlowInitStepProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
@@ -161,23 +164,23 @@ export function CreateFlowInitStep({
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {onBegin ? (
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={handleBegin}
-          >
-            {nextLabel}
-          </Button>
-        ) : (
-          <Link href={nextHref} style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="lg" >
+      {footer !== undefined ? (
+        footer
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          {onBegin ? (
+            <Button variant="primary" size="lg" onClick={handleBegin}>
               {nextLabel}
             </Button>
-          </Link>
-        )}
-      </div>
+          ) : nextHref ? (
+            <Link href={nextHref} style={{ textDecoration: 'none' }}>
+              <Button variant="primary" size="lg">
+                {nextLabel}
+              </Button>
+            </Link>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 }

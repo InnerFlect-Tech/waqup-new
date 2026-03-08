@@ -3,10 +3,9 @@
 import React, { useEffect } from 'react';
 import { Target, Mic, Music, Sparkles } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
+import { ContentModeSelector } from '@/components/content/ContentModeSelector';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { useCreateInitGate } from '@/hooks';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
-import { formatQs } from '@waqup/shared/utils';
 
 const AFFIRMATION_STEPS = [
   {
@@ -40,7 +39,6 @@ const TIPS = [
 
 export default function AffirmationCreateInitPage() {
   const { setCurrentStep } = useContentCreation();
-  const { shouldShow, markSeen } = useCreateInitGate('/create/conversation');
 
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
 
@@ -52,18 +50,19 @@ export default function AffirmationCreateInitPage() {
         ? '1 Q'
         : `${costs.base} Qs`;
 
-  if (!shouldShow) return null;
-
   return (
     <CreateFlowInitStep
       title="Create Your Affirmation"
       description="Cognitive re-patterning through voice and positive language"
       steps={AFFIRMATION_STEPS}
       tips={TIPS}
-      nextHref="/create/conversation"
-      nextLabel="Begin →"
       creditRange={creditRange}
-      onBegin={markSeen}
+      footer={
+        <ContentModeSelector
+          formHref="/sanctuary/affirmations/create/intent"
+          chatHref="/create/conversation?type=affirmation"
+        />
+      }
     />
   );
 }

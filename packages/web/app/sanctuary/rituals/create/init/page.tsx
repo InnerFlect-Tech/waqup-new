@@ -3,8 +3,8 @@
 import React, { useEffect } from 'react';
 import { Target, Heart, Mic, Sparkles } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
+import { ContentModeSelector } from '@/components/content/ContentModeSelector';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { useCreateInitGate } from '@/hooks';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 import { formatQs } from '@waqup/shared/utils';
 
@@ -17,12 +17,12 @@ const RITUAL_STEPS = [
   {
     icon: Heart,
     title: 'Connect with Your Values',
-    description: 'Identify core values and strengths that guide you',
+    description: 'Identify core values and the deeper why behind your practice',
   },
   {
     icon: Mic,
     title: 'Speak Your Truth',
-    description: 'Record your personalized affirmations with intention',
+    description: 'Record your personalized affirmations with full intention',
   },
   {
     icon: Sparkles,
@@ -33,14 +33,13 @@ const RITUAL_STEPS = [
 
 const TIPS = [
   'Find a quiet space where you won\'t be disturbed',
-  'Take a few deep breaths to center yourself',
-  'Have a clear intention for your practice',
+  'Take a few deep breaths to centre yourself first',
+  'Have a clear intention — rituals work through specificity',
   'Trust in the process of transformation',
 ];
 
 export default function RitualCreateInitPage() {
   const { setCurrentStep } = useContentCreation();
-  const { shouldShow, markSeen } = useCreateInitGate('/sanctuary/rituals/create/goals');
 
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
 
@@ -50,18 +49,19 @@ export default function RitualCreateInitPage() {
       ? `${costs.base}–${costs.withAi} Qs`
       : formatQs(costs.base);
 
-  if (!shouldShow) return null;
-
   return (
     <CreateFlowInitStep
       title="Create Your Ritual"
-      description="Transform your life through the power of intentional practice"
+      description="Identity encoding through intentional practice and voice"
       steps={RITUAL_STEPS}
       tips={TIPS}
-      nextHref="/sanctuary/rituals/create/goals"
-      nextLabel="Begin Journey →"
       creditRange={creditRange}
-      onBegin={markSeen}
+      footer={
+        <ContentModeSelector
+          formHref="/sanctuary/rituals/create/goals"
+          chatHref="/create/conversation?type=ritual"
+        />
+      }
     />
   );
 }

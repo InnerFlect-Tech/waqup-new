@@ -8,6 +8,4 @@
 export * from './auth';
 export * from './content';
 export * from './reminder';
-
-// Credit types will be added here
-// export type CreditTransaction = { ... };
+export * from './orb.types';
