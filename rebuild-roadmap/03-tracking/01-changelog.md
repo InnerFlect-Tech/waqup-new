@@ -6,6 +6,16 @@
 
 ---
 
+## GitHub CI & Vercel Deployment (2026-03-08)
+
+### Web CI workflow improvements and Vercel deploy
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-08
+- **Notes**: Production-level Web CI: concurrency (cancel in-progress), least-privilege permissions, node_modules + Next.js cache, lint step. Deploy job (main only, after build): vercel pull → vercel build → vercel deploy --prebuilt --prod. Added packages/web/vercel.json for monorepo (installCommand: cd ../.. && npm ci, buildCommand: build:shared then build:web). Docs: docs/05-deployment/01-github-vercel-setup.md (secrets, options A/B, troubleshooting).
+- **Updated**: 2026-03-08
+
+---
+
 ## Voice Orb (Speak Page)
 
 ### High-performance audio-reactive spiritual orb

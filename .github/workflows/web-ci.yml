@@ -6,6 +6,19 @@ on:
   pull_request:
     branches: [main]
 
+# Cancel in-progress runs when a new push happens on the same branch
+concurrency:
+  group: web-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Principle of least privilege: only grant permissions needed for the job
+permissions:
+  contents: read
+  deployments: write  # For deploy job status reporting
+
+env:
+  NODE_VERSION: '24'
+
 jobs:
   build:
     name: Build & Type-check (Web)
@@ -18,9 +31,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      # Cache node_modules for faster installs (monorepo)
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/web/node_modules
+            packages/shared/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      # Cache Next.js build output for faster rebuilds
       - name: Cache Next.js build
         uses: actions/cache@v4
         with:
@@ -29,11 +55,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - name: Install dependencies (root workspace)
+      - name: Install dependencies
         run: npm ci --ignore-scripts
 
       - name: Build shared
         run: npm run build:shared
+
+      - name: Lint web
+        working-directory: packages/web
+        run: npm run lint
 
       - name: Type-check web
         working-directory: packages/web
@@ -46,3 +76,54 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: placeholder-anon-key
           NEXT_PUBLIC_APP_URL: https://placeholder.example.com
         run: npm run build
+
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            packages/web/node_modules
+            packages/shared/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Pull Vercel environment
+        working-directory: packages/web
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build for Vercel
+        working-directory: packages/web
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (production)
+        working-directory: packages/web
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

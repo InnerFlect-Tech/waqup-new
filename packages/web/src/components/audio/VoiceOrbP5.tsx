@@ -1,8 +1,11 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import type p5 from 'p5';
 import { useTheme } from '@/theme';
+
+/** p5 instance - typed loosely to avoid static p5 module resolution in monorepo builds */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type P5Sketch = (p: any) => void;
 
 export type VoiceSource = 'user' | 'ai' | 'idle';
 
@@ -37,7 +40,7 @@ export function VoiceOrbP5({
   className,
 }: VoiceOrbP5Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sketchRef = useRef<p5 | null>(null);
+  const sketchRef = useRef<{ remove: () => void } | null>(null);
   const { theme } = useTheme();
 
   const colorUserPrimary = theme.colors.accent.primary;
@@ -82,7 +85,7 @@ export function VoiceOrbP5({
         });
       }
 
-      const sketch = (p: p5) => {
+      const sketch: P5Sketch = (p) => {
         p.setup = () => {
           const w = containerRef.current?.clientWidth ?? 400;
           const h = containerRef.current?.clientHeight ?? 360;
