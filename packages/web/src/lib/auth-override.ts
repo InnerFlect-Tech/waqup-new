@@ -7,6 +7,23 @@
 import type { User } from '@supabase/supabase-js';
 
 const OVERRIDE_STORAGE_KEY = 'waqup_override_user';
+const TEST_SESSION_COOKIE = 'waqup_test_session';
+
+export function getTestSessionCookieName(): string {
+  return TEST_SESSION_COOKIE;
+}
+
+export function setTestSessionCookie(): void {
+  if (typeof document === 'undefined') return;
+  const maxAge = 60 * 60 * 24 * 7; // 7 days
+  const secure = typeof window !== 'undefined' && window.location?.protocol === 'https:';
+  document.cookie = `${TEST_SESSION_COOKIE}=1; path=/; max-age=${maxAge}; SameSite=Lax${secure ? '; Secure' : ''}`;
+}
+
+export function clearTestSessionCookie(): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${TEST_SESSION_COOKIE}=; path=/; max-age=0`;
+}
 
 export function getOverrideStorageKey(): string {
   return OVERRIDE_STORAGE_KEY;
@@ -60,11 +77,13 @@ export function clearStoredOverride(): void {
   } catch {
     // ignore
   }
+  clearTestSessionCookie(); // Always clear cookie so middleware stops allowing access
 }
 
 /** Call after override login succeeds: persist and return user to set in store. */
 export function applyOverrideLogin(email: string): User {
   setStoredOverride(email);
+  setTestSessionCookie();
   return createOverrideUser(email);
 }
 

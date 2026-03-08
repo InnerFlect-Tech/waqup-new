@@ -3,7 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores';
-import { getOverrideUserToRestore } from '@/lib/auth-override';
+import {
+  getOverrideUserToRestore,
+  setTestSessionCookie,
+} from '@/lib/auth-override';
 
 /**
  * Auth Provider Component
@@ -20,6 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // no need to wait for Supabase which may not be configured in dev.
     const overrideUser = getOverrideUserToRestore();
     if (overrideUser) {
+      setTestSessionCookie(); // Ensure cookie exists for middleware (e.g. after cookie expiry)
       useAuthStore.getState().setUser(overrideUser);
       useAuthStore.getState().setInitialized(true);
       setIsReady(true);

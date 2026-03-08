@@ -71,6 +71,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Test login: when enabled, allow access if test session cookie is present.
+  // Cookie is set client-side on test login; AuthProvider restores from localStorage.
+  const testLoginEnabled = process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true'
+  const testSessionCookie = request.cookies.get('waqup_test_session')?.value
+  if (testLoginEnabled && testSessionCookie === '1') {
+    return NextResponse.next()
+  }
+
   const response = NextResponse.next({
     request: { headers: request.headers },
   })
