@@ -32,7 +32,7 @@ export function useCreateInitGate(nextHref: string) {
     if (seen && !forceShow) {
       router.replace(nextHref);
     } else {
-      setShouldShow(true);
+      queueMicrotask(() => setShouldShow(true));
     }
   }, [nextHref, router]);
 

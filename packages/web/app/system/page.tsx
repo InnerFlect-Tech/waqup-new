@@ -151,12 +151,12 @@ export default function SystemPage() {
               <tr style={{ borderBottom: `1px solid ${colors.glass.border}` }}>
                 <td style={{ padding: spacing.sm }}>title, description, script</td>
                 <td style={{ padding: spacing.sm }}>text</td>
-                <td style={{ padding: spacing.sm }}>description default ''</td>
+                <td style={{ padding: spacing.sm }}>description default &apos;&apos;</td>
               </tr>
               <tr style={{ borderBottom: `1px solid ${colors.glass.border}` }}>
                 <td style={{ padding: spacing.sm }}>duration, frequency</td>
                 <td style={{ padding: spacing.sm }}>text</td>
-                <td style={{ padding: spacing.sm }}>duration default ''</td>
+                <td style={{ padding: spacing.sm }}>duration default &apos;&apos;</td>
               </tr>
               <tr style={{ borderBottom: `1px solid ${colors.glass.border}` }}>
                 <td style={{ padding: spacing.sm }}>status</td>

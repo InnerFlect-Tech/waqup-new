@@ -82,7 +82,8 @@ function useNotificationChecker(reminders: UserReminder[]) {
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('Notification' in window)) return;
-    setPermission(Notification.permission);
+    const p = Notification.permission;
+    queueMicrotask(() => setPermission(p));
   }, []);
 
   const requestPermission = useCallback(async () => {

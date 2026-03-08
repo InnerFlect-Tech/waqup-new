@@ -33,7 +33,7 @@ export function useContent(type?: ContentItemType): UseContentResult {
   }, [type]);
 
   useEffect(() => {
-    fetch();
+    queueMicrotask(() => fetch());
   }, [fetch]);
 
   return { items, isLoading, error, refetch: fetch };
@@ -68,7 +68,7 @@ export function useContentItem(id: string): UseContentItemResult {
   }, [id]);
 
   useEffect(() => {
-    fetch();
+    queueMicrotask(() => fetch());
   }, [fetch]);
 
   const update = useCallback(

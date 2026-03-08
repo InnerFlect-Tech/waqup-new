@@ -141,9 +141,9 @@ export function VoiceOrbOGL({
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      setWebglSupported(!!gl);
+      queueMicrotask(() => setWebglSupported(!!gl));
     } catch {
-      setWebglSupported(false);
+      queueMicrotask(() => setWebglSupported(false));
     }
   }, []);
 
@@ -289,6 +289,7 @@ export function VoiceOrbOGL({
     colorAIPrimary,
     colorAISecondary,
     voiceSource,
+    frequencyDataRef,
   ]);
 
   if (!webglSupported) {

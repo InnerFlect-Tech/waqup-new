@@ -73,8 +73,10 @@ export function useAudioAnalyzer({
       if (contextRef.current?.state === 'running') {
         contextRef.current.suspend();
       }
-      setIsReady(false);
-      setAverageLevel(0);
+      queueMicrotask(() => {
+        setIsReady(false);
+        setAverageLevel(0);
+      });
       dataArrayRef.current = null;
       return;
     }

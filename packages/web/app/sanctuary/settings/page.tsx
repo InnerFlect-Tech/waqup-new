@@ -97,7 +97,10 @@ export default function SettingsPage() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setPrefs(JSON.parse(saved) as NotificationPrefs);
+      if (saved) {
+        const parsed = JSON.parse(saved) as NotificationPrefs;
+        queueMicrotask(() => setPrefs(parsed));
+      }
     } catch {}
   }, []);
 

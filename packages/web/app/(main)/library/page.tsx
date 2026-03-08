@@ -55,7 +55,6 @@ function ContentCard({
   item: ContentItem;
   colors: ReturnType<typeof useTheme>['theme']['colors'];
 }) {
-  const ItemIcon = getContentTypeIcon(item.type);
   const typeColor = TYPE_COLOR[item.type as ContentTypeFilter] ?? colors.accent.primary;
 
   return (
@@ -141,7 +140,7 @@ function ContentCard({
               flexShrink: 0,
             }}
           >
-            <ItemIcon size={16} color={typeColor} strokeWidth={2} />
+            {React.createElement(getContentTypeIcon(item.type), { size: 16, color: typeColor, strokeWidth: 2 })}
           </div>
         </div>
 

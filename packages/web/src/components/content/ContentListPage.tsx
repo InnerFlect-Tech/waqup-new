@@ -44,7 +44,6 @@ function ContentCard({
   item: ContentItem;
   colors: ReturnType<typeof useTheme>['theme']['colors'];
 }) {
-  const ItemIcon = getContentTypeIcon(item.type);
   const typeColor = TYPE_COLOR[item.type] ?? '#9333EA';
 
   return (
@@ -130,7 +129,7 @@ function ContentCard({
               flexShrink: 0,
             }}
           >
-            <ItemIcon size={16} color={typeColor} strokeWidth={2} />
+            {React.createElement(ItemIcon, { size: 16, color: typeColor, strokeWidth: 2 })}
           </div>
         </div>
 
@@ -287,7 +286,6 @@ export function ContentListPage({
   const { theme } = useTheme();
   const colors = theme.colors;
   const [searchQuery, setSearchQuery] = useState('');
-  const ItemIcon = getContentTypeIcon(contentType);
   const typeColor = TYPE_COLOR[contentType] ?? '#9333EA';
 
   const filteredContent = content.filter((item) =>
@@ -459,7 +457,11 @@ export function ContentListPage({
                       justifyContent: 'center',
                     }}
                   >
-                    <ItemIcon size={22} color={typeColor} strokeWidth={2} />
+                    {React.createElement(getContentTypeIcon(contentType), {
+                      size: 22,
+                      color: typeColor,
+                      strokeWidth: 2,
+                    })}
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <Typography

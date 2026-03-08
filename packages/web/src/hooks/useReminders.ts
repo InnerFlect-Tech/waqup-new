@@ -36,7 +36,7 @@ export function useReminders(): UseRemindersResult {
   }, []);
 
   useEffect(() => {
-    fetch();
+    queueMicrotask(() => fetch());
   }, [fetch]);
 
   const createReminder = useCallback(async (input: CreateReminderInput): Promise<boolean> => {

@@ -4,8 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/theme';
 
 /** p5 instance - typed loosely to avoid static p5 module resolution in monorepo builds */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type P5Sketch = (p: any) => void;
+type P5Sketch = (p: import('p5')) => void;
 
 export type VoiceSource = 'user' | 'ai' | 'idle';
 
@@ -55,9 +54,9 @@ export function VoiceOrbP5({
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      setWebglSupported(!!gl);
+      queueMicrotask(() => setWebglSupported(!!gl));
     } catch {
-      setWebglSupported(false);
+      queueMicrotask(() => setWebglSupported(false));
     }
   }, []);
 
@@ -194,6 +193,7 @@ export function VoiceOrbP5({
     colorAISecondary,
     voiceSource,
     isActive,
+    frequencyDataRef,
   ]);
 
   if (!webglSupported) {

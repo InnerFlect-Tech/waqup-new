@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setTestSessionCookie(); // Ensure cookie exists for middleware (e.g. after cookie expiry)
       useAuthStore.getState().setUser(overrideUser);
       useAuthStore.getState().setInitialized(true);
-      setIsReady(true);
+      queueMicrotask(() => setIsReady(true));
       return;
     }
 

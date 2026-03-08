@@ -226,19 +226,17 @@ function OrbScene({
 }: OrbSceneProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const intensityRef = useRef(0);
-  const freqTextureRef = useRef<THREE.DataTexture | null>(null);
-  const texDataRef = useRef(new Uint8Array(FREQ_TEXTURE_SIZE * 4));
 
   const uniforms = useMemo(() => {
+    const texData = new Uint8Array(FREQ_TEXTURE_SIZE * 4);
     const freqTexture = new THREE.DataTexture(
-      texDataRef.current,
+      texData,
       FREQ_TEXTURE_SIZE,
       1,
       THREE.RGBAFormat,
       THREE.UnsignedByteType
     );
     freqTexture.needsUpdate = true;
-    freqTextureRef.current = freqTexture;
 
     const uVoiceSource = voiceSource === 'user' ? 1 : voiceSource === 'ai' ? 2 : 0;
     return {
@@ -263,12 +261,17 @@ function OrbScene({
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    uniforms.uTime.value = t;
-    uniforms.uVoiceSource.value = voiceSource === 'user' ? 1 : voiceSource === 'ai' ? 2 : 0;
+    const mesh = meshRef.current;
+    const mat = mesh?.material as THREE.ShaderMaterial | undefined;
+    const u = mat?.uniforms;
+    if (u) {
+      u.uTime.value = t;
+      u.uVoiceSource.value = voiceSource === 'user' ? 1 : voiceSource === 'ai' ? 2 : 0;
+    }
 
     const data = frequencyDataRef.current;
-    const freqTex = freqTextureRef.current;
-    const texData = texDataRef.current;
+    const freqTex = u?.uFrequencyTexture?.value as THREE.DataTexture | undefined;
+    const texData = freqTex?.image as Uint8Array | undefined;
     if (freqTex && texData) {
       if (data && data.length > 0) {
         const binCount = data.length;
@@ -313,11 +316,11 @@ function OrbScene({
 
     const lerpFactor = 0.22;
     intensityRef.current += (targetIntensity - intensityRef.current) * lerpFactor;
-    uniforms.uIntensity.value = intensityRef.current;
+    if (u) u.uIntensity.value = intensityRef.current;
 
-    if (meshRef.current) {
+    if (mesh) {
       const scale = 1 + intensityRef.current * 0.2;
-      meshRef.current.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
+      mesh.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
     }
   });
 
@@ -356,7 +359,7 @@ function useReducedMotion(): boolean {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
+    queueMicrotask(() => setReduced(mq.matches));
     const handler = () => setReduced(mq.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
@@ -371,9 +374,9 @@ function useWebGLSupport(): boolean {
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      setSupported(!!gl);
+      queueMicrotask(() => setSupported(!!gl));
     } catch {
-      setSupported(false);
+      queueMicrotask(() => setSupported(false));
     }
   }, []);
   return supported;
@@ -383,7 +386,7 @@ function usePageVisible(): boolean {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    setVisible(!document.hidden);
+    queueMicrotask(() => setVisible(!document.hidden));
     const handler = () => setVisible(!document.hidden);
     document.addEventListener('visibilitychange', handler);
     return () => document.removeEventListener('visibilitychange', handler);

@@ -49,7 +49,7 @@ export default function CreateConversationPage() {
   const handleSend = () => {
     const trimmed = input.trim();
     if (!trimmed) return;
-    const userMsg: Message = { id: String(Date.now()), role: 'user', content: trimmed };
+    const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content: trimmed };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
@@ -69,7 +69,7 @@ export default function CreateConversationPage() {
       setIsTyping(false);
       setMessages((prev) => [
         ...prev,
-        { id: String(Date.now() + 1), role: 'assistant', content: replyContent },
+        { id: crypto.randomUUID(), role: 'assistant', content: replyContent },
       ]);
     }, 900);
   };
@@ -77,14 +77,14 @@ export default function CreateConversationPage() {
   const handleTypeSelect = (type: 'affirmation' | 'meditation' | 'ritual') => {
     setSelectedType(type);
     const label = type.charAt(0).toUpperCase() + type.slice(1);
-    const msg: Message = { id: String(Date.now()), role: 'user', content: `I want to create a ${label}` };
+    const msg: Message = { id: crypto.randomUUID(), role: 'user', content: `I want to create a ${label}` };
     setMessages((prev) => [...prev, msg]);
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
       setMessages((prev) => [
         ...prev,
-        { id: String(Date.now() + 1), role: 'assistant', content: MOCK_RESPONSES[type] },
+        { id: crypto.randomUUID(), role: 'assistant', content: MOCK_RESPONSES[type] },
       ]);
     }, 800);
     inputRef.current?.focus();
