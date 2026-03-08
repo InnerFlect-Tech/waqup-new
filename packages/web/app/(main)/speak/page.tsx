@@ -15,6 +15,22 @@ const VoiceOrb = dynamic(
   () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrb })),
   { ssr: false }
 );
+const VoiceOrbP5 = dynamic(
+  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrbP5 })),
+  { ssr: false }
+);
+const VoiceOrbOGL = dynamic(
+  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrbOGL })),
+  { ssr: false }
+);
+
+type OrbVariant = 'three' | 'p5' | 'ogl';
+
+const ORB_LABELS: Record<OrbVariant, string> = {
+  three: 'Three.js',
+  p5: 'p5.js',
+  ogl: 'OGL',
+};
 
 const STATUS_MESSAGES = {
   idle: { text: 'Tap to speak', sub: 'Tell us what you want to create or how you feel' },
@@ -25,10 +41,14 @@ const STATUS_MESSAGES = {
 export default function SpeakPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const [orbVariant, setOrbVariant] = useState<OrbVariant>('three');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   /** Once user taps to start, we keep listening (always-on). Gate needed for mic permission. */
   const [hasStartedListening, setHasStartedListening] = useState(false);
+
+  const OrbComponent =
+    orbVariant === 'three' ? VoiceOrb : orbVariant === 'p5' ? VoiceOrbP5 : VoiceOrbOGL;
 
   const handleMicClick = () => {
     if (!hasStartedListening) {
@@ -95,6 +115,50 @@ export default function SpeakPage() {
             </Typography>
           </motion.div>
 
+          {/* Orb style switcher — 3 buttons to change orb variant */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: spacing.sm,
+              marginBottom: spacing.lg,
+              flexShrink: 0,
+            }}
+          >
+            <Typography variant="small" style={{ color: colors.text.secondary, fontWeight: 600 }}>
+              Try different orbs
+            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                gap: spacing.sm,
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+              }}
+            >
+              {(['three', 'p5', 'ogl'] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setOrbVariant(v)}
+                  style={{
+                    padding: `${spacing.md} ${spacing.xl}`,
+                    borderRadius: borderRadius.full,
+                    border: `2px solid ${orbVariant === v ? colors.accent.primary : colors.glass.border}`,
+                    background: orbVariant === v ? `${colors.accent.primary}30` : colors.glass.medium,
+                    color: orbVariant === v ? colors.accent.primary : colors.text.primary,
+                    cursor: 'pointer',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {ORB_LABELS[v]}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Orb area — flex: 1 centers orb in viewport */}
           <div
             style={{
@@ -107,7 +171,7 @@ export default function SpeakPage() {
               minHeight: 320,
             }}
           >
-            <VoiceOrb
+            <OrbComponent
               isActive={isActive}
               voiceSource={isListening ? 'user' : isSpeaking ? 'ai' : 'idle'}
               frequencyDataRef={frequencyDataRef}
