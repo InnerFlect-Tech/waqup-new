@@ -102,7 +102,7 @@ function ContentCard({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  padding: '2px 8px',
+                  padding: `${spacing.xs} ${spacing.sm}`,
                   borderRadius: borderRadius.full,
                   background: `${colors.warning}20`,
                   border: `1px solid ${colors.warning}30`,

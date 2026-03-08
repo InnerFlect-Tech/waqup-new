@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Sparkles, Brain, Music, Send, ArrowLeft } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
+import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 
 interface Message {
   id: string;
@@ -121,28 +122,36 @@ export default function CreateConversationPage() {
 
         {/* Type selector */}
         <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.lg }}>
-          {TYPE_BUTTONS.map(({ type, label, icon: Icon, color }) => (
-            <button
-              key={type}
-              onClick={() => handleTypeSelect(type)}
-              style={{
-                padding: `${spacing.xs}px ${spacing.md}px`,
-                borderRadius: borderRadius.full,
-                border: `1px solid ${selectedType === type ? color : colors.glass.border}`,
-                background: selectedType === type ? `${color}20` : 'transparent',
-                color: selectedType === type ? color : colors.text.secondary,
-                fontSize: 13,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.sm,
-                transition: 'all 0.2s',
-              }}
-            >
-              <Icon size={14} />
-              {label}
-            </button>
-          ))}
+          {TYPE_BUTTONS.map(({ type, label, icon: Icon, color }) => {
+            const costs = CONTENT_CREDIT_COSTS[type];
+            const creditsLabel =
+              costs.base === costs.withAi
+                ? `${costs.base} credit${costs.base > 1 ? 's' : ''}`
+                : `${costs.base}–${costs.withAi} credits`;
+            return (
+              <button
+                key={type}
+                onClick={() => handleTypeSelect(type)}
+                style={{
+                  padding: `${spacing.xs} ${spacing.md}`,
+                  borderRadius: borderRadius.full,
+                  border: `1px solid ${selectedType === type ? color : colors.glass.border}`,
+                  background: selectedType === type ? `${color}20` : 'transparent',
+                  color: selectedType === type ? color : colors.text.secondary,
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing.sm,
+                  transition: 'all 0.2s',
+                }}
+              >
+                <Icon size={14} />
+                <span>{label}</span>
+                <span style={{ fontSize: 11, opacity: 0.8 }}>({creditsLabel})</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Messages */}
@@ -166,8 +175,8 @@ export default function CreateConversationPage() {
               style={{
                 alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
                 maxWidth: '82%',
-                padding: `${spacing.md}px ${spacing.lg}px`,
-                borderRadius: msg.role === 'user' ? `${borderRadius.xl}px ${borderRadius.xl}px 4px ${borderRadius.xl}px` : `${borderRadius.xl}px ${borderRadius.xl}px ${borderRadius.xl}px 4px`,
+                padding: `${spacing.md} ${spacing.lg}`,
+                borderRadius: msg.role === 'user' ? `${borderRadius.xl} ${borderRadius.xl} ${spacing.xs} ${borderRadius.xl}` : `${borderRadius.xl} ${borderRadius.xl} ${borderRadius.xl} ${spacing.xs}`,
                 background: msg.role === 'user' ? colors.gradients.primary : colors.glass.light,
                 color: msg.role === 'user' ? colors.text.onDark : colors.text.primary,
                 border: msg.role === 'assistant' ? `1px solid ${colors.glass.border}` : 'none',
@@ -190,8 +199,8 @@ export default function CreateConversationPage() {
                 exit={{ opacity: 0, y: 8 }}
                 style={{
                   alignSelf: 'flex-start',
-                  padding: `${spacing.md}px ${spacing.lg}px`,
-                  borderRadius: `${borderRadius.xl}px ${borderRadius.xl}px ${borderRadius.xl}px 4px`,
+                  padding: `${spacing.md} ${spacing.lg}`,
+                  borderRadius: `${borderRadius.xl} ${borderRadius.xl} ${borderRadius.xl} ${spacing.xs}`,
                   background: colors.glass.light,
                   border: `1px solid ${colors.glass.border}`,
                   display: 'flex',
@@ -219,7 +228,7 @@ export default function CreateConversationPage() {
           style={{
             display: 'flex',
             gap: spacing.sm,
-            padding: `${spacing.sm}px`,
+            padding: spacing.sm,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
             backdropFilter: 'blur(12px)',
@@ -236,7 +245,7 @@ export default function CreateConversationPage() {
             placeholder="Type your message..."
             style={{
               flex: 1,
-              padding: `${spacing.sm}px ${spacing.md}px`,
+              padding: `${spacing.sm} ${spacing.md}`,
               background: 'transparent',
               border: 'none',
               fontSize: 15,
@@ -252,7 +261,7 @@ export default function CreateConversationPage() {
             style={{
               background: input.trim() ? colors.gradients.primary : colors.glass.medium,
               minWidth: 44,
-              padding: `0 ${spacing.md}px`,
+              padding: `0 ${spacing.md}`,
               transition: 'background 0.2s',
             }}
           >

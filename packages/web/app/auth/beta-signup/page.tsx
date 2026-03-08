@@ -63,7 +63,7 @@ export default function BetaSignupPage() {
                       style={{ width: '100%' }}
                     />
                   </div>
-                  <Button type="submit" variant="primary" fullWidth size="lg" style={{ background: colors.gradients.primary }}>
+                  <Button type="submit" variant="primary" fullWidth size="lg">
                     Join Waitlist
                   </Button>
                 </form>

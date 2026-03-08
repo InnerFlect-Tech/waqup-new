@@ -209,14 +209,14 @@ OAuth: /auth/callback exchanges code for session, sets cookies.`}
         {/* Migrations */}
         <Section title="Migrations" colors={colors}>
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
-            Single source of truth: <code style={{ background: colors.background.secondary, padding: '2px 6px', borderRadius: 4 }}>supabase/migrations/</code>
+            Single source of truth: <code style={{ background: colors.background.secondary, padding: `${spacing.xs} ${spacing.sm}`, borderRadius: borderRadius.sm }}>supabase/migrations/</code>
           </Typography>
           <ul style={{ color: colors.text.secondary, fontSize: '14px', paddingLeft: spacing.lg, marginBottom: spacing.sm }}>
             <li>20260308000000_create_content_items.sql — table, indexes, triggers, RLS</li>
             <li>20260308000001_add_audio_columns.sql — audio_url, voice_type, audio_settings</li>
           </ul>
           <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '13px' }}>
-            Local: <code style={{ background: colors.background.secondary, padding: '2px 6px', borderRadius: 4 }}>supabase db reset</code>. Deploy: <code style={{ background: colors.background.secondary, padding: '2px 6px', borderRadius: 4 }}>supabase db push</code>. Verify: <code style={{ background: colors.background.secondary, padding: '2px 6px', borderRadius: 4 }}>npm run supabase:diff</code>.
+            Local: <code style={{ background: colors.background.secondary, padding: `${spacing.xs} ${spacing.sm}`, borderRadius: borderRadius.sm }}>supabase db reset</code>. Deploy: <code style={{ background: colors.background.secondary, padding: `${spacing.xs} ${spacing.sm}`, borderRadius: borderRadius.sm }}>supabase db push</code>. Verify: <code style={{ background: colors.background.secondary, padding: `${spacing.xs} ${spacing.sm}`, borderRadius: borderRadius.sm }}>npm run supabase:diff</code>.
           </Typography>
         </Section>
 

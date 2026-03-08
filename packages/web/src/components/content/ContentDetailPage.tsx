@@ -86,17 +86,16 @@ export function ContentDetailPage({
           <Button
             variant="primary"
             size="md"
-            style={{ background: colors.gradients.primary }}
             onClick={() => setIsPlaying(!isPlaying)}
           >
             {isPlaying ? (
               <>
-                <Pause size={18} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+                <Pause size={18} strokeWidth={2.5}  />
                 Pause
               </>
             ) : (
               <>
-                <Play size={18} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+                <Play size={18} strokeWidth={2.5}  />
                 Play
               </>
             )}
@@ -117,7 +116,7 @@ export function ContentDetailPage({
         <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.xl }}>
           <Link href={editHref} style={{ textDecoration: 'none' }}>
             <Button variant="outline" size="md">
-              <Edit size={16} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+              <Edit size={16} strokeWidth={2.5}  />
               Edit
             </Button>
           </Link>
@@ -127,7 +126,7 @@ export function ContentDetailPage({
             </Button>
           </Link>
           <Button variant="ghost" size="md" onClick={handleShare} style={{ color: colors.text.secondary }}>
-            <Share2 size={16} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+            <Share2 size={16} strokeWidth={2.5}  />
             Share
           </Button>
           <Button
@@ -136,7 +135,7 @@ export function ContentDetailPage({
             onClick={handleDelete}
             style={{ color: colors.error ?? colors.text.secondary }}
           >
-            <Trash2 size={16} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+            <Trash2 size={16} strokeWidth={2.5}  />
             {showDeleteConfirm ? 'Confirm delete?' : 'Delete'}
           </Button>
         </div>

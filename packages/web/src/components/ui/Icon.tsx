@@ -1,6 +1,6 @@
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
-import { useTheme } from '@/theme';
+import { useTheme, spacing, borderRadius } from '@/theme';
 
 export type IconName = keyof typeof LucideIcons;
 
@@ -78,11 +78,11 @@ export const IconButton: React.FC<IconProps & { onClick?: () => void }> = ({
         background: 'transparent',
         border: 'none',
         cursor: 'pointer',
-        padding: '4px',
+        padding: spacing.xs,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: '4px',
+        borderRadius: borderRadius.sm,
         transition: 'all 0.2s ease',
       }}
       onMouseEnter={(e) => {

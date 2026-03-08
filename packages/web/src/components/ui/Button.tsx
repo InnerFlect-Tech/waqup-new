@@ -7,10 +7,10 @@ import { useTheme } from '@/theme';
 import { Typography } from './Typography';
 import { Loading } from './Loading';
 import { getTextColor, getTextVariant } from '@waqup/shared/utils';
-import { spacing } from '@/theme';
+import { BUTTON_TOKENS, BLUR } from '@/theme';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -21,10 +21,10 @@ const buttonVariants = cva(
         ghost: 'border-0',
       },
       size: {
-        sm: 'min-h-[32px] px-4 py-2 text-sm',
-        md: 'min-h-[44px] px-6 py-3 text-base',
-        lg: 'min-h-[52px] px-8 py-4 text-base',
-        icon: 'min-h-[40px] min-w-[40px] p-0',
+        sm: 'text-sm',
+        md: 'text-base',
+        lg: 'text-base',
+        icon: 'p-0',
       },
     },
     defaultVariants: {
@@ -67,15 +67,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         case 'primary':
           return {
             background: colors.gradients.primary,
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            backdropFilter: BLUR.md,
+            WebkitBackdropFilter: BLUR.md,
             boxShadow: `0 2px 8px ${colors.accent.primary}40`,
           };
         case 'secondary':
           return {
             background: colors.glass.light,
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            backdropFilter: BLUR.md,
+            WebkitBackdropFilter: BLUR.md,
             borderColor: colors.glass.border,
           };
         case 'outline':
@@ -90,8 +90,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         case 'ghost':
           return {
             background: colors.glass.transparent,
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            backdropFilter: BLUR.md,
+            WebkitBackdropFilter: BLUR.md,
             color: colors.text.primary,
           };
         default:
@@ -132,6 +132,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         style={{
           ...variantStyle(),
+          borderRadius: BUTTON_TOKENS.borderRadius,
+          minHeight: size === 'icon' ? BUTTON_TOKENS.iconOnlySize : size ? BUTTON_TOKENS.minHeight[size] : undefined,
+          paddingLeft: size && size !== 'icon' ? BUTTON_TOKENS.paddingX[size] : undefined,
+          paddingRight: size && size !== 'icon' ? BUTTON_TOKENS.paddingX[size] : undefined,
+          paddingTop: size && size !== 'icon' ? BUTTON_TOKENS.paddingY[size] : undefined,
+          paddingBottom: size && size !== 'icon' ? BUTTON_TOKENS.paddingY[size] : undefined,
+          minWidth: size === 'icon' ? BUTTON_TOKENS.iconOnlySize : undefined,
           cursor: disabled || loading ? 'not-allowed' : 'pointer',
           ...style,
         }}
@@ -161,7 +168,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: spacing.sm,
+              gap: BUTTON_TOKENS.iconGap,
               flexWrap: 'nowrap',
             }}
           >

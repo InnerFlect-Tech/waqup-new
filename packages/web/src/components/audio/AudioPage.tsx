@@ -76,17 +76,16 @@ export function AudioPage({ id, contentType, title, backHref, onSave }: AudioPag
           <Button
             variant="primary"
             size="md"
-            style={{ background: colors.gradients.primary }}
             onClick={() => setIsPreviewPlaying(!isPreviewPlaying)}
           >
             {isPreviewPlaying ? (
               <>
-                <Pause size={18} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+                <Pause size={18} strokeWidth={2.5}  />
                 Pause
               </>
             ) : (
               <>
-                <Play size={18} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+                <Play size={18} strokeWidth={2.5}  />
                 Preview
               </>
             )}
@@ -175,7 +174,7 @@ export function AudioPage({ id, contentType, title, backHref, onSave }: AudioPag
               Cancel
             </Button>
           </Link>
-          <Button variant="primary" size="md" style={{ background: colors.gradients.primary }} onClick={handleSave}>
+          <Button variant="primary" size="md"  onClick={handleSave}>
             Save
           </Button>
         </div>

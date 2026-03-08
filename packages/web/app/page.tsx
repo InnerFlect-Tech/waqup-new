@@ -255,6 +255,7 @@ export default function LandingPage() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridAutoRows: 'minmax(200px, 1fr)',
               gap: spacing.xl,
             }}
           >
@@ -275,6 +276,7 @@ export default function LandingPage() {
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
+                    height: '100%',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-8px)';
@@ -312,10 +314,10 @@ export default function LandingPage() {
                     <IconComponent size={28} color={colors.text.onDark} strokeWidth={2.5} />
                   </span>
                   </div>
-                  <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+                  <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm, flexShrink: 0 }}>
                     {feature.title}
                   </Typography>
-                  <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
+                  <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6, flex: 1, minHeight: 0 }}>
                     {feature.description}
                   </Typography>
                 </div>
@@ -343,9 +345,9 @@ export default function LandingPage() {
               boxShadow: `0 16px 64px ${colors.accent.primary}40`,
             }}
           >
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: spacing.lg }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gridAutoRows: 'minmax(56px, 1fr)', gap: spacing.lg, alignItems: 'stretch' }}>
               {benefits.map((benefit, index) => (
-                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: spacing.md, height: '100%' }}>
                   <div
                     style={{
                       width: '32px',

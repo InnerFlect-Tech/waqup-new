@@ -159,7 +159,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
-          gap: '8px',
+          gap: spacing.sm,
           zIndex: 10,
           alignItems: 'center',
         }}

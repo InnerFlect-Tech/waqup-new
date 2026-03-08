@@ -33,8 +33,8 @@ export function CreateProgressBar({ currentStep }: CreateProgressBarProps) {
       style={{
         width: '100%',
         maxWidth: '48rem',
-        margin: `0 auto ${spacing.xl}px`,
-        padding: `${spacing.md}px ${spacing.lg}px`,
+        margin: `0 auto ${spacing.xl}`,
+        padding: `${spacing.md} ${spacing.lg}`,
         borderRadius: borderRadius.xl,
         background: colors.glass.light,
         backdropFilter: 'blur(12px)',

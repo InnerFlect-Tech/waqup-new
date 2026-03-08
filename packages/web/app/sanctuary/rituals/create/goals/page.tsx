@@ -71,6 +71,7 @@ export default function RitualCreateGoalsPage() {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gridAutoRows: 'minmax(140px, 1fr)',
           gap: spacing.md,
           marginBottom: spacing.xl,
         }}
@@ -101,6 +102,9 @@ export default function RitualCreateGoalsPage() {
                 transition: 'all 0.2s ease',
                 position: 'relative',
                 transform: isSelected ? 'translateY(-2px)' : 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
               }}
             >
               {isSelected && (

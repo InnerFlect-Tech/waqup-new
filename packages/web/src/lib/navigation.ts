@@ -3,7 +3,7 @@
  */
 
 import type { LucideIcon } from 'lucide-react';
-import { Sparkles, Bell, GraduationCap, Library, TrendingUp, CreditCard, Settings, Plus, BookOpen, Shield } from 'lucide-react';
+import { Sparkles, Bell, GraduationCap, TrendingUp, CreditCard, Settings, Plus, BookOpen, Shield, Mic } from 'lucide-react';
 
 export interface MenuItem {
   name: string;
@@ -21,7 +21,7 @@ export interface QuickAction {
 }
 
 export const SANCTUARY_MENU_ITEMS: MenuItem[] = [
-  { name: 'Library', description: 'Your rituals and affirmations', icon: Library, href: '/library', count: 0 },
+  { name: 'My Voice', description: 'Set up your cloned voice for TTS', icon: Mic, href: '/sanctuary/voice' },
   { name: 'Progress', description: 'Track your transformation journey', icon: TrendingUp, href: '/sanctuary/progress' },
   { name: 'Credits', description: 'Manage your credits', icon: CreditCard, href: '/sanctuary/credits', count: 50 },
   { name: 'Settings', description: 'Customize your experience', icon: Settings, href: '/sanctuary/settings' },

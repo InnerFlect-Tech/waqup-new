@@ -39,6 +39,7 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/sanctuary', section: 'Sanctuary', description: 'Sanctuary home', status: 'exists', note: 'Clarify vs /home' },
   { path: '/sanctuary/settings', section: 'Sanctuary', description: 'Settings', status: 'exists' },
   { path: '/sanctuary/credits', section: 'Sanctuary', description: 'Credits', status: 'exists' },
+  { path: '/sanctuary/voice', section: 'Sanctuary', description: 'My Voice', status: 'exists' },
   { path: '/sanctuary/progress', section: 'Sanctuary', description: 'Progress', status: 'exists' },
   { path: '/sanctuary/referral', section: 'Sanctuary', description: 'Referral', status: 'exists' },
   { path: '/sanctuary/reminders', section: 'Sanctuary', description: 'Reminders', status: 'exists' },

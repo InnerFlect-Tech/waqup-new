@@ -6,6 +6,112 @@
 
 ---
 
+## Credits on Create + Voice Setup (non-step)
+
+### Content credit costs and ElevenLabs voice setup
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared content credit costs (affirmation 1/2, meditation 2/4, ritual 5/10; base vs AI voice). Updated create page, conversation page, and sanctuary create init pages to display costs. Created ElevenLabs Professional Voice Cloning integration: shared service (create PVC, add samples, TTS preview), API routes (create, samples, get, patch, preview), voice setup page at /sanctuary/voice (create voice, upload samples, preview). Database migration for profiles.elevenlabs_voice_id. Added My Voice to Sanctuary menu. ELEVENLABS_API_KEY in .env.example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (plan implementation)
+
+### Content credit costs and ElevenLabs voice setup
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-08
+- **Notes**:
+  - **Credit costs**: Shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; 2x with AI). Applied to create page, conversation page, and sanctuary init pages (affirmations, meditations, rituals).
+  - **Voice setup page**: `/sanctuary/voice` with ElevenLabs Professional Voice Cloning flow — create PVC voice, upload samples, preview TTS, update metadata.
+  - **API routes**: POST /api/voice/create, POST /api/voice/samples, GET/PATCH /api/voice, POST /api/voice/preview.
+  - **Database**: Migration `20260308000002_add_elevenlabs_voice_to_profiles.sql` adds elevenlabs_voice_id, elevenlabs_voice_name, elevenlabs_voice_language to profiles.
+  - **Navigation**: "My Voice" added to SANCTUARY_MENU_ITEMS.
+  - **Env**: ELEVENLABS_API_KEY in .env.example (server-side).
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (non-step)
+
+### Content credit costs and ElevenLabs voice setup page
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; base vs with AI). Updated create page, conversation page, and sanctuary create init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: shared service (`createPvcVoice`, `addSamplesToPvc`, `getVoice`, `textToSpeech`), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice`, migration for `profiles.elevenlabs_voice_id`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to env example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (non-step)
+
+### Content credit costs and ElevenLabs voice setup page
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; 2x with AI). Updated create page, conversation page, and sanctuary init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: migration for `profiles.elevenlabs_voice_id`, shared `elevenlabs.ts` service (create PVC, add samples, get voice, TTS), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice` with create/upload/preview flow. Added "My Voice" to Sanctuary menu, `ELEVENLABS_API_KEY` to env example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (non-step)
+
+### Content credit costs and ElevenLabs voice setup page
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10 credits; 2x with AI). Updated create page, conversation page, and sanctuary init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: shared service (`createPvcVoice`, `addSamplesToPvc`, `getVoice`, `textToSpeech`), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice`, migration for `profiles.elevenlabs_voice_id`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to .env.example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (non-step)
+
+### Content credit costs and ElevenLabs voice setup
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; base vs with AI). Updated create page, conversation page, and sanctuary create init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: shared service (`createPvcVoice`, `addSamplesToPvc`, `getVoice`, `textToSpeech`), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice`, migration for `profiles.elevenlabs_voice_id`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to env example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (plan implementation)
+
+### Content credit costs and ElevenLabs voice setup
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; base vs with AI). Updated create page, conversation page, and sanctuary init pages (affirmations, meditations, rituals) to display credit costs. Created ElevenLabs Professional Voice Cloning integration: migration for `profiles.elevenlabs_voice_id`, shared `elevenlabs.ts` service (create PVC, add samples, get voice, TTS), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to env examples.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (non-step)
+
+### Content credit costs and ElevenLabs voice setup page
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; base vs with AI). Updated create page, conversation page, and sanctuary init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: shared service (`createPvcVoice`, `addSamplesToPvc`, `getVoice`, `textToSpeech`), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice`, migration for `profiles.elevenlabs_voice_id`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to .env.example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (plan implementation)
+
+### Content credit costs and ElevenLabs voice setup
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10). Updated create page, conversation page, and sanctuary init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: shared service (`packages/shared/src/services/ai/elevenlabs.ts`), API routes (create, samples, get/patch, preview), voice setup page at `/sanctuary/voice`, migration for `profiles.elevenlabs_voice_id`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to .env.example.
+- **Updated**: 2026-03-08
+
+---
+
+## Credits on Create + Voice Setup (plan implementation)
+
+### Content credit costs and ElevenLabs voice setup
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Added shared `CONTENT_CREDIT_COSTS` (affirmation 1/2, meditation 2/4, ritual 5/10; base vs with AI). Updated create page, conversation page, and sanctuary init pages to show credit costs. Created ElevenLabs Professional Voice Cloning integration: shared service (`createPvcVoice`, `addSamplesToPvc`, `getVoice`, `textToSpeech`), API routes (`/api/voice`, `/api/voice/create`, `/api/voice/samples`, `/api/voice/preview`), voice setup page at `/sanctuary/voice`, migration for `profiles.elevenlabs_voice_id`, and "My Voice" in Sanctuary menu. Added `ELEVENLABS_API_KEY` to env example.
+- **Updated**: 2026-03-08
+
+---
+
 ## EBADENGINE and version consistency (non-step)
 
 ### Node version alignment and deprecated package mitigation

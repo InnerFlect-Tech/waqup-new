@@ -19,7 +19,7 @@ export default function OnboardingPage() {
     >
       <div style={{ marginTop: spacing.lg }}>
         <Link href="/onboarding/profile" style={{ textDecoration: 'none', marginRight: spacing.md }}>
-          <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
+          <Button variant="primary" size="md">
             Continue to Profile
           </Button>
         </Link>

@@ -233,23 +233,23 @@ export default function ShowcasePage() {
           {/* UI Components - Buttons */}
           <Section title="UI Components - Buttons" colors={colors}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-              <Button variant="primary" size="sm" style={{ background: colors.gradients.primary }}>
+              <Button variant="primary" size="sm">
                 Primary Small
               </Button>
-              <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
+              <Button variant="primary" size="md">
                 Primary Medium
               </Button>
-              <Button variant="primary" size="lg" style={{ background: colors.gradients.primary }}>
+              <Button variant="primary" size="lg">
                 Primary Large
               </Button>
               <Button variant="secondary" size="md">Secondary Button</Button>
               <Button variant="outline" size="md">Outline Button</Button>
               <Button variant="text" size="md">Text Button</Button>
               <Button variant="ghost" size="md">Ghost Button</Button>
-              <Button variant="primary" size="md" loading style={{ background: colors.gradients.primary }}>
+              <Button variant="primary" size="md" loading>
                 Loading Button
               </Button>
-              <Button variant="primary" size="md" disabled style={{ background: colors.gradients.primary }}>
+              <Button variant="primary" size="md" disabled>
                 Disabled Button
               </Button>
             </div>
@@ -296,7 +296,6 @@ export default function ShowcasePage() {
                 <Button
                   variant={isSpeaking ? 'secondary' : 'primary'}
                   onClick={() => setIsSpeaking(!isSpeaking)}
-                  style={isSpeaking ? {} : { background: colors.gradients.primary }}
                 >
                   {isSpeaking ? 'Pause' : 'Play'}
                 </Button>

@@ -131,7 +131,7 @@ export default function MarketplaceCreatorPage() {
             {activeTab === 'analytics' && 'Once you publish content, your analytics will appear here.'}
           </Typography>
           <Link href="/create" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="md" style={{ background: colors.gradients.primary }}>
+            <Button variant="primary" size="md">
               {activeTab === 'analytics' ? 'Create content' : 'Publish content'}
             </Button>
           </Link>

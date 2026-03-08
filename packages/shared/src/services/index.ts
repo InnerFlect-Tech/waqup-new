@@ -11,8 +11,8 @@ export * from './supabase';
 // Auth services
 export * from './auth/authService';
 
-// AI services will be added here
-// export * from './ai';
+// AI services
+export * from './ai';
 
 // Payment services will be added here
 // export * from './payments';

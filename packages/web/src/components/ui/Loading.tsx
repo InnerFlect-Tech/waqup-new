@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useTheme } from '@/theme';
+import { useTheme, spacing } from '@/theme';
 
 export interface LoadingProps {
   variant?: 'spinner' | 'dots' | 'skeleton';
@@ -69,7 +69,7 @@ const DotsLoading: React.FC<{ size: 'sm' | 'md' | 'lg'; resolvedColor: string; s
   const dotSize = size === 'sm' ? 6 : size === 'md' ? 8 : 10;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px', ...style }} aria-label="Loading" role="status">
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: spacing.xs, ...style }} aria-label="Loading" role="status">
       <div style={{ width: dotSize, height: dotSize, backgroundColor: resolvedColor, borderRadius: '50%', animation: 'dotPulse 1.4s ease-in-out infinite', animationDelay: '0s' }} />
       <div style={{ width: dotSize, height: dotSize, backgroundColor: resolvedColor, borderRadius: '50%', animation: 'dotPulse 1.4s ease-in-out infinite', animationDelay: '0.2s' }} />
       <div style={{ width: dotSize, height: dotSize, backgroundColor: resolvedColor, borderRadius: '50%', animation: 'dotPulse 1.4s ease-in-out infinite', animationDelay: '0.4s' }} />

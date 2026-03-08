@@ -45,7 +45,7 @@ export default function ConfirmEmailPage() {
             </Typography>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
               <Link href="/login" style={{ textDecoration: 'none' }}>
-                <Button variant="primary" fullWidth size="lg" style={{ background: colors.gradients.primary }}>
+                <Button variant="primary" fullWidth size="lg">
                   Back to Sign In
                 </Button>
               </Link>

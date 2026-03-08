@@ -147,9 +147,9 @@ function JoinPageInner() {
               </div>
 
               <Link href="/signup" style={{ textDecoration: 'none' }}>
-                <Button variant="primary" fullWidth size="lg" style={{ background: colors.gradients.primary, marginBottom: spacing.md }}>
+                <Button variant="primary" fullWidth size="lg" style={{ marginBottom: spacing.md }}>
                   Create your account now
-                  <ArrowRight size={16} style={{ marginLeft: spacing.sm }} />
+                  <ArrowRight size={16} />
                 </Button>
               </Link>
               <Link href="/login" style={{ textDecoration: 'none' }}>
@@ -166,7 +166,7 @@ function JoinPageInner() {
 
   return (
     <PageShell intensity="strong">
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: `${spacing.xxl}px ${spacing.lg}px`, paddingBottom: 80 }}>
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: `${spacing.xxl} ${spacing.lg}` }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -185,7 +185,7 @@ function JoinPageInner() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: spacing.sm,
-                padding: `${spacing.xs}px ${spacing.md}px`,
+                padding: `${spacing.xs} ${spacing.md}`,
                 borderRadius: borderRadius.full,
                 background: `${colors.accent.primary}15`,
                 border: `1px solid ${colors.accent.primary}40`,
@@ -323,7 +323,7 @@ function JoinPageInner() {
                 {refCode && (
                   <div
                     style={{
-                      padding: `${spacing.sm}px ${spacing.md}px`,
+                      padding: `${spacing.sm} ${spacing.md}`,
                       borderRadius: borderRadius.md,
                       background: '#34d39915',
                       border: '1px solid #34d39940',
@@ -373,9 +373,9 @@ function JoinPageInner() {
                     gap: spacing.sm,
                   }}
                 >
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#f97316' }} />
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: colors.accent.primary }} />
                   <Typography variant="small" style={{ color: colors.text.secondary }}>
-                    <span style={{ color: '#f97316', fontWeight: 700 }}>47 spots</span> remaining at founding price
+                    <span style={{ color: colors.accent.primary, fontWeight: 700 }}>47 spots</span> remaining at founding price
                   </Typography>
                 </div>
 
@@ -412,10 +412,10 @@ function JoinPageInner() {
                     fullWidth
                     size="lg"
                     loading={submitting}
-                    style={{ background: colors.gradients.primary, marginBottom: spacing.md }}
+                    style={{ marginBottom: spacing.md }}
                   >
                     {submitting ? 'Claiming your spot...' : 'Claim founding membership'}
-                    {!submitting && <ArrowRight size={16} style={{ marginLeft: spacing.sm }} />}
+                    {!submitting && <ArrowRight size={16} />}
                   </Button>
 
                   <Typography variant="small" style={{ color: colors.text.secondary, textAlign: 'center', display: 'block', marginBottom: spacing.lg, lineHeight: 1.5 }}>

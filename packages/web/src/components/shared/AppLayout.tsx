@@ -65,7 +65,8 @@ const USER_MENU_ITEMS: UserMenuItem[] = [
   { name: 'Settings', path: '/sanctuary/settings', icon: <Settings className="w-4 h-4" /> },
 ];
 
-const PUBLIC_ROUTES = ['/', '/pricing', '/how-it-works'];
+/** Routes that redirect logged-in users to sanctuary (pricing is excluded so users can upgrade) */
+const ROUTES_REDIRECT_WHEN_LOGGED_IN = ['/', '/how-it-works'];
 const ONBOARDING_ROUTES = [
   '/onboarding',
   '/onboarding/profile',
@@ -114,7 +115,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   useEffect(() => {
-    if (user && pathname && PUBLIC_ROUTES.includes(pathname)) {
+    if (user && pathname && ROUTES_REDIRECT_WHEN_LOGGED_IN.includes(pathname)) {
       router.push('/sanctuary');
     }
   }, [user, pathname, router]);
@@ -156,12 +157,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           }
         >
           <div
-            className="mx-auto px-4 sm:px-6 lg:px-8"
+            className="mx-auto pl-12 pr-6 sm:pl-16 sm:pr-8 lg:pl-20 lg:pr-10"
             style={{ maxWidth: MAX_WIDTH_7XL }}
           >
             <div
               className="flex items-center justify-between"
-              style={{ height: NAV_HEIGHT }}
+              style={{ height: NAV_HEIGHT, columnGap: spacing.xxxl }}
             >
               <div
                 className="flex-shrink-0 cursor-pointer"
@@ -180,21 +181,23 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </h1>
               </div>
 
-              <div className="hidden md:flex items-center gap-6">
-                <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center" style={{ gap: spacing.xl }}>
+                <div className="flex items-center" style={{ gap: spacing.lg }}>
                   {navItems.map((item) => (
                     <Button
                       key={item.path}
                       variant="ghost"
                       size="sm"
                       onClick={() => router.push(item.path)}
-                      className="flex items-center gap-2"
-                    style={
-                      pathname === item.path
-                        ? { color: colors.text.primary, background: colors.glass.border }
-                        : { color: colors.text.secondary }
-                    }
-                  >
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: spacing.sm,
+                        ...(pathname === item.path
+                          ? { color: colors.text.primary, background: colors.glass.border }
+                          : { color: colors.text.secondary }),
+                      }}
+                    >
                     {item.icon}
                     <span>{item.name}</span>
                   </Button>
@@ -205,7 +208,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center gap-3"
+                    style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}
                   >
                     <User className="w-5 h-5" style={{ color: colors.text.primary }} />
                     <span className="hidden sm:inline" style={{ color: colors.text.primary }}>
@@ -225,8 +228,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                   {showProfileMenu && (
                     <div
-                      className="absolute right-0 mt-2 w-64 rounded-lg py-1 shadow-lg backdrop-blur-lg"
+                      className="absolute right-0 w-64 rounded-lg shadow-lg backdrop-blur-lg"
                       style={{
+                        marginTop: spacing.sm,
+                        padding: `${spacing.sm} ${spacing.md}`,
                         background: 'rgba(0,0,0,0.9)',
                         border: `1px solid ${colors.glass.border}`,
                       }}
@@ -235,8 +240,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         <Button
                           key={item.path}
                           variant="ghost"
-                          className="w-full justify-between px-4 py-2 text-sm"
+                          className="w-full justify-between text-sm"
                           style={{
+                            padding: `${spacing.md} ${spacing.lg}`,
+                            gap: spacing.sm,
                             color: item.highlight
                               ? colors.accent.tertiary
                               : colors.text.secondary,
@@ -246,7 +253,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             setShowProfileMenu(false);
                           }}
                         >
-                          <div className="flex items-center gap-2">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                             {item.icon}
                             <span>{item.name}</span>
                           </div>
@@ -261,17 +268,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                       ))}
 
                       <div
-                        className="my-2"
-                        style={{ height: 1, background: colors.glass.border }}
+                        style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }}
                       />
 
                       <Button
                         variant="ghost"
-                        className="w-full justify-start px-4 py-2 text-sm"
-                        style={{ color: colors.text.secondary }}
+                        className="w-full justify-start text-sm"
+                        style={{ padding: `${spacing.md} ${spacing.lg}`, color: colors.text.secondary }}
                         onClick={handleSignOut}
                       >
-                        <LogOut className="w-4 h-4 mr-2" />
+                        <LogOut className="w-4 h-4" />
                         Sign out
                       </Button>
                     </div>
@@ -307,7 +313,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="md:hidden overflow-hidden backdrop-blur-lg"
             style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
           >
-            <div className="px-2 pt-2 pb-3 space-y-1">
+            <div style={{ padding: `${spacing.sm} ${spacing.sm} ${spacing.md} ${spacing.sm}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               {navItems.map((item) => (
                 <Button
                   key={item.path}
@@ -325,16 +331,17 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               ))}
 
               <div
-                className="my-2"
-                style={{ height: 1, background: colors.glass.border }}
+                style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }}
               />
 
               {USER_MENU_ITEMS.map((item) => (
                 <Button
                   key={item.path}
                   variant="ghost"
-                  className="w-full justify-between px-4 py-2 text-sm"
+                  className="w-full justify-between"
                   style={{
+                    padding: `${spacing.md} ${spacing.lg}`,
+                    gap: spacing.sm,
                     color: item.highlight ? colors.accent.tertiary : colors.text.secondary,
                   }}
                   onClick={() => {
@@ -355,10 +362,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Button
                 variant="ghost"
                 className="w-full justify-start text-sm"
-                style={{ color: colors.text.secondary }}
+                style={{ color: colors.text.secondary, gap: spacing.sm }}
                 onClick={handleSignOut}
               >
-                <LogOut className="w-4 h-4 mr-2" />
+                <LogOut className="w-4 h-4" />
                 Sign out
               </Button>
             </div>
@@ -381,12 +388,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           : { background: 'transparent' }
         }
       >
-        <div
-          className="mx-auto px-4 sm:px-6 lg:px-8"
-          style={{ maxWidth: MAX_WIDTH_7XL }}
+          <div
+            className="mx-auto pl-12 pr-6 sm:pl-16 sm:pr-8 lg:pl-20 lg:pr-10"
+            style={{ maxWidth: MAX_WIDTH_7XL }}
         >
           <div
-            className="flex items-center justify-between"
+            className="flex items-center justify-between gap-x-16"
             style={{ height: NAV_HEIGHT }}
           >
             <div
@@ -404,7 +411,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </h1>
             </div>
 
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-6">
               <Button
                 variant="ghost"
                 size="sm"
@@ -453,7 +460,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 variant="primary"
                 size="sm"
                 onClick={() => router.push('/login')}
-                style={{ background: colors.gradients.primary }}
               >
                 Sign In
               </Button>
@@ -485,7 +491,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           className="md:hidden overflow-hidden backdrop-blur-lg"
           style={{ background: 'rgba(0,0,0,0.8)' }}
         >
-          <div className="px-2 pt-2 pb-3 space-y-1">
+          <div style={{ padding: `${spacing.sm} ${spacing.sm} ${spacing.md} ${spacing.sm}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
             <Button
               variant="ghost"
               onClick={() => router.push('/how-it-works')}
@@ -522,7 +528,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               variant="primary"
               onClick={() => router.push('/login')}
               className="w-full justify-start"
-              style={{ background: colors.gradients.primary }}
             >
               Sign In
             </Button>

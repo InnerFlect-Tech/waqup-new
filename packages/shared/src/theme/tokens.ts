@@ -19,12 +19,41 @@ export const typography = {
   smallBold: { fontSize: 12, fontWeight: 600, lineHeight: 16, letterSpacing: 0 },
 } as const;
 
+/** Backdrop blur values (px) - SSOT for glass/backdrop effects */
+export const blurTokens = {
+  sm: 8,
+  md: 10,
+  lg: 12,
+  xl: 20,
+} as const;
+
 /** Semantic shadow values - platforms build CSS string or RN StyleSheet object */
 export const shadowTokens = {
   sm: { y: 1, blur: 2, opacity: 0.05 },
   md: { y: 2, blur: 4, opacity: 0.08 },
   lg: { y: 4, blur: 8, opacity: 0.1 },
   xl: { y: 8, blur: 16, opacity: 0.12 },
+} as const;
+
+/**
+ * Button design tokens - SSOT for all button variants
+ * Used by primary, secondary, and CTA buttons across Web and Mobile
+ */
+export const buttonTokens = {
+  /** Border radius - pill-like rounded corners */
+  borderRadius: 16,
+  /** Gap between icon and text (matches spacing.sm) */
+  iconGap: 8,
+  /** Icon size (px) per button size - proportionate to text */
+  iconSize: { sm: 14, md: 16, lg: 20 } as const,
+  /** Horizontal padding (px) per size */
+  paddingX: { sm: 16, md: 24, lg: 32 } as const,
+  /** Vertical padding (px) per size */
+  paddingY: { sm: 8, md: 12, lg: 16 } as const,
+  /** Minimum height (px) per size - touch-friendly targets (44pt for md/lg) */
+  minHeight: { sm: 32, md: 44, lg: 52 } as const,
+  /** Icon-only button size (px) */
+  iconOnlySize: 40,
 } as const;
 
 /** Layout constants (px) - Web uses as CSS, Mobile may scale */

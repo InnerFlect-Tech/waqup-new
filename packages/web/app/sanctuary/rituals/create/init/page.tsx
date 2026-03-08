@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import { Target, Heart, Mic, Sparkles } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
+import { useCreateInitGate } from '@/hooks';
+import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 
 const RITUAL_STEPS = [
   {
@@ -37,7 +39,17 @@ const TIPS = [
 
 export default function RitualCreateInitPage() {
   const { setCurrentStep } = useContentCreation();
+  const { shouldShow, markSeen } = useCreateInitGate('/sanctuary/rituals/create/goals');
+
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
+
+  const costs = CONTENT_CREDIT_COSTS.ritual;
+  const creditRange =
+    costs.withAi > costs.base
+      ? `${costs.base}–${costs.withAi} credits`
+      : `${costs.base} credit${costs.base > 1 ? 's' : ''}`;
+
+  if (!shouldShow) return null;
 
   return (
     <CreateFlowInitStep
@@ -47,6 +59,8 @@ export default function RitualCreateInitPage() {
       tips={TIPS}
       nextHref="/sanctuary/rituals/create/goals"
       nextLabel="Begin Journey →"
+      creditRange={creditRange}
+      onBegin={markSeen}
     />
   );
 }

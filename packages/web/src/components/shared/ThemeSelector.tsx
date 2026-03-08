@@ -74,7 +74,7 @@ export const ThemeSelector: React.FC = () => {
             zIndex: 1001,
             display: 'flex',
             flexDirection: 'column',
-            gap: spacing.xs,
+            gap: spacing.sm,
             padding: spacing.md,
             borderRadius: borderRadius.md,
             background: theme.colors.glass.opaque,

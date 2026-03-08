@@ -2,7 +2,7 @@
  * Web format adapters - convert canonical tokens to CSS values
  */
 
-import { spacing as sp, borderRadius as br, typography as ty, shadowTokens } from '@waqup/shared/theme';
+import { spacing as sp, borderRadius as br, typography as ty, shadowTokens, buttonTokens, blurTokens } from '@waqup/shared/theme';
 import { layout } from '@waqup/shared/theme';
 
 const px = (n: number) => `${n}px`;
@@ -28,7 +28,15 @@ export const shadows = Object.fromEntries(
   Object.entries(shadowTokens).map(([k, v]) => [k, `0 ${v.y}px ${v.blur}px rgba(0, 0, 0, ${v.opacity})`])
 ) as Record<keyof typeof shadowTokens, string>;
 
-/** Layout design tokens (CSS values) */
+/** Blur tokens (CSS values) - SSOT for backdrop-filter blur */
+export const BLUR = {
+  sm: `blur(${blurTokens.sm}px)`,
+  md: `blur(${blurTokens.md}px)`,
+  lg: `blur(${blurTokens.lg}px)`,
+  xl: `blur(${blurTokens.xl}px)`,
+} as const;
+
+/** Layout design tokens (CSS values). CONTENT_MAX_WIDTH = maxWidth7xl (1280px) for main content. */
 export const CONTENT_MAX_WIDTH = px(layout.maxWidth7xl);
 export const AUTH_CARD_MAX_WIDTH = px(layout.authCardMaxWidth);
 export const CONTENT_NARROW = px(layout.contentNarrow);
@@ -46,6 +54,33 @@ export const INPUT_GAP = spacing.lg;
 
 /** Semantic spacing helpers - use for consistent UI patterns */
 export const ICON_TEXT_GAP = spacing.sm;
+
+/** Button design tokens (CSS values) - SSOT for Button component */
+export const BUTTON_TOKENS = {
+  borderRadius: px(buttonTokens.borderRadius),
+  iconGap: px(buttonTokens.iconGap),
+  iconSize: {
+    sm: px(buttonTokens.iconSize.sm),
+    md: px(buttonTokens.iconSize.md),
+    lg: px(buttonTokens.iconSize.lg),
+  },
+  iconOnlySize: px(buttonTokens.iconOnlySize),
+  paddingX: {
+    sm: px(buttonTokens.paddingX.sm),
+    md: px(buttonTokens.paddingX.md),
+    lg: px(buttonTokens.paddingX.lg),
+  },
+  paddingY: {
+    sm: px(buttonTokens.paddingY.sm),
+    md: px(buttonTokens.paddingY.md),
+    lg: px(buttonTokens.paddingY.lg),
+  },
+  minHeight: {
+    sm: px(buttonTokens.minHeight.sm),
+    md: px(buttonTokens.minHeight.md),
+    lg: px(buttonTokens.minHeight.lg),
+  },
+} as const;
 export const LIST_ITEM_PADDING_H = spacing.lg;
 export const LIST_ITEM_PADDING_V = spacing.md;
 export const CARD_INTERNAL_PADDING = spacing.lg;
@@ -54,7 +89,7 @@ export const BADGE_PADDING_V = spacing.xs;
 
 export const GLASS_CARD_STYLES = {
   borderRadius: borderRadius.lg,
-  backdropFilter: 'blur(20px)',
-  WebkitBackdropFilter: 'blur(20px)' as const,
+  backdropFilter: BLUR.xl,
+  WebkitBackdropFilter: BLUR.xl,
   borderBase: '1px solid',
 };

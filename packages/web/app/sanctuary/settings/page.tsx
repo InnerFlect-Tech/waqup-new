@@ -7,10 +7,10 @@ import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { useAuthStore } from '@/stores';
+import { clearCreateInitSeen } from '@/hooks';
 import { clearStoredOverride } from '@/lib/auth-override';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { themes } from '@waqup/shared/theme';
 import { Check } from 'lucide-react';
 
 const STORAGE_KEY = 'waqup_notification_prefs';
@@ -180,7 +180,7 @@ export default function SettingsPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: spacing.sm,
-                    padding: `${spacing.sm}px ${spacing.md}px`,
+                    padding: `${spacing.sm} ${spacing.md}`,
                     borderRadius: borderRadius.full,
                     border: `1px solid ${isActive ? info.dot : colors.glass.border}`,
                     background: isActive ? `${info.dot}20` : 'transparent',
@@ -226,6 +226,32 @@ export default function SettingsPage() {
                 <Toggle value={prefs[opt.key]} onChange={() => handleToggle(opt.key)} />
               </div>
             ))}
+          </div>
+        </motion.div>
+
+        {/* Show create-flow tips again (for testing first-time UX) */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} style={sectionStyle}>
+          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+            Testing
+          </Typography>
+          <Typography variant="body" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
+            Show create-flow tips again on your next visit to any create flow. Use this to test the first-time experience.
+          </Typography>
+          <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => {
+                clearCreateInitSeen();
+              }}
+            >
+              Show create-flow tips again
+            </Button>
+            <Link href="/sanctuary/affirmations/create/init" style={{ textDecoration: 'none' }}>
+              <Button variant="outline" size="md" onClick={() => clearCreateInitSeen()}>
+                Try it now →
+              </Button>
+            </Link>
           </div>
         </motion.div>
 

@@ -129,6 +129,7 @@ export default function PricingPage() {
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(auto-fit, minmax(${GRID_CARD_MIN}, 1fr))`,
+            gridAutoRows: 'minmax(380px, 1fr)',
             gap: spacing.xl,
             marginBottom: spacing.xxl,
           }}
@@ -151,6 +152,9 @@ export default function PricingPage() {
                   position: 'relative',
                   overflow: 'hidden',
                   transform: isPopular ? 'scale(1.05)' : undefined,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
                 }}
               >
                 {plan.badge && (

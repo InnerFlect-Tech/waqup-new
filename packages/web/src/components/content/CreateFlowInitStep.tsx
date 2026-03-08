@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { CreditCard } from 'lucide-react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
@@ -21,6 +23,10 @@ export interface CreateFlowInitStepProps {
   tips?: string[];
   nextHref: string;
   nextLabel?: string;
+  /** Credit cost range, e.g. "1–2 credits" (base with AI) */
+  creditRange?: string;
+  /** Called when user clicks Begin (e.g. to mark init as seen) */
+  onBegin?: () => void;
 }
 
 export function CreateFlowInitStep({
@@ -30,9 +36,17 @@ export function CreateFlowInitStep({
   tips,
   nextHref,
   nextLabel = 'Begin Journey →',
+  creditRange,
+  onBegin,
 }: CreateFlowInitStepProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const router = useRouter();
+
+  const handleBegin = () => {
+    onBegin?.();
+    router.push(nextHref);
+  };
 
   return (
     <div style={{ maxWidth: '48rem', margin: '0 auto' }}>
@@ -47,6 +61,25 @@ export function CreateFlowInitStep({
         <Typography variant="body" style={{ color: colors.text.secondary }}>
           {description}
         </Typography>
+        {creditRange && (
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: spacing.xs,
+              marginTop: spacing.md,
+              padding: `${spacing.xs} ${spacing.md}`,
+              borderRadius: borderRadius.full,
+              background: `${colors.accent.primary}20`,
+              border: `1px solid ${colors.accent.primary}40`,
+            }}
+          >
+            <CreditCard size={14} color={colors.accent.primary} strokeWidth={2} />
+            <Typography variant="small" style={{ color: colors.accent.primary, fontWeight: 600 }}>
+              {creditRange}
+            </Typography>
+          </div>
+        )}
       </motion.div>
 
       <div style={{ marginBottom: spacing.xl }}>
@@ -96,7 +129,7 @@ export function CreateFlowInitStep({
             ))}
           </div>
 
-          {tips && tips.length > 0 && (
+          {tips && tips.slice(0, 5).length > 0 && (
             <div
               style={{
                 marginTop: spacing.xl,
@@ -116,7 +149,7 @@ export function CreateFlowInitStep({
                   lineHeight: 1.8,
                 }}
               >
-                {tips.map((tip, i) => (
+                {tips.slice(0, 5).map((tip, i) => (
                   <li key={i}>
                     <Typography variant="body" style={{ color: colors.text.secondary }}>
                       {tip}
@@ -130,11 +163,21 @@ export function CreateFlowInitStep({
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Link href={nextHref} style={{ textDecoration: 'none' }}>
-          <Button variant="primary" size="lg" style={{ background: colors.gradients.primary }}>
+        {onBegin ? (
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={handleBegin}
+          >
             {nextLabel}
           </Button>
-        </Link>
+        ) : (
+          <Link href={nextHref} style={{ textDecoration: 'none' }}>
+            <Button variant="primary" size="lg" >
+              {nextLabel}
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

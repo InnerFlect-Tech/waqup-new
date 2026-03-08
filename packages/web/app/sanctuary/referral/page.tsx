@@ -163,7 +163,7 @@ export default function ReferralPage() {
               display: 'flex',
               alignItems: 'center',
               gap: spacing.sm,
-              padding: `${spacing.md}px ${spacing.lg}px`,
+              padding: `${spacing.md} ${spacing.lg}`,
               borderRadius: borderRadius.lg,
               background: colors.glass.medium,
               border: `1px solid ${colors.glass.border}`,
@@ -188,7 +188,7 @@ export default function ReferralPage() {
                 fontWeight: 700,
                 color: colors.accent.primary,
                 background: `${colors.accent.primary}20`,
-                padding: '2px 8px',
+                padding: `${spacing.xs} ${spacing.sm}`,
                 borderRadius: borderRadius.full,
                 flexShrink: 0,
               }}
@@ -205,12 +205,12 @@ export default function ReferralPage() {
           >
             {copied ? (
               <>
-                <Check size={16} style={{ marginRight: spacing.sm }} />
+                <Check size={16} />
                 Copied!
               </>
             ) : (
               <>
-                <Copy size={16} style={{ marginRight: spacing.sm }} />
+                <Copy size={16} />
                 Copy link
               </>
             )}

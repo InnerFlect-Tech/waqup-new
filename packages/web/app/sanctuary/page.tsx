@@ -55,34 +55,66 @@ export default function SanctuaryHomePage() {
             marginBottom: spacing.xl,
           }}
         >
-          {STATS.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07, duration: 0.35 }}
-              style={{
-                padding: `${spacing.md}px ${spacing.lg}px`,
-                borderRadius: borderRadius.lg,
-                background: colors.glass.light,
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                border: `1px solid ${colors.glass.border}`,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: spacing.sm,
-              }}
-            >
-              <stat.icon size={18} color={colors.accent.primary} strokeWidth={2} />
-              <Typography variant="h3" style={{ color: colors.text.primary, margin: 0 }}>
-                {stat.value}
-              </Typography>
-              <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                {stat.label}
-              </Typography>
-            </motion.div>
-          ))}
+          {STATS.map((stat, i) => {
+            const isLibrary = stat.label === 'Library';
+            const content = (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.07, duration: 0.35 }}
+                whileHover={isLibrary ? { scale: 1.02, y: -2 } : undefined}
+                style={{
+                  padding: spacing.lg,
+                  borderRadius: borderRadius.lg,
+                  background: isLibrary
+                    ? `linear-gradient(135deg, ${colors.accent.primary}20, ${colors.accent.secondary}10)`
+                    : colors.glass.light,
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: `1px solid ${isLibrary ? colors.accent.primary + '40' : colors.glass.border}`,
+                  boxShadow: isLibrary ? `0 4px 20px ${colors.accent.primary}25` : 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: spacing.md,
+                  cursor: isLibrary ? 'pointer' : 'default',
+                  transition: 'box-shadow 0.2s ease',
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: borderRadius.md,
+                    background: isLibrary ? colors.gradients.primary : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <stat.icon
+                    size={18}
+                    color={isLibrary ? colors.text.onDark : colors.accent.primary}
+                    strokeWidth={2}
+                  />
+                </div>
+                <Typography variant="h3" style={{ color: colors.text.primary, margin: 0 }}>
+                  {stat.value}
+                </Typography>
+                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+                  {stat.label}
+                </Typography>
+              </motion.div>
+            );
+            return isLibrary ? (
+              <Link key={stat.label} href="/library" style={{ textDecoration: 'none' }}>
+                {content}
+              </Link>
+            ) : (
+              content
+            );
+          })}
         </div>
 
         {/* Quick Actions */}
@@ -94,11 +126,12 @@ export default function SanctuaryHomePage() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gridAutoRows: 'minmax(160px, 1fr)',
               gap: spacing.lg,
             }}
           >
             {SANCTUARY_QUICK_ACTIONS.map((action, index) => (
-              <Link key={action.name} href={action.href} style={{ textDecoration: 'none' }}>
+              <Link key={action.name} href={action.href} style={{ textDecoration: 'none', display: 'flex' }}>
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -114,6 +147,10 @@ export default function SanctuaryHomePage() {
                     boxShadow: index === 0 ? `0 8px 32px ${colors.accent.primary}30` : '0 4px 16px rgba(0,0,0,0.2)',
                     cursor: 'pointer',
                     transition: 'box-shadow 0.2s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    width: '100%',
                   }}
                 >
                   <div
@@ -126,15 +163,16 @@ export default function SanctuaryHomePage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       marginBottom: spacing.md,
+                      flexShrink: 0,
                       boxShadow: index === 0 ? `0 4px 16px ${colors.accent.primary}60` : 'none',
                     }}
                   >
                     <action.icon size={22} color={index === 0 ? colors.text.onDark : colors.accent.primary} strokeWidth={2.5} />
                   </div>
-                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.sm, flexShrink: 0 }}>
                     {action.name}
                   </Typography>
-                  <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 13 }}>
+                  <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 13, flex: 1, minHeight: 0 }}>
                     {action.description}
                   </Typography>
                 </motion.div>
@@ -152,11 +190,12 @@ export default function SanctuaryHomePage() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gridAutoRows: 'minmax(88px, 1fr)',
               gap: spacing.md,
             }}
           >
             {SANCTUARY_MENU_ITEMS.map((item, index) => (
-              <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
+              <Link key={item.name} href={item.href} style={{ textDecoration: 'none', display: 'flex' }}>
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -173,6 +212,8 @@ export default function SanctuaryHomePage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: spacing.md,
+                    height: '100%',
+                    width: '100%',
                   }}
                 >
                   <div

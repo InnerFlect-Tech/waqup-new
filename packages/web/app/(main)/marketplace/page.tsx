@@ -204,6 +204,7 @@ export default function MarketplacePage() {
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gridAutoRows: 'minmax(200px, 1fr)',
                 gap: spacing.lg,
               }}
             >
@@ -224,6 +225,9 @@ export default function MarketplacePage() {
                       border: `1px solid ${accent}40`,
                       boxShadow: `0 8px 32px ${accent}20`,
                       cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
@@ -235,10 +239,10 @@ export default function MarketplacePage() {
                     <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
                       {item.title}
                     </Typography>
-                    <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block' }}>
+                    <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', flex: 1, minHeight: 0 }}>
                       {item.description}
                     </Typography>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
                       <Typography variant="small" style={{ color: colors.text.secondary }}>
                         by {item.creator}
                       </Typography>
@@ -272,7 +276,7 @@ export default function MarketplacePage() {
                 key={f}
                 onClick={() => setFilter(f)}
                 style={{
-                  padding: `${spacing.xs}px ${spacing.md}px`,
+                  padding: `${spacing.xs} ${spacing.md}`,
                   borderRadius: borderRadius.full,
                   border: `1px solid ${filter === f ? colors.accent.primary : colors.glass.border}`,
                   background: filter === f ? colors.gradients.primary : 'transparent',
@@ -294,7 +298,7 @@ export default function MarketplacePage() {
             style={{
               flex: 1,
               maxWidth: SEARCH_INPUT_MAX_WIDTH,
-              padding: `${spacing.sm}px ${spacing.md}px`,
+              padding: `${spacing.sm} ${spacing.md}`,
               borderRadius: borderRadius.full,
               border: `1px solid ${colors.glass.border}`,
               background: colors.glass.light,
@@ -311,6 +315,7 @@ export default function MarketplacePage() {
             style={{
               display: 'grid',
               gridTemplateColumns: `repeat(auto-fill, minmax(${GRID_CARD_MIN}, 1fr))`,
+              gridAutoRows: 'minmax(180px, 1fr)',
               gap: spacing.lg,
             }}
           >
@@ -332,6 +337,9 @@ export default function MarketplacePage() {
                     border: `1px solid ${colors.glass.border}`,
                     cursor: 'pointer',
                     transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
@@ -351,10 +359,10 @@ export default function MarketplacePage() {
                   <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
                     {item.title}
                   </Typography>
-                  <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', lineHeight: 1.5 }}>
+                  <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', lineHeight: 1.5, flex: 1, minHeight: 0 }}>
                     {item.description}
                   </Typography>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
                     <Typography variant="small" style={{ color: colors.text.secondary }}>
                       by {item.creator}
                     </Typography>

@@ -63,6 +63,7 @@ export default function ProgressPage() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+            gridAutoRows: 'minmax(140px, 1fr)',
             gap: spacing.md,
             marginBottom: spacing.xxl,
           }}
@@ -81,6 +82,11 @@ export default function ProgressPage() {
                 WebkitBackdropFilter: 'blur(12px)',
                 border: `1px solid ${colors.glass.border}`,
                 textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
               }}
             >
               <div

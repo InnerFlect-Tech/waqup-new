@@ -1,5 +1,5 @@
 import React from 'react';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -28,8 +28,8 @@ export const Card: React.FC<CardProps> = ({
   const cardStyle: React.CSSProperties = {
     borderRadius: borderRadius.lg,
     background: colors.glass.light, // rgba(255,255,255,0.05) — matches reference
-    backdropFilter: 'blur(20px)', // backdrop-blur-xl (matches old app)
-    WebkitBackdropFilter: 'blur(20px)',
+    backdropFilter: BLUR.xl,
+    WebkitBackdropFilter: BLUR.xl,
     border: `1px solid ${colors.glass.border}`, // border-white/10 (matches old app)
     padding: spacing.md,
     boxShadow: variant === 'elevated' 

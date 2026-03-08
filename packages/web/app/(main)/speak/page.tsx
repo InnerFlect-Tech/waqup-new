@@ -1,14 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button } from '@/components';
-import { SpeakingAnimation } from '@/components/audio';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
 import { Mic, MicOff, MessageSquare } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
+import { useAudioAnalyzer } from '@/hooks';
+
+const VoiceOrb = dynamic(
+  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrb })),
+  { ssr: false }
+);
 
 const STATUS_MESSAGES = {
   idle: { text: 'Tap to speak', sub: 'Tell us what you want to create or how you feel' },
@@ -36,6 +42,16 @@ export default function SpeakPage() {
   const status = isSpeaking ? 'speaking' : isListening ? 'listening' : 'idle';
   const { text, sub } = STATUS_MESSAGES[status];
   const isActive = isListening || isSpeaking;
+
+  const { frequencyDataRef, resume } = useAudioAnalyzer({
+    isListening,
+    enabled: isActive,
+  });
+
+  const handleMicClickWithResume = () => {
+    resume();
+    handleMicClick();
+  };
 
   return (
     <PageShell intensity="strong">
@@ -71,7 +87,11 @@ export default function SpeakPage() {
               position: 'relative',
             }}
           >
-            <SpeakingAnimation isSpeaking={isActive} style={{ minHeight: 280, borderRadius: borderRadius.xl }} />
+            <VoiceOrb
+              isActive={isActive}
+              frequencyDataRef={frequencyDataRef}
+              style={{ minHeight: 280, borderRadius: borderRadius.xl }}
+            />
           </div>
 
           {/* Status text */}
@@ -115,7 +135,7 @@ export default function SpeakPage() {
             )}
             <motion.button
               whileTap={{ scale: 0.93 }}
-              onClick={handleMicClick}
+              onClick={handleMicClickWithResume}
               style={{
                 width: 88,
                 height: 88,

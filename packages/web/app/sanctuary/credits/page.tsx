@@ -80,8 +80,8 @@ export default function CreditsPage() {
             credits available
           </Typography>
           <Link href="/pricing" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="lg" style={{ background: colors.gradients.primary }}>
-              <Plus size={16} style={{ marginRight: spacing.sm }} />
+            <Button variant="primary" size="lg">
+              <Plus size={20} />
               Get more credits
             </Button>
           </Link>
@@ -175,7 +175,7 @@ export default function CreditsPage() {
               <div
                 key={tx.id}
                 style={{
-                  padding: `${spacing.md}px ${spacing.lg}px`,
+                  padding: `${spacing.md} ${spacing.lg}`,
                   paddingRight: spacing.xl,
                   borderBottom: index < MOCK_TRANSACTIONS.length - 1 ? `1px solid ${colors.glass.border}` : 'none',
                   display: 'flex',

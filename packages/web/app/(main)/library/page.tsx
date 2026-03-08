@@ -111,7 +111,7 @@ function ContentCard({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  padding: '2px 8px',
+                  padding: `${spacing.xs} ${spacing.sm}`,
                   borderRadius: borderRadius.full,
                   background: `${colors.warning}20`,
                   border: `1px solid ${colors.warning}30`,
@@ -445,7 +445,7 @@ export default function LibraryPage() {
                         fontSize: '11px',
                         color: isActive ? accent : colors.text.secondary,
                         borderRadius: borderRadius.full,
-                        padding: '0 4px',
+                        padding: `0 ${spacing.xs}`,
                       }}
                     >
                       {count}

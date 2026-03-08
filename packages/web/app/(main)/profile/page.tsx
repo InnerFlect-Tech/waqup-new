@@ -108,7 +108,7 @@ export default function ProfilePage() {
             }}
           >
             {STATS.map((stat) => (
-              <div key={stat.label} style={{ textAlign: 'center' }}>
+              <div key={stat.label} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                 <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
                   {stat.value}
                 </Typography>
@@ -125,6 +125,7 @@ export default function ProfilePage() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridAutoRows: 'minmax(88px, 1fr)',
             gap: spacing.md,
             marginBottom: spacing.xl,
           }}
@@ -133,7 +134,7 @@ export default function ProfilePage() {
             const IconComponent = item.icon;
 
             return (
-              <Link key={item.name} href={item.href} style={{ textDecoration: 'none' }}>
+              <Link key={item.name} href={item.href} style={{ textDecoration: 'none', display: 'flex' }}>
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -151,6 +152,8 @@ export default function ProfilePage() {
                     alignItems: 'center',
                     gap: spacing.md,
                     transition: 'border-color 0.2s ease',
+                    height: '100%',
+                    width: '100%',
                   }}
                 >
                   <div
@@ -205,7 +208,7 @@ export default function ProfilePage() {
               router.push('/login');
             }}
           >
-            <LogOut size={18} style={{ marginRight: spacing.sm }} />
+            <LogOut size={18} />
             Sign Out
           </Button>
         </motion.div>

@@ -123,7 +123,6 @@ export function ContentEditPage({
             variant="primary"
             size="md"
             loading={saving}
-            style={{ background: colors.gradients.primary }}
             onClick={handleSave}
           >
             {saving ? 'Saving...' : 'Save'}

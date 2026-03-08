@@ -22,6 +22,7 @@ export type SanctuaryRoutes = {
   '/sanctuary': undefined;
   '/sanctuary/settings': undefined;
   '/sanctuary/credits': undefined;
+  '/sanctuary/voice': undefined;
   '/sanctuary/progress': undefined;
   '/sanctuary/referral': undefined;
   '/sanctuary/reminders': undefined;
@@ -63,6 +64,7 @@ export const SANCTUARY_ROUTES = {
   HOME: '/sanctuary',
   SETTINGS: '/sanctuary/settings',
   CREDITS: '/sanctuary/credits',
+  VOICE: '/sanctuary/voice',
   PROGRESS: '/sanctuary/progress',
   REFERRAL: '/sanctuary/referral',
   REMINDERS: '/sanctuary/reminders',

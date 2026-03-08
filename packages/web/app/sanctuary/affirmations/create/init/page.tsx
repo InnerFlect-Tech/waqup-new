@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import { Target, Mic, Music, Sparkles } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
+import { useCreateInitGate } from '@/hooks';
+import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 
 const AFFIRMATION_STEPS = [
   {
@@ -37,7 +39,17 @@ const TIPS = [
 
 export default function AffirmationCreateInitPage() {
   const { setCurrentStep } = useContentCreation();
+  const { shouldShow, markSeen } = useCreateInitGate('/create/conversation');
+
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
+
+  const costs = CONTENT_CREDIT_COSTS.affirmation;
+  const creditRange =
+    costs.withAi > costs.base
+      ? `${costs.base}–${costs.withAi} credits`
+      : `${costs.base} credit${costs.base > 1 ? 's' : ''}`;
+
+  if (!shouldShow) return null;
 
   return (
     <CreateFlowInitStep
@@ -47,6 +59,8 @@ export default function AffirmationCreateInitPage() {
       tips={TIPS}
       nextHref="/create/conversation"
       nextLabel="Begin →"
+      creditRange={creditRange}
+      onBegin={markSeen}
     />
   );
 }

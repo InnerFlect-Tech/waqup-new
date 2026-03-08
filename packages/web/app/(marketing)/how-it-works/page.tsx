@@ -20,7 +20,6 @@ import {
   Users,
   Sparkles,
   ArrowRight,
-  Check,
 } from 'lucide-react';
 
 const steps = [
@@ -99,8 +98,15 @@ export default function HowItWorksPage() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  const journeySteps = [
+    { icon: 'join', label: 'Sign Up', sub: 'Free join' },
+    { icon: 'chat', label: 'Create', sub: 'AI-guided' },
+    { icon: 'voice', label: 'Listen', sub: 'Your voice' },
+    { icon: 'grow', label: 'Grow', sub: 'Track progress' },
+  ];
+
   return (
-    <PageShell intensity="medium" bare>
+    <PageShell intensity="high" bare>
       {/* Hero Section */}
         <section
           style={{
@@ -110,12 +116,27 @@ export default function HowItWorksPage() {
             margin: '0 auto',
           }}
         >
+          <div
+            style={{
+              padding: `${spacing.xs} ${spacing.md}`,
+              borderRadius: borderRadius.full,
+              background: `${colors.accent.tertiary}20`,
+              border: `1px solid ${colors.accent.tertiary}40`,
+              display: 'inline-block',
+              marginBottom: spacing.lg,
+            }}
+          >
+            <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              Your Journey
+            </Typography>
+          </div>
           <Typography
             variant="h1"
             style={{
               fontSize: 'clamp(36px, 6vw, 64px)',
               color: colors.text.primary,
               marginBottom: spacing.md,
+              fontWeight: 300,
             }}
           >
             Your Personal Sanctuary
@@ -132,6 +153,61 @@ export default function HowItWorksPage() {
           >
             waQup is your AI-powered companion for meditation and affirmations, helping you build a consistent spiritual practice that grows with you.
           </Typography>
+
+          {/* Visual Journey Flow */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.sm,
+              flexWrap: 'wrap',
+              marginTop: spacing.xxl,
+              padding: spacing.xl,
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+              boxShadow: `0 16px 64px ${colors.accent.primary}30`,
+            }}
+          >
+            {journeySteps.map((step, i) => (
+              <React.Fragment key={step.label}>
+                <div
+                  style={{
+                    padding: `${spacing.md} ${spacing.lg}`,
+                    borderRadius: borderRadius.lg,
+                    background: `${colors.accent.primary}15`,
+                    border: `1px solid ${colors.accent.primary}35`,
+                    textAlign: 'center',
+                    minWidth: 100,
+                    transition: 'all 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${colors.accent.primary}25`;
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = `0 8px 24px ${colors.accent.primary}40`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = `${colors.accent.primary}15`;
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+                    {step.label}
+                  </Typography>
+                  <Typography variant="small" style={{ color: colors.accent.tertiary }}>
+                    {step.sub}
+                  </Typography>
+                </div>
+                {i < journeySteps.length - 1 && (
+                  <ArrowRight size={20} color={colors.accent.tertiary} style={{ opacity: 0.7, flexShrink: 0 }} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.md, marginTop: spacing.xl }}>
             <Link href="/pricing" style={{ textDecoration: 'none' }}>
               <Button
@@ -285,6 +361,7 @@ export default function HowItWorksPage() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridAutoRows: 'minmax(200px, 1fr)',
               gap: spacing.lg,
             }}
           >
@@ -302,6 +379,9 @@ export default function HowItWorksPage() {
                     border: `1px solid ${colors.glass.border}`,
                     boxShadow: `0 8px 32px ${colors.accent.primary}40`,
                     transition: 'all 0.3s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
                   }}
                 >
                   <div
@@ -331,10 +411,10 @@ export default function HowItWorksPage() {
                     <IconComponent size={24} color={colors.text.onDark} strokeWidth={2.5} />
                   </span>
                   </div>
-                  <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+                  <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm, flexShrink: 0 }}>
                     {benefit.title}
                   </Typography>
-                  <Typography variant="body" style={{ color: colors.text.secondary }}>
+                  <Typography variant="body" style={{ color: colors.text.secondary, flex: 1, minHeight: 0 }}>
                     {benefit.description}
                   </Typography>
                 </div>
