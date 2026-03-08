@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { SpeakingAnimation } from '@/components/audio';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
-import { Play, Pause, Edit, Trash2, Share2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Play, Pause, Edit, Trash2, Share2, ChevronDown, ChevronUp, Mic } from 'lucide-react';
 import type { ContentItemType } from './ContentItem';
 
 export interface ContentDetailPageProps {
@@ -18,9 +18,11 @@ export interface ContentDetailPageProps {
   duration?: string;
   script?: string;
   lastPlayed?: string;
+  audioUrl?: string;
   backHref: string;
   editHref: string;
   editAudioHref: string;
+  onRecordPlay?: () => Promise<void>;
   onDelete?: (id: string) => void;
 }
 
@@ -32,9 +34,11 @@ export function ContentDetailPage({
   duration = '—',
   script,
   lastPlayed,
+  audioUrl,
   backHref,
   editHref,
   editAudioHref,
+  onRecordPlay,
   onDelete,
 }: ContentDetailPageProps) {
   const { theme } = useTheme();
@@ -42,6 +46,40 @@ export function ContentDetailPage({
   const [isPlaying, setIsPlaying] = useState(false);
   const [scriptExpanded, setScriptExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const hasAudio = Boolean(audioUrl);
+
+  const handlePlayPause = async () => {
+    if (hasAudio && audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        try {
+          await audioRef.current.play();
+          await onRecordPlay?.();
+        } catch {
+          setIsPlaying(false);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !hasAudio) return;
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onEnded = () => setIsPlaying(false);
+    el.addEventListener('play', onPlay);
+    el.addEventListener('pause', onPause);
+    el.addEventListener('ended', onEnded);
+    return () => {
+      el.removeEventListener('play', onPlay);
+      el.removeEventListener('pause', onPause);
+      el.removeEventListener('ended', onEnded);
+    };
+  }, [hasAudio]);
 
   const handleDelete = () => {
     if (showDeleteConfirm) {
@@ -76,6 +114,16 @@ export function ContentDetailPage({
           {description}
         </Typography>
 
+        {/* Hidden audio element for playback */}
+        {hasAudio && (
+          <audio
+            ref={audioRef}
+            src={audioUrl}
+            style={{ display: 'none' }}
+            preload="metadata"
+          />
+        )}
+
         {/* Audio visualization */}
         <div style={{ marginBottom: spacing.xl, borderRadius: borderRadius.lg, overflow: 'hidden' }}>
           <SpeakingAnimation isSpeaking={isPlaying} style={{ minHeight: '320px' }} />
@@ -83,23 +131,37 @@ export function ContentDetailPage({
 
         {/* Playback controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, marginBottom: spacing.xl }}>
-          <Button
-            variant="primary"
-            size="md"
-            onClick={() => setIsPlaying(!isPlaying)}
-          >
-            {isPlaying ? (
-              <>
-                <Pause size={18} strokeWidth={2.5}  />
-                Pause
-              </>
-            ) : (
-              <>
-                <Play size={18} strokeWidth={2.5}  />
-                Play
-              </>
-            )}
-          </Button>
+          {hasAudio ? (
+            <Button
+              variant="primary"
+              size="md"
+              style={{ background: theme.colors.gradients.primary }}
+              onClick={handlePlayPause}
+            >
+              {isPlaying ? (
+                <>
+                  <Pause size={18} strokeWidth={2.5} style={{ marginRight: spacing.xs }} />
+                  Pause
+                </>
+              ) : (
+                <>
+                  <Play size={18} strokeWidth={2.5} style={{ marginLeft: spacing.xs, marginRight: spacing.xs }} />
+                  Play
+                </>
+              )}
+            </Button>
+          ) : (
+            <Link href={editAudioHref} style={{ textDecoration: 'none' }}>
+              <Button
+                variant="primary"
+                size="md"
+                style={{ background: theme.colors.gradients.primary, display: 'flex', alignItems: 'center', gap: spacing.xs }}
+              >
+                <Mic size={18} strokeWidth={2.5} />
+                Generate audio
+              </Button>
+            </Link>
+          )}
           {duration && (
             <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary }}>
               {duration}

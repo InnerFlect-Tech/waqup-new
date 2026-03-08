@@ -57,6 +57,9 @@ begin
   )
   on conflict (id) do nothing;
 
+  insert into public.profiles (id) values (v_user_id)
+  on conflict (id) do nothing;
+
   insert into public.content_items (
     user_id,
     type,

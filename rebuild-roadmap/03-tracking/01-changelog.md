@@ -6,6 +6,16 @@
 
 ---
 
+## Voice Orb (Speak Page)
+
+### High-performance audio-reactive spiritual orb
+- **Status**: Complete
+- **Completed**: 2026-03-08
+- **Notes**: Implemented Voice Orb per plan: WebGL orb using Three.js + React Three Fiber with custom ShaderMaterial (Fresnel rim glow, vertex displacement, audio-driven intensity). Added `useAudioAnalyzer` hook (Web Audio API, AnalyserNode, mic/TTS support). VoiceOrb component with theme colors (mystical.orb, mystical.glow), WebGL fallback (CSS orb), `prefers-reduced-motion` support, Page Visibility API (frameloop demand when tab hidden), lazy-load via dynamic import on Speak page. Integrated with Speak page; mic click calls `resume()` for AudioContext. Fixed format.ts `as const` TypeScript error.
+- **Updated**: 2026-03-08
+
+---
+
 ## Credits on Create + Voice Setup (non-step)
 
 ### Content credit costs and ElevenLabs voice setup

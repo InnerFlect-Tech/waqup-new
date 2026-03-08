@@ -30,6 +30,19 @@ This guide explains how to run waQup fully on localhost using Supabase CLI, so y
 
 4. **Open** http://localhost:3000
 
+## Verify Library and Database
+
+To confirm the database and seed data work:
+
+1. **Start local Supabase**: `npm run supabase:start`
+2. **Copy credentials** from the output into `packages/web/.env.local` (URL and anon key)
+3. **Reset DB** (applies migrations + seed): `npm run supabase:reset`
+4. **Start the app**: `npm run dev:web`
+5. **Sign in** as `dev@local.test` / `password123`
+6. **Open** `/library` — you should see 11 sample items (affirmations, meditations, rituals)
+
+If the library is empty, ensure you are logged in as `dev@local.test`. Other users have no seeded content.
+
 ## NPM Scripts
 
 | Script | Purpose |
@@ -64,10 +77,10 @@ Set in `.env.local`:
 
 ```
 OVERRIDE_LOGIN_EMAIL=dev@local.test
-OVERRIDE_LOGIN_PASSWORD=devpassword
+OVERRIDE_LOGIN_PASSWORD=password123
 ```
 
-Sign in without Supabase; useful when DB is down.
+Use `password123` to match the seeded dev user. Sign in without Supabase; useful when DB is down.
 
 ### Test login (dev only)
 
@@ -124,13 +137,21 @@ Set `NEXT_PUBLIC_ENABLE_TEST_LOGIN=true` to show a "Test login (no DB)" button f
 
 `supabase/seed.sql` creates a dev user (`dev@local.test` / `password123`) and sample content. Run `supabase db reset` to apply.
 
+## Debugging
+
+- **Health check**: `GET /api/health` returns Supabase connection status (`ok`, `supabase: 'connected' | 'error' | 'not_configured'`). Use when verifying env vars or DB connectivity.
+
+## Debugging
+
+- **Health check**: `GET /api/health` returns Supabase connection status (`ok`, `supabase: 'connected'` or error details). Use when verifying DB connectivity.
+
 ## Troubleshooting
 
 | Issue | Solution |
-|-------|----------|
 | Docker not running | Start Docker Desktop (or OrbStack/Podman) |
 | Port 54321 in use | Stop other Supabase instances: `supabase stop --no-backup` |
 | "Missing Supabase env vars" | Copy values from `supabase start` output into `packages/web/.env.local` |
+| Check DB connection | GET `/api/health` returns `{ ok, supabase }` — use for debugging |
 | Auth redirect fails | Ensure `NEXT_PUBLIC_APP_URL=http://localhost:3000` and URL is in `supabase/config.toml` `additional_redirect_urls` |
 
 ## Deployment Sync

@@ -150,14 +150,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <motion.nav
           initial={{ y: -100 }}
           animate={{ y: 0 }}
-          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
+          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200 px-6 sm:px-8"
           style={isScrolled
             ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
             : { background: 'transparent' }
           }
         >
           <div
-            className="mx-auto pl-12 pr-6 sm:pl-16 sm:pr-8 lg:pl-20 lg:pr-10"
+            className="mx-auto pl-28 pr-6 sm:pl-32 sm:pr-8 lg:pl-36 lg:pr-10"
             style={{ maxWidth: MAX_WIDTH_7XL }}
           >
             <div
@@ -379,17 +379,17 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
+        <motion.nav
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200 pl-6"
         style={isScrolled
           ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
           : { background: 'transparent' }
         }
       >
           <div
-            className="mx-auto pl-12 pr-6 sm:pl-16 sm:pr-8 lg:pl-20 lg:pr-10"
+            className="mx-auto pl-28 pr-6 sm:pl-32 sm:pr-8 lg:pl-36 lg:pr-10"
             style={{ maxWidth: MAX_WIDTH_7XL }}
         >
           <div

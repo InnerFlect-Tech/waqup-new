@@ -45,6 +45,7 @@ interface UseContentItemResult {
   error: string | null;
   update: (input: UpdateContentInput) => Promise<boolean>;
   remove: () => Promise<boolean>;
+  recordPlay: () => Promise<boolean>;
   refetch: () => void;
 }
 
@@ -90,7 +91,16 @@ export function useContentItem(id: string): UseContentItemResult {
     return false;
   }, [id]);
 
-  return { item, isLoading, error, update, remove, refetch: fetch };
+  const recordPlay = useCallback(async (): Promise<boolean> => {
+    const result = await contentService.recordPlay(id);
+    if (result.success) {
+      await fetch();
+      return true;
+    }
+    return false;
+  }, [id, fetch]);
+
+  return { item, isLoading, error, update, remove, recordPlay, refetch: fetch };
 }
 
 export { contentService };

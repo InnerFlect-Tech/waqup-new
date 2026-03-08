@@ -89,6 +89,7 @@ export default function SpeakPage() {
           >
             <VoiceOrb
               isActive={isActive}
+              voiceSource={isListening ? 'user' : isSpeaking ? 'ai' : 'idle'}
               frequencyDataRef={frequencyDataRef}
               style={{ minHeight: 280, borderRadius: borderRadius.xl }}
             />
