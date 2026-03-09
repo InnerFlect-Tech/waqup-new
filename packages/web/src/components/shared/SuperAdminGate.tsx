@@ -33,7 +33,7 @@ export function SuperAdminGate({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <PageShell intensity="low" bare>
+      <PageShell intensity="light" bare>
         <div
           style={{
             display: 'flex',

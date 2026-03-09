@@ -77,11 +77,13 @@ export default function ComingSoonPage() {
   useEffect(() => {
     if (!user?.email) return;
     setStatusLoading(true);
-    supabase
-      .from('waitlist_signups')
-      .select('status')
-      .eq('email', user.email)
-      .maybeSingle()
+    void Promise.resolve(
+      supabase
+        .from('waitlist_signups')
+        .select('status')
+        .eq('email', user.email)
+        .maybeSingle()
+    )
       .then(({ data }) => {
         setWaitlistStatus((data?.status as WaitlistStatus) ?? null);
         setStatusLoading(false);
