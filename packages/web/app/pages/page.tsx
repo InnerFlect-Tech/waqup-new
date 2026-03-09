@@ -91,9 +91,10 @@ export default function PagesIndexPage() {
       total: allRoutes.length,
       public: (WITHOUT_AUTH as RouteGroup[]).flatMap((g) => g.routes).length,
       protected: (WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes).length,
+      superadmin: (SUPERADMIN as RouteGroup[]).flatMap((g) => g.routes).length,
       byStatus,
     };
-  }, [WITHOUT_AUTH, WITH_AUTH]);
+  }, [WITHOUT_AUTH, WITH_AUTH, SUPERADMIN]);
 
   return (
     <SuperAdminGate>
@@ -120,6 +121,10 @@ export default function PagesIndexPage() {
             <GlassCard variant="content" style={{ textAlign: 'center' }}>
               <Typography variant="h3" style={{ color: colors.text.primary }}>{stats.protected}</Typography>
               <Typography variant="caption" style={{ color: colors.text.secondary }}>Protected</Typography>
+            </GlassCard>
+            <GlassCard variant="content" style={{ textAlign: 'center' }}>
+              <Typography variant="h3" style={{ color: colors.accent.primary }}>{stats.superadmin}</Typography>
+              <Typography variant="caption" style={{ color: colors.text.secondary }}>Superadmin</Typography>
             </GlassCard>
             <GlassCard variant="content" style={{ textAlign: 'center' }}>
               <Typography variant="h3" style={{ color: colors.success }}>{stats.byStatus.exists}</Typography>

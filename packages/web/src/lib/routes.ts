@@ -36,7 +36,8 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/forgot-password', section: 'Auth', description: 'Forgot password', status: 'exists' },
   { path: '/reset-password', section: 'Auth', description: 'Reset password', status: 'exists' },
   { path: '/confirm-email', section: 'Auth', description: 'Confirm email', status: 'exists' },
-  { path: '/auth/beta-signup', section: 'Auth', description: 'Beta email capture', status: 'exists' },
+  { path: '/auth/beta-signup', section: 'Auth', description: 'Beta email capture — now redirects to /waitlist', status: 'to_delete' },
+  { path: '/coming-soon', section: 'Auth', description: 'Access gate — shown to logged-in users pending waitlist approval', status: 'exists' },
 
   // ── Onboarding ─────────────────────────────────────────────────────────────
   { path: '/onboarding', section: 'Onboarding', description: 'Intention selector', status: 'exists' },
@@ -129,6 +130,7 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/admin', section: 'Superadmin', description: 'Superadmin dashboard hub', status: 'exists', note: 'Superadmin only' },
   { path: '/admin/oracle', section: 'Superadmin', description: 'Oracle AI config', status: 'exists', note: 'Superadmin only' },
   { path: '/admin/users', section: 'Superadmin', description: 'User management', status: 'exists', note: 'Superadmin only' },
+  { path: '/admin/waitlist', section: 'Superadmin', description: 'Waitlist signups dashboard', status: 'exists', note: 'Superadmin only' },
   { path: '/system', section: 'Superadmin', description: 'System & schema overview', status: 'exists', note: 'Superadmin only' },
   { path: '/system/creation-steps', section: 'Superadmin', description: 'Creation pipeline step status', status: 'exists', note: 'Superadmin only' },
   { path: '/health', section: 'Superadmin', description: 'API health dashboard', status: 'exists', note: 'Superadmin only' },

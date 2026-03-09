@@ -278,6 +278,18 @@ export default function SpeakPage() {
     setTimeout(() => setOrbState('listening'), 300);
   }, [stopTtsAnalyserLoop]);
 
+  // ── Browser TTS fallback ──────────────────────────────────────────────────
+  const speakBrowserFallback = useCallback((text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.88; utterance.pitch = 0.85;
+    utterance.onend = () => onQueueDrained();
+    utterance.onerror = () => setOrbState('error');
+    window.speechSynthesis.speak(utterance);
+    setOrbState('speaking');
+  }, [onQueueDrained]);
+
   // ── Send transcript to oracle via streaming SSE ───────────────────────────
   const sendToOracle = useCallback(async (text: string) => {
     if (!text.trim()) return;
@@ -388,9 +400,7 @@ export default function SpeakPage() {
 
             case 'audio_error':
               // ElevenLabs unavailable — fallback to browser TTS
-              if (fullText || streamingText) {
-                speakBrowserFallback(fullText || streamingText);
-              }
+              if (fullText) speakBrowserFallback(fullText);
               break;
 
             case 'error': {
@@ -417,19 +427,7 @@ export default function SpeakPage() {
       streamAbortRef.current = null;
       refetchBalance();
     }
-  }, [enqueueAudioChunk, initAudioContext, onQueueDrained, refetchBalance]);
-
-  // ── Browser TTS fallback ──────────────────────────────────────────────────
-  const speakBrowserFallback = useCallback((text: string) => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.88; utterance.pitch = 0.85;
-    utterance.onend = () => onQueueDrained();
-    utterance.onerror = () => setOrbState('error');
-    window.speechSynthesis.speak(utterance);
-    setOrbState('speaking');
-  }, [onQueueDrained]);
+  }, [enqueueAudioChunk, initAudioContext, onQueueDrained, refetchBalance, speakBrowserFallback]);
 
   // ── Mic analyser loop (for listening/hearing states) ─────────────────────
   const startMicAnalyser = useCallback(async () => {

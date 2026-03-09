@@ -69,9 +69,12 @@ cat .vercel/project.json  # Copy values to GitHub secrets
 
 Runs only when `build` succeeds on `main`:
 
-1. **vercel pull** – Fetch env and project config
-2. **vercel build** – Install + build (shared + web via `vercel.json`)
-3. **vercel deploy --prebuilt --prod** – Deploy production
+1. **npm ci** – Install deps (uses cache; needed before vercel build)
+2. **vercel pull** – Fetch env and project config
+3. **vercel build** – Install + build (shared + web via `vercel.json`)
+4. **vercel deploy --prebuilt --prod** – Deploy production
+
+**Important:** All vercel commands run from the **monorepo root**, not `packages/web`. When Root Directory is `packages/web` in Vercel project settings, running from `packages/web` causes path doubling (`packages/web/packages/web/...`).
 
 ---
 
@@ -103,6 +106,7 @@ Vercel project **Root Directory** must be `packages/web` for this to work.
 | Issue | Solution |
 |-------|----------|
 | Build fails: "shared not found" | Ensure Root Directory = `packages/web` and vercel.json is present |
+| Deploy fails: `packages/web/packages/web/package.json` ENOENT | Run vercel commands from monorepo root (not `packages/web`) — path doubling when Root Directory is set |
 | Deploy job fails: "Missing token" | Add `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` secrets |
 | Lock file conflict | `rm -f packages/web/.next/lock` and retry locally |
 | p5 module not found | Resolved: VoiceOrbP5 uses loose typing to avoid static p5 resolution |
