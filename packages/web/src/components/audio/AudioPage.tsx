@@ -316,7 +316,7 @@ export function AudioPage({
               key={s}
               onClick={() => setSpeed(s)}
               style={{
-                padding: `${spacing.xs}px ${spacing.sm}px`,
+                padding: `${spacing.xs} ${spacing.sm}`,
                 borderRadius: borderRadius.sm,
                 border: `1px solid ${speed === s ? accent : colors.glass.border}`,
                 background: speed === s ? accent + '22' : 'transparent',

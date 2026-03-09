@@ -1,4 +1,4 @@
-import { createSupabaseClient } from '@waqup/shared/services';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -16,8 +16,10 @@ if (missing && typeof window !== 'undefined') {
   );
 }
 
-export const supabase = createSupabaseClient({
-  url,
-  key,
-  detectSessionInUrl: true, // Required on web for OAuth/magic-link URL callbacks
-});
+/**
+ * Browser Supabase client using createBrowserClient from @supabase/ssr.
+ * Must use cookie-based storage so the session set by the auth callback
+ * (createServerClient) is readable here. Using the default createClient
+ * would store sessions in localStorage and miss OAuth callback sessions.
+ */
+export const supabase = createBrowserClient(url, key);

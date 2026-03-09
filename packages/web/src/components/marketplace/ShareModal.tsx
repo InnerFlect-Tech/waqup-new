@@ -195,7 +195,7 @@ export function ShareModal({
             {/* Share URL preview */}
             <div
               style={{
-                padding: `${spacing.sm}px ${spacing.md}px`,
+                padding: `${spacing.sm} ${spacing.md}`,
                 borderRadius: borderRadius.md,
                 background: colors.glass.light,
                 border: `1px solid ${colors.glass.border}`,
@@ -236,7 +236,7 @@ export function ShareModal({
                       display: 'flex',
                       alignItems: 'center',
                       gap: spacing.sm,
-                      padding: `${spacing.md}px ${spacing.lg}px`,
+                      padding: `${spacing.md} ${spacing.lg}`,
                       borderRadius: borderRadius.lg,
                       border: `1px solid ${colors.glass.border}`,
                       background: colors.glass.light,

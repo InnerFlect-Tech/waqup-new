@@ -127,7 +127,7 @@ function StatCard({
   return (
     <div
       style={{
-        padding: `${spacing.lg}px`,
+        padding: spacing.lg,
         borderRadius: borderRadius.lg,
         background: 'rgba(255,255,255,0.03)',
         border: '1px solid rgba(255,255,255,0.07)',

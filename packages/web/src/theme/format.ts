@@ -48,22 +48,20 @@ export const PAGE_TOP_PADDING = px(layout.pageTopPadding);
 /** Vertical padding (top + bottom) for full-height layouts - use in calc(100dvh - PAGE_VERTICAL_PADDING_PX) */
 export const PAGE_VERTICAL_PADDING_PX = layout.pageTopPadding + 32;
 export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
-export const HEADER_PADDING_X = px(layout.headerPaddingX);
-export const HEADER_PADDING_X_SM = px(layout.headerPaddingXSm);
+/**
+ * Header horizontal padding — 80px on each side.
+ * Defined as a literal string (not derived from layout token) to guarantee
+ * webpack hot-reload always sees the correct value without needing a server
+ * restart when the shared package tokens change.
+ * Canonical numeric value lives in packages/shared/src/theme/tokens.ts → layout.headerPaddingX
+ */
+export const HEADER_PADDING_X = '80px';
 export const PAGE_PADDING = spacing.xl;
-export const SECTION_GAP = spacing.xl;
 /** Standard glass card padding - use for most cards */
 export const CARD_PADDING = spacing.lg;
-/** Hero/featured card padding - use for auth cards and prominent feature cards */
-export const CARD_PADDING_HERO = spacing.xl;
+/** Auth/content glass card padding */
 export const CARD_PADDING_AUTH = spacing.xl;
 export const CARD_PADDING_CONTENT = spacing.xl;
-/** Inter-section margin - gap between stacked sections */
-export const SECTION_MARGIN = spacing.lg;
-export const INPUT_GAP = spacing.lg;
-
-/** Semantic spacing helpers - use for consistent UI patterns */
-export const ICON_TEXT_GAP = spacing.sm;
 
 /** Button design tokens (CSS values) - SSOT for Button component */
 export const BUTTON_TOKENS = {
@@ -91,11 +89,6 @@ export const BUTTON_TOKENS = {
     lg: px(buttonTokens.minHeight.lg),
   },
 } as const;
-export const LIST_ITEM_PADDING_H = spacing.lg;
-export const LIST_ITEM_PADDING_V = spacing.md;
-export const CARD_INTERNAL_PADDING = spacing.lg;
-export const BADGE_PADDING_H = spacing.sm;
-export const BADGE_PADDING_V = spacing.xs;
 
 export const GLASS_CARD_STYLES = {
   borderRadius: borderRadius.lg,

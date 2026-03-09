@@ -80,7 +80,7 @@ export default function LandingPage() {
         <section
           style={{
             padding: `0 ${spacing.xl}`,
-            marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`,
+            marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`,
             marginLeft: 'auto',
             marginRight: 'auto',
             textAlign: 'center',

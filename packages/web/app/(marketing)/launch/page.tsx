@@ -263,7 +263,7 @@ export default function LaunchPage() {
     <PageShell intensity="high" bare>
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="wq-hero" style={{ padding: `0 ${PAGE_PADDING}`, marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`, marginLeft: 'auto', marginRight: 'auto', maxWidth: CONTENT_MAX_WIDTH, minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
+      <section className="wq-hero" style={{ padding: `0 ${PAGE_PADDING}`, marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`, marginLeft: 'auto', marginRight: 'auto', maxWidth: CONTENT_MAX_WIDTH, minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: `calc(${spacing.xxxl} + ${spacing.md})`, boxSizing: 'border-box' }}>
         <div className="wq-hero-copy" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 24 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: colors.success, animation: 'wqPulse 2s ease-in-out infinite' }} />
@@ -312,7 +312,7 @@ export default function LaunchPage() {
 
       {/* ── Stats ────────────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${colors.glass.border}`, borderBottom: `1px solid ${colors.glass.border}`, background: 'rgba(255,255,255,0.02)' }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `48px ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
           {[
             { n: instagramFollowers ?? '10,000+', l: 'Minds in transformation' },
             { n: '3', l: 'Science-backed content types' },

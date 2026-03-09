@@ -298,7 +298,7 @@ function LockedState({
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: spacing.md,
-                padding: `${spacing.xl}px ${spacing.lg}px`,
+                padding: `${spacing.xl} ${spacing.lg}`,
                 borderRadius: borderRadius.xl,
                 background: 'linear-gradient(135deg, #10b98115, #10b98108)',
                 border: '1px solid #10b98130',
@@ -354,7 +354,7 @@ function ProposalForm({
   const inputStyle: React.CSSProperties = {
     width: '100%',
     minHeight: 44,
-    padding: `${spacing.sm}px ${spacing.md}px`,
+    padding: `${spacing.sm} ${spacing.md}`,
     borderRadius: borderRadius.md,
     background: colors.glass.light,
     backdropFilter: BLUR.md,
@@ -420,7 +420,7 @@ function ProposalForm({
                   onClick={() => toggleContentType(id)}
                   style={{
                     flex: 1,
-                    padding: `${spacing.sm}px`,
+                    padding: spacing.sm,
                     borderRadius: borderRadius.md,
                     border: `1.5px solid ${active ? color : colors.border.light}`,
                     background: active ? `${color}18` : colors.glass.transparent,

@@ -106,7 +106,7 @@ function PresetCard({
     <button
       onClick={onClick}
       style={{
-        padding: `${spacing.sm}px ${spacing.md}px`,
+        padding: `${spacing.sm} ${spacing.md}`,
         borderRadius: borderRadius.lg,
         background: isSelected && !isNone ? `${accentColor}15` : 'transparent',
         border: `1px solid ${isSelected ? accentColor + '60' : colors.glass.border}`,
@@ -310,7 +310,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: `0 auto ${spacing.md}px`,
+            margin: `0 auto ${spacing.md}`,
           }}
         >
           <Music size={24} color={meta.color} />
@@ -479,7 +479,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         style={{
-          padding: `${spacing.md}px ${spacing.xl}px`,
+          padding: `${spacing.md} ${spacing.xl}`,
           borderRadius: borderRadius.xl,
           background: colors.glass.light,
           backdropFilter: 'blur(20px)',
@@ -507,7 +507,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-                padding: `${spacing.sm}px 0`,
+                padding: `${spacing.sm} 0`,
               }}
             >
               <div

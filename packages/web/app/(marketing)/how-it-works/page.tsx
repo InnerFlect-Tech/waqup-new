@@ -5,7 +5,7 @@ import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -243,7 +243,7 @@ export default function HowItWorksPage() {
     <PageShell intensity="high" bare>
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="hiw-hero" style={{ padding: `0 ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
+      <section className="hiw-hero" style={{ padding: `0 ${PAGE_PADDING}`, marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`, maxWidth: CONTENT_MAX_WIDTH, marginLeft: 'auto', marginRight: 'auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: `calc(${spacing.xxxl} + ${spacing.md})`, boxSizing: 'border-box' }}>
         <div className="hiw-hero-copy" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 32 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: colors.success, animation: 'wqPulse 2s ease-in-out infinite' }} />
@@ -294,7 +294,7 @@ export default function HowItWorksPage() {
 
       {/* ── Step divider ─────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${colors.glass.border}`, borderBottom: `1px solid ${colors.glass.border}`, background: 'rgba(255,255,255,0.02)' }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `48px ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
+        <div className="hiw-step-divider" style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
           {[
             { n: '01', label: 'Share your goals', icon: MessageCircle },
             { n: '02', label: 'AI creates your content', icon: Sparkles },
@@ -355,7 +355,7 @@ export default function HowItWorksPage() {
               {idx % 2 === 0 ? (
                 <>
                   {/* Photo panel */}
-                  <div style={{ position: 'relative', minHeight: 420, overflow: 'hidden' }}>
+                  <div className="hiw-step-visual" style={{ position: 'relative', minHeight: 420, overflow: 'hidden' }}>
                     <Image
                       src={`/images/${['feature-create', 'feature-sanctuary', 'feature-listen'][idx]}.png`}
                       alt={title}
@@ -389,7 +389,7 @@ export default function HowItWorksPage() {
                     <p style={{ fontSize: 15, color: colors.text.tertiary, lineHeight: 1.7, margin: 0 }}>{detail}</p>
                   </div>
                   {/* Photo panel */}
-                  <div style={{ position: 'relative', minHeight: 420, overflow: 'hidden' }}>
+                  <div className="hiw-step-visual" style={{ position: 'relative', minHeight: 420, overflow: 'hidden' }}>
                     <Image
                       src={`/images/${['feature-create', 'feature-sanctuary', 'feature-listen'][idx]}.png`}
                       alt={title}

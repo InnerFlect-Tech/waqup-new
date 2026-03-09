@@ -272,7 +272,7 @@ function CreatorDashboard() {
               key={id}
               onClick={() => setActiveTab(id)}
               style={{
-                padding: `${spacing.xs}px ${spacing.md}px`,
+                padding: `${spacing.xs} ${spacing.md}`,
                 borderRadius: borderRadius.full,
                 border: `1px solid ${activeTab === id ? colors.accent.primary : colors.glass.border}`,
                 background: activeTab === id ? colors.gradients.primary : 'transparent',
@@ -301,7 +301,7 @@ function CreatorDashboard() {
               icon={<FileText size={32} color={colors.text.secondary} />}
               title="Nothing published yet"
               body="Go to the Sanctuary tab to publish your first piece of content."
-              action={<button onClick={() => setActiveTab('drafts')} style={{ background: 'none', border: `1px solid ${colors.glass.border}`, borderRadius: borderRadius.full, padding: `${spacing.xs}px ${spacing.md}px`, cursor: 'pointer', color: colors.text.primary, fontSize: 14 }}>Browse Sanctuary content</button>}
+              action={<button onClick={() => setActiveTab('drafts')} style={{ background: 'none', border: `1px solid ${colors.glass.border}`, borderRadius: borderRadius.full, padding: `${spacing.xs} ${spacing.md}`, cursor: 'pointer', color: colors.text.primary, fontSize: 14 }}>Browse Sanctuary content</button>}
               colors={colors}
             />
           ) : (
@@ -364,7 +364,7 @@ function CreatorDashboard() {
                         <button
                           onClick={() => setShareTarget(item)}
                           style={{
-                            padding: `${spacing.xs}px ${spacing.sm}px`,
+                            padding: `${spacing.xs} ${spacing.sm}`,
                             borderRadius: borderRadius.md,
                             border: `1px solid ${colors.glass.border}`,
                             background: 'transparent',
@@ -381,7 +381,7 @@ function CreatorDashboard() {
                         <Link
                           href={`/marketplace/${item.contentItemId}`}
                           style={{
-                            padding: `${spacing.xs}px ${spacing.sm}px`,
+                            padding: `${spacing.xs} ${spacing.sm}`,
                             borderRadius: borderRadius.md,
                             border: `1px solid ${colors.glass.border}`,
                             background: 'transparent',
@@ -399,7 +399,7 @@ function CreatorDashboard() {
                         <button
                           onClick={() => void handleUnpublish(item.marketplaceId)}
                           style={{
-                            padding: `${spacing.xs}px ${spacing.sm}px`,
+                            padding: `${spacing.xs} ${spacing.sm}`,
                             borderRadius: borderRadius.md,
                             border: `1px solid ${colors.glass.border}`,
                             background: 'transparent',
@@ -567,7 +567,7 @@ function CreatorDashboard() {
                 icon={<BarChart3 size={32} color={colors.text.secondary} />}
                 title="No analytics yet"
                 body="Publish content and share it to see your stats and earnings here."
-                action={<button onClick={() => setActiveTab('drafts')} style={{ background: 'none', border: `1px solid ${colors.glass.border}`, borderRadius: borderRadius.full, padding: `${spacing.xs}px ${spacing.md}px`, cursor: 'pointer', color: colors.text.primary, fontSize: 14 }}>Publish content</button>}
+                action={<button onClick={() => setActiveTab('drafts')} style={{ background: 'none', border: `1px solid ${colors.glass.border}`, borderRadius: borderRadius.full, padding: `${spacing.xs} ${spacing.md}`, cursor: 'pointer', color: colors.text.primary, fontSize: 14 }}>Publish content</button>}
                 colors={colors}
               />
             )}

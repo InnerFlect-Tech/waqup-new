@@ -127,7 +127,7 @@ export function UserProgressCard({
         style={{
           background: `linear-gradient(135deg, ${levelColor}22, ${levelColor}08)`,
           borderBottom: `1px solid ${levelColor}30`,
-          padding: `${spacing.md}px ${spacing.lg}px`,
+          padding: `${spacing.md} ${spacing.lg}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -180,7 +180,7 @@ export function UserProgressCard({
       </div>
 
       {/* XP progress bar */}
-      <div style={{ padding: `${spacing.sm}px ${spacing.lg}px`, borderBottom: `1px solid ${colors.border.light}` }}>
+      <div style={{ padding: `${spacing.sm} ${spacing.lg}`, borderBottom: `1px solid ${colors.border.light}` }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: spacing.xs }}>
           <Typography variant="small" color="secondary">
             {nextLevel ? `Progress to ${nextLevel}` : 'Maximum level reached'}
@@ -218,7 +218,7 @@ export function UserProgressCard({
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          padding: `${spacing.md}px ${spacing.lg}px`,
+          padding: `${spacing.md} ${spacing.lg}`,
           gap: spacing.sm,
         }}
       >
@@ -264,7 +264,7 @@ function MiniProgressCard({
         backdropFilter: BLUR.md,
         WebkitBackdropFilter: BLUR.md,
         border: `1px solid ${levelColor}30`,
-        padding: `${spacing.sm}px ${spacing.md}px`,
+        padding: `${spacing.sm} ${spacing.md}`,
         display: 'flex',
         flexDirection: 'column',
         gap: spacing.xs,

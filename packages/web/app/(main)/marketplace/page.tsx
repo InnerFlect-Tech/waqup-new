@@ -176,7 +176,7 @@ export default function MarketplacePage() {
                 key={f}
                 onClick={() => setFilter(f)}
                 style={{
-                  padding: `${spacing.xs}px ${spacing.md}px`,
+                  padding: `${spacing.xs} ${spacing.md}`,
                   borderRadius: borderRadius.full,
                   border: `1px solid ${filter === f ? colors.accent.primary : colors.glass.border}`,
                   background: filter === f ? colors.gradients.primary : 'transparent',
@@ -201,7 +201,7 @@ export default function MarketplacePage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 4,
-                  padding: `${spacing.xs}px ${spacing.sm}px`,
+                  padding: `${spacing.xs} ${spacing.sm}`,
                   borderRadius: borderRadius.full,
                   border: `1px solid ${sort === id ? colors.accent.secondary ?? colors.accent.primary : colors.glass.border}`,
                   background: sort === id ? `${colors.accent.primary}15` : 'transparent',
@@ -225,7 +225,7 @@ export default function MarketplacePage() {
             style={{
               flex: 1,
               maxWidth: SEARCH_INPUT_MAX_WIDTH,
-              padding: `${spacing.sm}px ${spacing.md}px`,
+              padding: `${spacing.sm} ${spacing.md}`,
               borderRadius: borderRadius.full,
               border: `1px solid ${colors.glass.border}`,
               background: colors.glass.light,

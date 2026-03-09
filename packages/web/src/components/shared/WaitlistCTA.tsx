@@ -193,7 +193,7 @@ function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: 
     <div
       style={{
         position: 'relative',
-        padding: `${spacing.xxl}px ${spacing.xl}px`,
+        padding: `${spacing.xxl} ${spacing.xl}`,
         borderRadius: borderRadius.xl,
         background: 'linear-gradient(135deg, rgba(147,51,234,0.15) 0%, rgba(99,102,241,0.12) 100%)',
         border: '1px solid rgba(147,51,234,0.2)',

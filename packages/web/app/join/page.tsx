@@ -363,7 +363,7 @@ function JoinPageInner() {
                 <div
                   style={{
                     marginBottom: spacing.xl,
-                    padding: `${spacing.sm}px ${spacing.md}px`,
+                    padding: `${spacing.sm} ${spacing.md}`,
                     borderRadius: borderRadius.md,
                     background: `${colors.accent.primary}10`,
                     border: `1px solid ${colors.accent.primary}25`,

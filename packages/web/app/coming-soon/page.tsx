@@ -131,7 +131,7 @@ export default function ComingSoonPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: `${spacing.xxxl}px 24px`,
+          padding: `${spacing.xxxl} ${spacing.lg}`,
           maxWidth: 640,
           margin: '0 auto',
           textAlign: 'center',
@@ -239,7 +239,7 @@ export default function ComingSoonPage() {
         </motion.div>
 
         {/* Divider */}
-        <div style={{ width: '100%', height: 1, background: 'rgba(255,255,255,0.06)', margin: `${spacing.xxxl}px 0` }} />
+        <div style={{ width: '100%', height: 1, background: 'rgba(255,255,255,0.06)', margin: `${spacing.xxxl} 0` }} />
 
         {/* Secondary links */}
         <motion.div

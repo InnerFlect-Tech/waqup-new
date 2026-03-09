@@ -654,7 +654,7 @@ export default function ProgressPage() {
                 </div>
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: `${spacing.xl}px 0` }}>
+              <div style={{ textAlign: 'center', padding: `${spacing.xl} 0` }}>
                 <Typography variant="body" style={{ color: colors.text.secondary, fontStyle: 'italic' }}>
                   Start practicing to fill your activity map.
                 </Typography>
@@ -692,7 +692,7 @@ export default function ProgressPage() {
                         display: 'flex',
                         alignItems: 'center',
                         gap: spacing.sm,
-                        padding: `${spacing.sm}px ${spacing.md}px`,
+                        padding: `${spacing.sm} ${spacing.md}`,
                         borderRadius: borderRadius.md,
                         background: `${typeColor}0c`,
                         border: `1px solid ${typeColor}20`,

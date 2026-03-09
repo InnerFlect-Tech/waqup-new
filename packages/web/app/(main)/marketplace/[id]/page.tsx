@@ -261,7 +261,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
           <SpeakingAnimation isSpeaking={isPlaying} frequencyData={freqData} style={{ minHeight: 160 }} />
 
           {/* Progress */}
-          <div style={{ padding: `0 ${spacing.xl}px` }}>
+          <div style={{ padding: `0 ${spacing.xl}` }}>
             <div
               style={{
                 height: 4,
@@ -290,7 +290,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
           </div>
 
           {/* Controls */}
-          <div style={{ padding: `0 ${spacing.xl}px ${spacing.xl}px`, display: 'flex', alignItems: 'center', gap: spacing.md, flexWrap: 'wrap' }}>
+          <div style={{ padding: `0 ${spacing.xl} ${spacing.xl}`, display: 'flex', alignItems: 'center', gap: spacing.md, flexWrap: 'wrap' }}>
             <Button
               variant="primary"
               size="lg"

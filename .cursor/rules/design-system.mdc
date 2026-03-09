@@ -1,0 +1,141 @@
+---
+description: Enforce the waQup design system. Apply whenever adding or editing UI components, styles, or tokens in packages/web or packages/shared/src/theme.
+globs:
+  - packages/web/src/**/*.{tsx,ts}
+  - packages/web/app/**/*.tsx
+  - packages/shared/src/theme/**/*.ts
+alwaysApply: true
+---
+
+# waQup Design System — Enforcement Rules
+
+## Single Source of Truth
+
+All design tokens live in ONE place:
+
+```
+packages/shared/src/theme/tokens.ts   ← canonical numeric values (shared)
+packages/web/src/theme/format.ts      ← CSS string adapters (web only)
+packages/web/src/theme/index.ts       ← barrel export
+```
+
+**Never define a token anywhere else. Never duplicate a token.**
+
+---
+
+## Token Import Pattern
+
+```typescript
+// ✅ Always import from @/theme in packages/web
+import { spacing, borderRadius, BLUR, colors, HEADER_PADDING_X, NAV_HEIGHT } from '@/theme';
+
+// ❌ Never import design values from anywhere else
+import { spacing } from '../../../theme/format';        // wrong path
+import { spacing } from '@waqup/shared/theme';          // wrong in web
+```
+
+---
+
+## Colors — Never Hardcode
+
+```typescript
+// ✅ Use theme colors object
+const { theme } = useTheme();
+const colors = theme.colors;
+style={{ color: colors.text.primary }}
+style={{ background: colors.accent.tertiary }}
+style={{ border: `1px solid ${colors.glass.border}` }}
+
+// ❌ Never hardcode brand colors
+style={{ color: '#A855F7' }}
+style={{ background: '#9333EA' }}
+style={{ color: 'rgba(168, 85, 247, 0.3)' }}
+```
+
+---
+
+## Blur / Backdrop Filter — Always Use BLUR Token
+
+```typescript
+// ✅ Use BLUR tokens (SSOT for backdrop-filter values)
+import { BLUR } from '@/theme';
+backdropFilter: BLUR.lg       // blur(12px) — nav, drawers, footer
+backdropFilter: BLUR.xl       // blur(20px) — modals, glass cards
+backdropFilter: BLUR.md       // blur(10px) — subtle surfaces
+backdropFilter: BLUR.sm       // blur(8px)  — very subtle
+
+// ❌ Never hardcode blur values
+backdropFilter: 'blur(12px)'
+backdropFilter: 'blur(20px)'
+```
+
+Always set BOTH `backdropFilter` and `WebkitBackdropFilter` to the same `BLUR.*` value.
+
+---
+
+## Spacing — Always Use spacing Token
+
+```typescript
+// ✅ Use spacing tokens
+import { spacing } from '@/theme';
+gap: spacing.md           // 16px
+padding: spacing.xl       // 32px
+marginBottom: spacing.lg  // 24px
+
+// ❌ Never hardcode spacing
+gap: '16px'
+padding: 32
+marginBottom: '24px'
+```
+
+---
+
+## Nav / Header Padding — Always Use HEADER_PADDING_X
+
+```typescript
+// ✅ Correct — consistent with the header token (80px)
+import { HEADER_PADDING_X } from '@/theme';
+paddingLeft: HEADER_PADDING_X
+paddingRight: HEADER_PADDING_X
+
+// ❌ Wrong — breaks visual alignment
+paddingLeft: spacing.xl    // too small
+paddingLeft: '48px'        // hardcoded
+```
+
+---
+
+## Token Lifecycle
+
+### Adding a New Token
+1. Add the canonical numeric value to `packages/shared/src/theme/tokens.ts`
+2. Add the CSS string export to `packages/web/src/theme/format.ts`
+3. Add to the barrel export in `packages/web/src/theme/index.ts`
+4. Use it immediately — never add a token without a real usage
+
+### Removing a Token
+1. Verify zero usages with a project-wide search before removing
+2. Remove from `tokens.ts`, `format.ts`, and `index.ts` in one commit
+3. Dead exports are technical debt — remove them immediately when discovered
+
+---
+
+## Do NOT Use the `waqup-app/` Directory
+
+The root-level `waqup-app/` folder is the **old monolithic app** — deprecated, not part of the monorepo. Do not edit or reference any files under `waqup-app/`.
+
+**Active codebase:**
+- `packages/web/` — Next.js web app
+- `packages/mobile/` — React Native / Expo mobile app
+- `packages/shared/` — Shared business logic, tokens, types
+
+---
+
+## Redundancy Checklist (Before Committing)
+
+- [ ] No new hardcoded hex colors added
+- [ ] No new hardcoded `blur(Xpx)` values — use `BLUR.*`
+- [ ] No new hardcoded spacing values — use `spacing.*`
+- [ ] No dead token exports left in `format.ts` / `index.ts`
+- [ ] New tokens are added to `tokens.ts` first, then `format.ts`, then `index.ts`
+- [ ] All three token files updated atomically (never partially)

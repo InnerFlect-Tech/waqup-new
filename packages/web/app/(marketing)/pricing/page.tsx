@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Infinity, Zap, ArrowRight, Flame } from 'lucide-react';
 import Link from 'next/link';
-import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH } from '@/theme';
+import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
 import { Typography, Button, PageShell, QCoin } from '@/components';
 import { PLANS, type PlanId } from '@waqup/shared/constants';
 
@@ -353,10 +353,12 @@ export default function PricingPage() {
   return (
     <PageShell intensity="medium" bare>
       <div
+        className="pricing-content"
         style={{
           padding: `${spacing.xxl} ${spacing.xl} ${spacing.xxl}`,
           maxWidth: CONTENT_MAX_WIDTH,
           margin: '0 auto',
+          marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`,
         }}
       >
         {/* Header */}

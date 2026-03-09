@@ -365,7 +365,7 @@ export default function AdminUsersPage() {
                   <div
                     key={stat.label}
                     style={{
-                      padding: `${spacing.md}px ${spacing.xl}px`,
+                      padding: `${spacing.md} ${spacing.xl}`,
                       borderRadius: borderRadius.lg,
                       background: colors.glass.light,
                       backdropFilter: 'blur(12px)',
@@ -393,7 +393,7 @@ export default function AdminUsersPage() {
                   placeholder="Search by email or ID…"
                   style={{
                     flex: 1,
-                    padding: `${spacing.sm}px ${spacing.md}px`,
+                    padding: `${spacing.sm} ${spacing.md}`,
                     borderRadius: borderRadius.md,
                     background: colors.glass.medium,
                     border: `1px solid ${colors.glass.border}`,
@@ -409,7 +409,7 @@ export default function AdminUsersPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 5,
-                    padding: `${spacing.sm}px ${spacing.md}px`,
+                    padding: `${spacing.sm} ${spacing.md}`,
                     borderRadius: borderRadius.md,
                     background: colors.glass.medium,
                     border: `1px solid ${colors.glass.border}`,
@@ -460,7 +460,7 @@ export default function AdminUsersPage() {
                         <th
                           key={h}
                           style={{
-                            padding: `${spacing.sm}px ${spacing.md}px`,
+                            padding: `${spacing.sm} ${spacing.md}`,
                             textAlign: 'left',
                             fontSize: 11,
                             fontWeight: 600,

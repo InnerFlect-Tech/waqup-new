@@ -312,7 +312,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
                   {micError && (
                     <div
                       style={{
-                        padding: `${spacing.sm}px ${spacing.md}px`,
+                        padding: `${spacing.sm} ${spacing.md}`,
                         borderRadius: borderRadius.md,
                         background: `${colors.error}12`,
                         border: `1px solid ${colors.error}30`,

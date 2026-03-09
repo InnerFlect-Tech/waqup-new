@@ -132,14 +132,13 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <GoogleAnalyticsTracker />
         </Suspense>
-        {/* GDPR Consent Mode v2 banner */}
-        <CookieConsentBanner />
-
         <QueryProvider>
           <ThemeProvider defaultThemeName="mystical-purple">
             <AuthProvider>
               <ToastProvider>
                 <AppLayout>{children}</AppLayout>
+                {/* GDPR Consent Mode v2 banner — must be inside ThemeProvider */}
+                <CookieConsentBanner />
               </ToastProvider>
             </AuthProvider>
           </ThemeProvider>

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button, Input } from '@/components';
 import { useTheme } from '@/theme';
 import { Logo, PageShell, GlassCard } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, PAGE_TOP_PADDING } from '@/theme';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -257,7 +257,7 @@ export default function WaitlistPage() {
 
   return (
     <PageShell intensity="medium" maxWidth={560} centered>
-      <div style={{ width: '100%' }}>
+      <div style={{ width: '100%', marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})` }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -669,7 +669,7 @@ export default function WaitlistPage() {
                     color: 'rgba(255,255,255,0.35)',
                     fontSize: 13,
                     padding: 0,
-                    margin: `${spacing.lg}px auto 0`,
+                    margin: `${spacing.lg} auto 0`,
                   }}
                 >
                   <ArrowLeft size={13} />

@@ -26,7 +26,7 @@ export function ElevatedBadge({ size = 'sm', style }: ElevatedBadgeProps) {
         display: 'inline-flex',
         alignItems: 'center',
         gap: isSm ? 3 : 4,
-        padding: isSm ? `2px ${spacing.xs}px` : `${spacing.xs}px ${spacing.sm}px`,
+        padding: isSm ? `2px ${spacing.xs}` : `${spacing.xs} ${spacing.sm}`,
         borderRadius: borderRadius.full,
         background: 'linear-gradient(135deg, #f59e0b22, #f97316 22)',
         border: '1px solid #f59e0b55',

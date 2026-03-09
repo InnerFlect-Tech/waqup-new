@@ -325,12 +325,7 @@ export default function LoginPage() {
                   border: `1px solid ${colors.glass.border}`,
                   marginBottom: spacing.lg,
                   height: '52px',
-                  fontSize: '16px',
-                  fontWeight: 500,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: spacing.sm,
+                  transform: 'translateZ(0)',
                 }}
               >
                 {googleLoading ? (

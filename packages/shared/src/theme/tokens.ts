@@ -65,9 +65,8 @@ export const layout = {
   navHeight: 64,
   gridCardMin: 300,
   searchInputMaxWidth: 400,
-  pageTopPadding: 80,
+  pageTopPadding: 48,
   maxWidth7xl: 1280,
-  /** Header horizontal padding - base and sm breakpoint (lateral space for logo and right buttons) */
-  headerPaddingX: 48,
-  headerPaddingXSm: 64,
+  /** Header horizontal padding — lateral space for logo and nav buttons */
+  headerPaddingX: 80,
 } as const;

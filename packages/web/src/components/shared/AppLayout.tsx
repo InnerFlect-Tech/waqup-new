@@ -18,7 +18,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb } from '@/components';
-import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, PAGE_PADDING } from '@/theme';
+import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
 
@@ -152,7 +152,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
             ...(isScrolled
-              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
+              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
           }}
         >
@@ -160,13 +160,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="mx-auto"
             style={{
               maxWidth: MAX_WIDTH_7XL,
-              paddingLeft: PAGE_PADDING,
-              paddingRight: PAGE_PADDING,
+              paddingLeft: HEADER_PADDING_X,
+              paddingRight: HEADER_PADDING_X,
             }}
           >
             <div
-              className="flex items-center justify-between flex-nowrap"
-              style={{ height: NAV_HEIGHT, columnGap: spacing.xxxl, minHeight: NAV_HEIGHT }}
+              className="flex items-center justify-between flex-nowrap gap-4 md:gap-12"
+              style={{ height: NAV_HEIGHT, minHeight: NAV_HEIGHT }}
             >
               <div className="flex-shrink-0">
                 <Logo size="md" href="/sanctuary" />
@@ -387,10 +387,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               height: isMobileMenuOpen ? 'auto' : 0,
               opacity: isMobileMenuOpen ? 1 : 0,
             }}
-            className="md:hidden overflow-hidden backdrop-blur-lg"
-            style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
-          >
-            <div style={{ padding: `${spacing.sm} ${spacing.sm} ${spacing.md} ${spacing.sm}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+          className="md:hidden overflow-hidden"
+          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg }}
+        >
+          <div style={{ padding: `${spacing.sm} ${HEADER_PADDING_X} ${spacing.md}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               {navItems.map((item) => (
                 <Button
                   key={item.path}
@@ -533,7 +533,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
             ...(isScrolled
-              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
+              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
           }}
         >
@@ -541,12 +541,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="mx-auto"
             style={{
               maxWidth: MAX_WIDTH_7XL,
-              paddingLeft: PAGE_PADDING,
-              paddingRight: PAGE_PADDING,
+              paddingLeft: HEADER_PADDING_X,
+              paddingRight: HEADER_PADDING_X,
             }}
-        >
+          >
           <div
-            className="flex items-center justify-between gap-x-16"
+            className="flex items-center justify-between gap-4 md:gap-16"
             style={{ height: NAV_HEIGHT }}
           >
             <div className="flex-shrink-0">
@@ -598,7 +598,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 -mr-2"
+                className="p-2"
               >
                 {isMobileMenuOpen ? (
                   <X className="w-6 h-6" style={{ color: colors.text.primary }} />
@@ -616,10 +616,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             height: isMobileMenuOpen ? 'auto' : 0,
             opacity: isMobileMenuOpen ? 1 : 0,
           }}
-          className="md:hidden overflow-hidden backdrop-blur-lg"
-          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+          className="md:hidden overflow-hidden"
+          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg }}
         >
-          <div style={{ padding: `${spacing.sm} ${spacing.sm} ${spacing.md} ${spacing.sm}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+          <div style={{ padding: `${spacing.sm} ${HEADER_PADDING_X} ${spacing.md}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
             <Button
               variant="ghost"
               onClick={() => router.push('/how-it-works')}
@@ -668,11 +668,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         style={{
           borderTop: `1px solid ${colors.glass.border}`,
           background: 'rgba(0,0,0,0.4)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          backdropFilter: BLUR.lg,
+          WebkitBackdropFilter: BLUR.lg,
         }}
       >
         <div
+          className="footer-inner"
           style={{
             maxWidth: MAX_WIDTH_7XL,
             margin: '0 auto',
