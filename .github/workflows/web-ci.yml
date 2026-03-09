@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: false  # waqup-app submodule has no .gitmodules URL; build doesn't need it
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -86,6 +88,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: false  # waqup-app submodule has no .gitmodules URL; build doesn't need it
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
