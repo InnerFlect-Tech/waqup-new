@@ -91,7 +91,7 @@ export function CreatorGate({ children, stats: externalStats }: CreatorGateProps
     return <>{children}</>;
   }
 
-  return <LockedState stats={stats} children={children} />;
+  return <LockedState stats={stats}>{children}</LockedState>;
 }
 
 // ─── Locked state ─────────────────────────────────────────────────────────────
@@ -307,7 +307,7 @@ function LockedState({
               <CheckCircle2 size={36} color="#10b981" />
               <Typography variant="h4" style={{ fontWeight: 700 }}>Proposal submitted</Typography>
               <Typography variant="body" color="secondary">
-                We'll be in touch when the Creator Marketplace opens.
+                We&apos;ll be in touch when the Creator Marketplace opens.
                 Keep practising to unlock early access.
               </Typography>
             </motion.div>
@@ -380,7 +380,7 @@ function ProposalForm({
           Submit a creator proposal
         </Typography>
         <Typography variant="body" color="secondary" style={{ marginTop: spacing.xs }}>
-          Tell us about the content you'd create. We'll reach out with early access.
+          Tell us about the content you&apos;d create. We&apos;ll reach out with early access.
         </Typography>
       </div>
 

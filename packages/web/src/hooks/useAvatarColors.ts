@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import type { AvatarOrbColors } from '@/components/ui/AvatarOrb';
 
 const STORAGE_KEY = 'waqup_avatar_colors';
@@ -24,11 +24,9 @@ function readFromStorage(): AvatarOrbColors {
 }
 
 export function useAvatarColors() {
-  const [colors, setColors] = useState<AvatarOrbColors>(DEFAULT_AVATAR_COLORS);
-
-  useEffect(() => {
-    setColors(readFromStorage());
-  }, []);
+  const [colors, setColors] = useState<AvatarOrbColors>(() =>
+    typeof window !== 'undefined' ? readFromStorage() : DEFAULT_AVATAR_COLORS
+  );
 
   const setColor = useCallback((slot: 0 | 1 | 2, hex: string) => {
     setColors((prev) => {

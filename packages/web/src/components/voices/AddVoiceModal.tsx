@@ -152,7 +152,7 @@ export function AddVoiceModal({ onClose, onCreated, creditBalance }: AddVoiceMod
               Add a voice
             </Typography>
             <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 2 }}>
-              Preserve someone's voice, forever
+              Preserve someone&apos;s voice, forever
             </Typography>
           </div>
           <button
@@ -326,7 +326,7 @@ export function AddVoiceModal({ onClose, onCreated, creditBalance }: AddVoiceMod
                 exit={{ opacity: 0, x: -20 }}
               >
                 <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 500, marginBottom: spacing.sm }}>
-                  Upload {name}'s voice
+                  Upload {name}&apos;s voice
                 </Typography>
                 <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.xl, display: 'block' }}>
                   A few minutes of audio is all it takes. The more you upload, the more natural it sounds.

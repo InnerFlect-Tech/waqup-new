@@ -23,16 +23,16 @@ export function useSuperAdmin(): UseSuperAdminResult {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      setRole(null);
-      setAccessGranted(false);
-      setIsLoading(false);
-      return;
-    }
-
     let cancelled = false;
 
     const fetchProfile = async () => {
+      if (!user) {
+        setRole(null);
+        setAccessGranted(false);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       const { data, error } = await supabase
         .from('profiles')

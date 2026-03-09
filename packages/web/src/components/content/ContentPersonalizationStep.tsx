@@ -129,7 +129,7 @@ export function ContentPersonalizationStep({ backHref, nextHref }: ContentPerson
           What do you call yourself in this work?
         </Typography>
         <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
-          Your name, a version of your name, or a title that feels true — e.g. "Alex", "Future Me", "The Builder"
+          Your name, a version of your name, or a title that feels true — e.g. &ldquo;Alex&rdquo;, &ldquo;Future Me&rdquo;, &ldquo;The Builder&rdquo;
         </Typography>
         <div
           style={{
@@ -167,7 +167,7 @@ export function ContentPersonalizationStep({ backHref, nextHref }: ContentPerson
           Why does this transformation matter?
         </Typography>
         <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
-          The deeper the "why", the more the ritual resonates. Be honest and personal.
+          The deeper the &ldquo;why&rdquo;, the more the ritual resonates. Be honest and personal.
         </Typography>
         <div
           style={{

@@ -102,7 +102,7 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
             Your intent
           </Typography>
           <Typography variant="body" style={{ color: colors.text.primary, lineHeight: 1.7, fontStyle: 'italic' }}>
-            "{intent}"
+            &ldquo;{intent}&rdquo;
           </Typography>
           {script && (
             <>

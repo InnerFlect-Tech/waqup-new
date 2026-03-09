@@ -101,12 +101,18 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
   useEffect(() => {
     if (choice !== 'library') return;
     if (libraryVoices.length > 0) return;
-    setLibraryLoading(true);
-    getVoices()
-      .then((voices) => setLibraryVoices(voices))
-      .catch(() => {})
-      .finally(() => setLibraryLoading(false));
-  }, [choice]);
+
+    const load = async () => {
+      setLibraryLoading(true);
+      try {
+        const voices = await getVoices();
+        setLibraryVoices(voices);
+      } catch {}
+      setLibraryLoading(false);
+    };
+
+    void load();
+  }, [choice, libraryVoices.length]);
 
   const DEFAULT_AI_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
 
@@ -415,7 +421,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
               }}
             >
               <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
-                We'll generate your audio using ElevenLabs' neural voice. You can swap to your own recorded voice at any time from the audio studio.
+                We&apos;ll generate your audio using ElevenLabs&apos; neural voice. You can swap to your own recorded voice at any time from the audio studio.
               </Typography>
             </div>
           </motion.div>
