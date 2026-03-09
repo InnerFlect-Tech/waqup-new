@@ -21,6 +21,8 @@ import type { ProgressStats } from '@waqup/shared/types';
 import { LEVEL_THRESHOLDS } from '@waqup/shared/types';
 import { createProgressService } from '@waqup/shared/services';
 import { supabase } from '@/lib/supabase';
+import { useRoleOverrideStore } from '@/stores';
+import { useSuperAdmin } from '@/hooks';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -65,6 +67,8 @@ export interface CreatorGateProps {
  * proposal submission form.
  */
 export function CreatorGate({ children, stats: externalStats }: CreatorGateProps) {
+  const viewAsRole = useRoleOverrideStore((s) => s.viewAsRole);
+  const { actualIsSuperAdmin } = useSuperAdmin();
   const [stats, setStats] = useState<ProgressStats | null>(externalStats ?? null);
   const [loading, setLoading] = useState(externalStats === undefined);
 
@@ -78,12 +82,15 @@ export function CreatorGate({ children, stats: externalStats }: CreatorGateProps
     });
   }, [externalStats]);
 
-  const isUnlocked =
+  const xpUnlocked =
     !loading &&
     stats !== null &&
     stats.totalXp >= LEVEL_THRESHOLDS.practitioner;
 
-  if (loading) {
+  const viewAsCreatorBypass = viewAsRole === 'creator' && actualIsSuperAdmin;
+  const isUnlocked = xpUnlocked || viewAsCreatorBypass;
+
+  if (loading && !viewAsCreatorBypass) {
     return <GateSkeleton>{children}</GateSkeleton>;
   }
 

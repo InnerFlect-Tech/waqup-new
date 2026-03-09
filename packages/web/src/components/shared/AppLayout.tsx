@@ -16,11 +16,13 @@ import {
   CreditCard,
   HelpCircle,
   Shield,
+  Check,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb } from '@/components';
 import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
-import { useAuthStore } from '@/stores';
+import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
+import type { ViewAsRole } from '@/stores';
 
 interface NavItem {
   name: string;
@@ -78,6 +80,22 @@ const AUTH_ROUTES = [
   '/auth/',
 ];
 
+const SUPERADMIN_ROUTE_PREFIXES = ['/admin', '/system', '/health', '/showcase', '/pages', '/sitemap-view'];
+
+function isSuperadminRoute(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return SUPERADMIN_ROUTE_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
+  );
+}
+
+const VIEW_AS_OPTIONS: { value: ViewAsRole; label: string }[] = [
+  { value: 'user', label: 'User' },
+  { value: 'creator', label: 'Creator' },
+  { value: 'admin', label: 'Admin' },
+  { value: null, label: 'Superadmin' },
+];
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
   const colors = theme.colors;
@@ -93,7 +111,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { balance: creditsBalance } = useCreditBalance();
   const { colors: avatarColors } = useAvatarColors();
-  const { isSuperAdmin } = useSuperAdmin();
+  const { isSuperAdmin, actualIsSuperAdmin } = useSuperAdmin();
+  const viewAsRole = useRoleOverrideStore((s) => s.viewAsRole);
+  const setViewAsRole = useRoleOverrideStore((s) => s.setViewAsRole);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -135,6 +155,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const handleViewAsSelect = (role: ViewAsRole) => {
+    setViewAsRole(role);
+    setShowProfileMenu(false);
+    setIsMobileMenuOpen(false);
+    if (role !== null && isSuperadminRoute(pathname)) {
+      router.replace('/sanctuary');
     }
   };
 
@@ -338,6 +367,48 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         ))}
                       </div>
 
+                      {actualIsSuperAdmin && (
+                        <>
+                          <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+                          <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
+                            <p
+                              className="text-xs font-medium"
+                              style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                            >
+                              View as
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                              {VIEW_AS_OPTIONS.map((opt) => {
+                                const isActive = viewAsRole === opt.value;
+                                return (
+                                  <button
+                                    key={opt.label}
+                                    type="button"
+                                    className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer transition-all"
+                                    style={{
+                                      padding: `${spacing.sm} ${spacing.md}`,
+                                      gap: spacing.md,
+                                      color: isActive ? colors.accent.tertiary : colors.text.onDark,
+                                      background: isActive ? 'rgba(168,85,247,0.12)' : 'transparent',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                                    }}
+                                    onClick={() => handleViewAsSelect(opt.value)}
+                                  >
+                                    <span>{opt.label}</span>
+                                    {isActive && <Check className="w-4 h-4" />}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
                       <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
 
                       {/* Sign out */}
@@ -493,6 +564,42 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   {item.name}
                 </button>
               ))}
+
+              {actualIsSuperAdmin && (
+                <>
+                  <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+                  <div>
+                    <p
+                      className="text-xs font-medium"
+                      style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                    >
+                      View as
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      {VIEW_AS_OPTIONS.map((opt) => {
+                        const isActive = viewAsRole === opt.value;
+                        return (
+                          <button
+                            key={opt.label}
+                            type="button"
+                            className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer"
+                            style={{
+                              padding: `${spacing.sm} ${spacing.md}`,
+                              gap: spacing.md,
+                              color: isActive ? colors.accent.tertiary : colors.text.onDark,
+                              background: isActive ? 'rgba(168,85,247,0.12)' : 'transparent',
+                            }}
+                            onClick={() => handleViewAsSelect(opt.value)}
+                          >
+                            <span>{opt.label}</span>
+                            {isActive && <Check className="w-4 h-4" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
 
