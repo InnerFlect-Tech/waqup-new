@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores';
-import { createSupabaseClient } from '@/lib/supabase';
+// use supabase instead of supabase-browser for client side rendering compatibility in next.js
+import { supabase } from '@/lib/supabase';
+
+// use alias type mapping
 import { type Subscription } from '@waqup/shared/types';
 
 export function useSubscription() {
   const { user } = useAuthStore();
-  // Using the shared instance client correctly exported by our web app's lib/supabase.ts
-  const supabase = createSupabaseClient();
 
   return useQuery({
     queryKey: ['subscription', user?.id],
@@ -25,3 +26,12 @@ export function useSubscription() {
     enabled: !!user,
   });
 }
+
+
+
+
+
+
+
+
+
