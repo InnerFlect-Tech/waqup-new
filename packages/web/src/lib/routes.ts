@@ -27,8 +27,8 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/play/[id]', section: 'Marketing', description: 'Public audio player (SSR + OG)', status: 'exists' },
 
   // ── Legal ──────────────────────────────────────────────────────────────────
-  { path: '/privacy', section: 'Legal', description: 'Privacy policy', status: 'to_change', note: 'Stub — needs real content before launch' },
-  { path: '/terms', section: 'Legal', description: 'Terms of service', status: 'to_change', note: 'Stub — needs real content before launch' },
+  { path: '/privacy', section: 'Legal', description: 'Privacy policy', status: 'exists', note: 'Full GDPR/CCPA content' },
+  { path: '/terms', section: 'Legal', description: 'Terms of service', status: 'exists', note: 'Full terms with wellness disclaimer' },
 
   // ── Auth ───────────────────────────────────────────────────────────────────
   { path: '/login', section: 'Auth', description: 'Sign in', status: 'exists' },

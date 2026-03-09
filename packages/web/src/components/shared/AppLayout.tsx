@@ -17,9 +17,17 @@ import {
   HelpCircle,
   Shield,
   Check,
+  Users,
+  ListChecks,
+  Cpu,
+  FileText,
+  Activity,
+  Layout,
+  Map,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb } from '@/components';
 import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
+import { LEGAL_CONFIG } from '@/config/legal';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
 import type { ViewAsRole } from '@/stores';
@@ -96,6 +104,19 @@ const VIEW_AS_OPTIONS: { value: ViewAsRole; label: string }[] = [
   { value: null, label: 'Superadmin' },
 ];
 
+const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
+  { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
+  { name: 'Users', path: '/admin/users', icon: <Users className="w-4 h-4" /> },
+  { name: 'Waitlist', path: '/admin/waitlist', icon: <ListChecks className="w-4 h-4" /> },
+  { name: 'Oracle / AI', path: '/admin/oracle', icon: <Cpu className="w-4 h-4" /> },
+  { name: 'All Pages', path: '/pages', icon: <FileText className="w-4 h-4" /> },
+  { name: 'System', path: '/system', icon: <Settings className="w-4 h-4" /> },
+  { name: 'Creation Steps', path: '/system/creation-steps', icon: <Layout className="w-4 h-4" /> },
+  { name: 'API Health', path: '/health', icon: <Activity className="w-4 h-4" /> },
+  { name: 'Showcase', path: '/showcase', icon: <Layout className="w-4 h-4" /> },
+  { name: 'Sitemap', path: '/sitemap-view', icon: <Map className="w-4 h-4" /> },
+];
+
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
   const colors = theme.colors;
@@ -121,7 +142,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
-    ...(isSuperAdmin
+    ...(actualIsSuperAdmin
       ? [{ name: 'Admin', path: '/admin', icon: <Shield className="w-5 h-5" /> }]
       : []),
   ];
@@ -375,6 +396,41 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                               className="text-xs font-medium"
                               style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
                             >
+                              Super Admin
+                            </p>
+                            {SUPERADMIN_MENU_ITEMS.map((item) => (
+                              <button
+                                key={item.path}
+                                type="button"
+                                className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                                style={{
+                                  padding: `${spacing.sm} ${spacing.md}`,
+                                  gap: spacing.md,
+                                  color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
+                                  background: pathname === item.path ? 'rgba(168,85,247,0.12)' : 'transparent',
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                                }}
+                                onClick={() => {
+                                  router.push(item.path);
+                                  setShowProfileMenu(false);
+                                }}
+                              >
+                                {item.icon}
+                                {item.name}
+                              </button>
+                            ))}
+                          </div>
+                          <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+                          <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
+                            <p
+                              className="text-xs font-medium"
+                              style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                            >
                               View as
                             </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -567,6 +623,35 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
               {actualIsSuperAdmin && (
                 <>
+                  <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+                  <div>
+                    <p
+                      className="text-xs font-medium"
+                      style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                    >
+                      Super Admin
+                    </p>
+                    {SUPERADMIN_MENU_ITEMS.map((item) => (
+                      <button
+                        key={item.path}
+                        type="button"
+                        className="w-full flex items-center rounded-lg border-0 cursor-pointer"
+                        style={{
+                          padding: `${spacing.sm} ${spacing.md}`,
+                          gap: spacing.md,
+                          color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
+                          background: 'transparent',
+                        }}
+                        onClick={() => {
+                          router.push(item.path);
+                          setIsMobileMenuOpen(false);
+                        }}
+                      >
+                        {item.icon}
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
                   <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
                   <div>
                     <p
@@ -872,6 +957,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 {[
                   ['Privacy Policy', '/privacy'],
                   ['Terms of Service', '/terms'],
+                  ['Contact', `mailto:${LEGAL_CONFIG.supportEmail}`],
                 ].map(([label, href]) => (
                   <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
@@ -896,8 +982,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               gap: 12,
             }}
           >
-            <span style={{ fontSize: 13, color: colors.text.tertiary }}>© 2026 waQup · All rights reserved</span>
-            <span style={{ fontSize: 13, color: colors.text.tertiary }}>Practice is always free.</span>
+            <span style={{ fontSize: 13, color: colors.text.tertiary }}>
+              © {new Date().getFullYear()} waQup · All rights reserved
+            </span>
+            <span style={{ fontSize: 13, color: colors.text.tertiary }}>
+              Practice is always free. Payment: cards (Stripe) · Bitcoin coming
+              soon
+            </span>
           </div>
         </div>
 

@@ -78,9 +78,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  let supabase;
   try {
-    const supabase = createSupabaseAdminClient();
+    supabase = createSupabaseAdminClient();
+  } catch (err) {
+    console.error('[waitlist] Supabase admin client init failed:', err);
+    return NextResponse.json(
+      { error: 'Service temporarily unavailable' },
+      { status: 503 },
+    );
+  }
 
+  try {
     const { data, error } = await supabase
       .from('waitlist_signups')
       .select('id, name, email, intentions, is_beta_tester, referral_source, message, status, created_at')
@@ -92,7 +101,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     return NextResponse.json({ signups: data ?? [] });
-  } catch {
+  } catch (err) {
+    console.error('[waitlist] unexpected error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

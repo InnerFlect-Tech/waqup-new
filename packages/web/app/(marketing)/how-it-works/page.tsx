@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -425,23 +425,25 @@ export default function HowItWorksPage() {
             style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
           />
         </div>
-        {/* Top fade — extends outside section */}
-        <div style={{ position: 'absolute', top: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to bottom, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Bottom fade — extends outside section */}
-        <div style={{ position: 'absolute', bottom: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to top, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Side fades — extend outside */}
-        <div style={{ position: 'absolute', top: -60, bottom: -60, left: -80, width: 100, background: 'linear-gradient(to right, #000000 0%, transparent 100%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: -60, bottom: -60, right: -80, width: 100, background: 'linear-gradient(to left, #000000 0%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Subtle vignette for text legibility */}
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at center, rgba(0,0,0,0.35) 0%, transparent 100%)' }} />
-        {/* Quote */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `0 ${PAGE_PADDING}`, textAlign: 'center' }}>
-          <blockquote style={{ fontSize: 'clamp(22px, 3vw, 42px)', fontWeight: 300, letterSpacing: '-0.8px', color: '#fff', lineHeight: 1.35, maxWidth: 800, margin: '0 0 24px', fontStyle: 'italic', textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}>
-            &ldquo;The first app that actually made me feel like I was talking to myself.&rdquo;
-          </blockquote>
-          <p style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.6)', margin: 0, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-            Marcus T. &nbsp;·&nbsp; Entrepreneur &nbsp;·&nbsp; 34 days in
-          </p>
+        {/* Smooth top fade — gradual blend into page, no hard black bar */}
+        <div style={{ position: 'absolute', top: -80, left: -40, right: -40, height: 'calc(50% + 80px)', background: 'linear-gradient(to bottom, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.6) 20%, rgba(6,2,20,0.2) 45%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Smooth bottom fade — gradual blend into page */}
+        <div style={{ position: 'absolute', bottom: -80, left: -40, right: -40, height: 'calc(50% + 80px)', background: 'linear-gradient(to top, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.6) 20%, rgba(6,2,20,0.2) 45%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Gentle side fades */}
+        <div style={{ position: 'absolute', top: -40, bottom: -40, left: -60, width: 120, background: 'linear-gradient(to right, rgba(6,2,20,0.7) 0%, transparent 100%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: -40, bottom: -40, right: -60, width: 120, background: 'linear-gradient(to left, rgba(6,2,20,0.7) 0%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Soft vignette for depth (no harsh edges) */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 90% 70% at center, transparent 40%, rgba(0,0,0,0.25) 80%, rgba(0,0,0,0.5) 100%)', pointerEvents: 'none' }} />
+        {/* Text overlay — semi-transparent backdrop for readability */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `0 ${PAGE_PADDING}`, textAlign: 'center', pointerEvents: 'none' }}>
+          <div style={{ padding: '48px 56px', maxWidth: 820, background: 'linear-gradient(135deg, rgba(0,0,0,0.45), rgba(6,2,20,0.35))', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, borderRadius: 24, border: '1px solid rgba(255,255,255,0.06)' }}>
+            <blockquote style={{ fontSize: 'clamp(22px, 3vw, 42px)', fontWeight: 300, letterSpacing: '-0.8px', color: '#fff', lineHeight: 1.35, margin: '0 0 24px', fontStyle: 'italic', textShadow: '0 2px 24px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.3)' }}>
+              &ldquo;The first app that actually made me feel like I was talking to myself.&rdquo;
+            </blockquote>
+            <p style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.75)', margin: 0, letterSpacing: '0.1em', textTransform: 'uppercase', textShadow: '0 1px 12px rgba(0,0,0,0.4)' }}>
+              Marcus T. &nbsp;·&nbsp; Entrepreneur &nbsp;·&nbsp; 34 days in
+            </p>
+          </div>
         </div>
       </section>
 
@@ -645,29 +647,29 @@ export default function HowItWorksPage() {
             unoptimized
           />
         </div>
-        {/* Top fade — extends outside section */}
-        <div style={{ position: 'absolute', top: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to bottom, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Bottom fade — extends outside section */}
-        <div style={{ position: 'absolute', bottom: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to top, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Left dark panel for text + left fade extending outside */}
-        <div style={{ position: 'absolute', top: -60, bottom: -60, left: -80, width: 'calc(60% + 80px)', background: 'linear-gradient(to right, #000000 0%, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.6) 70%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Right fade — extends outside */}
-        <div style={{ position: 'absolute', top: -60, bottom: -60, right: -80, width: 100, background: 'linear-gradient(to left, #000000 0%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Copy — overlaid left, centered vertically */}
+        {/* Smooth top fade — gradual blend, no hard black bar */}
+        <div style={{ position: 'absolute', top: -80, left: -40, right: -40, height: 'calc(45% + 80px)', background: 'linear-gradient(to bottom, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.5) 25%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Smooth bottom fade */}
+        <div style={{ position: 'absolute', bottom: -80, left: -40, right: -40, height: 'calc(45% + 80px)', background: 'linear-gradient(to top, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.5) 25%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Soft left gradient — gradual fade from dark to image, not a box */}
+        <div style={{ position: 'absolute', top: -40, bottom: -40, left: -60, width: 'calc(55% + 60px)', background: 'linear-gradient(to right, rgba(6,2,20,0.85) 0%, rgba(6,2,20,0.4) 25%, rgba(6,2,20,0.15) 50%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Soft right fade */}
+        <div style={{ position: 'absolute', top: -40, bottom: -40, right: -60, width: 120, background: 'linear-gradient(to left, rgba(6,2,20,0.6) 0%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Copy — glass card overlay for readability, not a harsh black box */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
           <div style={{ width: '100%', maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `0 ${PAGE_PADDING}` }}>
-            <div style={{ maxWidth: 500 }}>
+            <div style={{ maxWidth: 520, padding: '48px 56px', background: 'linear-gradient(135deg, rgba(0,0,0,0.5), rgba(6,2,20,0.4))', backdropFilter: BLUR.xl, WebkitBackdropFilter: BLUR.xl, borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)' }}>
               <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 20 }}>Voice Cloning</div>
-              <h3 style={{ fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 300, letterSpacing: '-1px', color: '#fff', margin: '0 0 24px', lineHeight: 1.15 }}>
+              <h3 style={{ fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 300, letterSpacing: '-1px', color: '#fff', margin: '0 0 24px', lineHeight: 1.15, textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
                 Hear yourself say it.<br />
                 <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Something shifts permanently.</span>
               </h3>
-              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, margin: '0 0 32px', fontWeight: 300 }}>
+              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.8)', lineHeight: 1.75, margin: '0 0 32px', fontWeight: 300 }}>
                 Record 60 seconds of your natural voice. waQup clones it, then voices everything you create. Your own voice reminding you who you already are.
               </p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                 <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: `${colors.accent.primary}25`, border: `1px solid ${colors.accent.primary}50`, fontSize: 13, color: '#C084FC', fontWeight: 500 }}>60 sec recording</div>
-                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Optional</div>
+                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>Optional</div>
               </div>
             </div>
           </div>

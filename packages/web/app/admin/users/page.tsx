@@ -8,6 +8,8 @@ import { spacing, borderRadius } from '@/theme';
 import { QCoin } from '@/components';
 import { ArrowUpRight, ArrowDownLeft, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react';
 
+const ADMIN_PASS = process.env.NEXT_PUBLIC_ORACLE_ADMIN_PASS ?? 'waQup-admin';
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface Transaction {
@@ -301,7 +303,9 @@ export default function AdminUsersPage() {
     setLoading(true);
     setFetchError(null);
     try {
-      const res = await fetch('/api/admin/users');
+      const res = await fetch('/api/admin/users', {
+        headers: { 'X-Admin-Pass': ADMIN_PASS },
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to fetch users');
