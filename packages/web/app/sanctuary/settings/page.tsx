@@ -7,7 +7,8 @@ import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { useAuthStore } from '@/stores';
-import { clearCreateInitSeen, useAvatarColors } from '@/hooks';
+import { clearCreateInitSeen, useAvatarColors, useSubscription } from '@/hooks';
+import { getPlanById } from '@waqup/shared/constants';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
@@ -86,6 +87,25 @@ export default function SettingsPage() {
   const { user } = useAuthStore();
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
   const { colors: avatarColors, setColor: setAvatarColor } = useAvatarColors();
+  const { data: subscription, isLoading: isLoadingSubscription } = useSubscription();
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
+
+  const handleManageBilling = async () => {
+    try {
+      setPortalLoading(true);
+      setPortalError(null);
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Failed to open portal');
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      setPortalError(err instanceof Error ? err.message : 'Something went wrong');
+    } finally {
+      setPortalLoading(false);
+    }
+  };
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -159,6 +179,74 @@ export default function SettingsPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, opacity: 0.7 }}>
             Profile editing coming soon
           </Typography>
+        </motion.div>
+
+        {/* Billing section */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} style={sectionStyle}>
+          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+            Billing & Subscription
+          </Typography>
+          
+          {isLoadingSubscription ? (
+            <Typography variant="small" style={{ color: colors.text.secondary }}>Loading...</Typography>
+          ) : subscription ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+              <div>
+                <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.xs, display: 'block' }}>
+                  Current Plan
+                </Typography>
+                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                  <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 500 }}>
+                    {getPlanById(subscription.plan_id as any)?.name || subscription.plan_id}
+                  </Typography>
+                  <div style={{ 
+                    padding: '2px 8px', 
+                    borderRadius: 12, 
+                    fontSize: 11, 
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    background: subscription.status === 'active' || subscription.status === 'trialing' ? `${colors.success}20` : `${colors.error}20`,
+                    color: subscription.status === 'active' || subscription.status === 'trialing' ? colors.success : colors.error
+                  }}>
+                    {subscription.status}
+                  </div>
+                </div>
+              </div>
+              
+              {subscription.cancel_at_period_end && (
+                <Typography variant="small" style={{ color: colors.warning }}>
+                  Cancels at end of billing period
+                </Typography>
+              )}
+
+              {portalError && (
+                <Typography variant="small" style={{ color: colors.error }}>
+                  {portalError}
+                </Typography>
+              )}
+
+              <Button 
+                variant="outline" 
+                size="sm" 
+                loading={portalLoading} 
+                onClick={handleManageBilling}
+                style={{ alignSelf: 'flex-start', marginTop: spacing.sm }}
+              >
+                Manage Billing
+              </Button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+              <Typography variant="body" style={{ color: colors.text.secondary }}>
+                You are currently on the free practice tier.
+              </Typography>
+              <Link href="/pricing" style={{ textDecoration: 'none' }}>
+                <Button variant="primary" size="sm">
+                  View Plans
+                </Button>
+              </Link>
+            </div>
+          )}
         </motion.div>
 
         {/* Avatar section */}

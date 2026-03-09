@@ -13,3 +13,4 @@ export * from './orb.types';
 export * from './audio';
 export * from './progress';
 export * from './voice';
+export * from './subscription';
