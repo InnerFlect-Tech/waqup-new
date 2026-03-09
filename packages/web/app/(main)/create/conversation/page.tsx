@@ -2,13 +2,10 @@
 
 import React, { useState, useRef, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Typography, Button } from '@/components';
-import { PageShell } from '@/components';
-import { spacing } from '@/theme';
+import { Typography, Button, PageShell } from '@/components';
+import { spacing, borderRadius, useTheme } from '@/theme';
 import Link from 'next/link';
 import { Send, ArrowLeft } from 'lucide-react';
-import { spacing, borderRadius } from '@/theme';
-import { useTheme } from '@/theme';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 import { formatQs } from '@waqup/shared/utils';
 import { useSearchParams, useRouter } from 'next/navigation';

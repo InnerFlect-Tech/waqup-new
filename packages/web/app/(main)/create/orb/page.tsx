@@ -3,12 +3,10 @@
 import React, { useState, useRef, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button, PageShell } from '@/components';
-import { spacing } from '@/theme';
+import { spacing, borderRadius, useTheme } from '@/theme';
 import { ScienceInsight } from '@/components/content/ScienceInsight';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { spacing, borderRadius } from '@/theme';
-import { useTheme } from '@/theme';
 import { Mic, Square, MessageSquare, ArrowLeft } from 'lucide-react';
 import { VoiceOrb } from '@/components/audio/VoiceOrb';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
