@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typography, Button, QCoin } from '@/components';
 import { PageShell, PageContent } from '@/components';
@@ -12,6 +13,8 @@ import { useCreditBalance } from '@/hooks';
 import { createCreditsService } from '@waqup/shared/services';
 import type { CreditTransaction } from '@waqup/shared/types';
 import { supabase } from '@/lib/supabase';
+import { Analytics } from '@waqup/shared/utils';
+import { useAuthStore } from '@/stores';
 
 const EARN_METHODS = [
   {
@@ -53,6 +56,8 @@ export default function CreditsPage() {
   const { balance, isLoading } = useCreditBalance();
   const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
   const [txLoading, setTxLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const { user } = useAuthStore();
 
   const loadTransactions = useCallback(async () => {
     setTxLoading(true);
@@ -64,9 +69,18 @@ export default function CreditsPage() {
   }, []);
 
   useEffect(() => {
-     
     void loadTransactions();
   }, [loadTransactions]);
+
+  // Fire analytics event when Stripe redirects back after a successful credit purchase.
+  // Stripe appends ?checkout=success&pack=<packId>&credits=<amount> to the success_url.
+  useEffect(() => {
+    if (searchParams.get('checkout') !== 'success') return;
+    const packId = searchParams.get('pack') ?? 'unknown';
+    const credits = Number(searchParams.get('credits') ?? 0);
+    Analytics.creditsPurchased(packId, credits, 'USD', user?.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <PageShell intensity="medium">

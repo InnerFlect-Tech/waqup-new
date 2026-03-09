@@ -6,6 +6,7 @@ import { useTheme, spacing, borderRadius } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { Typography, Button } from '@/components';
 import { useAuthStore } from '@/stores';
+import { Analytics } from '@waqup/shared/utils';
 
 const INTENTIONS = [
   { id: 'confidence', emoji: '🦁', label: 'Confidence & Self-Worth', sub: 'Own who you are, fully' },
@@ -32,6 +33,7 @@ export default function OnboardingPage() {
   const handleContinue = async () => {
     if (!selected) return;
     setIsSubmitting(true);
+    Analytics.onboardingStepCompleted('intention', user?.id);
     // Small delay for UX feel, then enter the Sanctuary
     await new Promise((r) => setTimeout(r, 600));
     router.push('/sanctuary');

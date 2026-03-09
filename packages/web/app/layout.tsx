@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Suspense } from 'react';
+import Script from 'next/script';
 import './globals.css';
 import '../src/styles/animations.css';
 import { ThemeProvider } from '@/theme';
@@ -9,8 +10,12 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { QueryProvider } from '@/components/shared/QueryProvider';
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
 import { AnalyticsProvider } from '@/components/AnalyticsProvider';
+import { GoogleAnalyticsTracker, CookieConsentBanner } from '@/components/analytics';
 
-const inter = Inter({ subsets: ['latin'] });
+/** System font stack — avoids Google Fonts fetch (ETIMEDOUT on slow/unreliable networks) */
+const FONT_CLASS = 'font-sans antialiased';
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_APP_URL ||
@@ -64,9 +69,72 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <head>
+        {/*
+         * GA4 Consent Mode v2 — must run BEFORE the gtag.js script loads.
+         * Defaults all consent types to 'denied' so no data is collected
+         * until the user accepts via CookieConsentBanner.
+         * wait_for_update: 500ms gives the consent banner time to restore
+         * a prior decision from localStorage before the first event fires.
+         */}
+        {GA_ID && (
+          <Script id="ga4-consent-defaults" strategy="beforeInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                wait_for_update: 500,
+              });
+              gtag('set', 'url_passthrough', true);
+              gtag('set', 'ads_data_redaction', true);
+            `}
+          </Script>
+        )}
+      </head>
+      <body className={FONT_CLASS}>
+        {/*
+         * GA4 gtag.js — loaded only in production with afterInteractive
+         * strategy so it never blocks the initial render or hydration.
+         * Consent Mode v2 (set above) prevents data collection until
+         * the user grants consent via CookieConsentBanner.
+         */}
+        {GA_ID && process.env.NODE_ENV === 'production' && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', {
+                  send_page_view: false,
+                  cookie_flags: 'SameSite=None;Secure',
+                });
+              `}
+            </Script>
+          </>
+        )}
+
         <ServiceWorkerRegistration />
+        {/* Headless: wires shared analytics transport to window.gtag */}
         <AnalyticsProvider />
+        {/*
+         * Tracks page views on every client-side route change.
+         * Wrapped in Suspense because useSearchParams() requires it.
+         */}
+        <Suspense fallback={null}>
+          <GoogleAnalyticsTracker />
+        </Suspense>
+        {/* GDPR Consent Mode v2 banner */}
+        <CookieConsentBanner />
+
         <QueryProvider>
           <ThemeProvider defaultThemeName="mystical-purple">
             <AuthProvider>

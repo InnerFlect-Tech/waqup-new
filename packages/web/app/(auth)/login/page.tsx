@@ -11,6 +11,7 @@ import { spacing, borderRadius } from '@/theme';
 import { AUTH_CARD_MAX_WIDTH } from '@/theme';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
+import { Analytics } from '@waqup/shared/utils';
 import { supabase } from '@/lib/supabase';
 import { normalizeAuthError } from '@/lib/auth-errors';
 import Link from 'next/link';
@@ -95,6 +96,7 @@ export default function LoginPage() {
         }
         if (data?.session) {
           useAuthStore.getState().setSession(data.session);
+          Analytics.loginCompleted('google', data.session.user.id);
           const next = params.get('next') || '/home';
           window.history.replaceState(null, '', window.location.pathname + window.location.search);
           router.replace(next);
@@ -145,6 +147,7 @@ export default function LoginPage() {
     const result = await login(data.email, data.password);
 
     if (result.success) {
+      Analytics.loginCompleted('email', useAuthStore.getState().user?.id);
       router.push(nextUrl);
       return;
     }

@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typography, Card } from '@/components';
 import { useTheme } from '@/theme';
@@ -9,12 +10,23 @@ import { PageShell, PageContent } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { SANCTUARY_QUICK_ACTIONS, SANCTUARY_MENU_ITEMS } from '@/lib';
 import { useAuthStore } from '@/stores';
+import { Analytics } from '@waqup/shared/utils';
 import { Library, TrendingUp, Zap } from 'lucide-react';
 
 export default function SanctuaryHomePage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const { user } = useAuthStore();
+  const searchParams = useSearchParams();
+
+  // Fire analytics event when Stripe redirects back after a successful subscription.
+  // Stripe appends ?checkout=success&plan=<planId> to the success_url.
+  useEffect(() => {
+    if (searchParams.get('checkout') !== 'success') return;
+    const planId = searchParams.get('plan') ?? 'unknown';
+    Analytics.subscriptionStarted(planId, 0, 'USD', user?.id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const displayName =
     user?.user_metadata?.full_name ||

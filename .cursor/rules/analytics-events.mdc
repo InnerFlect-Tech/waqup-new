@@ -1,0 +1,151 @@
+---
+description: Enforce Google Analytics 4 event tracking conventions across the waQup web app. Apply whenever adding new pages, user interactions, or payment flows.
+globs:
+  - packages/web/app/**/*.tsx
+  - packages/web/src/**/*.tsx
+  - packages/shared/src/utils/analytics.ts
+alwaysApply: true
+---
+
+# Analytics Events — waQup Convention Rules
+
+## Core Rule
+
+**Every meaningful user action must fire an analytics event.** Analytics is how we understand user behaviour, measure conversion, and improve the product. Never skip it.
+
+## The Single Source of Truth
+
+All events are defined in:
+```
+packages/shared/src/utils/analytics.ts  ← event definitions (shared)
+packages/web/src/components/AnalyticsProvider.tsx  ← GA4 transport (web)
+```
+
+**Never call `window.gtag()` directly.** Always use the typed helpers from `Analytics.*`.
+
+## Import Pattern
+
+```typescript
+import { Analytics } from '@waqup/shared/utils';
+```
+
+This works in both `packages/web` and `packages/mobile` (once mobile is wired).
+
+## When to Add Events
+
+### New page or screen
+- If the page is a meaningful destination (not a loading/redirect page), no explicit event is needed — `GoogleAnalyticsTracker` handles `page_view` automatically on route change.
+- If the page represents a funnel step (onboarding, checkout, etc.), fire a step-specific event on mount using `useEffect`.
+
+### New user action (button, form submit, gesture)
+Add the matching `Analytics.*` call at the point of confirmed success — not on click, but after the operation completes.
+
+```typescript
+// ✅ Correct — fires after confirmed success
+if (result.success) {
+  Analytics.signupCompleted('email', undefined, userId);
+  router.push('/home');
+}
+
+// ❌ Wrong — fires on click regardless of outcome
+onClick={() => {
+  Analytics.signupCompleted('email');
+  doSignup();
+}}
+```
+
+### New payment or checkout flow
+- **On checkout initiation**: call `Analytics.paymentStarted(type, amount, currency, userId)`
+- **On checkout success return** (Stripe redirects back with `?checkout=success`): call `Analytics.creditsPurchased(...)` or `Analytics.subscriptionStarted(...)` inside a `useEffect` that reads `useSearchParams()`.
+
+## Available Typed Helpers
+
+```typescript
+Analytics.signupCompleted(method, referralCode?, userId?)
+Analytics.loginCompleted(method, userId?)
+Analytics.logoutCompleted(userId?)
+Analytics.onboardingStepCompleted(step, userId?)
+Analytics.contentCreated(type, mode, userId?)
+Analytics.contentPlayed(contentId, type, userId?)
+Analytics.contentCompleted(contentId, type, durationSeconds, userId?)
+Analytics.contentShared(contentId, platform, userId?)
+Analytics.paymentStarted(type, amount, currency, userId?)
+Analytics.creditsPurchased(packId, amount, currency, userId?)
+Analytics.subscriptionStarted(planId, amount, currency, userId?)
+Analytics.referralShared(platform, userId?)
+Analytics.marketplaceItemViewed(itemId, userId?)
+Analytics.sessionStarted(userId?)
+Analytics.errorOccurred(errorCode, page)
+```
+
+## Adding a New Event
+
+1. Add the typed helper to `packages/shared/src/utils/analytics.ts`
+2. Follow naming: `snake_case`, starts with a letter, under 40 characters
+3. Use GA4 recommended event names where possible (`login`, `sign_up`, `purchase`, `share`, `view_item`, `begin_checkout`)
+4. Wire the call in the platform component
+5. After deploying, mark conversion events in GA4 Admin → Events → Mark as conversion
+
+## GA4 Recommended Event Names (use these, not custom names)
+
+| Action | GA4 Event Name |
+|---|---|
+| Signup | `sign_up` |
+| Login | `login` |
+| Logout | `logout` |
+| Purchase (credits or sub) | `purchase` |
+| Checkout start | `begin_checkout` |
+| Content view | `view_item` |
+| Share | `share` |
+| Page view | `page_view` (automatic) |
+
+## Conversion Events (mark in GA4 Admin after deploy)
+
+These events should be marked as conversions in GA4:
+- `sign_up`
+- `login` (optional — only if tracking returning users)
+- `purchase` (all purchases: credits + subscriptions)
+- `begin_checkout` (optional funnel analysis)
+- `onboarding_step_completed` with `step: 'intention'`
+
+## Consent & Privacy
+
+- Analytics only fires when the user has accepted cookies via `CookieConsentBanner`
+- GA4 Consent Mode v2 is active — defaults to `denied` until user accepts
+- Never include PII (email, name, phone) in event properties
+- `user_id` is acceptable (opaque Supabase UUID)
+- Never add `user_email`, `user_name`, or similar PII fields to events
+
+## Anti-Patterns
+
+```typescript
+// ❌ Never — raw gtag call
+window.gtag('event', 'signup', { method: 'email' });
+
+// ❌ Never — duplicate event definition in platform
+// Don't add trackEvent() calls outside of Analytics.* helpers
+
+// ❌ Never — PII in event properties
+Analytics.signupCompleted('email', undefined, userId);
+trackEvent('signup', { email: 'user@example.com' }); // WRONG
+
+// ❌ Never — firing on click before result is confirmed
+onClick={() => Analytics.creditsPurchased(...)} // WRONG — fire on success return page
+
+// ✅ Correct — fire after confirmed success on return page
+useEffect(() => {
+  if (searchParams.get('checkout') !== 'success') return;
+  Analytics.creditsPurchased(packId, credits, 'USD', user?.id);
+}, []); // empty deps = fire once on mount
+```
+
+## Development
+
+In development (`NODE_ENV !== 'production'`):
+- GA4 scripts do **not** load (production-gated in `layout.tsx`)
+- All events are logged to `console.debug('[analytics]', eventName, properties)`
+- Open DevTools → Console → filter by `[analytics]` to see all fired events
+
+In production:
+- GA4 DebugView: enable via `?gtm_debug=x` or GA4 Admin → DebugView
+- Use GA4 Realtime report to verify events arrive within seconds

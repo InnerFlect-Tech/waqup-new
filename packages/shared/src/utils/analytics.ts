@@ -1,13 +1,16 @@
 /**
  * Lightweight analytics hook.
  *
- * Events are sent to a configurable backend (Supabase function / PostHog / etc.)
+ * Events are sent to a configurable backend (GA4 / PostHog / etc.)
  * via a platform-provided transport. The default no-op transport makes the
  * shared utility safe to import on any platform without side-effects.
  *
  * Usage:
- *   import { trackEvent } from '@waqup/shared/utils/analytics';
- *   trackEvent('content_created', { type: 'affirmation', mode: 'chat' });
+ *   import { Analytics } from '@waqup/shared/utils/analytics';
+ *   Analytics.signupCompleted('google', undefined, userId);
+ *
+ * Event naming: snake_case, < 40 characters, starting with a letter.
+ * All helpers here are the single source of truth — do not call window.gtag directly.
  */
 
 export interface AnalyticsEvent {
@@ -48,30 +51,115 @@ export function trackEvent(
   }
 }
 
-// ── Typed event helpers ─────────────────────────────────────────────────────
+// ── Typed event helpers ──────────────────────────────────────────────────────
+// All events follow GA4 naming conventions (snake_case, < 40 chars).
+// Add new events here before using them in platform code.
 
 export const Analytics = {
+  // ── Authentication ────────────────────────────────────────────────────────
+
+  /** User completed signup. method: 'email' | 'google' | 'apple' */
+  signupCompleted: (method: string, referralCode?: string, userId?: string) =>
+    trackEvent('sign_up', { method, referral_code: referralCode ?? null }, userId),
+
+  /** User signed in. method: 'email' | 'google' | 'apple' */
+  loginCompleted: (method: string, userId?: string) =>
+    trackEvent('login', { method }, userId),
+
+  /** User signed out. */
+  logoutCompleted: (userId?: string) =>
+    trackEvent('logout', undefined, userId),
+
+  // ── Onboarding ────────────────────────────────────────────────────────────
+
+  /**
+   * User completed an onboarding step.
+   * step: 'guide' | 'preferences' | 'profile' | 'complete'
+   */
+  onboardingStepCompleted: (step: string, userId?: string) =>
+    trackEvent('onboarding_step_completed', { step }, userId),
+
+  // ── Content lifecycle ─────────────────────────────────────────────────────
+
+  /** User created content (affirmation, meditation, ritual). */
   contentCreated: (type: string, mode: string, userId?: string) =>
     trackEvent('content_created', { content_type: type, mode }, userId),
 
+  /** User started playing a piece of content. */
   contentPlayed: (contentId: string, type: string, userId?: string) =>
     trackEvent('content_played', { content_id: contentId, content_type: type }, userId),
 
-  creditsPurchased: (packId: string, amount: number, userId?: string) =>
-    trackEvent('credits_purchased', { pack_id: packId, amount }, userId),
+  /**
+   * User completed listening to content.
+   * durationSeconds: how long the content ran before completion.
+   */
+  contentCompleted: (contentId: string, type: string, durationSeconds: number, userId?: string) =>
+    trackEvent(
+      'content_completed',
+      { content_id: contentId, content_type: type, duration_seconds: durationSeconds },
+      userId,
+    ),
 
-  subscriptionStarted: (planId: string, userId?: string) =>
-    trackEvent('subscription_started', { plan_id: planId }, userId),
+  /** User shared content externally. platform: 'link' | 'instagram' | etc. */
+  contentShared: (contentId: string, platform: string, userId?: string) =>
+    trackEvent('share', { content_id: contentId, method: platform, content_type: 'content' }, userId),
 
+  // ── Payments & subscriptions ──────────────────────────────────────────────
+
+  /**
+   * User initiated a payment (credit pack or subscription).
+   * Maps to GA4 recommended ecommerce event begin_checkout.
+   */
+  paymentStarted: (type: 'credits' | 'subscription', amount: number, currency: string, userId?: string) =>
+    trackEvent('begin_checkout', { payment_type: type, value: amount, currency }, userId),
+
+  /**
+   * User purchased a credit pack.
+   * Maps to GA4 recommended ecommerce event purchase.
+   */
+  creditsPurchased: (packId: string, amount: number, currency: string, userId?: string) =>
+    trackEvent('purchase', {
+      transaction_id: `credits_${Date.now()}`,
+      value: amount,
+      currency,
+      item_id: packId,
+      item_category: 'credits',
+    }, userId),
+
+  /** User started a subscription plan. */
+  subscriptionStarted: (planId: string, amount: number, currency: string, userId?: string) =>
+    trackEvent('purchase', {
+      transaction_id: `sub_${Date.now()}`,
+      value: amount,
+      currency,
+      item_id: planId,
+      item_category: 'subscription',
+    }, userId),
+
+  // ── Referral ──────────────────────────────────────────────────────────────
+
+  /** User shared their referral link. platform: 'link' | 'instagram' | etc. */
   referralShared: (platform: string, userId?: string) =>
     trackEvent('referral_shared', { platform }, userId),
 
-  contentShared: (contentId: string, platform: string, userId?: string) =>
-    trackEvent('content_shared', { content_id: contentId, platform }, userId),
+  // ── Marketplace ───────────────────────────────────────────────────────────
 
-  signupCompleted: (method: string, referralCode?: string) =>
-    trackEvent('signup_completed', { method, referral_code: referralCode }),
+  /** User viewed a marketplace item detail page. */
+  marketplaceItemViewed: (itemId: string, userId?: string) =>
+    trackEvent('view_item', { item_id: itemId, item_category: 'marketplace' }, userId),
 
+  // ── Session ───────────────────────────────────────────────────────────────
+
+  /** Called when a user session begins (post-auth). */
   sessionStarted: (userId?: string) =>
-    trackEvent('session_started', undefined, userId),
+    trackEvent('session_start', undefined, userId),
+
+  // ── Errors ────────────────────────────────────────────────────────────────
+
+  /**
+   * A notable error occurred that the user saw.
+   * errorCode: short identifier ('auth_failed', 'payment_failed', etc.)
+   */
+  errorOccurred: (errorCode: string, page: string) =>
+    trackEvent('app_error', { error_code: errorCode, page }),
 };

@@ -10,6 +10,7 @@ import { Logo, PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { signupSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
+import { Analytics } from '@waqup/shared/utils';
 import Link from 'next/link';
 import { Mail, Lock, ArrowRight, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import type { SignupFormData } from '@waqup/shared/schemas';
@@ -51,6 +52,7 @@ export default function SignupPage() {
     const result = await signup(data.email, data.password);
 
     if (result.success) {
+      Analytics.signupCompleted('email', undefined, useAuthStore.getState().user?.id);
       // When Supabase email confirmation is disabled, the user is immediately
       // authenticated after signup — redirect them into the app.
       const currentUser = useAuthStore.getState().user;
