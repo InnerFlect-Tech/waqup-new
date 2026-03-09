@@ -97,7 +97,7 @@ export default function LoginPage() {
         if (data?.session) {
           useAuthStore.getState().setSession(data.session);
           Analytics.loginCompleted('google', data.session.user.id);
-          const next = params.get('next') || '/home';
+          const next = params.get('next') || '/coming-soon';
           window.history.replaceState(null, '', window.location.pathname + window.location.search);
           router.replace(next);
         }
@@ -115,7 +115,7 @@ export default function LoginPage() {
     setGoogleLoading(true);
     try {
       if (!supabase) throw new Error('Authentication service unavailable');
-      const returnUrl = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') || '/sanctuary' : '/sanctuary';
+      const returnUrl = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') || '/coming-soon' : '/coming-soon';
       const baseUrl =
         process.env.NEXT_PUBLIC_APP_URL ||
         (typeof window !== 'undefined' ? window.location.origin : '');
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
-    const nextUrl = searchParams.get('next') || '/sanctuary';
+    const nextUrl = searchParams.get('next') || '/coming-soon';
     const result = await login(data.email, data.password);
 
     if (result.success) {

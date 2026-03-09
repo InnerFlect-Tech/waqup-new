@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { HEADER_PADDING_X, MAX_WIDTH_7XL, spacing, borderRadius } from '@/theme';
 
 /**
  * NOTE: This component is rendered in layout.tsx OUTSIDE <ThemeProvider>,
@@ -89,18 +90,18 @@ export function CookieConsentBanner() {
         left: 0,
         right: 0,
         zIndex: 9999,
-        padding: '0 80px 24px',
+        padding: `0 ${HEADER_PADDING_X} ${spacing.lg}`,
       }}
     >
       <div
         style={{
-          maxWidth: 1280,
+          maxWidth: MAX_WIDTH_7XL,
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
-          gap: 24,
-          padding: '16px 32px',
-          borderRadius: 16,
+          gap: spacing.lg,
+          padding: `${spacing.md} ${spacing.xl}`,
+          borderRadius: borderRadius.lg,
           background: 'rgba(10, 4, 28, 0.92)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
@@ -130,12 +131,12 @@ export function CookieConsentBanner() {
           </a>
         </p>
 
-        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: spacing.sm, flexShrink: 0 }}>
           <button
             onClick={handleDecline}
             style={{
-              padding: '8px 20px',
-              borderRadius: 10,
+              padding: `${spacing.sm} ${spacing.md}`,
+              borderRadius: borderRadius.md,
               border: '1px solid rgba(255,255,255,0.12)',
               background: 'transparent',
               color: 'rgba(255,255,255,0.55)',
@@ -160,8 +161,8 @@ export function CookieConsentBanner() {
           <button
             onClick={handleAccept}
             style={{
-              padding: '8px 24px',
-              borderRadius: 10,
+              padding: `${spacing.sm} ${spacing.lg}`,
+              borderRadius: borderRadius.md,
               border: 'none',
               background: 'linear-gradient(135deg, #9333EA, #7C3AED)',
               color: '#fff',

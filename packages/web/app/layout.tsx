@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
+import { getThemeInitData } from '@waqup/shared/theme';
 import './globals.css';
 import '../src/styles/animations.css';
 import { ThemeProvider } from '@/theme';
@@ -67,9 +68,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const themeInitData = getThemeInitData();
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/*
+         * Theme init — runs before body to prevent flash of wrong theme.
+         * URL ?theme= wins (for shared links), then localStorage, then default.
+         */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=${JSON.stringify(themeInitData)};var p=new URLSearchParams(window.location.search);var u=p.get("theme");var s=typeof localStorage!=="undefined"?localStorage.getItem("waqup-theme"):null;var n=(u&&t[u])?u:(s&&t[s])?s:"mystical-purple";var c=t[n]||t["mystical-purple"];if(!c)return;var r=document.documentElement;Object.keys(c).forEach(function(k){r.style.setProperty("--theme-"+k.replace(/([A-Z])/g,"-$1").toLowerCase().replace(/^-/,""),c[k]);});})();`,
+          }}
+        />
         {/*
          * GA4 Consent Mode v2 — must run BEFORE the gtag.js script loads.
          * Defaults all consent types to 'denied' so no data is collected

@@ -59,8 +59,10 @@ export const PageShell: React.FC<PageShellProps> = ({
     <div
       style={{
         minHeight: '100vh',
+        height: '100vh',
         position: 'relative',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
       }}
     >
       {!plain && <AnimatedBackground intensity={intensity} color="primary" />}

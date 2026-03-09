@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
+import { PageShell, WaitlistCTA, FoundingMemberModal } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_TOP_PADDING } from '@/theme';
 import Link from 'next/link';
@@ -16,14 +16,12 @@ import {
   Heart,
   ArrowRight,
   Check,
-  Users,
-  Star,
-  ChevronRight,
 } from 'lucide-react';
 
 export default function LandingPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const [showFoundingModal, setShowFoundingModal] = useState(false);
 
   const features = [
     {
@@ -144,96 +142,43 @@ export default function LandingPage() {
             Transform Your Mind with Voice and Sacred Frequencies
           </Typography>
 
-          {/* Founding Member Card */}
-          <div
-            style={{
-            width: '100%',
-            maxWidth: CONTENT_MEDIUM,
-            padding: `${spacing.xl} ${spacing.xl}`,
-              borderRadius: borderRadius.xl,
-              background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 16px 64px ${colors.accent.primary}40`,
-            }}
-          >
-            {/* LIMITED TIME OFFER Indicator */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
-              <div
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: borderRadius.full,
-                  background: colors.success,
-                  animation: 'pulse 2s ease-in-out infinite',
-                }}
-              />
-              <Typography variant="smallBold" style={{ color: colors.success, textTransform: 'uppercase', letterSpacing: '1px' }}>
-                LIMITED TIME OFFER
-              </Typography>
-            </div>
-
-            {/* Become a Founding Member */}
-            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md, fontSize: 'clamp(18px, 2.5vw, 24px)', fontWeight: 400 }}>
-              Become a Founding Member
-            </Typography>
-
-            {/* Benefits */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.lg, flexWrap: 'wrap', marginBottom: spacing.lg }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                <Shield size={16} color={colors.text.secondary} />
-                <Typography variant="caption" color="secondary">
-                  Lifetime Access
-                </Typography>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                <Star size={16} color={colors.text.secondary} />
-                <Typography variant="caption" color="secondary">
-                  Special Pricing
-                </Typography>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                <Users size={16} color={colors.text.secondary} />
-                <Typography variant="caption" color="secondary">
-                  500 Spots Only
-                </Typography>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-              <Link href="/join" style={{ textDecoration: 'none' }}>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  style={{
-                    fontSize: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: spacing.sm,
-                  }}
-                >
-                  Join as Founding Member
-                  <ChevronRight size={20} color={colors.text.onDark} />
-                </Button>
-              </Link>
-              <Link href="/login" style={{ textDecoration: 'none' }}>
-                <Button
-                  variant="ghost"
-                  size="md"
-                  fullWidth
-                  style={{
-                    color: colors.text.primary,
-                  }}
-                >
-                  Member Login
-                </Button>
-              </Link>
-            </div>
+          {/* Waitlist CTA — primary */}
+          <div style={{ width: '100%', maxWidth: CONTENT_MEDIUM, marginBottom: spacing.lg }}>
+            <WaitlistCTA
+              variant="banner"
+              headline="Join the waitlist. Be first to transform."
+              subtext="Get early access when waQup launches. No credit card required. Practice is always free."
+            />
           </div>
+
+          {/* Secondary links */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.md }}>
+            <button
+              type="button"
+              onClick={() => setShowFoundingModal(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: colors.text.tertiary ?? colors.text.secondary,
+                fontSize: 14,
+                textDecoration: 'none',
+                padding: spacing.xs,
+              }}
+            >
+              Founding Members →
+            </button>
+            <Link href="/login" style={{ textDecoration: 'none' }}>
+              <Button variant="ghost" size="md" style={{ color: colors.text.primary }}>
+                Member Login
+              </Button>
+            </Link>
+          </div>
+
+          <FoundingMemberModal
+            isOpen={showFoundingModal}
+            onClose={() => setShowFoundingModal(false)}
+          />
         </section>
 
         {/* Features Section */}
@@ -393,9 +338,9 @@ export default function LandingPage() {
             Ready to Transform Your Mind?
           </Typography>
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, fontSize: '20px' }}>
-            Join thousands of users transforming their subconscious mind through voice
+            Join thousands on the waitlist transforming their subconscious mind through voice
           </Typography>
-          <Link href="/signup" style={{ textDecoration: 'none' }}>
+          <Link href="/waitlist" style={{ textDecoration: 'none' }}>
             <Button
               variant="primary"
               size="lg"
@@ -407,7 +352,7 @@ export default function LandingPage() {
                 gap: spacing.md,
               }}
             >
-              Get Started Free
+              Join the Waitlist
               <ArrowRight size={24} color={colors.text.onDark} />
             </Button>
           </Link>

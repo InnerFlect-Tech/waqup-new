@@ -415,7 +415,7 @@ export default function SettingsPage() {
             style={{ borderColor: colors.error, color: colors.error }}
             onClick={async () => {
               await useAuthStore.getState().logout();
-              router.push('/login');
+              router.push('/');
             }}
           >
             Sign Out

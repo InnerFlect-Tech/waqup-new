@@ -49,13 +49,10 @@ export const PAGE_TOP_PADDING = px(layout.pageTopPadding);
 export const PAGE_VERTICAL_PADDING_PX = layout.pageTopPadding + 32;
 export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
 /**
- * Header horizontal padding — 80px on each side.
- * Defined as a literal string (not derived from layout token) to guarantee
- * webpack hot-reload always sees the correct value without needing a server
- * restart when the shared package tokens change.
- * Canonical numeric value lives in packages/shared/src/theme/tokens.ts → layout.headerPaddingX
+ * Header horizontal padding — SSOT: packages/shared/src/theme/tokens.ts → layout.headerPaddingX
+ * Same value for left and right so logo and nav buttons align symmetrically.
  */
-export const HEADER_PADDING_X = '80px';
+export const HEADER_PADDING_X = px(layout.headerPaddingX);
 export const PAGE_PADDING = spacing.xl;
 /** Standard glass card padding - use for most cards */
 export const CARD_PADDING = spacing.lg;

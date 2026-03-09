@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const nextParam = requestUrl.searchParams.get('next')
   const cookieStore = await cookies()
   const oauthNextCookie = cookieStore.get('oauth_next')?.value
-  const next = nextParam || (oauthNextCookie ? decodeURIComponent(oauthNextCookie) : '/sanctuary')
+  const next = nextParam || (oauthNextCookie ? decodeURIComponent(oauthNextCookie) : '/coming-soon')
 
   if (!code) {
     return NextResponse.redirect(new URL('/login', requestUrl.origin))
@@ -60,18 +60,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=no_session', requestUrl.origin))
     }
 
-    // For new users (account created within the last 15 seconds), send them
-    // through the explanation + onboarding flow — only when no explicit destination.
-    if (!nextParam && !oauthNextCookie) {
-      const createdAt = session.user.created_at
-        ? new Date(session.user.created_at).getTime()
-        : null
-      const isNewUser = createdAt !== null && Date.now() - createdAt < 15_000
-      if (isNewUser) {
-        return NextResponse.redirect(new URL('/explanation', requestUrl.origin))
-      }
-    }
-
+    // For now, all users land on coming-soon (new users stay there; users with
+    // access get redirected to /sanctuary by the page).
     return NextResponse.redirect(new URL(next, requestUrl.origin))
   } catch (error) {
     console.error('Auth callback error:', error)

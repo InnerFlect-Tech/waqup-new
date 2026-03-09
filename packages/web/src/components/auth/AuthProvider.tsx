@@ -63,22 +63,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/auth/beta-signup',
       '/how-it-works',
       '/pricing',
+      '/get-qs', // Public Q packs — anyone can view; login required only when buying
       '/funnels',
       '/investors',
-      '/pages',
-      '/sitemap-view',
-      '/system',
+      // Superadmin routes (/pages, /sitemap-view, /system, /admin/*, /health, /showcase) excluded — require auth; SuperAdminGate handles role check
       '/coming-soon',
       '/waitlist',
+      '/join', // Founding member signup — footer + popup target
+      '/privacy',
+      '/terms',
     ];
     const isPublicRoute =
       publicRoutes.includes(pathname) ||
       pathname.startsWith('/showcase') ||
       pathname.startsWith('/onboarding') ||
-      pathname.startsWith('/explanation');
+      pathname.startsWith('/explanation') ||
+      pathname.startsWith('/play'); // Public audio player for sharing
 
     if (isProtectedRoute && !user) {
-      router.push(`/login?next=${encodeURIComponent(pathname)}`);
+      router.replace('/');
       return;
     }
 
@@ -93,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (!isPublicRoute && !isProtectedRoute && pathname !== '/') {
       if (!user) {
-        router.push(`/login?next=${encodeURIComponent(pathname)}`);
+        router.replace('/');
       }
     }
   }, [user, isReady, isInitialized, pathname, router, isProtectedRoute, hasAccess, isProfileLoading]);

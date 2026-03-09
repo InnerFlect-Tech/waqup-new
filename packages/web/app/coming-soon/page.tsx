@@ -8,10 +8,10 @@ import { PageShell } from '@/components';
 import { WaitlistCTA } from '@/components/shared/WaitlistCTA';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
+import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
-import { supabase } from '@/lib/supabase';
-import { Clock, CheckCircle, ArrowRight, LogOut, Sparkles } from 'lucide-react';
+import { Clock, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -91,52 +91,32 @@ export default function ComingSoonPage() {
       .catch(() => setStatusLoading(false));
   }, [user?.email]);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.replace('/login');
-  };
-
   return (
     <PageShell intensity="high" bare>
-      {/* Sign out link */}
-      {user && (
-        <div style={{ position: 'fixed', top: 20, right: 24, zIndex: 50 }}>
-          <button
-            onClick={handleSignOut}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '8px 14px',
-              borderRadius: borderRadius.md,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: 'rgba(255,255,255,0.4)',
-              fontSize: 12,
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-            }}
-          >
-            <LogOut size={13} />
-            Sign out
-          </button>
-        </div>
-      )}
-
-      {/* Hero */}
+      {/* Hero — centered on page */}
       <div
         style={{
+          width: '100%',
           minHeight: '100dvh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           padding: `${spacing.xxxl} ${spacing.lg}`,
-          maxWidth: 640,
-          margin: '0 auto',
-          textAlign: 'center',
+          boxSizing: 'border-box',
         }}
       >
+        <div
+          style={{
+            width: '100%',
+            maxWidth: 640,
+            margin: '0 auto',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: -12 }}
@@ -226,15 +206,7 @@ export default function ComingSoonPage() {
             </Link>
           ) : (
             /* Not yet on waitlist — show quick email capture */
-            <>
-              <WaitlistCTA variant="inline" />
-              <p style={{ marginTop: 16, fontSize: 13, color: colors.text.tertiary }}>
-                Want to tell us more?{' '}
-                <Link href="/waitlist" style={{ color: colors.accent.primary, textDecoration: 'none' }}>
-                  Complete your profile →
-                </Link>
-              </p>
-            </>
+            <WaitlistCTA variant="inline" />
           )}
         </motion.div>
 
@@ -264,6 +236,7 @@ export default function ComingSoonPage() {
             Learn more about waQup
           </Link>
         </motion.div>
+        </div>
       </div>
 
       <style>{`

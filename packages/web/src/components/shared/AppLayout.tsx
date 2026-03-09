@@ -132,7 +132,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const handleSignOut = async () => {
     try {
       await logout();
-      router.push('/login');
+      router.push('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -151,6 +151,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
+            paddingLeft: HEADER_PADDING_X,
+            paddingRight: HEADER_PADDING_X,
             ...(isScrolled
               ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
@@ -160,13 +162,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="mx-auto"
             style={{
               maxWidth: MAX_WIDTH_7XL,
-              paddingLeft: HEADER_PADDING_X,
-              paddingRight: HEADER_PADDING_X,
+              width: '100%',
             }}
           >
             <div
-              className="flex items-center justify-between flex-nowrap gap-4 md:gap-12"
-              style={{ height: NAV_HEIGHT, minHeight: NAV_HEIGHT }}
+              className="flex items-center justify-between flex-nowrap"
+              style={{ height: NAV_HEIGHT, minHeight: NAV_HEIGHT, gap: spacing.xl }}
             >
               <div className="flex-shrink-0">
                 <Logo size="md" href="/sanctuary" />
@@ -199,7 +200,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginRight: '-16px' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}
                   >
                     <AvatarOrb colors={avatarColors} size="sm" />
                     <span
@@ -369,7 +370,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2 -mr-2"
+                  className="p-2"
                 >
                   {isMobileMenuOpen ? (
                     <X className="w-6 h-6" style={{ color: colors.text.primary }} />
@@ -532,6 +533,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
+            paddingLeft: HEADER_PADDING_X,
+            paddingRight: HEADER_PADDING_X,
             ...(isScrolled
               ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
@@ -541,13 +544,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="mx-auto"
             style={{
               maxWidth: MAX_WIDTH_7XL,
-              paddingLeft: HEADER_PADDING_X,
-              paddingRight: HEADER_PADDING_X,
+              width: '100%',
             }}
           >
           <div
-            className="flex items-center justify-between gap-4 md:gap-16"
-            style={{ height: NAV_HEIGHT }}
+            className="flex items-center justify-between"
+            style={{ height: NAV_HEIGHT, minHeight: NAV_HEIGHT, gap: spacing.xl }}
           >
             <div className="flex-shrink-0">
               <Logo size="md" href="/" />

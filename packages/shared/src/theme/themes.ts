@@ -137,3 +137,35 @@ export const themes: Record<string, Theme> = Object.fromEntries(
 );
 
 export const defaultTheme = themes['mystical-purple']!;
+
+/**
+ * Minimal theme data for inline blocking script (prevents flash of wrong theme before React hydration).
+ * Maps theme name → CSS custom property values for instant apply in <head>.
+ */
+export function getThemeInitData(): Record<string, Record<string, string>> {
+  return Object.fromEntries(
+    Object.entries(themes).map(([name, t]) => {
+      const c = t.colors;
+      return [
+        name,
+        {
+          'bg-primary': c.background.primary,
+          'bg-secondary': c.background.secondary,
+          'bg-tertiary': c.background.tertiary,
+          'text-primary': c.text.primary,
+          'text-secondary': c.text.secondary,
+          'text-tertiary': c.text.tertiary,
+          'accent-primary': c.accent.primary,
+          'accent-secondary': c.accent.secondary,
+          'glass-light': c.glass.light,
+          'glass-border': c.glass.border,
+          'gradient-primary': c.gradients.primary,
+          'gradient-background': c.gradients.background,
+          'mystical-glow': c.mystical.glow,
+          'mystical-blur': c.mystical.blur,
+          'mystical-orb': c.mystical.orb,
+        },
+      ];
+    })
+  );
+}

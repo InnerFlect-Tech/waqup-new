@@ -21,7 +21,7 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/explanation', section: 'Marketing', description: 'Our story — narrative intro', status: 'exists' },
   { path: '/join', section: 'Marketing', description: 'Founding member sign-up', status: 'exists' },
   { path: '/waitlist', section: 'Marketing', description: 'Join the waitlist (multi-step form)', status: 'exists' },
-  { path: '/get-qs', section: 'Marketing', description: 'Public credit purchase page', status: 'exists' },
+  { path: '/get-qs', section: 'Marketing', description: 'Public Q packs — view without login; sign in required to purchase', status: 'exists' },
   { path: '/funnels', section: 'Marketing', description: 'Sales funnels & ROI (internal)', status: 'exists', note: 'Internal — not in public nav' },
   { path: '/investors', section: 'Marketing', description: 'Investor pitch deck page', status: 'exists', note: 'Footer only — not in header' },
   { path: '/play/[id]', section: 'Marketing', description: 'Public audio player (SSR + OG)', status: 'exists' },

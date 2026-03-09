@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button, Input, Typography } from '@/components/ui';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR, CARD_PADDING_AUTH, BUTTON_TOKENS } from '@/theme';
 import { ArrowRight, Sparkles, Check } from 'lucide-react';
 import Link from 'next/link';
 
@@ -92,11 +92,11 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 10,
-            padding: '14px 24px',
+            gap: spacing.sm,
+            padding: `${spacing.md} ${spacing.lg}`,
             borderRadius: borderRadius.full,
-            background: 'rgba(147,51,234,0.12)',
-            border: '1px solid rgba(147,51,234,0.35)',
+            background: `${colors.accent.primary}20`,
+            border: `1px solid ${colors.accent.primary}40`,
           }}
         >
           <div
@@ -104,20 +104,20 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
               width: 24,
               height: 24,
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #9333EA, #6366F1)',
+              background: colors.gradients.primary,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Check size={13} color="#fff" />
+            <Check size={13} color={colors.text.onDark} />
           </div>
-          <span style={{ color: '#A855F7', fontSize: 14, fontWeight: 500 }}>
+          <span style={{ color: colors.accent.tertiary, fontSize: 14, fontWeight: 500 }}>
             You&apos;re on the list!
           </span>
           <Link
             href={`/waitlist?email=${encodeURIComponent(email)}`}
-            style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12, marginLeft: 4 }}
+            style={{ color: colors.text.tertiary, fontSize: 12, marginLeft: spacing.xs }}
           >
             Complete your profile →
           </Link>
@@ -127,20 +127,24 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
           onSubmit={handleSubmit}
           style={{
             display: 'flex',
-            gap: spacing.md,
-            maxWidth: 440,
+            flexDirection: 'row',
+            alignItems: 'stretch',
+            gap: spacing.sm,
+            width: '100%',
+            maxWidth: 480,
             margin: '0 auto',
             flexWrap: 'wrap',
-            justifyContent: 'center',
           }}
         >
-          <div style={{ flex: '1 1 240px', minWidth: 200 }}>
+          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
             <Input
               type="email"
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
+              wrapperStyle={{ marginBottom: 0 }}
+              containerStyle={{ minHeight: BUTTON_TOKENS.minHeight.lg }}
               style={{ width: '100%' }}
             />
           </div>
@@ -161,7 +165,7 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
       {error && (
         <Typography
           variant="small"
-          style={{ color: '#ef4444', marginTop: spacing.sm, display: 'block' }}
+          style={{ color: colors.error, marginTop: spacing.sm, display: 'block' }}
         >
           {error}
         </Typography>
@@ -170,10 +174,10 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
       {!done && (
         <Typography
           variant="small"
-          style={{ color: 'rgba(255,255,255,0.2)', marginTop: spacing.lg, display: 'block' }}
+          style={{ color: colors.text.tertiary, marginTop: spacing.lg, display: 'block' }}
         >
           Or{' '}
-          <Link href="/waitlist" style={{ color: 'rgba(147,51,234,0.6)', textDecoration: 'none' }}>
+          <Link href="/waitlist" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>
             fill out the full form
           </Link>{' '}
           to share your intentions and get priority access.
@@ -186,6 +190,8 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
 // ── Banner variant ─────────────────────────────────────────────────────────────
 
 function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: string; style?: React.CSSProperties }) {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const defaultHeadline = headline ?? 'Ready to rewire your mind?';
   const defaultSubtext = subtext ?? 'Join the waitlist and be first to access waQup when it launches.';
 
@@ -193,58 +199,39 @@ function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: 
     <div
       style={{
         position: 'relative',
-        padding: `${spacing.xxl} ${spacing.xl}`,
+        padding: CARD_PADDING_AUTH,
         borderRadius: borderRadius.xl,
-        background: 'linear-gradient(135deg, rgba(147,51,234,0.15) 0%, rgba(99,102,241,0.12) 100%)',
-        border: '1px solid rgba(147,51,234,0.2)',
+        background: colors.glass.light,
+        backdropFilter: BLUR.xl,
+        WebkitBackdropFilter: BLUR.xl,
+        border: `1px solid ${colors.glass.border}`,
+        boxShadow: `0 16px 64px ${colors.accent.primary}40`,
         overflow: 'hidden',
         textAlign: 'center',
         ...style,
       }}
     >
-      {/* Glow orbs */}
-      <div
-        style={{
-          position: 'absolute',
-          top: -60,
-          left: '30%',
-          width: 200,
-          height: 200,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(147,51,234,0.2) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          bottom: -40,
-          right: '20%',
-          width: 160,
-          height: 160,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }}
-      />
-
       <div style={{ position: 'relative', zIndex: 1 }}>
+        {/* Early Access badge — matches AI POWERED pattern from landing */}
         <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: 6,
-            padding: '5px 14px',
-            borderRadius: 999,
-            background: 'rgba(147,51,234,0.15)',
-            border: '1px solid rgba(147,51,234,0.3)',
-            marginBottom: spacing.md,
+            padding: `${spacing.xs} ${spacing.md}`,
+            borderRadius: borderRadius.full,
+            background: `${colors.accent.tertiary}20`,
+            border: `1px solid ${colors.accent.tertiary}40`,
+            marginBottom: spacing.lg,
           }}
         >
-          <Sparkles size={12} color="#A855F7" />
-          <span style={{ fontSize: 11, color: '#A855F7', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
+          <Sparkles size={12} color={colors.accent.tertiary} />
+          <Typography
+            variant="smallBold"
+            style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.08em' }}
+          >
             Early Access
-          </span>
+          </Typography>
         </div>
 
         <InlineCTA headline={defaultHeadline} subtext={defaultSubtext} />

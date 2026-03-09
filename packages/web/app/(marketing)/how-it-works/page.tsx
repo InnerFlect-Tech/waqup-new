@@ -415,18 +415,23 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Photo Divider #1 ──────────────────────────────── */}
-      <section style={{ position: 'relative', height: 500, overflow: 'hidden' }}>
-        <Image
-          src="/images/hero-transform.png"
-          alt="Person in transformation — headphones, cosmic identity shift"
-          fill
-          unoptimized
-          style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
-        />
-        {/* Top fade into page */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)' }} />
-        {/* Bottom fade into page */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+      <section style={{ position: 'relative', height: 500, overflow: 'visible' }}>
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+          <Image
+            src="/images/hero-transform.png"
+            alt="Person in transformation — headphones, cosmic identity shift"
+            fill
+            unoptimized
+            style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+          />
+        </div>
+        {/* Top fade — extends outside section */}
+        <div style={{ position: 'absolute', top: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to bottom, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Bottom fade — extends outside section */}
+        <div style={{ position: 'absolute', bottom: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to top, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Side fades — extend outside */}
+        <div style={{ position: 'absolute', top: -60, bottom: -60, left: -80, width: 100, background: 'linear-gradient(to right, #000000 0%, transparent 100%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: -60, bottom: -60, right: -80, width: 100, background: 'linear-gradient(to left, #000000 0%, transparent 100%)', pointerEvents: 'none' }} />
         {/* Subtle vignette for text legibility */}
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at center, rgba(0,0,0,0.35) 0%, transparent 100%)' }} />
         {/* Quote */}
@@ -558,9 +563,9 @@ export default function HowItWorksPage() {
               <h4 style={{ fontSize: 22, fontWeight: 500, color: colors.text.primary, margin: '0 0 8px', letterSpacing: '-0.3px' }}>Just 5 minutes. That&apos;s all it takes to start.</h4>
               <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Affirmations fit into the minutes you already have. No new schedule. No lifestyle overhaul. Just the same morning, with one powerful addition that compounds over time.</p>
             </div>
-            <Link href="/signup" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <Link href="/waitlist" style={{ textDecoration: 'none', flexShrink: 0 }}>
               <Button variant="primary" size="md" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                Start today <ArrowRight size={16} color={colors.text.onDark} />
+                Join the waitlist <ArrowRight size={16} color={colors.text.onDark} />
               </Button>
             </Link>
           </div>
@@ -629,21 +634,25 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* ── Photo Divider #2 ──────────────────────────────── */}
-      <section style={{ position: 'relative', height: 560, overflow: 'hidden' }}>
-        <Image
-          src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=1800&q=90"
-          alt="Woman listening with headphones in morning light"
-          fill
-          style={{ objectFit: 'cover', objectPosition: 'center 25%' }}
-          unoptimized
-        />
-        {/* Top fade into page */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)' }} />
-        {/* Bottom fade into page */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%)' }} />
-        {/* Left dark panel for text */}
-        <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '60%', background: 'linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 65%, transparent 100%)' }} />
+      {/* ── Photo Divider #2 (Voice Cloning) ───────────────── */}
+      <section style={{ position: 'relative', height: 560, overflow: 'visible' }}>
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+          <Image
+            src="/images/voice-cloning-hero.png"
+            alt="Person with headphones in cosmic transformation"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            unoptimized
+          />
+        </div>
+        {/* Top fade — extends outside section */}
+        <div style={{ position: 'absolute', top: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to bottom, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Bottom fade — extends outside section */}
+        <div style={{ position: 'absolute', bottom: -120, left: -60, right: -60, height: 'calc(45% + 120px)', background: 'linear-gradient(to top, #000000 0%, rgba(6,2,20,0.95) 25%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Left dark panel for text + left fade extending outside */}
+        <div style={{ position: 'absolute', top: -60, bottom: -60, left: -80, width: 'calc(60% + 80px)', background: 'linear-gradient(to right, #000000 0%, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0.9) 35%, rgba(0,0,0,0.6) 70%, transparent 100%)', pointerEvents: 'none' }} />
+        {/* Right fade — extends outside */}
+        <div style={{ position: 'absolute', top: -60, bottom: -60, right: -80, width: 100, background: 'linear-gradient(to left, #000000 0%, transparent 100%)', pointerEvents: 'none' }} />
         {/* Copy — overlaid left, centered vertically */}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
           <div style={{ width: '100%', maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `0 ${PAGE_PADDING}` }}>

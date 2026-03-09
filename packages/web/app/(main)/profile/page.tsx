@@ -365,7 +365,7 @@ export default function ProfilePage() {
             style={{ borderColor: colors.error, color: colors.error }}
             onClick={async () => {
               await useAuthStore.getState().logout();
-              router.push('/login');
+              router.push('/');
             }}
           >
             <LogOut size={18} />

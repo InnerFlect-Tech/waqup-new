@@ -3,16 +3,17 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Sparkles, Infinity, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Infinity, ArrowRight, CheckCircle2, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH } from '@/theme';
 import { Typography, Button, PageShell, QCoin } from '@/components';
-import { CREDIT_PACKS, type CreditPackId } from '@waqup/shared/constants';
+import { CREDIT_PACKS, getPackSavings, type CreditPackId } from '@waqup/shared/constants';
+import { useAuthStore } from '@/stores';
 
 const TRUST_POINTS = [
   { icon: Infinity, text: 'Qs never expire — use them at your own pace' },
   { icon: Sparkles, text: 'Practice is always free — Qs power creation only' },
-  { icon: CheckCircle2, text: 'Instant delivery after payment' },
+  { icon: CheckCircle2, text: 'Instant delivery after payment. Secured by Stripe' },
 ];
 
 function PackCard({
@@ -53,7 +54,7 @@ function PackCard({
         gap: spacing.md,
       }}
     >
-      {/* Best Value badge */}
+      {/* Best Value badge — absolute so it doesn't shift layout */}
       {isBestValue && (
         <div
           style={{
@@ -76,8 +77,11 @@ function PackCard({
         </div>
       )}
 
+      {/* Spacer so all cards align — reserves space for badge overlap */}
+      <div style={{ height: spacing.md, flexShrink: 0 }} />
+
       {/* Q amount — the hero number */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginTop: isBestValue ? spacing.md : 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
         <QCoin size="md" />
         <div>
           <span
@@ -113,26 +117,35 @@ function PackCard({
         </div>
       </div>
 
-      {/* Price + per-Q rate */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: spacing.sm }}>
-        <span
-          style={{
-            fontSize: 26,
-            fontWeight: 300,
-            color: colors.text.primary,
-            letterSpacing: '-0.02em',
-          }}
-        >
-          €{pack.price}
-        </span>
-        <span
-          style={{
-            fontSize: 12,
-            color: colors.text.secondary,
-          }}
-        >
-          (€{pack.pricePerQ.toFixed(2)} / Q)
-        </span>
+      {/* Price + discount vs baseline */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: spacing.sm }}>
+          <span
+            style={{
+              fontSize: 26,
+              fontWeight: 300,
+              color: colors.text.primary,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            €{pack.price.toFixed(2)}
+          </span>
+        </div>
+        {(() => {
+          const savings = getPackSavings(pack);
+          if (!savings) return null;
+          return (
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: colors.accent.tertiary,
+              }}
+            >
+              Save {savings.discountPercent}% · €{savings.savedEuros.toFixed(2)} vs Spark
+            </span>
+          );
+        })()}
       </div>
 
       <Button
@@ -153,6 +166,7 @@ export default function GetQsPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
+  const user = useAuthStore((s) => s.user);
   const [loading, setLoading] = useState<CreditPackId | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -168,7 +182,7 @@ export default function GetQsPage() {
       });
 
       if (res.status === 401) {
-        router.push('/login?redirect=/get-qs');
+        router.push('/login?next=/get-qs');
         return;
       }
 
@@ -197,6 +211,36 @@ export default function GetQsPage() {
           margin: '0 auto',
         }}
       >
+        {/* Sign-in prompt for unauthenticated visitors */}
+        {!user && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.sm,
+              padding: `${spacing.md} ${spacing.lg}`,
+              marginBottom: spacing.xl,
+              borderRadius: borderRadius.lg,
+              background: `${colors.accent.primary}12`,
+              border: `1px solid ${colors.accent.primary}30`,
+              flexWrap: 'wrap',
+            }}
+          >
+            <LogIn size={18} color={colors.accent.primary} strokeWidth={2} />
+            <span style={{ fontSize: 14, color: colors.text.secondary, lineHeight: 1.5 }}>
+              Sign in to purchase. We&apos;ll bring you back here after you log in.
+            </span>
+            <Link href="/login?next=/get-qs" style={{ textDecoration: 'none' }}>
+              <Button variant="ghost" size="sm" style={{ borderColor: `${colors.accent.primary}50`, color: colors.accent.primary }}>
+                Sign in
+              </Button>
+            </Link>
+          </motion.div>
+        )}
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -217,21 +261,21 @@ export default function GetQsPage() {
               lineHeight: 1.1,
             }}
           >
-            Get Qs
+            Q packs
           </Typography>
           <Typography
             variant="body"
             style={{
               fontSize: 'clamp(15px, 1.8vw, 18px)',
               color: colors.text.secondary,
-              maxWidth: 480,
+              maxWidth: 520,
               margin: '0 auto',
               lineHeight: 1.65,
             }}
           >
-            Qs power your creation. Buy once, use whenever you&apos;re ready.
+            Qs power affirmations, meditations, and rituals. Buy once — they never expire.
             <br />
-            They never expire.
+            <span style={{ color: colors.text.tertiary ?? colors.text.secondary }}>Practice is always free.</span>
           </Typography>
         </motion.div>
 

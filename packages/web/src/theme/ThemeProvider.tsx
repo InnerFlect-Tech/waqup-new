@@ -18,16 +18,25 @@ export const useTheme = () => {
   return ctx;
 };
 
+/** Resolve theme: URL param (for shared links) > localStorage > default */
+function resolveInitialTheme(): string {
+  if (typeof window === 'undefined') return 'mystical-purple';
+  const params = new URLSearchParams(window.location.search);
+  const fromUrl = params.get('theme');
+  if (fromUrl && themes[fromUrl]) return fromUrl;
+  const saved = localStorage.getItem('waqup-theme');
+  if (saved && themes[saved]) return saved;
+  return 'mystical-purple';
+}
+
 export function ThemeProvider({ children, defaultThemeName = 'mystical-purple' }: { children: ReactNode; defaultThemeName?: string }) {
   const [themeName, setThemeName] = useState(defaultThemeName);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);  
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('waqup-theme');
-      if (saved && themes[saved]) setThemeName(saved);
-    }
+    setMounted(true);
+    const resolved = resolveInitialTheme();
+    setThemeName(resolved);
   }, []);
 
   const theme = themes[themeName] ?? defaultTheme;

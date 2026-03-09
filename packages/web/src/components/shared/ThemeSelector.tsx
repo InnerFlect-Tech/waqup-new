@@ -4,12 +4,22 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/theme';
 import { Button } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { Palette, ChevronDown } from 'lucide-react';
+import { Palette, ChevronDown, Link2 } from 'lucide-react';
 
 export const ThemeSelector: React.FC = () => {
   const { themeName, setTheme, availableThemes, theme } = useTheme();
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const copyShareableLink = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('theme', themeName);
+    navigator.clipboard.writeText(url.toString()).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const themeNames: Record<string, string> = {
     'mystical-purple': 'Mystical Purple',
@@ -104,6 +114,22 @@ export const ThemeSelector: React.FC = () => {
               {themeNames[name] || name}
             </Button>
           ))}
+          <div style={{ borderTop: `1px solid ${theme.colors.glass.border}`, marginTop: spacing.sm, paddingTop: spacing.sm }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={copyShareableLink}
+              style={{
+                fontSize: '11px',
+                padding: `${spacing.xs} ${spacing.md}`,
+                justifyContent: 'flex-start',
+                color: theme.colors.text.tertiary,
+              }}
+            >
+              <Link2 size={12} style={{ marginRight: spacing.xs }} />
+              {copied ? 'Copied!' : 'Copy link with theme'}
+            </Button>
+          </div>
         </div>
       )}
     </div>

@@ -68,5 +68,5 @@ export const layout = {
   pageTopPadding: 48,
   maxWidth7xl: 1280,
   /** Header horizontal padding — lateral space for logo and nav buttons */
-  headerPaddingX: 80,
+  headerPaddingX: 96,
 } as const;

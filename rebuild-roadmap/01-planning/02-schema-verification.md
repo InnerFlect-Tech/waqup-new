@@ -4,7 +4,42 @@
 
 **Canonical schema source**: `supabase/migrations/` — all schema changes must be versioned there. Deploy with `supabase db push`. Local and production stay in sync via the same migration files.
 
-**Last updated**: 2026-02-16
+**Last updated**: 2026-03-09
+
+---
+
+## Verifying Your Database
+
+To confirm your Supabase database matches the expected schema:
+
+### 1. Run the verification script
+
+1. Open **Supabase Dashboard** → your project → **SQL Editor**
+2. Copy the contents of `supabase/scripts/verify_database.sql`
+3. Paste and **Run**
+
+### 2. Interpret results
+
+| Status | Meaning |
+|--------|---------|
+| **PASS** | Check succeeded |
+| **FAIL** | Fix required — apply missing migrations or run repair SQL |
+| **WARN** | Optional/recommended; non-blocking |
+
+All **FAIL** items must be resolved. Common fixes:
+
+- **Missing tables/columns** → Run `supabase db push` or apply migrations manually
+- **profiles.role / access_granted missing** → See `supabase/migrations/20260310000002_add_role_to_profiles.sql` and `20260310000004_add_access_granted_to_profiles.sql` (or use the combined SQL from the superadmin promotion instructions)
+
+### 3. Sync migrations (recommended)
+
+If the verification shows failures, sync your database with the migrations:
+
+```bash
+supabase db push
+```
+
+Or link your remote project first: `supabase link --project-ref <your-project-ref>`
 
 ---
 

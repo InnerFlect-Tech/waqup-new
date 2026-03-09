@@ -57,7 +57,7 @@ export default function SignupPage() {
       // authenticated after signup — redirect them into the app.
       const currentUser = useAuthStore.getState().user;
       if (currentUser) {
-        router.push('/home');
+        router.push('/coming-soon');
         return;
       }
       // Email confirmation required — show "Check Your Email" screen.

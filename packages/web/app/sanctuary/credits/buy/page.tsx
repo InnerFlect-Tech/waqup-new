@@ -9,7 +9,7 @@ import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { CREDIT_PACKS, type CreditPackId } from '@waqup/shared/constants';
+import { CREDIT_PACKS, getPackSavings, type CreditPackId } from '@waqup/shared/constants';
 
 function PackCard({
   pack,
@@ -74,13 +74,14 @@ function PackCard({
         </div>
       )}
 
+      <div style={{ height: spacing.md, flexShrink: 0 }} />
+
       <div
         style={{
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'space-between',
           marginBottom: spacing.md,
-          marginTop: isBestValue ? spacing.md : 0,
         }}
       >
         <div>
@@ -107,11 +108,24 @@ function PackCard({
             </span>
           </div>
           <Typography variant="small" style={{ color: colors.text.secondary }}>
-            €{pack.price}
+            €{pack.price.toFixed(2)}
           </Typography>
-          <div style={{ fontSize: 11, color: colors.text.secondary, opacity: 0.6, marginTop: 2 }}>
-            €{pack.pricePerQ.toFixed(2)} / Q
-          </div>
+          {(() => {
+            const savings = getPackSavings(pack);
+            if (!savings) return null;
+            return (
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: colors.accent.tertiary,
+                  marginTop: 2,
+                }}
+              >
+                Save {savings.discountPercent}% · €{savings.savedEuros.toFixed(2)} vs Spark
+              </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -148,7 +162,7 @@ export default function BuyQsPage() {
       });
 
       if (res.status === 401) {
-        router.push('/login?redirect=/sanctuary/credits/buy');
+        router.push('/login?next=/sanctuary/credits/buy');
         return;
       }
 

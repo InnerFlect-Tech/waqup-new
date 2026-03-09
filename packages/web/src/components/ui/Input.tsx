@@ -12,6 +12,8 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   containerStyle?: React.CSSProperties;
+  /** Override wrapper styles (e.g. marginBottom: 0 for inline forms) */
+  wrapperStyle?: React.CSSProperties;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -21,6 +23,7 @@ export const Input: React.FC<InputProps> = ({
   leftIcon,
   rightIcon,
   containerStyle,
+  wrapperStyle,
   style,
   className,
   onFocus,
@@ -55,7 +58,7 @@ export const Input: React.FC<InputProps> = ({
   };
 
   return (
-    <div style={{ marginBottom: spacing.md }}>
+    <div style={{ marginBottom: spacing.md, ...wrapperStyle }}>
       {label && (
         <Typography variant="caption" color="secondary" style={{ fontWeight: 500, marginBottom: spacing.sm }}>
           {label}

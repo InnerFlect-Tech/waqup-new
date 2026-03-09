@@ -10,3 +10,4 @@ export * from './PageContent';
 export * from './GlassCard';
 export * from './SuperAdminGate';
 export * from './WaitlistCTA';
+export * from './FoundingMemberModal';
