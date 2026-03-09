@@ -24,7 +24,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- hydration-safe client-only render
+    setMounted(true);  
   }, []);
 
   if (!mounted) {

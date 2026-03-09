@@ -85,6 +85,7 @@ export function VoiceOrb({
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef       = useRef<number>(0);
+  const drawRef      = useRef<() => void>(() => undefined);
   const timeRef      = useRef(0);
 
   // All smoothed values as refs — never captured in closures, never cause RAF restarts.
@@ -452,8 +453,11 @@ export function VoiceOrb({
     ctx.shadowBlur = 0;
     ctx.restore(); // end circular clip
 
-    rafRef.current = requestAnimationFrame(draw);
+    rafRef.current = requestAnimationFrame(drawRef.current);
   }, [frequencyDataRef]); // Only dep is frequencyDataRef (stable ref object) — never restarts
+
+  // Keep drawRef current so the RAF loop always calls the latest draw without restarting.
+  drawRef.current = draw;
 
   // Resize observer
   useEffect(() => {

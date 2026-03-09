@@ -113,10 +113,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect -- close menus on route change */
+     
     setIsMobileMenuOpen(false);
     setShowProfileMenu(false);
-    /* eslint-enable react-hooks/set-state-in-effect */
+     
   }, [pathname]);
 
   const isOnboardingRoute =
@@ -519,7 +519,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: colors.gradients.background,
+      }}
+    >
         <motion.nav
           initial={{ y: -100 }}
           animate={{ y: 0 }}
@@ -647,7 +654,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </motion.div>
       </motion.nav>
-      <main>{children}</main>
+      <main
+        style={{
+          flex: 1,
+          paddingTop: NAV_HEIGHT,
+        }}
+      >
+        {children}
+      </main>
 
       {/* ── Public Footer ──────────────────────────────────────── */}
       <footer
@@ -786,6 +800,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           }
         ` }} />
       </footer>
-    </>
+    </div>
   );
 }

@@ -58,6 +58,7 @@ export function PublicPlayerClient({ item, contentId }: Props) {
   const progress = position.durationMs > 0 ? position.positionMs / position.durationMs : 0;
 
   useEffect(() => {
+     
     if (!analyserNode || !isPlaying) { setFreqData([]); return; }
     const buf = new Uint8Array(analyserNode.frequencyBinCount);
     let raf = 0;

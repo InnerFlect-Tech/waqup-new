@@ -23,7 +23,7 @@ export function ThemeProvider({ children, defaultThemeName = 'mystical-purple' }
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect -- hydration-safe client theme init
+    setMounted(true);  
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('waqup-theme');
       if (saved && themes[saved]) setThemeName(saved);

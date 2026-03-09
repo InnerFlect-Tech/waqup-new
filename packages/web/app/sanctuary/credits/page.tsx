@@ -64,6 +64,7 @@ export default function CreditsPage() {
   }, []);
 
   useEffect(() => {
+     
     void loadTransactions();
   }, [loadTransactions]);
 

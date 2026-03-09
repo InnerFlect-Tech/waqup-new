@@ -55,6 +55,7 @@ export default function TransactionsPage() {
   }, []);
 
   useEffect(() => {
+     
     fetchPage(0, false);
   }, [fetchPage]);
 

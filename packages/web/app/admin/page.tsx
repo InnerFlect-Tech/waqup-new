@@ -164,7 +164,7 @@ function AdminTile({
           color: colors.accent.primary,
         }}
       >
-        {React.cloneElement(card.icon as React.ReactElement, { size: 20 })}
+        {React.cloneElement(card.icon as React.ReactElement<{ size?: number }>, { size: 20 })}
       </div>
       <div>
         <Typography

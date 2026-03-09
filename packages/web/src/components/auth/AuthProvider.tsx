@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const publicRoutes = [
       '/',
+      '/launch',
       '/login',
       '/signup',
       '/forgot-password',

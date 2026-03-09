@@ -43,7 +43,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
   // Cycle through 4 pages when speaking
   useEffect(() => {
     if (!isSpeaking) {
-      setIsVisible(false); /* eslint-disable-line react-hooks/set-state-in-effect */
+      setIsVisible(false);  
       return;
     }
 
@@ -58,7 +58,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
   // Reset to first page when speaking starts
   useEffect(() => {
     if (isSpeaking) {
-      setCurrentPage(0); /* eslint-disable-line react-hooks/set-state-in-effect */
+      setCurrentPage(0);  
     }
   }, [isSpeaking]);
 

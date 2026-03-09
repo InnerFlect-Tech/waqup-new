@@ -71,7 +71,7 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
       {headline && (
         <Typography
           variant="h2"
-          style={{ color: colors.text.primary, marginBottom: spacing.md }}
+          style={{ color: colors.text.primary, marginBottom: spacing.sm }}
         >
           {headline}
         </Typography>
@@ -79,7 +79,7 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
       {subtext && (
         <Typography
           variant="body"
-          style={{ color: colors.text.secondary, marginBottom: spacing.xl, lineHeight: 1.6 }}
+          style={{ color: colors.text.secondary, marginBottom: spacing.lg, lineHeight: 1.65 }}
         >
           {subtext}
         </Typography>
@@ -127,7 +127,7 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
           onSubmit={handleSubmit}
           style={{
             display: 'flex',
-            gap: spacing.sm,
+            gap: spacing.md,
             maxWidth: 440,
             margin: '0 auto',
             flexWrap: 'wrap',
@@ -170,7 +170,7 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
       {!done && (
         <Typography
           variant="small"
-          style={{ color: 'rgba(255,255,255,0.2)', marginTop: spacing.md, display: 'block' }}
+          style={{ color: 'rgba(255,255,255,0.2)', marginTop: spacing.lg, display: 'block' }}
         >
           Or{' '}
           <Link href="/waitlist" style={{ color: 'rgba(147,51,234,0.6)', textDecoration: 'none' }}>
@@ -193,7 +193,7 @@ function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: 
     <div
       style={{
         position: 'relative',
-        padding: `${spacing.xxxl}px ${spacing.xl}px`,
+        padding: `${spacing.xxl}px ${spacing.xl}px`,
         borderRadius: borderRadius.xl,
         background: 'linear-gradient(135deg, rgba(147,51,234,0.15) 0%, rgba(99,102,241,0.12) 100%)',
         border: '1px solid rgba(147,51,234,0.2)',
@@ -238,7 +238,7 @@ function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: 
             borderRadius: 999,
             background: 'rgba(147,51,234,0.15)',
             border: '1px solid rgba(147,51,234,0.3)',
-            marginBottom: spacing.lg,
+            marginBottom: spacing.md,
           }}
         >
           <Sparkles size={12} color="#A855F7" />

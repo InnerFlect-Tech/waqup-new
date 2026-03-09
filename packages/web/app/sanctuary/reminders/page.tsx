@@ -511,7 +511,7 @@ export default function SanctuaryRemindersPage() {
           >
             <BookOpen size={16} color={colors.accent.primary} strokeWidth={1.8} style={{ flexShrink: 0, opacity: 0.8 }} />
             <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, lineHeight: 1.5, fontSize: 13 }}>
-              The moments just after waking and before sleep are your brain's most receptive windows for new beliefs.{' '}
+              The moments just after waking and before sleep are your brain&#39;s most receptive windows for new beliefs.{' '}
               <Link
                 href="/sanctuary/learn"
                 style={{ color: colors.accent.primary, textDecoration: 'none', fontWeight: 500 }}

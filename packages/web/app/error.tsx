@@ -49,7 +49,7 @@ export default function GlobalError({
           marginBottom: '2rem',
         }}
       >
-        An unexpected error occurred. This has been logged and we'll look into it.
+        An unexpected error occurred. This has been logged and we&#39;ll look into it.
       </p>
       <button
         onClick={reset}
