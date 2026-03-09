@@ -5,4 +5,5 @@ export * from './useCreateInitGate';
 export * from './useCreditBalance';
 export * from './useReminders';
 export * from './useWebAudioPlayer';
+export * from './useSubscription';
 export * from './useAvatarColors';

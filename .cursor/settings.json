@@ -1,0 +1,16 @@
+{
+  "plugins": {
+    "vercel": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "supabase": {
+      "enabled": true
+    },
+    "stripe": {
+      "enabled": true
+    }
+  }
+}

@@ -6,6 +6,16 @@
 
 ---
 
+## Web Stripe Integration Completion (2026-03-09)
+
+### Stripe Customer Portal and Subscriptions hook
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-09
+- **Notes**: Added the web Customer Portal API route `POST /api/stripe/portal`, added the `useSubscription` React Query hook to `packages/web/src/hooks/useSubscription.ts` with its corresponding `Subscription` type definition in `@waqup/shared/types`. Updated the Settings page to display the current subscription plan (including status: active/trialing/past_due) and added a "Manage Billing" button that redirects to the Stripe Customer Portal. Attempted Stripe MCP configuration but no relevant test products existed for waQup yet.
+- **Updated**: 2026-03-09
+
+---
+
 ## Full Aligned Plan — Blocks 1–10 (2026-03-08)
 
 ### All remaining critical broken paths + infrastructure
