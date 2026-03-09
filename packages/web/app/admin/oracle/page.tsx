@@ -452,7 +452,7 @@ export default function OracleAdminPage() {
         style={{ maxWidth: 720, margin: '0 auto', paddingBottom: spacing.xxl, display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: spacing.md }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: spacing.md, marginBottom: spacing.xxl }}>
           <div>
             <p style={{ color: 'rgba(167,139,250,0.5)', fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px' }}>Hidden · Internal</p>
             <h1 style={{ color: '#fff', fontSize: 26, fontWeight: 300, margin: 0, letterSpacing: '0.03em' }}>Oracle Config</h1>
