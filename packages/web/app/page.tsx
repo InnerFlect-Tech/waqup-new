@@ -5,7 +5,7 @@ import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_TOP_PADDING } from '@/theme';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -79,11 +79,13 @@ export default function LandingPage() {
       {/* Hero Section */}
         <section
           style={{
-            padding: `0 ${spacing.xl} 10vh`,
+            padding: `0 ${spacing.xl}`,
+            marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`,
+            marginLeft: 'auto',
+            marginRight: 'auto',
             textAlign: 'center',
             maxWidth: CONTENT_MAX_WIDTH,
-            margin: '0 auto',
-            height: 'calc(100dvh - 64px)',
+            minHeight: 'calc(100dvh - 64px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -374,7 +376,7 @@ export default function LandingPage() {
         {/* CTA Section */}
         <section
           style={{
-            padding: `${spacing.xxxl} ${spacing.xl}`,
+            padding: `clamp(${spacing.xxxl}, 12vh, 160px) ${spacing.xxl}`,
             textAlign: 'center',
             maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
@@ -410,21 +412,6 @@ export default function LandingPage() {
             </Button>
           </Link>
         </section>
-
-        {/* Footer */}
-        <footer
-          style={{
-            padding: `${spacing.xl} ${spacing.xl}`,
-            borderTop: `1px solid ${colors.glass.border}`,
-            marginTop: spacing.xxl,
-          }}
-        >
-          <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', textAlign: 'center' }}>
-            <Typography variant="body" style={{ color: colors.text.tertiary }}>
-              © 2026 waQup. Transform your mind through voice.
-            </Typography>
-          </div>
-        </footer>
 
       {/* Pulse Animation */}
       <style dangerouslySetInnerHTML={{ __html: `
