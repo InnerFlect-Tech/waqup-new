@@ -10,7 +10,6 @@ import { PageShell, PageContent } from '@/components';
 import { useAuthStore } from '@/stores';
 import { useCreditBalance } from '@/hooks';
 import { supabase } from '@/lib/supabase';
-import { clearStoredOverride } from '@/lib/auth-override';
 import Link from 'next/link';
 import { LogOut, ChevronRight, Edit2, Check, X } from 'lucide-react';
 import { PROFILE_MENU_ITEMS } from '@/lib';
@@ -365,7 +364,6 @@ export default function ProfilePage() {
             fullWidth
             style={{ borderColor: colors.error, color: colors.error }}
             onClick={async () => {
-              clearStoredOverride();
               await useAuthStore.getState().logout();
               router.push('/login');
             }}

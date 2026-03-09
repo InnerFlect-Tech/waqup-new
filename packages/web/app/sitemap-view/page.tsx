@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Typography } from '@/components';
+import { Typography, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import { spacing } from '@/theme';
@@ -14,6 +14,7 @@ export default function SitemapPage() {
   const routesBySectionData = routesBySection();
 
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium" bare>
       <div style={{ padding: spacing.xl }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -56,5 +57,6 @@ export default function SitemapPage() {
         </div>
       </div>
     </PageShell>
+    </SuperAdminGate>
   );
 }

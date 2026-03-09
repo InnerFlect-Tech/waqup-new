@@ -57,8 +57,8 @@ begin
   )
   on conflict (id) do nothing;
 
-  insert into public.profiles (id) values (v_user_id)
-  on conflict (id) do nothing;
+  insert into public.profiles (id, role) values (v_user_id, 'superadmin')
+  on conflict (id) do update set role = 'superadmin';
 
   -- Seed 1000 Qs for the dev user (clear any existing balance first)
   delete from public.credit_transactions where user_id = v_user_id;

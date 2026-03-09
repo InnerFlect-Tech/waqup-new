@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
+import { PageShell, WaitlistCTA } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
 import Link from 'next/link';
 import {
   Brain,
@@ -198,12 +198,12 @@ function AppMockup({ colors }: { colors: ThemeColors }) {
 // ─── FAQ Accordion ────────────────────────────────────────────────────────────
 
 const faqs = [
-  { q: 'How is waQup different from Headspace or Calm?', a: 'Headspace and Calm give you generic content made by strangers. waQup creates personalized content based on YOUR specific goals, challenges, and context — and voices it in your own cloned voice. Nothing is generic. Everything is yours.' },
+  { q: 'How is waQup different from Headspace or Calm?', a: 'Headspace and Calm give you generic content made by strangers. waQup creates personalized content based on YOUR specific goals, challenges, and context, voiced in your own cloned voice. Nothing is generic. Everything is yours.' },
   { q: 'Do I need to record my own voice?', a: 'No. Voice cloning is optional. You can choose from our curated library of professional voices, or clone your own with just a 1-minute recording. Most people find hearing their own voice the most powerful, but both options work beautifully.' },
-  { q: 'How do credits (Qs) work?', a: 'Qs are the credits used to create new content. You earn Qs when you sign up and can purchase more. Importantly — listening to and practicing your existing content is always 100% free. Qs are only spent during the creation process.' },
+  { q: 'How do credits (Qs) work?', a: 'Qs are the credits used to create new content. You earn Qs when you sign up and can purchase more. One thing worth knowing: listening to and practicing your existing content is always 100% free. Qs are only spent during creation.' },
   { q: 'Is practice really free forever?', a: 'Yes. Once your affirmations, meditations, or rituals are created, you can replay them as many times as you want, forever, for free. We believe daily practice should never be gated behind a paywall.' },
   { q: 'What are the three content types?', a: 'Affirmations are short 2–5 min cognitive re-patterning statements for morning routines. Guided Meditations are 10–30 min AI-scripted sessions for state induction. Rituals are 20–60 min multi-part practices for the deepest identity transformation.' },
-  { q: 'What is the science behind this?', a: 'waQup is built on neuroplasticity research — the brain\'s ability to rewire itself through repeated exposure. Hearing positive self-statements in your own voice activates deeper neural pathways than reading or hearing a stranger\'s voice.' },
+  { q: 'What is the science behind this?', a: 'waQup is built on neuroplasticity research: the brain\'s ability to rewire itself through repeated exposure. Hearing positive self-statements in your own voice activates deeper neural pathways than reading or hearing a stranger\'s voice.' },
 ];
 
 function FAQItem({ q, a, colors }: { q: string; a: string; colors: ThemeColors }) {
@@ -225,20 +225,45 @@ function FAQItem({ q, a, colors }: { q: string; a: string; colors: ThemeColors }
   );
 }
 
+// ─── Instagram Stats ──────────────────────────────────────────────────────────
+
+function formatFollowers(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M+`;
+  if (n >= 1_000) return `${Math.floor(n / 100) * 100 / 1_000}k+`;
+  return `${n}+`;
+}
+
+function useInstagramFollowers() {
+  const [followers, setFollowers] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/instagram/stats')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.followers && d.followers > 0) {
+          setFollowers(formatFollowers(d.followers));
+        }
+      })
+      .catch(() => {/* use fallback */});
+  }, []);
+
+  return followers;
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-const SECTION_PY = '120px';
-const SECTION_PX = '40px';
+const SECTION_PY = '72px';
 
 export default function LaunchPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const instagramFollowers = useInstagramFollowers();
 
   return (
     <PageShell intensity="high" bare>
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="wq-hero" style={{ padding: `0 ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
+      <section className="wq-hero" style={{ padding: `0 ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
         <div className="wq-hero-copy" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 32 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: colors.success, animation: 'wqPulse 2s ease-in-out infinite' }} />
@@ -252,13 +277,13 @@ export default function LaunchPage() {
           </h1>
 
           <p style={{ fontSize: 'clamp(17px, 1.8vw, 21px)', color: colors.text.secondary, lineHeight: 1.65, maxWidth: 500, margin: '0 0 48px', fontWeight: 300 }}>
-            waQup creates personalized affirmations, meditations, and rituals — voiced by you — that rewire your subconscious. Not generic content. Your story. Your voice. Your transformation.
+            waQup creates personalized affirmations, meditations, and rituals, voiced by you, that rewire your subconscious. Not generic content. Your story. Your voice. Your transformation.
           </p>
 
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 36 }}>
-            <Link href="/signup" style={{ textDecoration: 'none' }}>
+            <Link href="/waitlist" style={{ textDecoration: 'none' }}>
               <Button variant="primary" size="lg" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: '17px', padding: '16px 36px', boxShadow: `0 8px 48px ${colors.accent.primary}50` }}>
-                Start Free Today <ArrowRight size={18} color={colors.text.onDark} />
+                Join the Waitlist <ArrowRight size={18} color={colors.text.onDark} />
               </Button>
             </Link>
             <Link href="/how-it-works" style={{ textDecoration: 'none' }}>
@@ -275,7 +300,7 @@ export default function LaunchPage() {
               ))}
             </div>
             <Typography variant="caption" style={{ color: colors.text.secondary, fontSize: 13 }}>
-              Join <strong style={{ color: colors.text.primary }}>10,000+ people</strong> already transforming their minds
+              Join <strong style={{ color: colors.text.primary }}>{instagramFollowers ?? '10,000+'} people</strong> already transforming their minds
             </Typography>
           </div>
         </div>
@@ -287,9 +312,9 @@ export default function LaunchPage() {
 
       {/* ── Stats ────────────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${colors.glass.border}`, borderBottom: `1px solid ${colors.glass.border}`, background: 'rgba(255,255,255,0.02)' }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `48px ${SECTION_PX}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `48px ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
           {[
-            { n: '10,000+', l: 'Minds in transformation' },
+            { n: instagramFollowers ?? '10,000+', l: 'Minds in transformation' },
             { n: '3', l: 'Science-backed content types' },
             { n: '∞', l: 'Free practice replays' },
           ].map(({ n, l }) => (
@@ -302,8 +327,8 @@ export default function LaunchPage() {
       </div>
 
       {/* ── How It Works ─────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 80 }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>How It Works</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Three steps to a new you</h2>
           <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>No forms. No scripts. No production skills. Just a conversation that becomes your daily practice.</p>
@@ -311,9 +336,9 @@ export default function LaunchPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 28 }}>
           {[
-            { n: '01', icon: MessageCircle, title: 'Share your goals', desc: 'A conversational AI guide listens to your specific challenges, goals, and context — just like talking to a coach who actually gets you.' },
-            { n: '02', icon: Sparkles, title: 'AI creates your content', desc: 'Your personalized practice is scripted and voiced — using your own cloned voice or a chosen professional. Nothing generic, ever.' },
-            { n: '03', icon: Volume2, title: 'Listen and transform', desc: 'Practice daily in your morning routine. Voice-first repetition rewires subconscious patterns in 21–66 days, proven by science.' },
+            { n: '01', icon: MessageCircle, title: 'Share your goals', desc: 'A conversational AI guide listens to your specific challenges, goals, and context. Like talking to a coach who actually gets you.' },
+            { n: '02', icon: Sparkles, title: 'AI creates your content', desc: 'Your personalized practice is scripted and voiced in your own voice: record live, clone it once, or choose a professional voice. Nothing generic, ever.' },
+            { n: '03', icon: Volume2, title: 'Listen and transform', desc: 'Each morning, press play and hear your own voice guide you. Consistent self-voice repetition rewires subconscious patterns in 21–66 days, proven by science.' },
           ].map(({ n, icon: Icon, title, desc }) => (
             <div key={n} style={{ padding: '44px 40px', borderRadius: borderRadius.xl, background: colors.glass.light, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: `1px solid ${colors.glass.border}`, transition: 'all 0.3s ease', position: 'relative', overflow: 'hidden' }}
               onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = `0 32px 80px ${colors.accent.primary}40`; e.currentTarget.style.borderColor = `${colors.accent.primary}30`; }}
@@ -331,9 +356,9 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Before / After ───────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>The Difference</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: 0 }}>Something in you knows it&apos;s time.</h2>
           </div>
@@ -391,11 +416,11 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Content Types ─────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 80 }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Three Content Types</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Every depth of transformation</h2>
-          <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is designed for a specific level of inner change — from daily reprogramming to permanent identity encoding.</p>
+          <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is designed for a specific level of inner change, from daily reprogramming to permanent identity encoding.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
@@ -409,14 +434,14 @@ export default function LaunchPage() {
             },
             {
               icon: Moon, name: 'Guided Meditations', tagline: 'Command your inner state', duration: '10–30 min', depth: 'State induction',
-              desc: 'AI-scripted journeys through landscapes designed for your emotional goals. Your voice leads you exactly where you need to go.',
+              desc: 'AI-scripted journeys designed for your emotional goals, voiced by you. You hear your own voice guide you to exactly where you need to go.',
               color: colors.accent.secondary,
               gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
               outcome: 'Find calm on demand.',
             },
             {
               icon: Flame, name: 'Rituals', tagline: 'Encode your new identity', duration: '20–60 min', depth: 'Identity encoding',
-              desc: 'Multi-part practices combining breathwork, visualization, and affirmations. The deepest level — designed to permanently encode a new self.',
+              desc: 'Multi-part practices combining breathwork, visualization, and affirmations, all voiced by you. Hearing yourself through the deepest work is what makes it stick.',
               color: colors.accent.tertiary,
               gradient: `linear-gradient(160deg, ${colors.accent.tertiary}18, ${colors.accent.primary}06)`,
               outcome: 'Become someone new.',
@@ -427,9 +452,9 @@ export default function LaunchPage() {
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = `${color}22`; }}
             >
               {/* Card top — visual area */}
-              <div style={{ padding: '48px 40px 36px', position: 'relative', borderBottom: `1px solid ${color}12` }}>
+              <div style={{ padding: '48px 40px 36px', position: 'relative', borderBottom: `1px solid ${color}12`, textAlign: 'center' }}>
                 <div style={{ position: 'absolute', top: -20, right: -20, width: 140, height: 140, borderRadius: '50%', background: `radial-gradient(circle, ${color}15, transparent 70%)`, pointerEvents: 'none' }} />
-                <div style={{ width: 72, height: 72, borderRadius: 20, background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28, boxShadow: `0 0 40px ${color}20` }}>
+                <div style={{ width: 72, height: 72, borderRadius: 20, background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28, boxShadow: `0 0 40px ${color}20`, margin: '0 auto 28px' }}>
                   <Icon size={34} color={color} />
                 </div>
                 <h3 style={{ fontSize: 26, fontWeight: 400, color: colors.text.primary, margin: '0 0 6px', letterSpacing: '-0.5px' }}>{name}</h3>
@@ -437,7 +462,7 @@ export default function LaunchPage() {
               </div>
               {/* Card body */}
               <div style={{ padding: '32px 40px 40px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.7, margin: '0 0 24px', flex: 1 }}>{desc}</p>
+                <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.7, margin: '0 0 24px', flex: 1, textAlign: 'center' }}>{desc}</p>
                 {/* Footer */}
                 <div style={{ borderTop: `1px solid ${color}18`, paddingTop: 20 }}>
                   {/* Pills */}
@@ -455,16 +480,16 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Features Bento ────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}` }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Why It Works</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: 0 }}>Built for real transformation</h2>
           </div>
 
           <div className="wq-bento" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 20 }}>
 
-            {/* 1 — Voice (wide, featured) */}
+            {/* 1 — Voice authority (wide, featured) */}
             <div className="wq-bento-1" style={{ gridColumn: '1 / 5', padding: '52px 52px', borderRadius: borderRadius.xl, background: `linear-gradient(135deg, ${colors.accent.primary}14, ${colors.accent.secondary}06)`, border: `1px solid ${colors.accent.primary}22`, position: 'relative', overflow: 'hidden', transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${colors.accent.primary}40`; e.currentTarget.style.boxShadow = `0 32px 80px ${colors.accent.primary}30`; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = `${colors.accent.primary}22`; e.currentTarget.style.boxShadow = 'none'; }}
@@ -474,45 +499,46 @@ export default function LaunchPage() {
                 <Mic size={38} color="#fff" />
               </div>
               <h3 style={{ fontSize: 'clamp(24px, 2.5vw, 34px)', fontWeight: 300, color: colors.text.primary, margin: '0 0 16px', letterSpacing: '-0.8px', lineHeight: 1.2 }}>Hear yourself say it.</h3>
-              <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.7, maxWidth: 440, margin: 0 }}>The moment you hear your own voice tell your brain who you truly are — something shifts permanently. Record just 60 seconds. Your voice becomes the most powerful transformation tool you own.</p>
+              <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.7, maxWidth: 460, margin: 0 }}>Science has known for decades: self-referential processing activates deeper neural pathways than any external voice. When you hear yourself speak your own truth, the mind doesn&apos;t filter, deflect, or dismiss. It listens. And then it changes.</p>
             </div>
 
-            {/* 2 — Free (narrow) */}
+            {/* 2 — Uniqueness (narrow) */}
             <div className="wq-bento-2" style={{ gridColumn: '5 / 7', padding: '52px 40px', borderRadius: borderRadius.xl, background: colors.glass.light, border: `1px solid ${colors.glass.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${colors.accent.primary}30`; e.currentTarget.style.background = `${colors.accent.primary}06`; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.glass.border; e.currentTarget.style.background = colors.glass.light; }}
             >
               <div style={{ width: 72, height: 72, borderRadius: '50%', background: `${colors.accent.primary}15`, border: `1px solid ${colors.accent.primary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28, boxShadow: `0 0 40px ${colors.accent.primary}20` }}>
-                <InfinityIcon size={32} color={colors.accent.primary} />
+                <Sparkles size={32} color={colors.accent.primary} />
               </div>
-              <div style={{ fontSize: 'clamp(48px, 4vw, 72px)', fontWeight: 300, letterSpacing: '-2px', lineHeight: 1, color: colors.text.primary, marginBottom: 10, background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>∞</div>
-              <h3 style={{ fontSize: 18, fontWeight: 500, color: colors.text.primary, margin: '0 0 10px' }}>Free forever to practice.</h3>
-              <p style={{ fontSize: 14, color: colors.text.secondary, lineHeight: 1.6, margin: 0 }}>Credits create. Your library replays infinitely — no gates, no subscriptions on your growth.</p>
+              <h3 style={{ fontSize: 18, fontWeight: 500, color: colors.text.primary, margin: '0 0 10px' }}>No one else has your practice.</h3>
+              <p style={{ fontSize: 14, color: colors.text.secondary, lineHeight: 1.6, margin: 0 }}>Other apps serve millions of people the same content. Every piece in your waQup library was built for one person on earth. You.</p>
             </div>
 
-            {/* 3 — Conversation (narrow) */}
+            {/* 3 — Morning window (narrow) */}
             <div className="wq-bento-3" style={{ gridColumn: '1 / 3', padding: '52px 40px', borderRadius: borderRadius.xl, background: colors.glass.light, border: `1px solid ${colors.glass.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${colors.accent.secondary}35`; e.currentTarget.style.background = `${colors.accent.secondary}06`; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.glass.border; e.currentTarget.style.background = colors.glass.light; }}
             >
               <div style={{ width: 72, height: 72, borderRadius: '50%', background: `${colors.accent.secondary}15`, border: `1px solid ${colors.accent.secondary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28 }}>
-                <MessageCircle size={32} color={colors.accent.secondary} />
+                <Sun size={32} color={colors.accent.secondary} />
               </div>
-              <h3 style={{ fontSize: 20, fontWeight: 500, color: colors.text.primary, margin: '0 0 10px', letterSpacing: '-0.3px' }}>No blank page. Ever.</h3>
-              <p style={{ fontSize: 14, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Just talk. AI listens and creates something deeply personal from your story — no forms, no checkboxes.</p>
+              <h3 style={{ fontSize: 20, fontWeight: 500, color: colors.text.primary, margin: '0 0 10px', letterSpacing: '-0.3px' }}>5 minutes before the world gets in.</h3>
+              <p style={{ fontSize: 14, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Right after waking, your brain is in its most receptive theta state: the same window used in deep hypnotherapy. waQup was built to reach you here, first.</p>
             </div>
 
-            {/* 4 — Results (wide, featured) */}
+            {/* 4 — Identity change (wide, featured) */}
             <div className="wq-bento-4" style={{ gridColumn: '3 / 7', padding: '52px 52px', borderRadius: borderRadius.xl, background: `linear-gradient(135deg, ${colors.accent.secondary}10, ${colors.accent.primary}06)`, border: `1px solid ${colors.accent.secondary}20`, position: 'relative', overflow: 'hidden', transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${colors.accent.secondary}40`; e.currentTarget.style.boxShadow = `0 32px 80px ${colors.accent.secondary}25`; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = `${colors.accent.secondary}20`; e.currentTarget.style.boxShadow = 'none'; }}
             >
               <div style={{ position: 'absolute', bottom: -40, left: -40, width: 240, height: 240, borderRadius: '50%', background: `radial-gradient(circle, ${colors.accent.secondary}12, transparent 70%)`, pointerEvents: 'none' }} />
-              <div style={{ width: 80, height: 80, borderRadius: 22, background: `linear-gradient(135deg, ${colors.accent.secondary}, ${colors.accent.primary})`, boxShadow: `0 12px 40px ${colors.accent.secondary}50`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 36 }}>
-                <Zap size={38} color="#fff" />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', textAlign: 'right' }}>
+                <div style={{ width: 80, height: 80, borderRadius: 22, background: `linear-gradient(135deg, ${colors.accent.secondary}, ${colors.accent.primary})`, boxShadow: `0 12px 40px ${colors.accent.secondary}50`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 36 }}>
+                  <Zap size={38} color="#fff" />
+                </div>
+                <h3 style={{ fontSize: 'clamp(24px, 2.5vw, 34px)', fontWeight: 300, color: colors.text.primary, margin: '0 0 16px', letterSpacing: '-0.8px', lineHeight: 1.2 }}>You&apos;re not building habits.<br />You&apos;re rewriting identity.</h3>
+                <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.7, maxWidth: 420, margin: 0 }}>Willpower depletes. Habits need enforcement. But identity runs on autopilot. Change who you believe you are, and the behaviors follow without effort. waQup doesn&apos;t train what you do. It changes who you are at the source.</p>
               </div>
-              <h3 style={{ fontSize: 'clamp(24px, 2.5vw, 34px)', fontWeight: 300, color: colors.text.primary, margin: '0 0 16px', letterSpacing: '-0.8px', lineHeight: 1.2 }}>21 days to notice.<br />66 days to become.</h3>
-              <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.7, maxWidth: 420, margin: 0 }}>Daily voice practice creates measurable neural change. Neuroplasticity research shows personalized voice input rewires subconscious patterns faster than any other method.</p>
             </div>
 
             {/* 5 — Science (medium) */}
@@ -525,7 +551,7 @@ export default function LaunchPage() {
               </div>
               <div>
                 <h3 style={{ fontSize: 21, fontWeight: 500, color: colors.text.primary, margin: '0 0 12px', letterSpacing: '-0.3px' }}>Built on how brains actually change.</h3>
-                <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.7, margin: 0 }}>Every content structure is engineered around peer-reviewed neuroplasticity research. This isn&apos;t motivation — it&apos;s architecture for identity change.</p>
+                <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.7, margin: 0 }}>Every content structure is engineered around peer-reviewed neuroplasticity research. This isn&apos;t motivation. It&apos;s architecture for identity change.</p>
               </div>
             </div>
 
@@ -548,10 +574,10 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Testimonials ─────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 80 }}>
-            <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Real Transformations</div>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <div style={{ fontSize: 11, color: colors.accent.primary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Real Transformations</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: 0 }}>Voice transformation works.<br />Here&apos;s the proof.</h2>
           </div>
 
@@ -559,13 +585,13 @@ export default function LaunchPage() {
             {[
               { q: 'The first app that actually made me feel like I was talking to myself. Hearing MY voice tell me I\'m capable hits so differently than reading it off a screen.', n: 'Marcus T.', r: 'Entrepreneur, 34', day: '30 days in' },
               { q: 'After 30 days of morning affirmations, I can\'t believe who I\'m becoming. I speak up in meetings now. I didn\'t think an app could actually do this to me.', n: 'Sarah M.', r: 'Teacher, 28', day: '21 days in' },
-              { q: 'I\'ve tried every meditation app out there. waQup is the only one that feels truly personal. The ritual creation flow is like therapy on demand — but it\'s mine.', n: 'Emma L.', r: 'Designer, 31', day: '66 days in' },
+              { q: 'I\'ve tried every meditation app out there. waQup is the only one that feels truly personal. The ritual creation flow is like therapy on demand, but it\'s mine.', n: 'Emma L.', r: 'Designer, 31', day: '66 days in' },
             ].map(({ q, n, r, day }) => (
               <div key={n} style={{ padding: '44px 44px', borderRadius: borderRadius.xl, background: colors.glass.light, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: `1px solid ${colors.glass.border}`, display: 'flex', flexDirection: 'column', gap: 28, transition: 'all 0.3s ease', position: 'relative', overflow: 'hidden' }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = `${colors.accent.primary}30`; e.currentTarget.style.boxShadow = `0 32px 80px ${colors.accent.primary}25`; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = colors.glass.border; e.currentTarget.style.boxShadow = 'none'; }}
               >
-                <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px 18px', background: `${colors.accent.primary}15`, borderRadius: '0 24px 0 12px', fontSize: 11, color: colors.accent.tertiary, fontWeight: 600 }}>{day}</div>
+                <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px 18px', background: `${colors.accent.primary}25`, borderRadius: '0 24px 0 12px', fontSize: 11, color: colors.accent.primary, fontWeight: 700, letterSpacing: '0.04em' }}>{day}</div>
                 <div style={{ display: 'flex', gap: 3 }}>
                   {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} color="#F59E0B" fill="#F59E0B" />)}
                 </div>
@@ -584,13 +610,13 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Founder quote ─────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 700, height: 700, borderRadius: '50%', background: `radial-gradient(circle, ${colors.accent.primary}10 0%, transparent 65%)`, pointerEvents: 'none' }} />
         <div style={{ maxWidth: 680, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 40 }}>From the Founder</div>
           <blockquote style={{ margin: 0, padding: 0 }}>
             <p style={{ fontSize: 'clamp(20px, 2.4vw, 26px)', fontWeight: 300, fontStyle: 'italic', color: colors.text.primary, lineHeight: 1.65, letterSpacing: '-0.3px', margin: '0 0 36px' }}>
-              &ldquo;The transformation I wanted for myself — hearing my own voice tell me who I&apos;m becoming — didn&apos;t exist anywhere. So I built it. waQup is that breakthrough, made available to everyone.&rdquo;
+              &ldquo;Nothing was working. I was depressed and had tried everything. So I did my own research, sat with a friend, recorded my voice, and mixed it in Ableton. I listened every day. My life changed. I spent the next five years removing every barrier between that experience and anyone who needs it. That&apos;s waQup.&rdquo;
             </p>
             <footer style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
               <span style={{ fontSize: 15, fontWeight: 600, color: colors.text.primary, letterSpacing: '0.02em' }}>Daniel Indias Fernandes</span>
@@ -601,8 +627,8 @@ export default function LaunchPage() {
       </section>
 
       {/* ── FAQ ───────────────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 80 }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Q&amp;A</h2>
           <p style={{ fontSize: 18, color: colors.text.secondary, margin: 0 }}>Everything you want to know before you begin.</p>
         </div>
@@ -612,36 +638,16 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Final CTA ─────────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, height: 800, borderRadius: '50%', background: `radial-gradient(circle, ${colors.accent.primary}14 0%, transparent 65%)`, pointerEvents: 'none' }} />
-        <div style={{ maxWidth: CONTENT_NARROW, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 24 }}>Your transformation starts here</div>
-          <h2 style={{ fontSize: 'clamp(40px, 5vw, 72px)', fontWeight: 300, letterSpacing: '-2px', color: colors.text.primary, lineHeight: 1.1, margin: '0 0 24px' }}>
-            The person you want to be<br />
-            <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>is waiting for your voice.</span>
-          </h2>
-          <p style={{ fontSize: 19, color: colors.text.secondary, lineHeight: 1.65, margin: '0 0 52px', fontWeight: 300 }}>Join thousands already using their own voice to rewire their subconscious. Your first content is on us.</p>
-          <Link href="/signup" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="lg" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, fontSize: '20px', padding: '20px 52px', boxShadow: `0 16px 64px ${colors.accent.primary}55` }}>
-              Start Free Today <ArrowRight size={22} color={colors.text.onDark} />
-            </Button>
-          </Link>
-          <p style={{ fontSize: 13, color: colors.text.tertiary, marginTop: 24 }}>No credit card required · Practice is always free · Cancel anytime</p>
+        <div style={{ maxWidth: CONTENT_MEDIUM, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <WaitlistCTA
+            variant="banner"
+            headline="The person you want to be is waiting for your voice."
+            subtext="Join the waitlist and be first to access waQup when it launches. No credit card required."
+          />
         </div>
       </section>
-
-      {/* ── Footer ────────────────────────────────────────── */}
-      <footer style={{ padding: `40px ${SECTION_PX}`, borderTop: `1px solid ${colors.glass.border}` }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
-          <span style={{ fontSize: 22, fontWeight: 300, color: colors.text.primary, letterSpacing: '-0.5px' }}>wa<span style={{ color: colors.accent.tertiary }}>Q</span>up</span>
-          <div style={{ display: 'flex', gap: 40 }}>
-            {[['Pricing', '/pricing'], ['How It Works', '/how-it-works'], ['Sign Up', '/signup']].map(([label, href]) => (
-              <Link key={label} href={href} style={{ textDecoration: 'none', fontSize: 14, color: colors.text.tertiary }}>{label}</Link>
-            ))}
-          </div>
-          <Typography variant="caption" style={{ color: colors.text.tertiary }}>© 2026 waQup</Typography>
-        </div>
-      </footer>
 
       {/* ── Global Styles ─────────────────────────────────── */}
       <style dangerouslySetInnerHTML={{ __html: `
@@ -649,6 +655,9 @@ export default function LaunchPage() {
         @keyframes wqProgressFill { 0%{width:30%} 100%{width:88%} }
         @keyframes wqSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes wqWaveBar { 0%{transform:scaleY(0.55)} 100%{transform:scaleY(1)} }
+
+        html { scroll-snap-type: y proximity; }
+        section { scroll-snap-align: start; scroll-snap-stop: normal; }
 
         .wq-hero { flex-direction: row; }
         .wq-hero-mockup { display: flex; justify-content: center; flex-shrink: 0; }

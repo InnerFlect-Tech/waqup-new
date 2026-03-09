@@ -22,6 +22,7 @@ import {
   ThemeSelector,
   CreateProgressBar,
   VoiceOrb,
+  SuperAdminGate,
 } from '@/components';
 import { spacing, typography, borderRadius } from '@/theme';
 import { CONTENT_MAX_WIDTH } from '@/theme';
@@ -41,6 +42,7 @@ export default function ShowcasePage() {
   const frequencyDataRef = useRef<Uint8Array | null>(null);
 
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium" bare>
       <ThemeSelector />
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
@@ -480,6 +482,7 @@ export default function ShowcasePage() {
         </div>
       </div>
     </PageShell>
+    </SuperAdminGate>
   );
 }
 

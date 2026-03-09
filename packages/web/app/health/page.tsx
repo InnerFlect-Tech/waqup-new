@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { Typography, Badge } from '@/components';
+import { Typography, Badge, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
@@ -242,6 +242,7 @@ export default function HealthPage() {
   const allOk = okCount === totalCount;
 
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium" bare>
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
 
@@ -406,5 +407,6 @@ export default function HealthPage() {
         </div>
       </div>
     </PageShell>
+    </SuperAdminGate>
   );
 }

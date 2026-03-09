@@ -6,12 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Typography, Button, Input, Loading } from '@/components';
 import { useTheme } from '@/theme';
-import { Logo, PageShell, GlassCard, TestLoginButton } from '@/components';
+import { Logo, PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { AUTH_CARD_MAX_WIDTH } from '@/theme';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
-import { applyOverrideLogin } from '@/lib/auth-override';
 import { supabase } from '@/lib/supabase';
 import { normalizeAuthError } from '@/lib/auth-errors';
 import Link from 'next/link';
@@ -150,24 +149,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Try override login (env-configured admin/dev credentials)
-    try {
-      const res = await fetch('/api/auth/override', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      });
-      const json = res.ok ? await res.json() : null;
-      if (json?.ok) {
-        const overrideUser = applyOverrideLogin(data.email);
-        useAuthStore.getState().setUser(overrideUser);
-        useAuthStore.getState().setError(null);
-        router.push(nextUrl);
-        return;
-      }
-    } catch {
-      // fall through to existing error
-    }
     // Error is already set in the store from Supabase login
   };
 
@@ -379,11 +360,6 @@ export default function LoginPage() {
               </div>
             </form>
         </GlassCard>
-
-        {/* Test login (no DB) - only when NEXT_PUBLIC_ENABLE_TEST_LOGIN=true */}
-        <div style={{ textAlign: 'center', marginTop: spacing.lg }}>
-          <TestLoginButton />
-        </div>
 
         {/* Back to Home */}
         <div style={{ textAlign: 'center', marginTop: spacing.xl }}>

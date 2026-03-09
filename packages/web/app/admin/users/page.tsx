@@ -2,14 +2,11 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PageShell } from '@/components';
+import { PageShell, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { QCoin } from '@/components';
 import { ArrowUpRight, ArrowDownLeft, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react';
-
-const ADMIN_PASS_KEY = 'users-admin-unlocked';
-const ADMIN_PASS = process.env.NEXT_PUBLIC_ORACLE_ADMIN_PASS ?? 'waQup-admin';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -295,39 +292,16 @@ export default function AdminUsersPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
 
-  const [unlocked, setUnlocked] = useState(false);
-  const [passInput, setPassInput] = useState('');
-  const [passError, setPassError] = useState(false);
-
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
-  // Check session storage on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem(ADMIN_PASS_KEY) === '1') {
-      setUnlocked(true);
-    }
-  }, []);
-
-  const handleUnlock = () => {
-    if (passInput === ADMIN_PASS) {
-      sessionStorage.setItem(ADMIN_PASS_KEY, '1');
-      setUnlocked(true);
-      setPassError(false);
-    } else {
-      setPassError(true);
-    }
-  };
-
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     setFetchError(null);
     try {
-      const res = await fetch('/api/admin/users', {
-        headers: { 'X-Admin-Pass': ADMIN_PASS },
-      });
+      const res = await fetch('/api/admin/users');
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to fetch users');
@@ -342,10 +316,8 @@ export default function AdminUsersPage() {
   }, []);
 
   useEffect(() => {
-    if (unlocked) {
-      void fetchUsers();
-    }
-  }, [unlocked, fetchUsers]);
+    void fetchUsers();
+  }, [fetchUsers]);
 
   const filteredUsers = users.filter(
     (u) =>
@@ -356,85 +328,21 @@ export default function AdminUsersPage() {
   const totalBalance = users.reduce((sum, u) => sum + u.credit_balance, 0);
   const activeSubscriptions = users.filter((u) => u.subscription?.status === 'active' || u.subscription?.status === 'trialing').length;
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: `${spacing.md}px ${spacing.lg}px`,
-    borderRadius: borderRadius.lg,
-    background: colors.glass.medium,
-    border: `1px solid ${passError ? colors.error : colors.glass.border}`,
-    color: colors.text.primary,
-    fontSize: 16,
-    outline: 'none',
-    boxSizing: 'border-box',
-  };
-
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium">
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: `${spacing.xxl}px ${spacing.xl}px` }}>
         {/* Header */}
         <div style={{ marginBottom: spacing.xl }}>
           <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: colors.text.secondary, marginBottom: spacing.xs }}>
-            Admin
+            Superadmin
           </div>
           <h1 style={{ fontSize: 28, fontWeight: 200, color: colors.text.primary, margin: 0, letterSpacing: '-0.02em' }}>
             Users
           </h1>
         </div>
 
-        {/* Passphrase gate */}
         <AnimatePresence mode="wait">
-          {!unlocked ? (
-            <motion.div
-              key="gate"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              style={{
-                maxWidth: 400,
-                padding: spacing.xxl,
-                borderRadius: borderRadius.xl,
-                background: colors.glass.light,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: `1px solid ${colors.glass.border}`,
-              }}
-            >
-              <div style={{ fontSize: 15, color: colors.text.primary, marginBottom: spacing.lg }}>
-                Enter admin passphrase
-              </div>
-              <input
-                type="password"
-                value={passInput}
-                onChange={(e) => { setPassInput(e.target.value); setPassError(false); }}
-                onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
-                placeholder="Passphrase"
-                style={inputStyle}
-                autoFocus
-              />
-              {passError && (
-                <div style={{ fontSize: 12, color: colors.error, marginTop: spacing.sm }}>
-                  Incorrect passphrase
-                </div>
-              )}
-              <button
-                onClick={handleUnlock}
-                style={{
-                  marginTop: spacing.lg,
-                  width: '100%',
-                  padding: `${spacing.md}px`,
-                  borderRadius: borderRadius.lg,
-                  background: colors.gradients.primary,
-                  border: 'none',
-                  color: '#fff',
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Unlock
-              </button>
-            </motion.div>
-          ) : (
             <motion.div
               key="dashboard"
               initial={{ opacity: 0 }}
@@ -593,7 +501,6 @@ export default function AdminUsersPage() {
                 {filteredUsers.length} of {users.length} users
               </div>
             </motion.div>
-          )}
         </AnimatePresence>
       </div>
 
@@ -601,5 +508,6 @@ export default function AdminUsersPage() {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
     </PageShell>
+    </SuperAdminGate>
   );
 }

@@ -13,14 +13,14 @@ import {
   LogOut,
   Share2,
   Mic,
-  FileText,
   CreditCard,
   HelpCircle,
+  Shield,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb } from '@/components';
-import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, HEADER_PADDING_X, HEADER_PADDING_X_SM } from '@/theme';
+import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, PAGE_PADDING } from '@/theme';
 import { useAuthStore } from '@/stores';
-import { useCreditBalance, useAvatarColors } from '@/hooks';
+import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
 
 interface NavItem {
   name: string;
@@ -93,17 +93,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { balance: creditsBalance } = useCreditBalance();
   const { colors: avatarColors } = useAvatarColors();
+  const { isSuperAdmin } = useSuperAdmin();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const ENABLE_TEST_LOGIN = process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true';
-
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
-    ...(ENABLE_TEST_LOGIN
-      ? [{ name: 'Pages', path: '/pages', icon: <FileText className="w-5 h-5" /> }]
+    ...(isSuperAdmin
+      ? [{ name: 'Admin', path: '/admin', icon: <Shield className="w-5 h-5" /> }]
       : []),
   ];
 
@@ -133,7 +132,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const handleSignOut = async () => {
     try {
       await logout();
-      router.push('/');
+      router.push('/login');
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -155,16 +154,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             ...(isScrolled
               ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
-            paddingLeft: HEADER_PADDING_X,
-            paddingRight: HEADER_PADDING_X,
           }}
         >
           <div
             className="mx-auto"
             style={{
               maxWidth: MAX_WIDTH_7XL,
-              paddingLeft: HEADER_PADDING_X_SM,
-              paddingRight: HEADER_PADDING_X_SM,
+              paddingLeft: PAGE_PADDING,
+              paddingRight: PAGE_PADDING,
             }}
           >
             <div
@@ -202,7 +199,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}
+                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginRight: '-16px' }}
                   >
                     <AvatarOrb colors={avatarColors} size="sm" />
                     <span
@@ -372,7 +369,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2"
+                  className="p-2 -mr-2"
                 >
                   {isMobileMenuOpen ? (
                     <X className="w-6 h-6" style={{ color: colors.text.primary }} />
@@ -528,8 +525,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
-            paddingLeft: HEADER_PADDING_X,
-            paddingRight: HEADER_PADDING_X,
             ...(isScrolled
               ? { background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
@@ -539,8 +534,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             className="mx-auto"
             style={{
               maxWidth: MAX_WIDTH_7XL,
-              paddingLeft: HEADER_PADDING_X_SM,
-              paddingRight: HEADER_PADDING_X_SM,
+              paddingLeft: PAGE_PADDING,
+              paddingRight: PAGE_PADDING,
             }}
         >
           <div
@@ -577,31 +572,17 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push('/funnels')}
-                style={{
-                  color: pathname === '/funnels' ? colors.text.primary : colors.text.secondary,
-                  background: pathname === '/funnels' ? colors.glass.border : undefined,
-                }}
+                onClick={() => router.push('/login')}
+                style={{ color: colors.text.secondary }}
               >
-                Funnels
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push('/investors')}
-                style={{
-                  color: pathname === '/investors' ? colors.text.primary : colors.text.secondary,
-                  background: pathname === '/investors' ? colors.glass.border : undefined,
-                }}
-              >
-                Investors
+                Sign In
               </Button>
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => router.push('/login')}
+                onClick={() => router.push('/waitlist')}
               >
-                Sign In
+                Join Waitlist
               </Button>
             </div>
 
@@ -610,7 +591,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2"
+                className="p-2 -mr-2"
               >
                 {isMobileMenuOpen ? (
                   <X className="w-6 h-6" style={{ color: colors.text.primary }} />
@@ -650,31 +631,161 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </Button>
             <Button
               variant="ghost"
-              onClick={() => router.push('/funnels')}
+              onClick={() => router.push('/login')}
               className="w-full justify-start"
               style={{ color: colors.text.secondary }}
             >
-              Funnels
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/investors')}
-              className="w-full justify-start"
-              style={{ color: colors.text.secondary }}
-            >
-              Investors
+              Sign In
             </Button>
             <Button
               variant="primary"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/waitlist')}
               className="w-full justify-start"
             >
-              Sign In
+              Join Waitlist
             </Button>
           </div>
         </motion.div>
       </motion.nav>
       <main>{children}</main>
+
+      {/* ── Public Footer ──────────────────────────────────────── */}
+      <footer
+        style={{
+          borderTop: `1px solid ${colors.glass.border}`,
+          background: 'rgba(0,0,0,0.4)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: MAX_WIDTH_7XL,
+            margin: '0 auto',
+            padding: `64px ${PAGE_PADDING} ${PAGE_PADDING}`,
+          }}
+        >
+          {/* Top row: brand + columns */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
+              gap: 48,
+              marginBottom: 48,
+            }}
+            className="footer-grid"
+          >
+            {/* Brand */}
+            <div>
+              <div style={{ fontSize: 24, fontWeight: 300, color: colors.text.primary, letterSpacing: '-0.5px', marginBottom: 12 }}>
+                wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
+              </div>
+              <p style={{ fontSize: 14, color: colors.text.tertiary, lineHeight: 1.65, maxWidth: 260, margin: '0 0 20px' }}>
+                Your voice. Your transformation. Scientifically designed to rewire the subconscious patterns that shape who you are.
+              </p>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <a
+                  href="/waitlist"
+                  style={{
+                    display: 'inline-block',
+                    padding: '8px 18px',
+                    borderRadius: 20,
+                    background: colors.gradients.primary,
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Join Waitlist
+                </a>
+              </div>
+            </div>
+
+            {/* Product */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Product</div>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {[
+                  ['How It Works', '/how-it-works'],
+                  ['Pricing', '/pricing'],
+                  ['Marketplace', '/marketplace'],
+                  ['Buy Credits', '/get-qs'],
+                ].map(([label, href]) => (
+                  <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.secondary; }}
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* Company */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Company</div>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {[
+                  ['Our Story', '/explanation'],
+                  ['Investors', '/investors'],
+                  ['Founding Members', '/join'],
+                ].map(([label, href]) => (
+                  <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.secondary; }}
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Legal</div>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {[
+                  ['Privacy Policy', '/privacy'],
+                  ['Terms of Service', '/terms'],
+                ].map(([label, href]) => (
+                  <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.secondary; }}
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div
+            style={{
+              paddingTop: 24,
+              borderTop: `1px solid ${colors.glass.border}`,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 12,
+            }}
+          >
+            <span style={{ fontSize: 13, color: colors.text.tertiary }}>© 2026 waQup · All rights reserved</span>
+            <span style={{ fontSize: 13, color: colors.text.tertiary }}>Practice is always free.</span>
+          </div>
+        </div>
+
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+          }
+          @media (max-width: 480px) {
+            .footer-grid { grid-template-columns: 1fr !important; }
+          }
+        ` }} />
+      </footer>
     </>
   );
 }

@@ -2,15 +2,13 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PageShell } from '@/components';
+import { PageShell, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 
 // ── Storage keys ──────────────────────────────────────────────────────────────
 const ORACLE_KEY = 'oracle-config';
 const EL_KEY     = 'elevenlabs-config';
-const LOCK_KEY   = 'oracle-admin-unlocked';
-const ADMIN_PASS = process.env.NEXT_PUBLIC_ORACLE_ADMIN_PASS ?? 'waQup-admin';
 
 // ── Default values ────────────────────────────────────────────────────────────
 const DEFAULT_SYSTEM_PROMPT = `You are a calm, wise inner presence — always available, always listening. You help people articulate what they are seeking, understand themselves more deeply, and when the moment feels right, you offer to help them create a personal affirmation, meditation, or ritual.
@@ -243,9 +241,6 @@ export default function OracleAdminPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
 
-  const [unlocked, setUnlocked]       = useState(false);
-  const [passInput, setPassInput]     = useState('');
-  const [passError, setPassError]     = useState(false);
   const [oConfig, setOConfig]         = useState<OracleConfig>({ ...ORACLE_DEFAULTS });
   const [elConfig, setElConfig]       = useState<ElevenLabsConfig>({ ...EL_DEFAULTS });
   const [saved, setSaved]             = useState(false);
@@ -270,18 +265,14 @@ export default function OracleAdminPage() {
 
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Check session unlock
+  // Load config from localStorage on mount
   useEffect(() => {
-    if (sessionStorage.getItem(LOCK_KEY) === '1') {
-      setUnlocked(true);
-      setOConfig(load(ORACLE_KEY, ORACLE_DEFAULTS));
-      setElConfig(load(EL_KEY, EL_DEFAULTS));
-    }
+    setOConfig(load(ORACLE_KEY, ORACLE_DEFAULTS));
+    setElConfig(load(EL_KEY, EL_DEFAULTS));
   }, []);
 
-  // Fetch voices once unlocked
+  // Fetch ElevenLabs voices on mount
   useEffect(() => {
-    if (!unlocked) return;
     setVoicesLoading(true);
     fetch('/api/admin/elevenlabs/voices')
       .then((r) => r.json() as Promise<{ voices?: ElevenLabsVoice[]; error?: string }>)
@@ -291,20 +282,7 @@ export default function OracleAdminPage() {
       })
       .catch(() => setVoicesError('Network error loading voices'))
       .finally(() => setVoicesLoading(false));
-  }, [unlocked]);
-
-  const unlock = useCallback(() => {
-    if (passInput === ADMIN_PASS) {
-      sessionStorage.setItem(LOCK_KEY, '1');
-      setUnlocked(true);
-      setOConfig(load(ORACLE_KEY, ORACLE_DEFAULTS));
-      setElConfig(load(EL_KEY, EL_DEFAULTS));
-      setPassError(false);
-    } else {
-      setPassError(true);
-      setPassInput('');
-    }
-  }, [passInput]);
+  }, []);
 
   const handleSave = useCallback(() => {
     save(ORACLE_KEY, oConfig);
@@ -450,40 +428,6 @@ export default function OracleAdminPage() {
     padding: '6px 14px', cursor: 'pointer', transition: 'all 0.2s',
   });
 
-  // ── Passphrase gate ───────────────────────────────────────────────────────
-  if (!unlocked) {
-    return (
-      <PageShell intensity="strong" centered>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: spacing.xl, alignItems: 'center' }}>
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'rgba(167,139,250,0.6)', fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 12px' }}>Oracle Admin</p>
-            <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 300, margin: 0, letterSpacing: '0.04em' }}>Access Required</h1>
-          </div>
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-            <input type="password" placeholder="Passphrase" value={passInput}
-              onChange={(e) => { setPassInput(e.target.value); setPassError(false); }}
-              onKeyDown={(e) => { if (e.key === 'Enter') unlock(); }}
-              autoFocus
-              style={{ ...inputBase, textAlign: 'center', letterSpacing: '0.1em', ...(passError ? { borderColor: '#f87171' } : {}) }} />
-            <AnimatePresence>
-              {passError && (
-                <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  style={{ color: '#f87171', fontSize: 12, textAlign: 'center', margin: 0 }}>
-                  Incorrect passphrase
-                </motion.p>
-              )}
-            </AnimatePresence>
-            <button type="button" onClick={unlock}
-              style={{ background: 'rgba(124,58,237,0.6)', border: '1px solid rgba(167,139,250,0.3)', borderRadius: borderRadius.md, color: '#fff', fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', padding: `${spacing.md} ${spacing.xl}`, cursor: 'pointer' }}>
-              Enter
-            </button>
-          </div>
-        </motion.div>
-      </PageShell>
-    );
-  }
-
   // ── Voice select helper ───────────────────────────────────────────────────
   const VoiceSelect = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
     <div>
@@ -502,6 +446,7 @@ export default function OracleAdminPage() {
 
   // ── Admin dashboard ───────────────────────────────────────────────────────
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}
         style={{ maxWidth: 720, margin: '0 auto', paddingBottom: spacing.xxl, display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
@@ -746,5 +691,6 @@ export default function OracleAdminPage() {
         </p>
       </motion.div>
     </PageShell>
+    </SuperAdminGate>
   );
 }

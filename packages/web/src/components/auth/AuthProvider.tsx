@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores';
+import { useSuperAdmin } from '@/hooks';
 import {
   getOverrideUserToRestore,
   setTestSessionCookie,
@@ -10,7 +11,8 @@ import {
 
 /**
  * Auth Provider Component
- * Initializes auth state and handles protected route redirects
+ * Initializes auth state, handles protected route redirects, and gates
+ * access to the app based on profiles.access_granted.
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isInitialized, initializeAuth } = useAuthStore();
@@ -18,19 +20,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isReady, setIsReady] = useState(false);
 
+  // Fetch profile-level access from DB (role + access_granted).
+  // Only fires when user changes; returns immediately (isLoading=false) when no user.
+  const { hasAccess, isLoading: isProfileLoading } = useSuperAdmin();
+
   useEffect(() => {
-    // If an override user is stored in localStorage, restore it immediately —
-    // no need to wait for Supabase which may not be configured in dev.
     const overrideUser = getOverrideUserToRestore();
     if (overrideUser) {
-      setTestSessionCookie(); // Ensure cookie exists for middleware (e.g. after cookie expiry)
+      setTestSessionCookie();
       useAuthStore.getState().setUser(overrideUser);
       useAuthStore.getState().setInitialized(true);
       queueMicrotask(() => setIsReady(true));
       return;
     }
 
-    // No override user — run full Supabase auth initialization.
     let unsubscribe: (() => void) | null = null;
     initializeAuth()
       .then((unsub) => {
@@ -50,8 +53,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [initializeAuth]);
 
+  const isProtectedRoute =
+    pathname.startsWith('/home') ||
+    pathname.startsWith('/library') ||
+    pathname.startsWith('/create') ||
+    pathname.startsWith('/profile') ||
+    pathname.startsWith('/sanctuary') ||
+    pathname.startsWith('/speak') ||
+    pathname.startsWith('/marketplace');
+
   useEffect(() => {
-    // Handle protected route redirects
     if (!isReady || !isInitialized) return;
 
     const publicRoutes = [
@@ -69,31 +80,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/pages',
       '/sitemap-view',
       '/system',
+      '/coming-soon',
+      '/waitlist',
     ];
     const isPublicRoute =
       publicRoutes.includes(pathname) ||
       pathname.startsWith('/showcase') ||
       pathname.startsWith('/onboarding') ||
       pathname.startsWith('/explanation');
-    const isProtectedRoute =
-      pathname.startsWith('/home') ||
-      pathname.startsWith('/library') ||
-      pathname.startsWith('/create') ||
-      pathname.startsWith('/profile') ||
-      pathname.startsWith('/sanctuary') ||
-      pathname.startsWith('/speak') ||
-      pathname.startsWith('/marketplace');
 
     if (isProtectedRoute && !user) {
       router.push(`/login?next=${encodeURIComponent(pathname)}`);
-    } else if (!isPublicRoute && !isProtectedRoute && pathname !== '/') {
+      return;
+    }
+
+    // Authenticated but profile not yet loaded — wait before access check.
+    if (isProtectedRoute && user && isProfileLoading) return;
+
+    // Authenticated but no access granted — send to coming soon.
+    if (isProtectedRoute && user && !hasAccess) {
+      router.replace('/coming-soon');
+      return;
+    }
+
+    if (!isPublicRoute && !isProtectedRoute && pathname !== '/') {
       if (!user) {
         router.push(`/login?next=${encodeURIComponent(pathname)}`);
       }
     }
-  }, [user, isReady, isInitialized, pathname, router]);
+  }, [user, isReady, isInitialized, pathname, router, isProtectedRoute, hasAccess, isProfileLoading]);
 
-  if (!isReady || !isInitialized) {
+  const showSpinner =
+    !isReady ||
+    !isInitialized ||
+    (isProtectedRoute && !user) ||
+    (isProtectedRoute && user && isProfileLoading);
+
+  if (showSpinner) {
     return (
       <div
         style={{

@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button, TestLoginButton, AvatarOrb, AVATAR_SWATCHES } from '@/components';
+import { Typography, Button, AvatarOrb, AVATAR_SWATCHES } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { clearCreateInitSeen, useAvatarColors } from '@/hooks';
-import { clearStoredOverride } from '@/lib/auth-override';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
@@ -281,11 +280,6 @@ export default function SettingsPage() {
           <Typography variant="body" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
             Show create-flow tips again on your next visit to any create flow. Use this to test the first-time experience.
           </Typography>
-          {user?.id?.startsWith?.('override-') && (
-            <div style={{ marginBottom: spacing.md }}>
-              <TestLoginButton />
-            </div>
-          )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
             <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
               <Button
@@ -332,7 +326,6 @@ export default function SettingsPage() {
             fullWidth
             style={{ borderColor: colors.error, color: colors.error }}
             onClick={async () => {
-              clearStoredOverride();
               await useAuthStore.getState().logout();
               router.push('/login');
             }}

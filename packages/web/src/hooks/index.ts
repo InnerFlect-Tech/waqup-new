@@ -6,3 +6,4 @@ export * from './useCreditBalance';
 export * from './useReminders';
 export * from './useWebAudioPlayer';
 export * from './useAvatarColors';
+export * from './useSuperAdmin';

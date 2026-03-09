@@ -2,8 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const DEV_ONLY_PATHS = ['/showcase', '/pages', '/sitemap-view', '/system']
-
+// Paths that require a valid Supabase session.
+// Superadmin-only paths are included here so that unauthenticated users are
+// redirected to /login before the page's SuperAdminGate component runs.
 const PROTECTED_PREFIXES = [
   '/home',
   '/library',
@@ -13,6 +14,12 @@ const PROTECTED_PREFIXES = [
   '/marketplace',
   '/sanctuary',
   '/onboarding',
+  '/admin',
+  '/system',
+  '/health',
+  '/showcase',
+  '/pages',
+  '/sitemap-view',
 ]
 
 const PUBLIC_PREFIXES = [
@@ -46,23 +53,8 @@ function isPublic(pathname: string): boolean {
   )
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-
-  // Block dev-only utility pages in production (unless test session)
-  if (process.env.NODE_ENV === 'production') {
-    const isDevPath = DEV_ONLY_PATHS.some(
-      (p) => pathname === p || pathname.startsWith(p + '/')
-    )
-    if (isDevPath) {
-      const testLoginEnabled =
-        process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true'
-      const testSessionCookie = request.cookies.get('waqup_test_session')?.value
-      if (!(testLoginEnabled && testSessionCookie === '1')) {
-        return NextResponse.redirect(new URL('/', request.url))
-      }
-    }
-  }
 
   // Pass through public routes and anything not in the protected list
   if (isPublic(pathname) || !isProtected(pathname)) {
@@ -77,14 +69,6 @@ export async function proxy(request: NextRequest) {
   // If Supabase is not configured (local dev without .env), pass through —
   // AuthProvider will handle client-side redirects
   if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.next()
-  }
-
-  // Test login: when enabled, allow access if test session cookie is present.
-  // Cookie is set client-side on test login; AuthProvider restores from localStorage.
-  const testLoginEnabled = process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true'
-  const testSessionCookie = request.cookies.get('waqup_test_session')?.value
-  if (testLoginEnabled && testSessionCookie === '1') {
     return NextResponse.next()
   }
 

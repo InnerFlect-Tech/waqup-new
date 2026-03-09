@@ -1,6 +1,7 @@
 -- Seed for REMOTE Supabase (run in SQL Editor at app.supabase.com)
--- Creates test user dev@local.test / password123 and example library content
--- After running: sign in at /login with dev@local.test / password123
+-- Creates a superadmin dev user (dev@local.test / password123) with example library content.
+-- This user has role = 'superadmin' for full platform access during development.
+-- IMPORTANT: Do not run this on a production database with real users.
 
 create extension if not exists "pgcrypto";
 
@@ -31,8 +32,8 @@ begin
   )
   on conflict (id) do nothing;
 
-  insert into public.profiles (id) values (v_user_id)
-  on conflict (id) do nothing;
+  insert into public.profiles (id, role) values (v_user_id, 'superadmin')
+  on conflict (id) do update set role = 'superadmin';
 
   -- Seed 1000 Qs for the dev user (clear any existing balance first)
   delete from public.credit_transactions where user_id = v_user_id;

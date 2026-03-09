@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell } from '@/components';
+import { PageShell, WaitlistCTA } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { CONTENT_MAX_WIDTH, CONTENT_NARROW } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  Brain,
   Mic,
   Sparkles,
   MessageCircle,
@@ -203,12 +202,12 @@ function AppMockup({ colors }: { colors: ThemeColors }) {
 // ─── FAQ Accordion ────────────────────────────────────────────────────────────
 
 const faqs = [
-  { q: 'How is waQup different from Headspace or Calm?', a: 'Headspace and Calm give you generic content made by strangers. waQup creates personalized content based on YOUR specific goals, challenges, and context — and voices it in your own cloned voice. Nothing is generic. Everything is yours.' },
+  { q: 'How is waQup different from Headspace or Calm?', a: 'Headspace and Calm give you generic content made by strangers. waQup creates personalized content based on YOUR specific goals, challenges, and context, voiced in your own cloned voice. Nothing is generic. Everything is yours.' },
   { q: 'Do I need to record my own voice?', a: 'No. Voice cloning is optional. You can choose from our curated library of professional voices, or clone your own with just a 1-minute recording. Most people find hearing their own voice the most powerful, but both options work beautifully.' },
-  { q: 'How do credits (Qs) work?', a: 'Qs are the credits used to create new content. You earn Qs when you sign up and can purchase more. Importantly — listening to and practicing your existing content is always 100% free. Qs are only spent during the creation process.' },
+  { q: 'How do credits (Qs) work?', a: 'Qs are the credits used to create new content. You earn Qs when you sign up and can purchase more. One thing worth knowing: listening to and practicing your existing content is always 100% free. Qs are only spent during creation.' },
   { q: 'Is practice really free forever?', a: 'Yes. Once your affirmations, meditations, or rituals are created, you can replay them as many times as you want, forever, for free. We believe daily practice should never be gated behind a paywall.' },
   { q: 'What are the three content types?', a: 'Affirmations are short 2–5 min cognitive re-patterning statements for morning routines. Guided Meditations are 10–30 min AI-scripted sessions for state induction. Rituals are 20–60 min multi-part practices for the deepest identity transformation.' },
-  { q: 'What is the science behind this?', a: 'waQup is built on neuroplasticity research — the brain\'s ability to rewire itself through repeated exposure. Hearing positive self-statements in your own voice activates deeper neural pathways than reading or hearing a stranger\'s voice.' },
+  { q: 'What is the science behind this?', a: 'waQup is built on neuroplasticity research: the brain\'s ability to rewire itself through repeated exposure. Hearing positive self-statements in your own voice activates deeper neural pathways than reading or hearing a stranger\'s voice.' },
 ];
 
 function FAQItem({ q, a, colors }: { q: string; a: string; colors: ThemeColors }) {
@@ -232,8 +231,7 @@ function FAQItem({ q, a, colors }: { q: string; a: string; colors: ThemeColors }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const SECTION_PY = '120px';
-const SECTION_PX = '40px';
+const SECTION_PY = '72px';
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -245,7 +243,7 @@ export default function HowItWorksPage() {
     <PageShell intensity="high" bare>
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="hiw-hero" style={{ padding: `0 ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
+      <section className="hiw-hero" style={{ padding: `0 ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
         <div className="hiw-hero-copy" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 32 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: colors.success, animation: 'wqPulse 2s ease-in-out infinite' }} />
@@ -259,7 +257,7 @@ export default function HowItWorksPage() {
           </h1>
 
           <p style={{ fontSize: 'clamp(17px, 1.8vw, 21px)', color: colors.text.secondary, lineHeight: 1.65, maxWidth: 500, margin: '0 0 48px', fontWeight: 300 }}>
-            Three steps. Your voice. Scientifically designed to rewire the subconscious patterns that shape who you are — and who you&apos;re becoming.
+            Three steps. Your voice. Scientifically designed to rewire the subconscious patterns that shape who you are, and who you&apos;re becoming.
           </p>
 
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 36 }}>
@@ -296,7 +294,7 @@ export default function HowItWorksPage() {
 
       {/* ── Step divider ─────────────────────────────────── */}
       <div style={{ borderTop: `1px solid ${colors.glass.border}`, borderBottom: `1px solid ${colors.glass.border}`, background: 'rgba(255,255,255,0.02)' }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `48px ${SECTION_PX}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
+        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `48px ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
           {[
             { n: '01', label: 'Share your goals', icon: MessageCircle },
             { n: '02', label: 'AI creates your content', icon: Sparkles },
@@ -312,8 +310,8 @@ export default function HowItWorksPage() {
       </div>
 
       {/* ── 3-Step Deep Dive ──────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 80 }}>
+      <section style={{ position: 'relative', zIndex: 10, padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>How It Works</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Three steps to a new you</h2>
           <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>No forms. No scripts. No production skills. Just a conversation that becomes your daily practice.</p>
@@ -326,7 +324,7 @@ export default function HowItWorksPage() {
               icon: MessageCircle,
               title: 'Tell the AI your story',
               subtitle: 'A coach who actually listens',
-              desc: 'You don\'t fill out a form. You have a conversation. A conversational AI guides you through understanding your specific challenges, goals, and emotional context — the things a template could never capture.',
+              desc: 'You don\'t fill out a form. You have a conversation. A conversational AI guides you through your specific challenges, goals, and emotional context. The things a template could never capture.',
               detail: 'The AI asks the right follow-up questions. It adapts to what you share. By the end of the conversation, it has everything it needs to create something deeply personal.',
               color: colors.accent.primary,
               tags: ['Conversational AI', 'No templates', 'Fully personalized'],
@@ -336,8 +334,8 @@ export default function HowItWorksPage() {
               icon: Sparkles,
               title: 'AI scripts, voices, and delivers',
               subtitle: 'Your story. Your voice.',
-              desc: 'Your practice is scripted around your exact situation — not generic wisdom. Then it\'s voiced using your cloned voice (from a 60-second recording) or a professional voice you choose.',
-              detail: 'The audio is mixed, mastered, and ready for daily practice. Everything happens automatically — no recording studios, no editing, no technical skills required.',
+              desc: 'Your practice is scripted around your exact situation, not generic wisdom. Then it\'s voiced using your cloned voice (from a 60-second recording) or a professional voice you choose.',
+              detail: 'The audio is mixed, mastered, and ready for daily practice. Everything happens automatically: no recording studios, no editing, no technical skills required.',
               color: colors.accent.secondary,
               tags: ['Voice cloning', 'AI scripted', 'Ready in minutes'],
             },
@@ -346,7 +344,7 @@ export default function HowItWorksPage() {
               icon: Headphones,
               title: 'Practice daily. Grow forever.',
               subtitle: 'Voice repetition rewires the brain',
-              desc: 'Your content lives in your personal library. Listen every morning, or whenever you need it. Research shows consistent voice-based repetition creates measurable neural change within 21–66 days.',
+              desc: 'Each morning, press play and hear your own voice guide you. Research shows consistent self-voice repetition creates measurable neural change within 21–66 days.',
               detail: 'Practice is always free. No subscriptions, no replay limits, no pressure. Just you and your voice, building the identity you\'ve chosen — one morning at a time.',
               color: colors.accent.tertiary,
               tags: ['Free forever', 'Track progress', '21–66 day results'],
@@ -356,16 +354,23 @@ export default function HowItWorksPage() {
               {/* Left — visual side (alternates) */}
               {idx % 2 === 0 ? (
                 <>
-                  <div style={{ padding: '64px 56px', background: `linear-gradient(135deg, ${color}12, ${color}04)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', position: 'relative', overflow: 'hidden' }}>
-                    <div style={{ position: 'absolute', top: -60, right: -60, width: 280, height: 280, borderRadius: '50%', background: `radial-gradient(circle, ${color}18, transparent 70%)`, pointerEvents: 'none' }} />
-                    <div style={{ fontSize: 120, fontWeight: 300, letterSpacing: '-4px', color: `${color}10`, lineHeight: 1, userSelect: 'none', marginBottom: 24 }}>{n}</div>
-                    <div style={{ width: 72, height: 72, borderRadius: 20, background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: `0 0 40px ${color}20` }}>
-                      <Icon size={34} color={color} />
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                      {tags.map((tag) => (
-                        <span key={tag} style={{ padding: '5px 12px', borderRadius: borderRadius.full, background: `${color}12`, border: `1px solid ${color}25`, fontSize: 11, color, fontWeight: 500 }}>{tag}</span>
-                      ))}
+                  {/* Photo panel */}
+                  <div style={{ position: 'relative', minHeight: 420, overflow: 'hidden' }}>
+                    <Image
+                      src={`/images/${['feature-create', 'feature-sanctuary', 'feature-listen'][idx]}.png`}
+                      alt={title}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                    />
+                    <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, rgba(6,2,20,0.05), rgba(6,2,20,0.3)), linear-gradient(to top, rgba(6,2,20,0.5) 0%, transparent 60%)` }} />
+                    {/* Number + tags overlay */}
+                    <div style={{ position: 'absolute', bottom: 32, left: 36, right: 36, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                      <div style={{ fontSize: 72, fontWeight: 300, letterSpacing: '-3px', color: 'rgba(255,255,255,0.18)', lineHeight: 1 }}>{n}</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {tags.map((tag) => (
+                          <span key={tag} style={{ padding: '5px 12px', borderRadius: borderRadius.full, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: `1px solid ${color}40`, fontSize: 11, color, fontWeight: 500 }}>{tag}</span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                   <div style={{ padding: '64px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -383,16 +388,23 @@ export default function HowItWorksPage() {
                     <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 20px' }}>{desc}</p>
                     <p style={{ fontSize: 15, color: colors.text.tertiary, lineHeight: 1.7, margin: 0 }}>{detail}</p>
                   </div>
-                  <div style={{ padding: '64px 56px', background: `linear-gradient(135deg, ${color}12, ${color}04)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', position: 'relative', overflow: 'hidden' }}>
-                    <div style={{ position: 'absolute', bottom: -60, left: -60, width: 280, height: 280, borderRadius: '50%', background: `radial-gradient(circle, ${color}18, transparent 70%)`, pointerEvents: 'none' }} />
-                    <div style={{ fontSize: 120, fontWeight: 300, letterSpacing: '-4px', color: `${color}10`, lineHeight: 1, userSelect: 'none', marginBottom: 24, alignSelf: 'flex-start' }}>{n}</div>
-                    <div style={{ width: 72, height: 72, borderRadius: 20, background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: `0 0 40px ${color}20`, alignSelf: 'flex-start' }}>
-                      <Icon size={34} color={color} />
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignSelf: 'flex-start' }}>
-                      {tags.map((tag) => (
-                        <span key={tag} style={{ padding: '5px 12px', borderRadius: borderRadius.full, background: `${color}12`, border: `1px solid ${color}25`, fontSize: 11, color, fontWeight: 500 }}>{tag}</span>
-                      ))}
+                  {/* Photo panel */}
+                  <div style={{ position: 'relative', minHeight: 420, overflow: 'hidden' }}>
+                    <Image
+                      src={`/images/${['feature-create', 'feature-sanctuary', 'feature-listen'][idx]}.png`}
+                      alt={title}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                    />
+                    <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to left, rgba(6,2,20,0.05), rgba(6,2,20,0.3)), linear-gradient(to top, rgba(6,2,20,0.5) 0%, transparent 60%)` }} />
+                    {/* Number + tags overlay */}
+                    <div style={{ position: 'absolute', bottom: 32, left: 36, right: 36, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                      <div style={{ fontSize: 72, fontWeight: 300, letterSpacing: '-3px', color: 'rgba(255,255,255,0.18)', lineHeight: 1 }}>{n}</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {tags.map((tag) => (
+                          <span key={tag} style={{ padding: '5px 12px', borderRadius: borderRadius.full, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: `1px solid ${color}40`, fontSize: 11, color, fontWeight: 500 }}>{tag}</span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </>
@@ -403,29 +415,37 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Photo Divider #1 ──────────────────────────────── */}
-      <section style={{ position: 'relative', height: 440, overflow: 'hidden' }}>
+      <section style={{ position: 'relative', height: 500, overflow: 'hidden' }}>
         <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80"
-          alt="Person at peace in morning light"
+          src="/images/hero-transform.png"
+          alt="Person in transformation — headphones, cosmic identity shift"
           fill
-          style={{ objectFit: 'cover', objectPosition: 'center 60%' }}
           unoptimized
+          style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
         />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.95) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `0 ${SECTION_PX}`, textAlign: 'center' }}>
-          <blockquote style={{ fontSize: 'clamp(22px, 3vw, 40px)', fontWeight: 300, letterSpacing: '-0.8px', color: '#fff', lineHeight: 1.3, maxWidth: 760, margin: '0 0 24px', fontStyle: 'italic' }}>
+        {/* Top fade into page */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+        {/* Bottom fade into page */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+        {/* Subtle vignette for text legibility */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at center, rgba(0,0,0,0.35) 0%, transparent 100%)' }} />
+        {/* Quote */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `0 ${PAGE_PADDING}`, textAlign: 'center' }}>
+          <blockquote style={{ fontSize: 'clamp(22px, 3vw, 42px)', fontWeight: 300, letterSpacing: '-0.8px', color: '#fff', lineHeight: 1.35, maxWidth: 800, margin: '0 0 24px', fontStyle: 'italic', textShadow: '0 2px 20px rgba(0,0,0,0.6)' }}>
             &ldquo;The first app that actually made me feel like I was talking to myself.&rdquo;
           </blockquote>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', margin: 0 }}>Marcus T. — Entrepreneur, 34 days in</p>
+          <p style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.6)', margin: 0, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            Marcus T. &nbsp;·&nbsp; Entrepreneur &nbsp;·&nbsp; 34 days in
+          </p>
         </div>
       </section>
 
       {/* ── Content Types Deep Dive ───────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 80 }}>
+      <section style={{ position: 'relative', zIndex: 10, padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Three Content Types</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Every depth of transformation</h2>
-          <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is engineered for a specific level of inner change — from daily reprogramming to permanent identity encoding.</p>
+          <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is engineered for a specific level of inner change, from daily reprogramming to permanent identity encoding.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
@@ -440,7 +460,7 @@ export default function HowItWorksPage() {
               color: colors.accent.primary,
               gradient: `linear-gradient(160deg, ${colors.accent.primary}18, ${colors.accent.secondary}06)`,
               outcome: 'Feel the shift in weeks.',
-              science: 'Spaced repetition × personal voice = faster neural rewiring.',
+              science: 'Spaced repetition + personal voice = faster neural rewiring.',
             },
             {
               icon: Moon,
@@ -448,7 +468,7 @@ export default function HowItWorksPage() {
               tagline: 'Command your inner state',
               duration: '10–30 min',
               depth: 'State induction',
-              desc: 'AI-scripted journeys through landscapes designed for your emotional goals. Your voice leads you exactly where you need to go.',
+              desc: 'AI-scripted journeys designed for your emotional goals, voiced by you. You hear your own voice guide you to exactly where you need to go.',
               color: colors.accent.secondary,
               gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
               outcome: 'Find calm on demand.',
@@ -460,7 +480,7 @@ export default function HowItWorksPage() {
               tagline: 'Encode your new identity',
               duration: '20–60 min',
               depth: 'Identity encoding',
-              desc: 'Multi-part practices combining breathwork, visualization, and affirmations. The deepest level — designed to permanently encode a new self.',
+              desc: 'Multi-part practices combining breathwork, visualization, and affirmations, all voiced by you. Hearing yourself through the deepest work is what makes it stick.',
               color: colors.accent.tertiary,
               gradient: `linear-gradient(160deg, ${colors.accent.tertiary}18, ${colors.accent.primary}06)`,
               outcome: 'Become someone new.',
@@ -483,12 +503,14 @@ export default function HowItWorksPage() {
               {/* Card body */}
               <div style={{ padding: '32px 40px 40px', flex: 1, display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.7, margin: 0 }}>{desc}</p>
-                <p style={{ fontSize: 12, color: colors.text.tertiary, lineHeight: 1.6, margin: 0, padding: '12px 16px', borderRadius: 10, background: `${color}08`, border: `1px solid ${color}15`, fontStyle: 'italic' }}>{science}</p>
-                {/* Badge row — wraps naturally on narrow widths */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 'auto' }}>
-                  <span style={{ padding: '5px 12px', borderRadius: borderRadius.full, background: `${color}14`, border: `1px solid ${color}28`, fontSize: 12, color, fontWeight: 500 }}>{duration}</span>
-                  <span style={{ padding: '5px 12px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', fontSize: 12, color: colors.text.secondary }}>{depth}</span>
-                  <span style={{ fontSize: 12, color, fontWeight: 600, fontStyle: 'italic', marginLeft: 'auto' }}>{outcome}</span>
+                <p style={{ fontSize: 12, color: colors.text.secondary, lineHeight: 1.6, margin: 0, padding: '12px 16px', borderRadius: 10, background: `${color}10`, border: `1px solid ${color}20`, fontStyle: 'italic' }}>{science}</p>
+                {/* Footer */}
+                <div style={{ borderTop: `1px solid ${color}18`, paddingTop: 20, marginTop: 'auto' }}>
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 14, justifyContent: 'center' }}>
+                    <span style={{ padding: '5px 14px', borderRadius: borderRadius.full, background: `${color}14`, border: `1px solid ${color}30`, fontSize: 12, color, fontWeight: 500, letterSpacing: '0.01em' }}>{duration}</span>
+                    <span style={{ padding: '5px 14px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 12, color: colors.text.secondary, letterSpacing: '0.01em' }}>{depth}</span>
+                  </div>
+                  <p style={{ fontSize: 13, color, fontWeight: 600, fontStyle: 'italic', letterSpacing: '0.01em', textAlign: 'center', margin: 0 }}>{outcome}</p>
                 </div>
               </div>
             </div>
@@ -497,9 +519,9 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── A Day in Practice ─────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Daily Practice</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>A morning that changes everything</h2>
             <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 520, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Five minutes. Your voice. A completely different trajectory for your day.</p>
@@ -534,7 +556,7 @@ export default function HowItWorksPage() {
             </div>
             <div style={{ flex: 1, minWidth: 240 }}>
               <h4 style={{ fontSize: 22, fontWeight: 500, color: colors.text.primary, margin: '0 0 8px', letterSpacing: '-0.3px' }}>Just 5 minutes. That&apos;s all it takes to start.</h4>
-              <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Affirmations fit into the minutes you already have. No new schedule. No lifestyle overhaul. Just the same morning — with one powerful addition that compounds over time.</p>
+              <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Affirmations fit into the minutes you already have. No new schedule. No lifestyle overhaul. Just the same morning, with one powerful addition that compounds over time.</p>
             </div>
             <Link href="/signup" style={{ textDecoration: 'none', flexShrink: 0 }}>
               <Button variant="primary" size="md" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
@@ -546,29 +568,34 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── The Science ───────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div className="hiw-science" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}>
-          {/* Left — visual */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 480 }}>
-            {/* Pulsing rings */}
-            {[240, 320, 400].map((size, i) => (
-              <div key={size} style={{ position: 'absolute', width: size, height: size, borderRadius: '50%', border: `1px solid ${colors.accent.primary}${i === 0 ? '35' : i === 1 ? '20' : '10'}`, animation: `wqRingPulse ${2.5 + i * 0.7}s ease-in-out infinite`, animationDelay: `${i * 0.5}s` }} />
-            ))}
-            {/* Core */}
-            <div style={{ width: 160, height: 160, borderRadius: '50%', background: `radial-gradient(circle at 40% 40%, ${colors.accent.primary}60, ${colors.accent.secondary}40, ${colors.accent.primary}20)`, boxShadow: `0 0 80px ${colors.accent.primary}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <Brain size={56} color="#fff" />
+      <section style={{ position: 'relative', zIndex: 10, padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div className="hiw-science" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
+          {/* Left — neuroplasticity image, no card border */}
+          <div style={{ position: 'relative', minHeight: 560 }}>
+            <Image
+              src="/images/neuroplasticity-visual.png"
+              alt="Neural pathways lighting up as sound waves enter the brain"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            />
+            {/* Dissolve all 4 edges into page background */}
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 55% 50%, transparent 45%, rgba(0,0,0,0.7) 80%, rgba(0,0,0,1) 100%)' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '20%', background: 'linear-gradient(to right, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+            {/* Labels — anchored bottom-left, stacked naturally */}
+            <div style={{ position: 'absolute', bottom: 52, left: 28, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
+              {[
+                { label: 'Neuroplasticity', color: colors.accent.primary },
+                { label: 'Voice memory', color: colors.accent.secondary },
+                { label: '21-day rewire', color: colors.accent.tertiary },
+                { label: 'Subconscious shift', color: colors.accent.primary },
+              ].map(({ label, color }) => (
+                <div key={label} style={{ padding: '5px 13px', borderRadius: borderRadius.full, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: `1px solid ${color}35`, fontSize: 11, color, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                  {label}
+                </div>
+              ))}
             </div>
-            {/* Floating labels */}
-            {[
-              { label: 'Neuroplasticity', x: '-130px', y: '-60px', color: colors.accent.primary },
-              { label: 'Voice memory', x: '100px', y: '-80px', color: colors.accent.secondary },
-              { label: '21-day rewire', x: '-110px', y: '70px', color: colors.accent.tertiary },
-              { label: 'Subconscious shift', x: '80px', y: '80px', color: colors.accent.primary },
-            ].map(({ label, x, y, color }) => (
-              <div key={label} style={{ position: 'absolute', left: `calc(50% + ${x})`, top: `calc(50% + ${y})`, transform: 'translate(-50%, -50%)', padding: '6px 14px', borderRadius: borderRadius.full, background: `${color}15`, border: `1px solid ${color}30`, fontSize: 11, color, fontWeight: 600, whiteSpace: 'nowrap' }}>
-                {label}
-              </div>
-            ))}
           </div>
 
           {/* Right — copy */}
@@ -576,24 +603,24 @@ export default function HowItWorksPage() {
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>The Science</div>
             <h2 style={{ fontSize: 'clamp(32px, 3.5vw, 48px)', fontWeight: 300, letterSpacing: '-1.2px', color: colors.text.primary, margin: '0 0 28px', lineHeight: 1.15 }}>Built on how brains actually change.</h2>
             <p style={{ fontSize: 17, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 24px' }}>
-              Neuroplasticity — the brain&apos;s ability to rewire itself — is most powerfully activated through repeated exposure to emotionally resonant stimuli. Your own voice is the most resonant stimulus your brain knows.
+              The brain rewires itself through repeated exposure to emotionally resonant stimuli. No stimulus is more resonant to your brain than your own voice.
             </p>
             <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 40px' }}>
-              When you hear yourself say &ldquo;I am confident&rdquo; daily for 21 days, your neural pathways literally change. Not metaphorically. Not inspirationally. Measurably.
+              Hear yourself say &ldquo;I am confident&rdquo; daily for 21 days and your neural pathways literally change. Not metaphorically. Measurably.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
                 { label: '21 days', desc: 'to notice the first measurable shift' },
-                { label: '66 days', desc: 'for new patterns to become automatic' },
-                { label: 'Your voice', desc: 'activates deeper pathways than any other voice' },
+                { label: '66 days', desc: 'for new patterns to become fully automatic' },
+                { label: 'Your voice', desc: 'activates deeper neural pathways than any other' },
               ].map(({ label, desc }) => (
                 <div key={label} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <div style={{ width: 22, height: 22, borderRadius: '50%', background: `${colors.accent.primary}20`, border: `1px solid ${colors.accent.primary}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
                     <Check size={11} color={colors.accent.primary} strokeWidth={3} />
                   </div>
                   <div>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: colors.text.primary }}>{label}</span>
-                    <span style={{ fontSize: 15, color: colors.text.secondary }}> — {desc}</span>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: colors.text.primary }}>{label} </span>
+                    <span style={{ fontSize: 15, color: colors.text.secondary }}>{desc}</span>
                   </div>
                 </div>
               ))}
@@ -603,37 +630,46 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Photo Divider #2 ──────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}` }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, borderRadius: borderRadius.xl, overflow: 'hidden' }}>
-          {/* Photo cell */}
-          <div style={{ position: 'relative', minHeight: 400, borderRadius: borderRadius.xl, overflow: 'hidden' }}>
-            <Image
-              src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=900&q=80"
-              alt="Woman listening with headphones in morning light"
-              fill
-              style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
-              unoptimized
-            />
-            <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, transparent, ${colors.accent.primary}30)` }} />
-          </div>
-          {/* Copy cell */}
-          <div style={{ padding: '56px 52px', background: `linear-gradient(135deg, ${colors.accent.primary}12, ${colors.accent.secondary}06)`, border: `1px solid ${colors.accent.primary}20`, borderRadius: borderRadius.xl, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Voice Cloning</div>
-            <h3 style={{ fontSize: 'clamp(26px, 2.5vw, 36px)', fontWeight: 300, letterSpacing: '-0.8px', color: colors.text.primary, margin: '0 0 20px', lineHeight: 1.2 }}>Hear yourself say it.<br />Something shifts permanently.</h3>
-            <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 32px' }}>Record just 60 seconds of your natural speaking voice. waQup clones it — then uses it to voice every piece of content you create. It&apos;s the difference between a stranger telling you who to be, and your own voice reminding you who you already are.</p>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <div style={{ padding: '10px 20px', borderRadius: borderRadius.full, background: `${colors.accent.primary}15`, border: `1px solid ${colors.accent.primary}30`, fontSize: 13, color: colors.accent.primary, fontWeight: 500 }}>60 sec recording</div>
-              <div style={{ padding: '10px 20px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', fontSize: 13, color: colors.text.secondary }}>Optional</div>
+      <section style={{ position: 'relative', height: 560, overflow: 'hidden' }}>
+        <Image
+          src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=1800&q=90"
+          alt="Woman listening with headphones in morning light"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center 25%' }}
+          unoptimized
+        />
+        {/* Top fade into page */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+        {/* Bottom fade into page */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%)' }} />
+        {/* Left dark panel for text */}
+        <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '60%', background: 'linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 65%, transparent 100%)' }} />
+        {/* Copy — overlaid left, centered vertically */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+          <div style={{ width: '100%', maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `0 ${PAGE_PADDING}` }}>
+            <div style={{ maxWidth: 500 }}>
+              <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 20 }}>Voice Cloning</div>
+              <h3 style={{ fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 300, letterSpacing: '-1px', color: '#fff', margin: '0 0 24px', lineHeight: 1.15 }}>
+                Hear yourself say it.<br />
+                <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Something shifts permanently.</span>
+              </h3>
+              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.65)', lineHeight: 1.75, margin: '0 0 32px', fontWeight: 300 }}>
+                Record 60 seconds of your natural voice. waQup clones it, then voices everything you create. Your own voice reminding you who you already are.
+              </p>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: `${colors.accent.primary}25`, border: `1px solid ${colors.accent.primary}50`, fontSize: 13, color: '#C084FC', fontWeight: 500 }}>60 sec recording</div>
+                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Optional</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Testimonials ─────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
+      <section style={{ position: 'relative', zIndex: 10, padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 80 }}>
-            <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Real Transformations</div>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <div style={{ fontSize: 11, color: colors.accent.primary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Real Transformations</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: 0 }}>Voice transformation works.<br />Here&apos;s the proof.</h2>
           </div>
 
@@ -641,13 +677,13 @@ export default function HowItWorksPage() {
             {[
               { q: 'The first app that actually made me feel like I was talking to myself. Hearing MY voice tell me I\'m capable hits so differently than reading it off a screen.', n: 'Marcus T.', r: 'Entrepreneur, 34', day: '30 days in' },
               { q: 'After 30 days of morning affirmations, I can\'t believe who I\'m becoming. I speak up in meetings now. I didn\'t think an app could actually do this to me.', n: 'Sarah M.', r: 'Teacher, 28', day: '21 days in' },
-              { q: 'I\'ve tried every meditation app out there. waQup is the only one that feels truly personal. The ritual creation flow is like therapy on demand — but it\'s mine.', n: 'Emma L.', r: 'Designer, 31', day: '66 days in' },
+              { q: 'I\'ve tried every meditation app out there. waQup is the only one that feels truly personal. The ritual creation flow is like therapy on demand, but it\'s mine.', n: 'Emma L.', r: 'Designer, 31', day: '66 days in' },
             ].map(({ q, n, r, day }) => (
               <div key={n} style={{ padding: '44px 44px', borderRadius: borderRadius.xl, background: colors.glass.light, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: `1px solid ${colors.glass.border}`, display: 'flex', flexDirection: 'column', gap: 28, transition: 'all 0.3s ease', position: 'relative', overflow: 'hidden' }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = `${colors.accent.primary}30`; e.currentTarget.style.boxShadow = `0 32px 80px ${colors.accent.primary}25`; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = colors.glass.border; e.currentTarget.style.boxShadow = 'none'; }}
               >
-                <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px 18px', background: `${colors.accent.primary}15`, borderRadius: '0 24px 0 12px', fontSize: 11, color: colors.accent.tertiary, fontWeight: 600 }}>{day}</div>
+                <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px 18px', background: `${colors.accent.primary}25`, borderRadius: '0 24px 0 12px', fontSize: 11, color: colors.accent.primary, fontWeight: 700, letterSpacing: '0.04em' }}>{day}</div>
                 <div style={{ display: 'flex', gap: 3 }}>
                   {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} color="#F59E0B" fill="#F59E0B" />)}
                 </div>
@@ -666,15 +702,15 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Before / After ────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}` }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>The Difference</div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: 0 }}>Something in you knows it&apos;s time.</h2>
           </div>
 
           <div className="hiw-before-after" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderRadius: borderRadius.xl, overflow: 'hidden', border: `1px solid ${colors.glass.border}` }}>
-            <div style={{ padding: '56px 48px', background: 'rgba(0,0,0,0.5)', borderRight: `1px solid ${colors.glass.border}` }}>
+            <div style={{ padding: '56px 48px', background: 'linear-gradient(135deg, rgba(255,100,100,0.04), rgba(20,8,8,0.6))', borderRight: `1px solid ${colors.glass.border}` }}>
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: borderRadius.full, background: 'rgba(255,100,100,0.1)', border: '1px solid rgba(255,100,100,0.2)', marginBottom: 36 }}>
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF6B6B' }} />
                 <span style={{ fontSize: 11, color: '#FF8888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Before waQup</span>
@@ -723,8 +759,8 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── FAQ ───────────────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 80 }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Q&amp;A</h2>
           <p style={{ fontSize: 18, color: colors.text.secondary, margin: 0 }}>Everything you want to know before you begin.</p>
         </div>
@@ -734,36 +770,16 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Final CTA ─────────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${SECTION_PX}`, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, height: 800, borderRadius: '50%', background: `radial-gradient(circle, ${colors.accent.primary}14 0%, transparent 65%)`, pointerEvents: 'none' }} />
-        <div style={{ maxWidth: CONTENT_NARROW, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 24 }}>Your transformation starts here</div>
-          <h2 style={{ fontSize: 'clamp(40px, 5vw, 72px)', fontWeight: 300, letterSpacing: '-2px', color: colors.text.primary, lineHeight: 1.1, margin: '0 0 24px' }}>
-            The person you want to be<br />
-            <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>is waiting for your voice.</span>
-          </h2>
-          <p style={{ fontSize: 19, color: colors.text.secondary, lineHeight: 1.65, margin: '0 0 52px', fontWeight: 300 }}>Join thousands already using their own voice to rewire their subconscious. Your first content is on us.</p>
-          <Link href="/signup" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="lg" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, fontSize: '20px', padding: '20px 52px', boxShadow: `0 16px 64px ${colors.accent.primary}55` }}>
-              Start Free Today <ArrowRight size={22} color={colors.text.onDark} />
-            </Button>
-          </Link>
-          <p style={{ fontSize: 13, color: colors.text.tertiary, marginTop: 24 }}>No credit card required · Practice is always free · Cancel anytime</p>
+        <div style={{ maxWidth: CONTENT_MEDIUM, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <WaitlistCTA
+            variant="banner"
+            headline="Ready to rewire your mind?"
+            subtext="Join the waitlist and be first to access waQup. No credit card required. Practice is always free."
+          />
         </div>
       </section>
-
-      {/* ── Footer ────────────────────────────────────────── */}
-      <footer style={{ padding: `40px ${SECTION_PX}`, borderTop: `1px solid ${colors.glass.border}` }}>
-        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
-          <span style={{ fontSize: 22, fontWeight: 300, color: colors.text.primary, letterSpacing: '-0.5px' }}>wa<span style={{ color: colors.accent.tertiary }}>Q</span>up</span>
-          <div style={{ display: 'flex', gap: 40 }}>
-            {[['Pricing', '/pricing'], ['Launch', '/launch'], ['Sign Up', '/signup']].map(([label, href]) => (
-              <Link key={label} href={href} style={{ textDecoration: 'none', fontSize: 14, color: colors.text.tertiary }}>{label}</Link>
-            ))}
-          </div>
-          <Typography variant="caption" style={{ color: colors.text.tertiary }}>© 2026 waQup</Typography>
-        </div>
-      </footer>
 
       {/* ── Global Styles ─────────────────────────────────── */}
       <style dangerouslySetInnerHTML={{ __html: `
@@ -771,6 +787,10 @@ export default function HowItWorksPage() {
         @keyframes wqProgressFill { 0%{width:30%} 100%{width:88%} }
         @keyframes wqSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes wqRingPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.06);opacity:0.6} }
+
+        /* Gentle scroll snap — sections drift into alignment when you're close */
+        html { scroll-snap-type: y proximity; }
+        section { scroll-snap-align: start; scroll-snap-stop: normal; }
 
         .hiw-hero { flex-direction: row; }
         .hiw-hero-mockup { display: flex; justify-content: center; flex-shrink: 0; }

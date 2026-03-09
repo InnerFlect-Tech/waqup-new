@@ -8,4 +8,5 @@ export * from './AppLayout';
 export * from './PageShell';
 export * from './PageContent';
 export * from './GlassCard';
-export * from './TestLoginButton';
+export * from './SuperAdminGate';
+export * from './WaitlistCTA';

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Typography, Badge } from '@/components';
+import { Typography, Badge, SuperAdminGate } from '@/components';
 import { useTheme, type Theme } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
@@ -79,10 +79,10 @@ const SECTION_FLOW = ['Landing & Marketing', 'Auth', 'Onboarding', 'Main', 'Sanc
 export default function PagesIndexPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const { public: WITHOUT_AUTH, protected: WITH_AUTH } = getRouteGroupsForPages();
+  const { public: WITHOUT_AUTH, protected: WITH_AUTH, superadmin: SUPERADMIN } = getRouteGroupsForPages();
 
   const stats = useMemo(() => {
-    const allRoutes = [...(WITHOUT_AUTH as RouteGroup[]).flatMap((g) => g.routes), ...(WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes)];
+    const allRoutes = [...(WITHOUT_AUTH as RouteGroup[]).flatMap((g) => g.routes), ...(WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes), ...(SUPERADMIN as RouteGroup[]).flatMap((g) => g.routes)];
     const byStatus: Record<RouteStatus, number> = { exists: 0, to_create: 0, to_delete: 0, to_change: 0 };
     for (const r of allRoutes) {
       byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
@@ -96,6 +96,7 @@ export default function PagesIndexPage() {
   }, [WITHOUT_AUTH, WITH_AUTH]);
 
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium" bare>
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
         <div style={{ marginBottom: spacing.xl }}>
@@ -197,7 +198,7 @@ export default function PagesIndexPage() {
               color: colors.text.secondary,
             }}
           >
-            <strong style={{ color: colors.text.primary }}>Exceptions:</strong> All of &quot;Without auth&quot; are public. In &quot;With auth&quot;, only routes under /home, /library, /create, /profile, /sanctuary require login. <em>/pages</em>, <em>/showcase</em>, <em>/sitemap-view</em> and <em>/onboarding/*</em> are public by design (dev/testing or first-time flow).
+            <strong style={{ color: colors.text.primary }}>Access tiers:</strong> Public — no login required. Protected — login required. Superadmin — <code>role = superadmin</code> in profiles required.
           </div>
         </div>
 
@@ -233,15 +234,30 @@ export default function PagesIndexPage() {
           </GlassCard>
         ))}
 
-        {/* Utility nav */}
+        <Typography variant="h2" style={{ marginTop: spacing.xl, marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.1rem', fontWeight: 600 }}>
+          Superadmin only
+        </Typography>
+        {(SUPERADMIN as RouteGroup[]).map((group) => (
+          <GlassCard key={group.title} variant="content" style={{ marginBottom: spacing.lg }}>
+            <Typography variant="body" style={{ marginBottom: spacing.sm, color: colors.text.secondary, fontSize: '13px', fontWeight: 600 }}>
+              {group.title}
+            </Typography>
+            <div style={CARD_GRID_STYLE}>
+              {group.routes.map((route) => (
+                <RouteCard key={route.path} route={route} colors={colors} />
+              ))}
+            </div>
+          </GlassCard>
+        ))}
+
+        {/* Admin dashboard shortcut */}
         <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
-          <Link href="/showcase" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Showcase</Link>
-          <Link href="/system" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>System</Link>
-          <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Creation Steps</Link>
+          <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Admin Dashboard</Link>
+          <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>API Health</Link>
           <Link href="/sitemap-view" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Sitemap</Link>
-          <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>🩺 API Health</Link>
         </div>
       </div>
     </PageShell>
+    </SuperAdminGate>
   );
 }

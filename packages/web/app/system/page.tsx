@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Typography } from '@/components';
+import { Typography, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import { spacing, borderRadius } from '@/theme';
@@ -13,6 +13,7 @@ export default function SystemPage() {
   const colors = theme.colors;
 
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium" bare>
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
         <div style={{ marginBottom: spacing.xl }}>
@@ -224,6 +225,7 @@ OAuth: /auth/callback exchanges code for session, sets cookies.`}
         </div>
       </div>
     </PageShell>
+    </SuperAdminGate>
   );
 }
 

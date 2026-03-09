@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Typography } from '@/components';
+import { Typography, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
 import { spacing, borderRadius, CONTENT_MAX_WIDTH } from '@/theme';
@@ -77,6 +77,7 @@ export default function CreationStepsPage() {
   const allStepSlugs = ALL_PIPELINE_STEPS.map((s) => s.step);
 
   return (
+    <SuperAdminGate>
     <PageShell intensity="medium" bare>
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
         {/* Header */}
@@ -387,5 +388,6 @@ export default function CreationStepsPage() {
         </div>
       </div>
     </PageShell>
+    </SuperAdminGate>
   );
 }
