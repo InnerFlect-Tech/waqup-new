@@ -25,23 +25,56 @@ export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [hasValidSession, setHasValidSession] = useState(false);
-  
-  // Check for Supabase session from hash fragments (handled automatically by Supabase)
+
+  // The shared Supabase client has detectSessionInUrl: false (required for mobile).
+  // On web, password reset links deliver tokens in the URL hash, so we parse them
+  // manually and call setSession — the same pattern used in login/page.tsx for
+  // OAuth implicit-flow fallback.
   useEffect(() => {
-    const checkSession = async () => {
-      // Supabase automatically processes hash fragments and creates a session
-      // We just need to check if we have a session
-      const sessionResult = await authService.getCurrentSession();
-      setHasValidSession(!!sessionResult.data);
-    };
-    
-    checkSession();
-  }, [authService]);
+    if (typeof window === 'undefined') return;
+
+    const hash = window.location.hash?.replace(/^#/, '');
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      const type = params.get('type');
+
+      if (access_token && (type === 'recovery' || type === 'signup')) {
+        let cancelled = false;
+        (async () => {
+          try {
+            if (!supabase) return;
+            const { data, error: sessionError } = await supabase.auth.setSession({
+              access_token,
+              refresh_token: refresh_token ?? '',
+            });
+            if (cancelled) return;
+            if (!sessionError && data?.session) {
+              useAuthStore.getState().setSession(data.session);
+              window.history.replaceState(null, '', window.location.pathname + window.location.search);
+              setHasValidSession(true);
+            }
+          } catch {
+            // fall through — hasValidSession stays false, shows invalid link screen
+          }
+        })();
+        return () => { cancelled = true; };
+      }
+    }
+
+    // No hash tokens — check if there's already an active session (e.g. page refresh)
+    authService.getCurrentSession().then((result) => {
+      setHasValidSession(!!result.data);
+    });
+  // authService is recreated on every render; only run on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -229,8 +262,9 @@ export default function ResetPasswordPage() {
                 type="submit"
                 variant="primary"
                 size="lg"
-                loading={isLoading}
+                loading={isSubmitting}
                 fullWidth
+                disabled={isSubmitting}
                 style={{
                   background: colors.gradients.primary,
                   marginBottom: spacing.lg,
@@ -239,7 +273,7 @@ export default function ResetPasswordPage() {
                   fontWeight: 600,
                 }}
               >
-                {isLoading ? 'Resetting password...' : 'Reset Password'}
+                {isSubmitting ? 'Resetting password...' : 'Reset Password'}
               </Button>
 
               <div style={{ textAlign: 'center', marginTop: spacing.lg }}>

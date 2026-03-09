@@ -5,31 +5,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button } from '@/components';
 import { PageShell } from '@/components';
 import Link from 'next/link';
-import { Sparkles, Brain, Music, Send, ArrowLeft } from 'lucide-react';
+import { Send, ArrowLeft } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
 import { formatQs } from '@waqup/shared/utils';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ScienceInsight } from '@/components/content/ScienceInsight';
+import { CONTENT_TYPE_META, CONTENT_TYPE_ICONS, CONVERSATION_STEP_PROMPTS, saveCreationHandoff } from '@/lib/creation-steps';
 import type { ContentItemType } from '@waqup/shared/types';
+import type { CreationStep } from '@/lib/contexts/ContentCreationContext';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  step?: CreationStep;
 }
-
-const TYPE_BUTTONS: Array<{
-  type: ContentItemType;
-  label: string;
-  icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
-  color: string;
-}> = [
-  { type: 'affirmation', label: 'Affirmation', icon: Sparkles, color: '#c084fc' },
-  { type: 'meditation', label: 'Meditation', icon: Brain, color: '#60a5fa' },
-  { type: 'ritual', label: 'Ritual', icon: Music, color: '#34d399' },
-];
 
 const OPENING_MESSAGES: Record<ContentItemType, string> = {
   affirmation: "Let's build your affirmation. What area of your life would you like to strengthen — confidence, abundance, relationships, health, or something else?",
@@ -40,6 +32,72 @@ const OPENING_MESSAGES: Record<ContentItemType, string> = {
 const DEFAULT_OPENING = "What would you like to create today — an affirmation, a meditation, or a ritual?";
 
 type ConversationPhase = 'type-select' | 'gathering' | 'generating-script' | 'reviewing-script' | 'done';
+
+function StepBadge({ type, step }: { type: ContentItemType; step: CreationStep }) {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const meta = CONTENT_TYPE_META[type];
+  const steps = CONVERSATION_STEP_PROMPTS[type];
+  const stepIndex = steps.findIndex((s) => s.step === step);
+  const stepTotal = steps.length;
+
+  const stepLabels: Partial<Record<CreationStep, string>> = {
+    intent: 'Intent',
+    context: 'Context',
+    personalization: 'Values',
+    script: 'Script',
+    voice: 'Voice',
+    audio: 'Audio',
+    review: 'Review',
+  };
+
+  if (stepIndex === -1) return null;
+
+  return (
+    <motion.div
+      key={step}
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: spacing.sm,
+        padding: `${spacing.xs} ${spacing.md}`,
+        borderRadius: borderRadius.full,
+        background: `${meta.color}15`,
+        border: `1px solid ${meta.color}40`,
+        marginBottom: spacing.md,
+      }}
+    >
+      <div
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: '50%',
+          background: meta.color,
+        }}
+      />
+      <Typography variant="small" style={{ color: meta.color, fontSize: 12, fontWeight: 600, letterSpacing: '0.03em' }}>
+        Step {stepIndex + 1} of {stepTotal} · {stepLabels[step] ?? step}
+      </Typography>
+      <div style={{ display: 'flex', gap: 3 }}>
+        {steps.map((s, i) => (
+          <div
+            key={s.step}
+            style={{
+              width: 16,
+              height: 3,
+              borderRadius: 2,
+              background: i <= stepIndex ? meta.color : colors.glass.border,
+              transition: 'background 0.3s',
+            }}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 function ConversationPageInner() {
   const { theme } = useTheme();
@@ -55,16 +113,19 @@ function ConversationPageInner() {
       id: '1',
       role: 'assistant',
       content: typeParam ? OPENING_MESSAGES[typeParam] : DEFAULT_OPENING,
+      step: typeParam ? 'intent' : undefined,
     },
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [phase, setPhase] = useState<ConversationPhase>(typeParam ? 'gathering' : 'type-select');
   const [generatedScript, setGeneratedScript] = useState('');
+  const [currentStep, setCurrentStep] = useState<CreationStep>(typeParam ? 'intent' : 'init');
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesRef = useRef<Message[]>(messages);
+  const stepIndexRef = useRef(0);
 
   useEffect(() => { messagesRef.current = messages; }, [messages]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isTyping]);
@@ -73,15 +134,31 @@ function ConversationPageInner() {
     setMessages((prev) => [...prev, msg]);
   };
 
+  const advanceStep = useCallback((type: ContentItemType) => {
+    const steps = CONVERSATION_STEP_PROMPTS[type];
+    const nextIdx = stepIndexRef.current + 1;
+    if (nextIdx < steps.length) {
+      stepIndexRef.current = nextIdx;
+      setCurrentStep(steps[nextIdx].step);
+    }
+  }, []);
+
   const handleTypeSelect = useCallback((type: ContentItemType) => {
     setSelectedType(type);
     setPhase('gathering');
+    setCurrentStep('intent');
+    stepIndexRef.current = 0;
     const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content: `I want to create a ${type}` };
     appendMessage(userMsg);
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
-      appendMessage({ id: crypto.randomUUID(), role: 'assistant', content: OPENING_MESSAGES[type] });
+      appendMessage({
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: OPENING_MESSAGES[type],
+        step: 'intent',
+      });
     }, 700);
   }, []);
 
@@ -100,10 +177,12 @@ function ConversationPageInner() {
 
   const generateScript = useCallback(async (allMessages: Message[], type: ContentItemType) => {
     setPhase('generating-script');
+    setCurrentStep('script');
     appendMessage({
       id: crypto.randomUUID(),
       role: 'assistant',
       content: '✦ Generating your script — this takes just a moment…',
+      step: 'script',
     });
 
     const intent = allMessages
@@ -171,10 +250,20 @@ function ConversationPageInner() {
     try {
       const { reply, shouldGenerateScript } = await callConversationAPI(updatedMessages, selectedType);
       setIsTyping(false);
-      appendMessage({ id: crypto.randomUUID(), role: 'assistant', content: reply });
 
       if (shouldGenerateScript) {
+        appendMessage({ id: crypto.randomUUID(), role: 'assistant', content: reply });
         await generateScript(updatedMessages, selectedType);
+      } else {
+        advanceStep(selectedType);
+        const steps = CONVERSATION_STEP_PROMPTS[selectedType];
+        const nextStep = steps[stepIndexRef.current]?.step;
+        appendMessage({
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: reply,
+          step: nextStep,
+        });
       }
     } catch {
       setIsTyping(false);
@@ -184,15 +273,20 @@ function ConversationPageInner() {
         content: "I'm having trouble connecting right now. Please try again.",
       });
     }
-  }, [input, isTyping, phase, selectedType, callConversationAPI, generateScript, handleTypeSelect]);
+  }, [input, isTyping, phase, selectedType, callConversationAPI, generateScript, handleTypeSelect, advanceStep]);
 
   const handleUseScript = () => {
-    router.push(
-      selectedType
-        ? `/sanctuary/${selectedType}s/create/voice`
-        : '/sanctuary',
-    );
+    if (selectedType && generatedScript) {
+      const intent = messagesRef.current
+        .filter((m) => m.role === 'user')
+        .map((m) => m.content)
+        .join('. ');
+      saveCreationHandoff(selectedType, generatedScript, intent);
+    }
+    router.push(selectedType ? `/sanctuary/${selectedType}s/create/voice` : '/sanctuary');
   };
+
+  const selectedMeta = selectedType ? CONTENT_TYPE_META[selectedType] : null;
 
   return (
     <PageShell intensity="medium">
@@ -210,7 +304,7 @@ function ConversationPageInner() {
         }}
       >
         {/* Header */}
-        <div style={{ marginBottom: spacing.lg }}>
+        <div style={{ marginBottom: spacing.md }}>
           <Link
             href={selectedType ? `/sanctuary/${selectedType}s/create/init` : '/create'}
             style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}
@@ -228,10 +322,43 @@ function ConversationPageInner() {
           </Typography>
         </div>
 
+        {/* Step badge */}
+        <AnimatePresence mode="wait">
+          {selectedType && phase === 'gathering' && (
+            <StepBadge key={currentStep} type={selectedType} step={currentStep} />
+          )}
+          {selectedType && phase === 'reviewing-script' && (
+            <motion.div
+              key="script-ready"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: spacing.sm,
+                padding: `${spacing.xs} ${spacing.md}`,
+                borderRadius: borderRadius.full,
+                background: `${selectedMeta?.color ?? colors.accent.primary}15`,
+                border: `1px solid ${selectedMeta?.color ?? colors.accent.primary}40`,
+                marginBottom: spacing.md,
+              }}
+            >
+              <div
+                style={{ width: 7, height: 7, borderRadius: '50%', background: selectedMeta?.color ?? colors.accent.primary }}
+              />
+              <Typography variant="small" style={{ color: selectedMeta?.color ?? colors.accent.primary, fontSize: 12, fontWeight: 600 }}>
+                Script ready — choose your voice
+              </Typography>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Type selector */}
         {phase === 'type-select' && (
           <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.lg }}>
-            {TYPE_BUTTONS.map(({ type, label, icon: Icon, color }) => {
+            {(Object.entries(CONTENT_TYPE_META) as [ContentItemType, typeof CONTENT_TYPE_META[ContentItemType]][]).map(([type, meta]) => {
+              const Icon = CONTENT_TYPE_ICONS[type];
               const costs = CONTENT_CREDIT_COSTS[type];
               const creditsLabel =
                 costs.base === costs.withAi ? formatQs(costs.base) : `${costs.base}–${costs.withAi} Qs`;
@@ -253,8 +380,8 @@ function ConversationPageInner() {
                     transition: 'all 0.2s',
                   }}
                 >
-                  <Icon size={14} color={color} />
-                  <span>{label}</span>
+                  <Icon size={14} color={meta.color} />
+                  <span>{meta.label}</span>
                   <span style={{ fontSize: 11, opacity: 0.7 }}>({creditsLabel})</span>
                 </button>
               );
@@ -274,32 +401,52 @@ function ConversationPageInner() {
             scrollbarWidth: 'none',
           }}
         >
-          {messages.map((msg) => (
-            <motion.div
-              key={msg.id}
-              initial={{ opacity: 0, y: 12, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.25 }}
-              style={{
-                alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '82%',
-                padding: `${spacing.md} ${spacing.lg}`,
-                borderRadius:
-                  msg.role === 'user'
-                    ? `${borderRadius.xl} ${borderRadius.xl} ${spacing.xs} ${borderRadius.xl}`
-                    : `${borderRadius.xl} ${borderRadius.xl} ${borderRadius.xl} ${spacing.xs}`,
-                background: msg.role === 'user' ? colors.gradients.primary : colors.glass.light,
-                color: msg.role === 'user' ? colors.text.onDark : colors.text.primary,
-                border: msg.role === 'assistant' ? `1px solid ${colors.glass.border}` : 'none',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
-                lineHeight: 1.6,
-                fontSize: 15,
-              }}
-            >
-              {msg.content}
-            </motion.div>
-          ))}
+          {messages.map((msg) => {
+            const stepMeta = msg.step && selectedType ? CONTENT_TYPE_META[selectedType] : null;
+            return (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.25 }}
+              >
+                {/* Step label on first message of a new step */}
+                {msg.role === 'assistant' && msg.step && msg.step !== 'init' && stepMeta && (
+                  <div style={{ marginBottom: spacing.xs }}>
+                    <Typography variant="small" style={{ color: stepMeta.color, fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                      {msg.step === 'intent' ? 'Intent'
+                        : msg.step === 'context' ? 'Context'
+                        : msg.step === 'personalization' ? 'Values'
+                        : msg.step === 'script' ? 'Script'
+                        : msg.step}
+                    </Typography>
+                  </div>
+                )}
+                <div
+                  style={{
+                    alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                    maxWidth: '82%',
+                    padding: `${spacing.md} ${spacing.lg}`,
+                    borderRadius:
+                      msg.role === 'user'
+                        ? `${borderRadius.xl} ${borderRadius.xl} ${spacing.xs} ${borderRadius.xl}`
+                        : `${borderRadius.xl} ${borderRadius.xl} ${borderRadius.xl} ${spacing.xs}`,
+                    background: msg.role === 'user' ? colors.gradients.primary : colors.glass.light,
+                    color: msg.role === 'user' ? colors.text.onDark : colors.text.primary,
+                    border: msg.role === 'assistant'
+                      ? `1px solid ${stepMeta ? stepMeta.color + '30' : colors.glass.border}`
+                      : 'none',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    lineHeight: 1.6,
+                    fontSize: 15,
+                  }}
+                >
+                  {msg.content}
+                </div>
+              </motion.div>
+            );
+          })}
 
           {/* Typing indicator */}
           <AnimatePresence>
@@ -324,7 +471,12 @@ function ConversationPageInner() {
                     key={i}
                     animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
                     transition={{ duration: 1.2, delay: i * 0.2, repeat: Infinity }}
-                    style={{ width: 7, height: 7, borderRadius: '50%', background: colors.accent.primary }}
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: '50%',
+                      background: selectedMeta?.color ?? colors.accent.primary,
+                    }}
                   />
                 ))}
               </motion.div>
@@ -348,12 +500,22 @@ function ConversationPageInner() {
                     padding: spacing.xl,
                     borderRadius: borderRadius.xl,
                     background: colors.glass.light,
-                    border: `1px solid ${colors.accent.primary}40`,
+                    border: `1px solid ${selectedMeta ? selectedMeta.color + '40' : colors.accent.primary + '40'}`,
                     backdropFilter: 'blur(12px)',
                     WebkitBackdropFilter: 'blur(12px)',
                   }}
                 >
-                  <Typography variant="small" style={{ color: colors.accent.primary, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 11, display: 'block', marginBottom: spacing.md }}>
+                  <Typography
+                    variant="small"
+                    style={{
+                      color: selectedMeta?.color ?? colors.accent.primary,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      fontSize: 11,
+                      display: 'block',
+                      marginBottom: spacing.md,
+                    }}
+                  >
                     Your script is ready
                   </Typography>
                   <Typography
@@ -406,7 +568,8 @@ function ConversationPageInner() {
             background: colors.glass.light,
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
-            border: `1px solid ${colors.glass.border}`,
+            border: `1px solid ${selectedMeta ? selectedMeta.color + '30' : colors.glass.border}`,
+            transition: 'border-color 0.3s',
           }}
         >
           <input

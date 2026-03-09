@@ -2,10 +2,9 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Typography } from '@/components';
 import { PageShell, PageContent } from '@/components';
-import Link from 'next/link';
 import { Mic, MicOff } from 'lucide-react';
 import { spacing, borderRadius, PAGE_VERTICAL_PADDING_PX } from '@/theme';
 import { useTheme } from '@/theme';
@@ -15,27 +14,10 @@ const VoiceOrb = dynamic(
   () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrb })),
   { ssr: false }
 );
-const VoiceOrbP5 = dynamic(
-  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrbP5 })),
-  { ssr: false }
-);
-const VoiceOrbOGL = dynamic(
-  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrbOGL })),
-  { ssr: false }
-);
-
-type OrbVariant = 'three' | 'p5' | 'ogl';
-
-const ORB_LABELS: Record<OrbVariant, string> = {
-  three: 'Three.js',
-  p5: 'p5.js',
-  ogl: 'OGL',
-};
 
 export default function SpeakTestPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [orbVariant, setOrbVariant] = useState<OrbVariant>('three');
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [hasStartedListening, setHasStartedListening] = useState(false);
@@ -70,13 +52,6 @@ export default function SpeakTestPage() {
     handleMicClick();
   };
 
-  const OrbComponent =
-    orbVariant === 'three'
-      ? VoiceOrb
-      : orbVariant === 'p5'
-        ? VoiceOrbP5
-        : VoiceOrbOGL;
-
   return (
     <PageShell intensity="strong">
       <PageContent width="medium">
@@ -91,15 +66,6 @@ export default function SpeakTestPage() {
             boxSizing: 'border-box',
           }}
         >
-          <Link
-            href="/speak"
-            style={{ textDecoration: 'none', alignSelf: 'flex-start', marginBottom: spacing.xl }}
-          >
-            <Typography variant="small" style={{ color: colors.text.secondary }}>
-              ← Speak
-            </Typography>
-          </Link>
-
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -111,42 +77,11 @@ export default function SpeakTestPage() {
             >
               Orb test mode
             </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg }}>
-              Switch between Three.js, p5.js, and OGL orb implementations
+            <Typography variant="body" style={{ color: colors.text.secondary }}>
+              Voice orb demo — click the mic to toggle listening / speaking states
             </Typography>
-
-            {/* 3 pill buttons */}
-            <div
-              style={{
-                display: 'flex',
-                gap: spacing.sm,
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-              }}
-            >
-              {(['three', 'p5', 'ogl'] as const).map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setOrbVariant(v)}
-                  style={{
-                    padding: `${spacing.sm} ${spacing.lg}`,
-                    borderRadius: borderRadius.full,
-                    border: `1px solid ${orbVariant === v ? colors.accent.primary : colors.glass.border}`,
-                    background: orbVariant === v ? `${colors.accent.primary}20` : 'transparent',
-                    color: orbVariant === v ? colors.accent.primary : colors.text.secondary,
-                    cursor: 'pointer',
-                    fontSize: 14,
-                    fontWeight: 500,
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {ORB_LABELS[v]}
-                </button>
-              ))}
-            </div>
           </motion.div>
 
-          {/* Orb area */}
           <div
             style={{
               flex: 1,
@@ -158,26 +93,14 @@ export default function SpeakTestPage() {
               minHeight: 320,
             }}
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={orbVariant}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                style={{ width: '100%', minHeight: 360 }}
-              >
-                <OrbComponent
-                  isActive={isActive}
-                  voiceSource={isListening ? 'user' : isSpeaking ? 'ai' : 'idle'}
-                  frequencyDataRef={frequencyDataRef}
-                  style={{ minHeight: 360, width: '100%' }}
-                />
-              </motion.div>
-            </AnimatePresence>
+            <VoiceOrb
+              isActive={isActive}
+              voiceSource={isListening ? 'user' : isSpeaking ? 'ai' : 'idle'}
+              frequencyDataRef={frequencyDataRef}
+              style={{ minHeight: 360, width: '100%' }}
+            />
           </div>
 
-          {/* Mic button */}
           <div style={{ position: 'relative', marginBottom: spacing.xl, flexShrink: 0 }}>
             {isActive && (
               <>

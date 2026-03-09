@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTheme, spacing } from '@/theme';
+import type { Theme } from '@/theme';
 
 export interface SpeakingAnimationProps {
   /** Whether audio is currently playing/speaking */
@@ -241,7 +242,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
 interface PageProps {
   isActive: boolean;
   pageIndex: number;
-  colors: any;
+  colors: Theme['colors'];
   children: React.ReactNode;
 }
 

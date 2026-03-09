@@ -6,6 +6,34 @@
 
 ---
 
+## Full Aligned Plan — Blocks 1–10 (2026-03-08)
+
+### All remaining critical broken paths + infrastructure
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-08
+- **Notes**:
+  - **Block 1A**: `ContentReviewStep` → `router.push(completeHref?id=savedId)`. Complete pages wrapped in `Suspense` + `useSearchParams` to read `savedId`.
+  - **Block 1B**: `ContentCreationContext` extended with `voiceId` + `voiceType`; `ContentVoiceStep` sets them; `ContentReviewStep` passes to `createContent` + triggers `/api/ai/render`.
+  - **Block 1C**: New `/api/ai/render` route: validate credits → ElevenLabs TTS → upload to Supabase 'audio' bucket → update `content_items.audio_url`.
+  - **Block 1D**: Mobile `ContentCreateScreen` form submit now calls `useCreateContent` mutation.
+  - **Block 1E**: Mobile `ProfileScreen` menu items wired with `navigation.navigate()`.
+  - **Block 2**: Stripe test keys added to `.env.local`; existing `/api/stripe/checkout/credits`, `/api/stripe/checkout/subscription`, `/api/stripe/webhook` confirmed complete. Stripe SDK updated to `2026-02-25.clover`.
+  - **Block 3**: `supabase/migrations/20260310000001_create_audio_bucket.sql` — private 'audio' bucket with owner RLS + marketplace public read. Shared `uploadAudio`, `getAudioSignedUrl`, `deleteAudio` utilities.
+  - **Block 4A**: `packages/mobile/src/components/audio/AudioRecorder.tsx` — full recording/playback UI with `expo-av`.
+  - **Block 4B**: `app.json` background audio modes + `NSMicrophoneUsageDescription`/`RECORD_AUDIO`/`FOREGROUND_SERVICE` permissions.
+  - **Block 4C**: New mobile Sanctuary sub-pages: `CreditsScreen`, `ProgressScreen`, `SettingsScreen`, `RemindersScreen`. Registered in `MainNavigator`.
+  - **Block 5**: Web + mobile `useCreditBalance` hooks extended with Supabase Realtime `postgres_changes` subscription for instant credit updates.
+  - **Block 6**: Search debouncing (300ms) in `ContentListPage` (web) and `LibraryScreen` (mobile). `LibraryScreen` migrated to `FlatList` with perf props. React Query offline persistor via `AsyncStorage` in mobile `App.tsx`.
+  - **Block 7**: `packages/shared/jest.config.js` + 28 passing unit tests: credits service, content service, auth schemas, credit cost constants.
+  - **Block 8**: PWA manifest enhanced (shortcuts, screenshots, categories). `packages/mobile/eas.json` created with dev/preview/production build profiles. Service worker `sw.js` (cache-first static, network-first navigation). `ServiceWorkerRegistration` component mounted in web layout.
+  - **Block 9A (Phase 15)**: Share button + `ShareModal` wired into `ContentCompleteStep`. Phase 15 analysis doc at `rebuild-roadmap/02-phases/15-phase-15-social-community.md`.
+  - **Block 9B (Phase 16)**: Analytics transport-agnostic utility (`packages/shared/src/utils/analytics.ts`) with typed `Analytics.*` helpers. Init in web (`AnalyticsProvider`) and mobile (`App.tsx`). `useBiometricAuth` hook (`expo-local-authentication`). Biometric permissions in `app.json`. Phase 16 doc at `rebuild-roadmap/02-phases/16-phase-16-advanced-features.md`.
+  - **Block 10**: This changelog + TypeScript errors fixed (Stripe SDK 20.x API changes: `invoice.parent.subscription_details.subscription`, `subscription.items.data[0].current_period_*`; `ContentAudioStep` field names aligned with `AudioSettings` type; `AudioPageProps` extended; `ScienceTopic` extended).
+- **Updated**: 2026-03-08
+
+---
+
 ## GitHub CI & Vercel Deployment (2026-03-08)
 
 ### Web CI workflow improvements and Vercel deploy

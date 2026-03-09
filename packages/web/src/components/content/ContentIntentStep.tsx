@@ -10,6 +10,7 @@ import { spacing, borderRadius } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import type { ContentType } from '@/lib/contexts/ContentCreationContext';
+import { ChevronLeft } from 'lucide-react';
 
 const MAX_CHARS = 300;
 
@@ -134,8 +135,8 @@ export function ContentIntentStep({ backHref, nextHref, scienceInsightOverride }
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href={backHref} style={{ textDecoration: 'none' }}>
-          <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
-            ← Back
+          <Button variant="ghost" size="md" style={{ color: colors.text.secondary, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ChevronLeft size={16} /> Back
           </Button>
         </Link>
         <Button

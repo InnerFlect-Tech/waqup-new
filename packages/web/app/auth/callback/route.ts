@@ -8,7 +8,13 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
-  const next = requestUrl.searchParams.get('next') || '/home'
+  // Support both the legacy ?next= query param and the cookie-based approach.
+  // The cookie approach is preferred: the redirectTo URL stays clean so Supabase
+  // can match it exactly without needing wildcard entries.
+  const nextParam = requestUrl.searchParams.get('next')
+  const cookieStore = await cookies()
+  const oauthNextCookie = cookieStore.get('oauth_next')?.value
+  const next = nextParam || (oauthNextCookie ? decodeURIComponent(oauthNextCookie) : '/sanctuary')
 
   if (!code) {
     return NextResponse.redirect(new URL('/login', requestUrl.origin))
@@ -25,7 +31,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const cookieStore = await cookies()
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         get(name: string) {
@@ -42,6 +47,9 @@ export async function GET(request: NextRequest) {
 
     const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code)
 
+    // Clear the oauth_next cookie regardless of outcome
+    cookieStore.set({ name: 'oauth_next', value: '', maxAge: 0, path: '/' })
+
     if (error) {
       console.error('Auth callback error:', error)
       return NextResponse.redirect(new URL('/login?error=callback_failed', requestUrl.origin))
@@ -50,6 +58,18 @@ export async function GET(request: NextRequest) {
     if (!session) {
       console.error('No session returned from exchangeCodeForSession')
       return NextResponse.redirect(new URL('/login?error=no_session', requestUrl.origin))
+    }
+
+    // For new users (account created within the last 15 seconds), send them
+    // through the explanation + onboarding flow — only when no explicit destination.
+    if (!nextParam && !oauthNextCookie) {
+      const createdAt = session.user.created_at
+        ? new Date(session.user.created_at).getTime()
+        : null
+      const isNewUser = createdAt !== null && Date.now() - createdAt < 15_000
+      if (isNewUser) {
+        return NextResponse.redirect(new URL('/explanation', requestUrl.origin))
+      }
     }
 
     return NextResponse.redirect(new URL(next, requestUrl.origin))

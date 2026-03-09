@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { textToSpeech } from '@waqup/shared/services';
 
 export const dynamic = 'force-dynamic';
 
 /** POST - Generate TTS preview for verification */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     const {

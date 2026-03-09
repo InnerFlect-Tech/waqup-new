@@ -152,7 +152,7 @@ export const AudioPlayer = memo(function AudioPlayer({
         </View>
       )}
 
-      {/* Volume controls */}
+      {/* Volume controls — three independent layers + master */}
       {showVolumeControls && (
         <View style={styles.volumeSection}>
           <VolumeSlider
@@ -163,7 +163,14 @@ export const AudioPlayer = memo(function AudioPlayer({
             colors={colors}
           />
           <VolumeSlider
-            label="Ambient"
+            label="Binaural"
+            value={volumes.binaural}
+            onChange={(v) => setVolumes({ binaural: v })}
+            color="#a78bfa"
+            colors={colors}
+          />
+          <VolumeSlider
+            label="Atmosphere"
             value={volumes.ambient}
             onChange={(v) => setVolumes({ ambient: v })}
             color="#60a5fa"

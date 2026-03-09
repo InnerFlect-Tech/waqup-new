@@ -1,1 +1,2 @@
-// Service exports will be added here
+export * from './ai';
+export * from './supabase';

@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { sendOrbMessage } from '@waqup/shared/services';
 import { calcOrbCost } from '@waqup/shared/constants';
 import type { OrbChatRequest, OrbChatResponse, OrbAddonKey } from '@waqup/shared/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +20,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
  * 6. Deducts credits
  * 7. Returns reply + credits used
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     if (!OPENAI_API_KEY) {
       return NextResponse.json(
@@ -45,30 +46,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'messages array required' }, { status: 400 });
     }
 
-    // ─── Credit check ─────────────────────────────────────────────────────────
+    // ─── Atomic credit deduction (before calling OpenAI) ─────────────────────
     const totalCost = calcOrbCost(activeAddons);
 
-    let currentBalance = 0;
-    try {
-      const { data: balanceData } = await supabase.rpc('get_credit_balance', {
-        p_user_id: user.id,
+    if (totalCost > 0) {
+      const { error: deductError } = await supabase.rpc('deduct_credits', {
+        p_user_id:     user.id,
+        p_amount:      totalCost,
+        p_description: `orb_chat:${activeAddons.join(',')}`,
       });
-      currentBalance = (balanceData as number) ?? 0;
-    } catch {
-      // Table not yet deployed — allow through with mock balance in dev
-      currentBalance = 999;
-    }
 
-    if (currentBalance < totalCost) {
-      return NextResponse.json(
-        {
-          error: 'insufficient_credits',
-          message: `You need ${totalCost} Qs but have ${currentBalance}. Get more Qs to continue.`,
-          required: totalCost,
-          balance: currentBalance,
-        },
-        { status: 402 }
-      );
+      if (deductError) {
+        if (deductError.message?.includes('insufficient_credits')) {
+          const { data: balance } = await supabase.rpc('get_credit_balance');
+          return NextResponse.json(
+            {
+              error: 'insufficient_credits',
+              message: `You need ${totalCost} Qs but have ${(balance as number) ?? 0}. Get more Qs to continue.`,
+              required: totalCost,
+              balance: (balance as number) ?? 0,
+            },
+            { status: 402 },
+          );
+        }
+        console.error('[orb/chat] credit deduction failed:', deductError.message);
+        return NextResponse.json({ error: 'Credit service unavailable' }, { status: 503 });
+      }
     }
 
     // ─── Fetch user context ───────────────────────────────────────────────────
@@ -94,21 +97,6 @@ export async function POST(request: Request) {
       apiKey: OPENAI_API_KEY,
     });
 
-    // ─── Deduct credits ───────────────────────────────────────────────────────
-    if (totalCost > 0) {
-      try {
-        await supabase.from('credit_transactions').insert({
-          user_id: user.id,
-          amount: -totalCost,
-          reason: `orb_chat:${activeAddons.join(',')}`,
-          metadata: { step, contentType, addons: activeAddons },
-        });
-      } catch (deductErr) {
-        // Non-fatal: log but don't fail the response
-        console.error('Credit deduction failed:', deductErr);
-      }
-    }
-
     // ─── Advance step ─────────────────────────────────────────────────────────
     const nextStep = advanceStep(step, contentType, reply);
 
@@ -128,8 +116,7 @@ export async function POST(request: Request) {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 async function buildUserContext(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
   contentType: string | null
 ): Promise<string> {
@@ -183,8 +170,7 @@ async function buildUserContext(
 }
 
 async function buildCollectiveContext(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabase: any,
+  supabase: SupabaseClient,
   contentType: string | null
 ): Promise<string> {
   try {

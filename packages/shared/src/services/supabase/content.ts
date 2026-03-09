@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ContentItem, ContentItemType, ContentStatus, VoiceType, AudioSettings } from '../../types/content';
+import { DEFAULT_AUDIO_SETTINGS } from '../../types/content';
 
 export interface ContentServiceResult<T> {
   data: T | null;
@@ -15,7 +16,12 @@ export interface CreateContentInput {
   frequency?: string;
   script?: string;
   status?: ContentStatus;
+  /** Legacy single-track URL — kept for backward compat */
   audioUrl?: string;
+  /** Three-layer audio URLs */
+  voiceUrl?: string;
+  ambientUrl?: string;
+  binauralUrl?: string;
   voiceType?: VoiceType;
   audioSettings?: AudioSettings;
 }
@@ -28,12 +34,36 @@ export interface UpdateContentInput {
   script?: string;
   status?: ContentStatus;
   audioUrl?: string;
+  voiceUrl?: string;
+  ambientUrl?: string;
+  binauralUrl?: string;
   voiceType?: VoiceType;
   audioSettings?: AudioSettings;
 }
 
+/**
+ * Maps a raw Supabase DB row to a ContentItem.
+ * Handles both new AudioSettings shape and old legacy fields gracefully.
+ */
 function mapRow(row: Record<string, unknown>): ContentItem {
-  const audioSettings = row.audio_settings as Record<string, number> | null;
+  const raw = row.audio_settings as Record<string, unknown> | null;
+
+  let audioSettings: AudioSettings | undefined;
+  if (raw) {
+    audioSettings = {
+      // New canonical fields (preferred)
+      volumeVoice:   (raw.volumeVoice   as number  | undefined) ?? (raw.voiceVolume as number | undefined) ?? DEFAULT_AUDIO_SETTINGS.volumeVoice,
+      volumeAmbient: (raw.volumeAmbient as number  | undefined) ?? (raw.musicVolume  as number | undefined) ?? DEFAULT_AUDIO_SETTINGS.volumeAmbient,
+      volumeBinaural:(raw.volumeBinaural as number  | undefined) ?? DEFAULT_AUDIO_SETTINGS.volumeBinaural,
+      volumeMaster:  (raw.volumeMaster  as number  | undefined) ?? DEFAULT_AUDIO_SETTINGS.volumeMaster,
+      // Preset IDs — map legacy string labels to new stable IDs where possible
+      binauralPresetId:   (raw.binauralPresetId   as string | undefined) ?? (raw.frequencyId as string | undefined) ?? DEFAULT_AUDIO_SETTINGS.binauralPresetId,
+      atmospherePresetId: (raw.atmospherePresetId as string | undefined) ?? (raw.ambienceId   as string | undefined) ?? DEFAULT_AUDIO_SETTINGS.atmospherePresetId,
+      fadeIn:  (raw.fadeIn  as boolean | undefined) ?? DEFAULT_AUDIO_SETTINGS.fadeIn,
+      fadeOut: (raw.fadeOut as boolean | undefined) ?? DEFAULT_AUDIO_SETTINGS.fadeOut,
+    };
+  }
+
   return {
     id: row.id as string,
     type: row.type as ContentItemType,
@@ -44,15 +74,23 @@ function mapRow(row: Record<string, unknown>): ContentItem {
     lastPlayed: (row.last_played_at as string) || undefined,
     script: (row.script as string) || undefined,
     status: ((row.status as string) || 'draft') as ContentStatus,
+    // Legacy single-track URL
     audioUrl: (row.audio_url as string) || undefined,
+    // Three-layer audio URLs
+    voiceUrl:    (row.voice_url    as string) || undefined,
+    ambientUrl:  (row.ambient_url  as string) || undefined,
+    binauralUrl: (row.binaural_url as string) || undefined,
+    // Per-content default volumes
+    defaultVolVoice:    (row.default_vol_voice    as number) ?? undefined,
+    defaultVolAmbient:  (row.default_vol_ambient  as number) ?? undefined,
+    defaultVolBinaural: (row.default_vol_binaural as number) ?? undefined,
     voiceType: (row.voice_type as VoiceType) || undefined,
-    audioSettings: audioSettings
-      ? {
-          volumeVoice: audioSettings.volumeVoice ?? 80,
-          volumeAmbient: audioSettings.volumeAmbient ?? 40,
-          volumeMaster: audioSettings.volumeMaster ?? 100,
-        }
-      : undefined,
+    audioSettings,
+    // Marketplace fields
+    isElevated: (row.is_elevated as boolean) ?? undefined,
+    isListed:   (row.is_listed   as boolean) ?? undefined,
+    playCount:  (row.play_count  as number)  ?? undefined,
+    shareCount: (row.share_count as number)  ?? undefined,
     createdAt: (row.created_at as string) || undefined,
     updatedAt: (row.updated_at as string) || undefined,
   };
@@ -145,6 +183,9 @@ export function createContentService(client: SupabaseClient) {
           script: input.script || null,
           status: input.status || 'draft',
           audio_url: input.audioUrl || null,
+          voice_url: input.voiceUrl || null,
+          ambient_url: input.ambientUrl || null,
+          binaural_url: input.binauralUrl || null,
           voice_type: input.voiceType || null,
           audio_settings: input.audioSettings || null,
         })
@@ -174,6 +215,9 @@ export function createContentService(client: SupabaseClient) {
       if (input.script !== undefined) updatePayload.script = input.script;
       if (input.status !== undefined) updatePayload.status = input.status;
       if (input.audioUrl !== undefined) updatePayload.audio_url = input.audioUrl;
+      if (input.voiceUrl !== undefined) updatePayload.voice_url = input.voiceUrl;
+      if (input.ambientUrl !== undefined) updatePayload.ambient_url = input.ambientUrl;
+      if (input.binauralUrl !== undefined) updatePayload.binaural_url = input.binauralUrl;
       if (input.voiceType !== undefined) updatePayload.voice_type = input.voiceType;
       if (input.audioSettings !== undefined) updatePayload.audio_settings = input.audioSettings;
 
@@ -211,15 +255,38 @@ export function createContentService(client: SupabaseClient) {
     }
   }
 
-  async function recordPlay(id: string): Promise<ContentServiceResult<void>> {
+  async function recordPlay(
+    id: string,
+    durationSeconds = 0
+  ): Promise<ContentServiceResult<void>> {
     try {
-      const { error } = await client
+      // Update last_played_at on the content item
+      const { data: contentRow, error: contentError } = await client
         .from('content_items')
         .update({ last_played_at: new Date().toISOString() })
-        .eq('id', id);
+        .eq('id', id)
+        .select('type')
+        .single();
 
-      if (error) {
-        return { data: null, error: error.message, success: false };
+      if (contentError) {
+        return { data: null, error: contentError.message, success: false };
+      }
+
+      // Also insert a practice session row for progress tracking
+      try {
+        const {
+          data: { user },
+        } = await client.auth.getUser();
+        if (user && contentRow?.type) {
+          await client.from('practice_sessions').insert({
+            user_id: user.id,
+            content_item_id: id,
+            content_type: contentRow.type,
+            duration_seconds: durationSeconds,
+          });
+        }
+      } catch {
+        // Non-fatal: session insert failure should not block playback
       }
 
       return { data: null, error: null, success: true };

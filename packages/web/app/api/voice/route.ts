@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { getVoice } from '@waqup/shared/services';
 
@@ -58,7 +58,7 @@ export async function GET() {
 }
 
 /** PATCH - Update voice metadata */
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     const {

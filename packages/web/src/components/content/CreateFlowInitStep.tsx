@@ -55,7 +55,7 @@ export function CreateFlowInitStep({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ marginBottom: spacing.xl, textAlign: 'center' }}
+        style={{ marginBottom: spacing.lg, textAlign: 'center' }}
       >
         <Typography variant="h1" style={{ marginBottom: spacing.md, color: colors.text.primary, fontWeight: 300 }}>
           {title}
@@ -84,10 +84,10 @@ export function CreateFlowInitStep({
         )}
       </motion.div>
 
-      <div style={{ marginBottom: spacing.xl }}>
+      <div style={{ marginBottom: spacing.lg }}>
         <div
           style={{
-            padding: spacing.xl,
+            padding: spacing.lg,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
             backdropFilter: 'blur(20px)',
@@ -95,20 +95,20 @@ export function CreateFlowInitStep({
             border: `1px solid ${colors.glass.border}`,
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
             {steps.map((step, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                style={{ display: 'flex', gap: spacing.lg }}
+                style={{ display: 'flex', gap: spacing.md, alignItems: 'flex-start' }}
               >
                 <div style={{ flexShrink: 0 }}>
                   <div
                     style={{
-                      width: 48,
-                      height: 48,
+                      width: 40,
+                      height: 40,
                       borderRadius: borderRadius.full,
                       background: `${colors.accent.tertiary}30`,
                       display: 'flex',
@@ -116,14 +116,14 @@ export function CreateFlowInitStep({
                       justifyContent: 'center',
                     }}
                   >
-                    <step.icon size={24} color={colors.accent.tertiary} strokeWidth={2.5} />
+                    <step.icon size={18} color={colors.accent.tertiary} strokeWidth={2.5} />
                   </div>
                 </div>
                 <div>
-                  <Typography variant="h3" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontWeight: 300 }}>
+                  <Typography variant="h4" style={{ marginBottom: 2, color: colors.text.primary, fontWeight: 500 }}>
                     {step.title}
                   </Typography>
-                  <Typography variant="body" style={{ color: colors.text.secondary }}>
+                  <Typography variant="caption" style={{ color: colors.text.secondary }}>
                     {step.description}
                   </Typography>
                 </div>
@@ -131,16 +131,16 @@ export function CreateFlowInitStep({
             ))}
           </div>
 
-          {tips && tips.slice(0, 5).length > 0 && (
+          {tips && tips.slice(0, 4).length > 0 && (
             <div
               style={{
-                marginTop: spacing.xl,
-                padding: spacing.md,
+                marginTop: spacing.lg,
+                padding: spacing.sm,
                 borderRadius: borderRadius.lg,
                 background: colors.glass.transparent,
               }}
             >
-              <Typography variant="h4" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontWeight: 300 }}>
+              <Typography variant="captionBold" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
                 Before You Begin:
               </Typography>
               <ul
@@ -148,12 +148,12 @@ export function CreateFlowInitStep({
                   margin: 0,
                   paddingLeft: spacing.lg,
                   color: colors.text.secondary,
-                  lineHeight: 1.8,
+                  lineHeight: 1.6,
                 }}
               >
-                {tips.slice(0, 5).map((tip, i) => (
+                {tips.slice(0, 4).map((tip, i) => (
                   <li key={i}>
-                    <Typography variant="body" style={{ color: colors.text.secondary }}>
+                    <Typography variant="caption" style={{ color: colors.text.secondary }}>
                       {tip}
                     </Typography>
                   </li>

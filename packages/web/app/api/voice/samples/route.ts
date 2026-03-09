@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { addSamplesToPvc } from '@waqup/shared/services';
+import { editVoice } from '@waqup/shared/services';
 
 export const dynamic = 'force-dynamic';
 
-/** POST - Upload audio samples to user's PVC voice */
-export async function POST(request: Request) {
+/** POST - Add more audio samples to an existing IVC voice */
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     const {
@@ -30,10 +30,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const formData = await request.formData();
+    type CompatFormData = { get(k: string): string | File | null; getAll(k: string): (string | File)[] };
+    const formData = (await request.formData()) as unknown as CompatFormData;
     const rawFiles = formData.getAll('files');
     const files = rawFiles.filter((f) => f instanceof Blob) as Blob[];
-    const removeBg = (formData as unknown as { get: (n: string) => unknown }).get('remove_background_noise');
+    const removeBg = formData.get('remove_background_noise');
     const removeBackgroundNoise = String(removeBg) === 'true';
 
     if (!files.length) {
@@ -43,20 +44,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const { sample_ids } = await addSamplesToPvc(
-      profile.elevenlabs_voice_id,
-      files,
-      removeBackgroundNoise
-    );
+    await editVoice(profile.elevenlabs_voice_id, files, removeBackgroundNoise);
 
-    return NextResponse.json({ sample_ids });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('Voice samples error:', err);
     return NextResponse.json(
       {
         error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to add samples',
+          message: err instanceof Error ? err.message : 'Failed to add samples',
         },
       },
       { status: 500 }

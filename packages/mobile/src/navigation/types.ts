@@ -11,6 +11,7 @@ export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
   Showcase: undefined;
+  Health: undefined;
 };
 
 export type AuthStackParamList = {
@@ -23,8 +24,7 @@ export type AuthStackParamList = {
 export type MainTabParamList = {
   Home: undefined;
   Library: undefined;
-  Create: undefined;
-  Profile: undefined;
+  Speak: undefined;
 };
 
 export type MainStackParamList = {
@@ -33,6 +33,10 @@ export type MainStackParamList = {
   CreateMode: { contentType: ContentItemType };
   ContentCreate: { contentType: ContentItemType; mode: 'form' | 'chat' | 'agent' };
   ContentEdit: { contentId: string; contentType: ContentItemType };
+  Credits: undefined;
+  Progress: undefined;
+  Settings: undefined;
+  Reminders: undefined;
 };
 
 // Helper type for navigation props

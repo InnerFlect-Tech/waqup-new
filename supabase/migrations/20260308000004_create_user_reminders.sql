@@ -1,4 +1,13 @@
 -- Migration: create_user_reminders
+-- Depends on: set_updated_at() function (created in 000000, repeated here for safety)
+create or replace function public.set_updated_at()
+returns trigger language plpgsql as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
 -- Creates the user_reminders table for scheduling practice sessions
 -- Per docs: "Daily Reminders" - notifications at preferred times, schedule for affirmations/meditations/rituals
 
@@ -10,7 +19,7 @@ create table if not exists public.user_reminders (
   time          time not null,
   days_of_week  smallint[] not null default '{1,2,3,4,5}' check (
     array_length(days_of_week, 1) > 0 and
-    (select bool_and(d >= 0 and d <= 6) from unnest(days_of_week) as d)
+    days_of_week <@ ARRAY[0,1,2,3,4,5,6]::smallint[]
   ),
   enabled       boolean not null default true,
 

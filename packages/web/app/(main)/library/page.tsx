@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo } from 'react';
 import { Typography, Button, Badge, Loading } from '@/components';
-import { useAuthStore } from '@/stores';
 import { spacing, borderRadius, GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
@@ -19,15 +18,18 @@ import {
   Calendar,
   Plus,
   RefreshCw,
-  Database,
+  Share2,
 } from 'lucide-react';
 import { getContentDetailHref } from '@/components/content';
 import type { ContentItem } from '@waqup/shared/types';
 import { getContentTypeIcon } from '@/lib';
 import { getContentTypeBadgeVariant } from '@waqup/shared/utils';
 import { useContent } from '@/hooks';
+import { ShareModal } from '@/components/marketplace';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
 type ContentTypeFilter = 'all' | 'ritual' | 'affirmation' | 'meditation';
+type SortOrder = 'recent' | 'most_played';
 
 const FILTERS: { id: ContentTypeFilter; label: string; icon: typeof Music }[] = [
   { id: 'all', label: 'All', icon: LibraryIcon },
@@ -38,9 +40,7 @@ const FILTERS: { id: ContentTypeFilter; label: string; icon: typeof Music }[] = 
 
 const TYPE_COLOR: Record<ContentTypeFilter, string> = {
   all: '',
-  affirmation: '#c084fc',
-  meditation: '#60a5fa',
-  ritual: '#34d399',
+  ...CONTENT_TYPE_COLORS,
 };
 
 function formatDate(iso?: string) {
@@ -51,9 +51,11 @@ function formatDate(iso?: string) {
 function ContentCard({
   item,
   colors,
+  onShare,
 }: {
   item: ContentItem;
   colors: ReturnType<typeof useTheme>['theme']['colors'];
+  onShare?: (item: ContentItem) => void;
 }) {
   const typeColor = TYPE_COLOR[item.type as ContentTypeFilter] ?? colors.accent.primary;
 
@@ -228,19 +230,27 @@ function ContentCard({
               </>
             )}
           </div>
-          {(item.createdAt || item.lastPlayed) && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-              <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
-              <span style={{ fontSize: '11px', color: colors.text.secondary }}>
-                {item.lastPlayed
-                  ? `Played ${formatDate(item.lastPlayed)}`
-                  : formatDate(item.createdAt)}
-              </span>
-            </div>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+            {typeof item.playCount === 'number' && item.playCount > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                <Play size={10} color={colors.text.secondary} strokeWidth={2} />
+                <span style={{ fontSize: '11px', color: colors.text.secondary }}>{item.playCount}</span>
+              </div>
+            )}
+            {(item.createdAt || item.lastPlayed) && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
+                <span style={{ fontSize: '11px', color: colors.text.secondary }}>
+                  {item.lastPlayed
+                    ? `Played ${formatDate(item.lastPlayed)}`
+                    : formatDate(item.createdAt)}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Hover play overlay */}
+        {/* Hover overlay */}
         <div
           className="library-card-overlay"
           style={{
@@ -252,9 +262,9 @@ function ContentCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            gap: spacing.md,
             opacity: 0,
             transition: 'opacity 0.25s ease',
-            pointerEvents: 'none',
             zIndex: 2,
           }}
         >
@@ -271,10 +281,33 @@ function ContentCard({
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: `0 8px 24px ${typeColor}50`,
+              pointerEvents: 'none',
             }}
           >
             <Play size={22} color="#fff" strokeWidth={2} style={{ marginLeft: spacing.xs }} />
           </div>
+          {onShare && (
+            <button
+              type="button"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onShare(item); }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: borderRadius.full,
+                background: 'rgba(255,255,255,0.12)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+              title="Share to marketplace"
+            >
+              <Share2 size={16} color="#fff" strokeWidth={2} />
+            </button>
+          )}
         </div>
       </div>
     </Link>
@@ -337,15 +370,15 @@ function CreateCard({
   );
 }
 
-const IS_DEV = process.env.NODE_ENV === 'development';
-
 export default function LibraryPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const [typeFilter, setTypeFilter] = useState<ContentTypeFilter>('all');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('recent');
   const [searchQuery, setSearchQuery] = useState('');
   const [seedLoading, setSeedLoading] = useState(false);
   const [seedError, setSeedError] = useState<string | null>(null);
+  const [sharingItem, setSharingItem] = useState<ContentItem | null>(null);
   const { items: allContent, isLoading, error, refetch } = useContent();
 
   const handleSeed = async () => {
@@ -366,16 +399,22 @@ export default function LibraryPage() {
     }
   };
 
-  const filteredContent = useMemo(
-    () =>
-      allContent.filter((item) => {
-        if (typeFilter !== 'all' && item.type !== typeFilter) return false;
-        if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase()))
-          return false;
-        return true;
-      }),
-    [allContent, typeFilter, searchQuery]
-  );
+  const filteredContent = useMemo(() => {
+    const filtered = allContent.filter((item) => {
+      if (typeFilter !== 'all' && item.type !== typeFilter) return false;
+      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      return true;
+    });
+
+    if (sortOrder === 'most_played') {
+      return [...filtered].sort((a, b) => (b.playCount ?? 0) - (a.playCount ?? 0));
+    }
+    return [...filtered].sort((a, b) => {
+      const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return db - da;
+    });
+  }, [allContent, typeFilter, searchQuery, sortOrder]);
 
   return (
     <PageShell intensity="medium">
@@ -387,7 +426,7 @@ export default function LibraryPage() {
             alignItems: 'flex-start',
             justifyContent: 'space-between',
             gap: spacing.lg,
-            marginBottom: spacing.xl,
+            marginBottom: spacing.lg,
             flexWrap: 'wrap',
           }}
         >
@@ -426,11 +465,12 @@ export default function LibraryPage() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: spacing.md,
-            marginBottom: spacing.xl,
+            gap: spacing.sm,
+            marginBottom: spacing.md,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
             {FILTERS.map(({ id, label, icon: Icon }) => {
               const isActive = typeFilter === id;
               const accent = TYPE_COLOR[id] || colors.accent.primary;
@@ -473,10 +513,33 @@ export default function LibraryPage() {
                     >
                       {count}
                     </span>
-                  )}
-                </button>
+              )}
+            </button>
               );
             })}
+            </div>
+
+            {/* Sort */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexShrink: 0 }}>
+              {(['recent', 'most_played'] as SortOrder[]).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSortOrder(s)}
+                  style={{
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    borderRadius: borderRadius.full,
+                    border: `1px solid ${sortOrder === s ? colors.accent.primary : colors.glass.border}`,
+                    background: sortOrder === s ? `${colors.accent.primary}15` : 'transparent',
+                    color: sortOrder === s ? colors.accent.tertiary : colors.text.secondary,
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {s === 'recent' ? 'Recent' : 'Most played'}
+                </button>
+              ))}
+            </div>
           </div>
           <div style={{ maxWidth: SEARCH_INPUT_MAX_WIDTH }}>
             <input
@@ -566,7 +629,7 @@ export default function LibraryPage() {
               Create your first affirmation, meditation, or ritual to start your transformation.
             </Typography>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.md }}>
-              <Link href="/create" style={{ textDecoration: 'none' }}>
+              <Link href="/sanctuary/affirmations/create/init" style={{ textDecoration: 'none' }}>
                 <Button
                   variant="primary"
                   size="md"
@@ -578,7 +641,7 @@ export default function LibraryPage() {
                   }}
                 >
                   <Plus size={16} strokeWidth={2.5} />
-                  Create your first piece
+                  Create your first affirmation
                 </Button>
               </Link>
               {process.env.NODE_ENV === 'development' && (
@@ -624,7 +687,7 @@ export default function LibraryPage() {
           >
             <CreateCard colors={colors} />
             {filteredContent.map((item) => (
-              <ContentCard key={item.id} item={item} colors={colors} />
+              <ContentCard key={item.id} item={item} colors={colors} onShare={(i) => setSharingItem(i)} />
             ))}
           </div>
         )}
@@ -649,6 +712,16 @@ export default function LibraryPage() {
               {searchQuery ? `Nothing matches "${searchQuery}"` : `No ${typeFilter}s yet`}
             </Typography>
           </div>
+        )}
+
+        {sharingItem && (
+          <ShareModal
+            isOpen
+            onClose={() => setSharingItem(null)}
+            contentId={sharingItem.id}
+            title={sharingItem.title}
+            contentType={sharingItem.type}
+          />
         )}
 
         <style>{`

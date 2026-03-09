@@ -12,7 +12,7 @@ export default function AffirmationVoicePage() {
   return (
     <ContentVoiceStep
       backHref="/sanctuary/affirmations/create/script"
-      nextHref="/sanctuary/affirmations/create/complete"
+      nextHref="/sanctuary/affirmations/create/audio"
     />
   );
 }

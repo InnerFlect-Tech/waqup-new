@@ -1,27 +1,33 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Typography, Button } from '@/components';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Typography, Button, AiCostNotice } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { Mic, Upload, Play, Check, Loader2 } from 'lucide-react';
-
-interface VoiceStatus {
-  voice_id: string | null;
-  name: string | null;
-  language: string | null;
-  status: 'not_setup' | 'processing' | 'ready';
-}
+import { Mic, Upload, Play, Check, Loader2, AlertCircle, Plus } from 'lucide-react';
+import { getVoiceStatus, createVoice, uploadVoiceSamples, previewVoice } from '@/lib/api-client';
+import type { VoiceStatus } from '@/lib/api-client';
 
 const PREVIEW_TEXT =
   'Hello, this is a preview of your cloned voice. Your personalized affirmations and meditations will sound like this.';
 
+const RECORDING_TIPS = [
+  'Record in a quiet room with no background noise',
+  'Speak clearly and at a natural pace',
+  'Keep 30+ seconds of total audio for best results',
+  'Use a good microphone or phone voice memo app',
+  'Read a passage aloud — a book, article, or poem works well',
+];
+
 export default function VoiceSetupPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const moreFilesRef = useRef<HTMLInputElement>(null);
+
   const [status, setStatus] = useState<VoiceStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -31,16 +37,14 @@ export default function VoiceSetupPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [name, setName] = useState('');
-  const [language, setLanguage] = useState('en');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [removeNoise, setRemoveNoise] = useState(false);
 
   const fetchStatus = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch('/api/voice');
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || 'Failed to fetch');
+      const data = await getVoiceStatus();
       setStatus(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load');
@@ -54,21 +58,40 @@ export default function VoiceSetupPage() {
     fetchStatus();
   }, []);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    setSelectedFiles((prev) => {
+      const names = new Set(prev.map((f) => f.name));
+      return [...prev, ...files.filter((f) => !names.has(f.name))];
+    });
+    e.target.value = '';
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const totalDurationLabel = selectedFiles.length
+    ? `${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''} selected`
+    : null;
+
   const handleCreate = async () => {
     if (!name.trim()) {
       setError('Voice name is required');
       return;
     }
+    if (!selectedFiles.length) {
+      setError('Upload at least one audio sample to create your voice');
+      return;
+    }
     try {
       setCreating(true);
       setError(null);
-      const res = await fetch('/api/voice/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), language: language.trim() || 'en' }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || 'Failed to create');
+      const formData = new FormData();
+      formData.append('name', name.trim());
+      selectedFiles.forEach((f) => formData.append('files', f));
+      formData.append('remove_background_noise', String(removeNoise));
+      await createVoice(formData);
       await fetchStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create voice');
@@ -77,7 +100,7 @@ export default function VoiceSetupPage() {
     }
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadMore = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files?.length) return;
     try {
@@ -86,12 +109,7 @@ export default function VoiceSetupPage() {
       const formData = new FormData();
       Array.from(files).forEach((f) => formData.append('files', f));
       formData.append('remove_background_noise', String(removeNoise));
-      const res = await fetch('/api/voice/samples', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || 'Failed to upload');
+      await uploadVoiceSamples(formData);
       await fetchStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload samples');
@@ -106,16 +124,7 @@ export default function VoiceSetupPage() {
       setPreviewing(true);
       setError(null);
       setPreviewUrl(null);
-      const res = await fetch('/api/voice/preview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: PREVIEW_TEXT }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error?.message || 'Failed to generate preview');
-      }
-      const blob = await res.blob();
+      const blob = await previewVoice(PREVIEW_TEXT);
       const url = URL.createObjectURL(blob);
       setPreviewUrl(url);
     } catch (err) {
@@ -131,36 +140,35 @@ export default function VoiceSetupPage() {
     };
   }, [previewUrl]);
 
-  if (loading) {
-    return (
-      <PageShell intensity="medium">
-        <PageContent width="narrow">
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, padding: spacing.xxl }}>
-            <Loader2 size={24} color={colors.accent.primary} className="animate-spin" />
-            <Typography variant="body" style={{ color: colors.text.secondary }}>
-              Loading voice setup…
-            </Typography>
-          </div>
-        </PageContent>
-      </PageShell>
-    );
-  }
-
   return (
     <PageShell intensity="medium">
       <PageContent width="narrow">
-        <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.xl }}>
-          <Typography variant="small" style={{ color: colors.text.secondary }}>
-            ← Sanctuary
-          </Typography>
-        </Link>
-
-        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+        <AnimatePresence>
+          {loading && (
+            <motion.div
+              key="voice-loader"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ duration: 0.25 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '50vh',
+              }}
+            >
+              <Loader2 size={32} color={colors.accent.primary} className="animate-spin" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {!loading && (<>
+        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300, textAlign: 'center' }}>
           My Voice
         </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
-          Set up your cloned voice for personalized affirmations and meditations. Record in a quiet room with clear
-          speech — 30+ seconds total recommended.
+        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textAlign: 'center' }}>
+          Clone your voice for personalized affirmations and meditations. Upload a recording and your
+          voice will be ready instantly.
         </Typography>
 
         {error && (
@@ -168,13 +176,17 @@ export default function VoiceSetupPage() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: spacing.sm,
               padding: spacing.md,
               borderRadius: borderRadius.md,
-              background: `${colors.error}20`,
+              background: `${colors.error}18`,
               border: `1px solid ${colors.error}40`,
               marginBottom: spacing.xl,
             }}
           >
+            <AlertCircle size={16} color={colors.error} style={{ marginTop: 2, flexShrink: 0 }} />
             <Typography variant="small" style={{ color: colors.error }}>
               {error}
             </Typography>
@@ -186,7 +198,7 @@ export default function VoiceSetupPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              padding: spacing.xxl,
+              padding: spacing.xl,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
               backdropFilter: 'blur(20px)',
@@ -197,7 +209,9 @@ export default function VoiceSetupPage() {
             <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.lg }}>
               Create your voice
             </Typography>
-            <div style={{ marginBottom: spacing.lg }}>
+
+            {/* Voice name */}
+            <div style={{ marginBottom: spacing.md }}>
               <label style={{ display: 'block', marginBottom: spacing.xs }}>
                 <Typography variant="small" style={{ color: colors.text.secondary }}>
                   Voice name
@@ -216,35 +230,129 @@ export default function VoiceSetupPage() {
                   background: colors.glass.transparent,
                   color: colors.text.primary,
                   fontSize: 15,
+                  boxSizing: 'border-box',
+                  outline: 'none',
                 }}
               />
             </div>
-            <div style={{ marginBottom: spacing.xl }}>
+
+            {/* Audio samples upload */}
+            <div style={{ marginBottom: spacing.md }}>
               <label style={{ display: 'block', marginBottom: spacing.xs }}>
                 <Typography variant="small" style={{ color: colors.text.secondary }}>
-                  Language
+                  Audio samples <span style={{ color: colors.error }}>*</span>
                 </Typography>
               </label>
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+              <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginBottom: spacing.sm, display: 'block', fontSize: 12 }}>
+                Upload one or more audio recordings of your voice (MP3, WAV, M4A). 30+ seconds total recommended.
+              </Typography>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="audio/*"
+                multiple
+                onChange={handleFileSelect}
+                style={{ display: 'none' }}
+              />
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
                 style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing.sm,
                   width: '100%',
                   padding: `${spacing.md} ${spacing.lg}`,
                   borderRadius: borderRadius.md,
-                  border: `1px solid ${colors.glass.border}`,
-                  background: colors.glass.transparent,
-                  color: colors.text.primary,
-                  fontSize: 15,
+                  border: `2px dashed ${selectedFiles.length ? colors.accent.primary : colors.glass.border}`,
+                  background: selectedFiles.length ? `${colors.accent.primary}08` : colors.glass.transparent,
+                  color: selectedFiles.length ? colors.accent.primary : colors.text.secondary,
+                  cursor: 'pointer',
+                  fontSize: 14,
+                  transition: 'all 0.2s',
+                  justifyContent: 'center',
                 }}
               >
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="pt">Portuguese</option>
-              </select>
+                <Upload size={18} />
+                {totalDurationLabel ?? 'Click to upload audio files'}
+              </button>
+
+              {selectedFiles.length > 0 && (
+                <div style={{ marginTop: spacing.sm, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                  {selectedFiles.map((file, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: `${spacing.xs} ${spacing.md}`,
+                        borderRadius: borderRadius.sm,
+                        background: colors.glass.transparent,
+                        border: `1px solid ${colors.glass.border}`,
+                      }}
+                    >
+                      <Typography variant="small" style={{ color: colors.text.secondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80%' }}>
+                        {file.name}
+                      </Typography>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(i)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text.secondary, padding: '2px 4px', fontSize: 14 }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
+
+            {/* Noise removal */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, cursor: 'pointer', marginBottom: spacing.md }}>
+              <input
+                type="checkbox"
+                checked={removeNoise}
+                onChange={(e) => setRemoveNoise(e.target.checked)}
+                style={{ accentColor: colors.accent.primary }}
+              />
+              <Typography variant="small" style={{ color: colors.text.secondary }}>
+                Remove background noise from samples
+              </Typography>
+            </label>
+
+            {/* Tips */}
+            <div
+              style={{
+                padding: spacing.md,
+                borderRadius: borderRadius.md,
+                background: `${colors.accent.primary}0A`,
+                border: `1px solid ${colors.accent.primary}20`,
+                marginBottom: spacing.md,
+              }}
+            >
+              <Typography variant="small" style={{ color: colors.accent.primary, fontWeight: 600, marginBottom: spacing.sm, display: 'block' }}>
+                Tips for best results
+              </Typography>
+              <ul style={{ margin: 0, paddingLeft: spacing.lg, listStyle: 'disc' }}>
+                {RECORDING_TIPS.map((tip) => (
+                  <li key={tip} style={{ marginBottom: spacing.xs }}>
+                    <Typography variant="small" style={{ color: colors.text.secondary }}>
+                      {tip}
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <AiCostNotice
+              cost={0}
+              description="ElevenLabs Instant Voice Clone — uses your ElevenLabs account credits. No Q credits charged."
+              style={{ marginBottom: spacing.lg }}
+            />
+
             <Button
               variant="primary"
               size="lg"
@@ -255,7 +363,7 @@ export default function VoiceSetupPage() {
               {creating ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  Creating…
+                  Creating your voice…
                 </>
               ) : (
                 <>
@@ -272,15 +380,16 @@ export default function VoiceSetupPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              padding: spacing.xxl,
+              padding: spacing.xl,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: `1px solid ${colors.glass.border}`,
-              marginBottom: spacing.xl,
+              marginBottom: spacing.lg,
             }}
           >
+            {/* Header */}
             <div
               style={{
                 display: 'flex',
@@ -311,12 +420,60 @@ export default function VoiceSetupPage() {
               </span>
             </div>
 
+            {/* Preview */}
             <div style={{ marginBottom: spacing.lg }}>
-              <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
-                Add more samples for better quality (quiet room, clear speech, 30+ seconds)
+              <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
+                Preview your voice
               </Typography>
-              <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
-                <label
+              <AiCostNotice
+                cost={0}
+                description="ElevenLabs TTS preview — uses your ElevenLabs account credits. No Q credits charged."
+                style={{ marginBottom: spacing.sm }}
+              />
+              <div style={{ display: 'flex', gap: spacing.md, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={handlePreview}
+                  disabled={previewing || status.status !== 'ready'}
+                >
+                  {previewing ? (
+                    <Loader2 size={16} style={{ marginRight: spacing.sm }} className="animate-spin" />
+                  ) : (
+                    <Play size={16} style={{ marginRight: spacing.sm }} />
+                  )}
+                  {previewing ? 'Generating…' : 'Play preview'}
+                </Button>
+                {previewUrl && (
+                  <audio controls src={previewUrl} style={{ maxWidth: 280, height: 36 }} />
+                )}
+              </div>
+              {status.status === 'processing' && (
+                <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.sm, display: 'block' }}>
+                  Your voice is being processed. Preview will be available shortly.
+                </Typography>
+              )}
+            </div>
+
+            {/* Add more samples */}
+            <div>
+              <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
+                Improve quality — add more samples
+              </Typography>
+              <input
+                ref={moreFilesRef}
+                type="file"
+                accept="audio/*"
+                multiple
+                disabled={uploading}
+                onChange={handleUploadMore}
+                style={{ display: 'none' }}
+              />
+              <div style={{ display: 'flex', gap: spacing.md, flexWrap: 'wrap', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={() => moreFilesRef.current?.click()}
+                  disabled={uploading}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -325,26 +482,18 @@ export default function VoiceSetupPage() {
                     borderRadius: borderRadius.md,
                     border: `1px solid ${colors.glass.border}`,
                     background: colors.glass.transparent,
+                    color: colors.text.primary,
                     cursor: uploading ? 'wait' : 'pointer',
+                    fontSize: 14,
                   }}
                 >
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    multiple
-                    disabled={uploading}
-                    onChange={handleUpload}
-                    style={{ display: 'none' }}
-                  />
                   {uploading ? (
-                    <Loader2 size={18} color={colors.accent.primary} className="animate-spin" />
+                    <Loader2 size={16} color={colors.accent.primary} className="animate-spin" />
                   ) : (
-                    <Upload size={18} color={colors.accent.primary} />
+                    <Plus size={16} color={colors.accent.primary} />
                   )}
-                  <Typography variant="body" style={{ color: colors.text.primary }}>
-                    {uploading ? 'Uploading…' : 'Upload samples'}
-                  </Typography>
-                </label>
+                  {uploading ? 'Uploading…' : 'Add samples'}
+                </button>
                 <label style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, cursor: 'pointer' }}>
                   <input
                     type="checkbox"
@@ -358,35 +507,9 @@ export default function VoiceSetupPage() {
                 </label>
               </div>
             </div>
-
-            <div>
-              <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
-                Preview your voice
-              </Typography>
-              <div style={{ display: 'flex', gap: spacing.md, alignItems: 'center', flexWrap: 'wrap' }}>
-                <Button
-                  variant="outline"
-                  size="md"
-                  onClick={handlePreview}
-                  disabled={previewing || status.status !== 'ready'}
-                  style={{
-                    borderColor: colors.glass.border,
-                    background: colors.glass.transparent,
-                  }}
-                >
-                  {previewing ? (
-                    <Loader2 size={16} style={{ marginRight: spacing.sm }} className="animate-spin" />
-                  ) : (
-                    <Play size={16} style={{ marginRight: spacing.sm }} />
-                  )}
-                  {previewing ? 'Generating…' : 'Play preview'}
-                </Button>
-                {previewUrl && (
-                  <audio controls src={previewUrl} style={{ maxWidth: 280, height: 36 }} />
-                )}
-              </div>
-            </div>
           </motion.div>
+        )}
+        </>
         )}
       </PageContent>
     </PageShell>

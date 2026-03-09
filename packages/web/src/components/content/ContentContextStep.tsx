@@ -11,7 +11,7 @@ import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import type { ContentType } from '@/lib/contexts/ContentCreationContext';
 import type { ScienceTopic } from './ScienceInsight';
-import { Sun, Moon, Clock, MapPin } from 'lucide-react';
+import { Sun, Moon, Clock, MapPin, ChevronLeft } from 'lucide-react';
 
 const TIME_OPTIONS = [
   { id: 'morning', label: 'Morning', icon: Sun, color: '#f59e0b' },
@@ -153,8 +153,8 @@ export function ContentContextStep({ backHref, nextHref }: ContentContextStepPro
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href={backHref} style={{ textDecoration: 'none' }}>
-          <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
-            ← Back
+          <Button variant="ghost" size="md" style={{ color: colors.text.secondary, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ChevronLeft size={16} /> Back
           </Button>
         </Link>
         <Button variant="primary" size="lg" disabled={!canContinue} onClick={handleContinue}>

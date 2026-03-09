@@ -9,12 +9,16 @@ import { spacing, borderRadius } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { getContentDetailHref } from './getContentDetailHref';
-import { Sparkles, Headphones, ArrowRight } from 'lucide-react';
+import { Sparkles, Headphones, ArrowRight, Share2 } from 'lucide-react';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { Analytics } from '@waqup/shared/utils';
+import { ShareModal } from '@/components/marketplace/ShareModal';
+import { useAuthStore } from '@/stores';
 
 const TYPE_LABELS = {
-  affirmation: { emoji: '✦', color: '#c084fc', sanctuary: '/sanctuary/affirmations' },
-  meditation: { emoji: '◎', color: '#60a5fa', sanctuary: '/sanctuary/meditations' },
-  ritual: { emoji: '⬡', color: '#34d399', sanctuary: '/sanctuary/rituals' },
+  affirmation: { emoji: '✦', color: CONTENT_TYPE_COLORS.affirmation, sanctuary: '/sanctuary/affirmations' },
+  meditation: { emoji: '◎', color: CONTENT_TYPE_COLORS.meditation, sanctuary: '/sanctuary/meditations' },
+  ritual: { emoji: '⬡', color: CONTENT_TYPE_COLORS.ritual, sanctuary: '/sanctuary/rituals' },
 };
 
 export interface ContentCompleteStepProps {
@@ -25,7 +29,9 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
   const { contentType, intent, script } = useContentCreation();
+  const { user } = useAuthStore();
   const [show, setShow] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const meta = TYPE_LABELS[contentType];
   const editAudioHref = savedId ? `${getContentDetailHref(contentType, savedId)}/edit-audio` : null;
@@ -33,7 +39,9 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
 
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 100);
+    Analytics.contentCreated(contentType, 'form', user?.id);
     return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -141,7 +149,30 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
             View in Sanctuary
           </Button>
         </Link>
+
+        {savedId && (
+          <Button
+            variant="ghost"
+            size="lg"
+            onClick={() => setShareOpen(true)}
+            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, color: colors.text.secondary }}
+          >
+            <Share2 size={16} />
+            Share
+          </Button>
+        )}
       </motion.div>
+
+      {savedId && (
+        <ShareModal
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          contentId={savedId}
+          title={intent ?? 'My practice'}
+          creatorName={user?.user_metadata?.full_name ?? user?.email?.split('@')[0]}
+          contentType={contentType}
+        />
+      )}
 
       <ScienceInsight
         topic="neuroplasticity"

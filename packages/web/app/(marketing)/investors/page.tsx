@@ -1225,7 +1225,7 @@ export default function InvestorsPage() {
               lineHeight: 1.6,
             }}
           >
-            waQup is built by a small team. If you&apos;re interested in partnering or investing, reach out directly — we read every message.
+            waQup is built by Daniel Indias Fernandes and a small dedicated team. If you&apos;re interested in partnering or investing, reach out directly — we read every message.
           </Typography>
           {formState.status === 'success' ? (
             <div style={{ textAlign: 'center', padding: spacing.xl }}>
@@ -1343,7 +1343,7 @@ export default function InvestorsPage() {
               textAlign: 'center',
             }}
           >
-            waQup is built by Innerflect · innerflect.tech
+            Daniel Indias Fernandes · Founder, waQup · Innerflect · innerflect.tech
           </Typography>
         </motion.div>
       </section>

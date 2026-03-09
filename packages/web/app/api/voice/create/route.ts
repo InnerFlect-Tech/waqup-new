@@ -1,10 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { createPvcVoice } from '@waqup/shared/services';
+import { createInstantVoice } from '@waqup/shared/services';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+/**
+ * POST - Create an Instant Voice Clone (IVC) from audio samples.
+ * Accepts multipart/form-data with: name (string), files[] (audio), remove_background_noise (optional).
+ * IVC is available on all ElevenLabs tiers including free.
+ */
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     const {
@@ -16,9 +21,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: { message: 'Unauthorized' } }, { status: 401 });
     }
 
-    const body = await request.json();
-    const name = typeof body?.name === 'string' ? body.name.trim() : '';
-    const language = typeof body?.language === 'string' ? body.language.trim() : 'en';
+    // Cast needed: @types/node v24 + dom lib both declare FormData with incompatible
+    // shapes, causing the merged type to drop .get()/.getAll().
+    type CompatFormData = { get(k: string): string | File | null; getAll(k: string): (string | File)[] };
+    const formData = (await request.formData()) as unknown as CompatFormData;
+    const name = typeof formData.get('name') === 'string' ? (formData.get('name') as string).trim() : '';
+    const rawFiles = formData.getAll('files');
+    const files = rawFiles.filter((f) => f instanceof Blob) as Blob[];
+    const removeBg = formData.get('remove_background_noise');
+    const removeBackgroundNoise = String(removeBg) === 'true';
 
     if (!name) {
       return NextResponse.json(
@@ -27,7 +38,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const voiceId = await createPvcVoice({ name, language });
+    if (!files.length) {
+      return NextResponse.json(
+        { error: { message: 'At least one audio sample is required to create a voice' } },
+        { status: 400 }
+      );
+    }
+
+    const voiceId = await createInstantVoice({ name, files, removeBackgroundNoise });
 
     const { error: updateError } = await supabase
       .from('profiles')
@@ -36,7 +54,7 @@ export async function POST(request: Request) {
           id: user.id,
           elevenlabs_voice_id: voiceId,
           elevenlabs_voice_name: name,
-          elevenlabs_voice_language: language,
+          elevenlabs_voice_language: 'en',
         },
         { onConflict: 'id' }
       );

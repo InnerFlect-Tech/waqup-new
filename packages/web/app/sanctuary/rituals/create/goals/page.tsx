@@ -7,7 +7,7 @@ import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { Heart, Brain, Zap, Users, Shield, Sun, Leaf, Star, Check } from 'lucide-react';
+import { Heart, Brain, Zap, Users, Shield, Sun, Leaf, Star, Check, ChevronLeft } from 'lucide-react';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 
 interface Goal {
@@ -158,8 +158,8 @@ export default function RitualCreateGoalsPage() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href="/sanctuary/rituals/create/init" style={{ textDecoration: 'none' }}>
-          <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
-            ← Back
+          <Button variant="ghost" size="md" style={{ color: colors.text.secondary, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ChevronLeft size={16} /> Back
           </Button>
         </Link>
         <Button

@@ -1,18 +1,17 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Target, MapPin, FileText, Mic } from 'lucide-react';
+import { Target, MapPin, Sparkles, Mic, Music, Eye } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { ContentModeSelector } from '@/components/content/ContentModeSelector';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
-import { formatQs } from '@waqup/shared/utils';
+import { CONTENT_CREDIT_COSTS, AI_MODE_COSTS } from '@waqup/shared/constants';
 
 const MEDITATION_STEPS = [
   {
     icon: Target,
     title: 'Set Your Intent',
-    description: 'What state or outcome do you seek? (sleep, focus, calm)',
+    description: 'What state or outcome are you seeking? (sleep, focus, calm)',
   },
   {
     icon: MapPin,
@@ -20,14 +19,24 @@ const MEDITATION_STEPS = [
     description: 'When and where will you practice? (morning, before sleep, commute)',
   },
   {
-    icon: FileText,
+    icon: Sparkles,
     title: 'Generate Your Script',
     description: 'AI creates grounding, visualization, and relaxation induction',
   },
   {
     icon: Mic,
-    title: 'Voice & Audio',
-    description: 'Choose voice, record, and mix with sacred frequencies',
+    title: 'Choose Your Voice',
+    description: 'ElevenLabs long-form voice or your own personal recording',
+  },
+  {
+    icon: Music,
+    title: 'Mix & Enhance',
+    description: 'Add background soundscapes and sacred frequency layers',
+  },
+  {
+    icon: Eye,
+    title: 'Review & Save',
+    description: 'Preview your meditation and save it to your sanctuary',
   },
 ];
 
@@ -44,10 +53,8 @@ export default function MeditationCreateInitPage() {
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
 
   const costs = CONTENT_CREDIT_COSTS.meditation;
-  const creditRange =
-    costs.withAi > costs.base
-      ? `${costs.base}–${costs.withAi} Qs`
-      : formatQs(costs.base);
+  const maxCost = AI_MODE_COSTS.chat + costs.withAi;
+  const creditRange = `${costs.base}–${maxCost} Qs`;
 
   return (
     <CreateFlowInitStep
@@ -60,6 +67,7 @@ export default function MeditationCreateInitPage() {
         <ContentModeSelector
           formHref="/sanctuary/meditations/create/intent"
           chatHref="/create/conversation?type=meditation"
+          agentHref="/create/orb?type=meditation"
         />
       }
     />

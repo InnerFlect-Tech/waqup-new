@@ -268,38 +268,23 @@ export default function SanctuaryRemindersPage() {
     reminders.some((r) => r.time === session.time && r.enabled);
 
   const sectionStyle: React.CSSProperties = {
-    padding: spacing.xl,
+    padding: spacing.lg,
     borderRadius: borderRadius.xl,
     background: colors.glass.light,
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     border: `1px solid ${colors.glass.border}`,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.md,
   };
 
   return (
     <PageShell intensity="medium">
       <PageContent width="narrow">
-        <Link
-          href="/sanctuary"
-          style={{
-            textDecoration: 'none',
-            display: 'inline-block',
-            marginBottom: spacing.xl,
-            transition: 'opacity 0.2s',
-          }}
-          className="hover:opacity-80"
-        >
-          <Typography variant="small" style={{ color: colors.text.secondary }}>
-            ← Sanctuary
-          </Typography>
-        </Link>
-
         {/* Headline */}
-        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.xs, fontWeight: 300, textAlign: 'center' }}>
           Time your practice well
         </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
+        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textAlign: 'center' }}>
           Consistency matters more than duration. Two short sessions daily — at the right moments — rewire your brain faster than anything else.
         </Typography>
 
@@ -341,7 +326,7 @@ export default function SanctuaryRemindersPage() {
         )}
 
         {/* Recommended sessions */}
-        <div style={{ marginBottom: spacing.xl }}>
+        <div style={{ marginBottom: spacing.md }}>
           <Typography
             variant="h4"
             style={{
@@ -375,7 +360,7 @@ export default function SanctuaryRemindersPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.08 }}
                   style={{
-                    padding: spacing.xl,
+                    padding: spacing.md,
                     borderRadius: borderRadius.xl,
                     background: active
                       ? `linear-gradient(145deg, ${session.color}18, ${colors.glass.light})`
@@ -385,7 +370,7 @@ export default function SanctuaryRemindersPage() {
                     border: `1px solid ${active ? session.color + '50' : colors.glass.border}`,
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: spacing.md,
+                    gap: spacing.sm,
                     transition: 'border-color 0.2s, background 0.2s',
                   }}
                 >
@@ -393,8 +378,8 @@ export default function SanctuaryRemindersPage() {
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
                     <div
                       style={{
-                        width: 44,
-                        height: 44,
+                        width: 36,
+                        height: 36,
                         borderRadius: borderRadius.md,
                         background: `${session.color}20`,
                         display: 'flex',
@@ -403,7 +388,7 @@ export default function SanctuaryRemindersPage() {
                         flexShrink: 0,
                       }}
                     >
-                      <SessionIcon size={22} color={session.color} strokeWidth={1.8} />
+                      <SessionIcon size={18} color={session.color} strokeWidth={1.8} />
                     </div>
                     {active && (
                       <div
@@ -555,10 +540,10 @@ export default function SanctuaryRemindersPage() {
 
         {/* Reminders list */}
         {!isLoading && reminders.length > 0 && (
-          <div style={{ marginBottom: spacing.xl }}>
+          <div style={{ marginBottom: spacing.md }}>
             <Typography
               variant="h4"
-              style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
+              style={{ color: colors.text.secondary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
             >
               Your reminders
             </Typography>
@@ -667,30 +652,30 @@ export default function SanctuaryRemindersPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             style={{
-              padding: spacing.xxl,
+              padding: spacing.lg,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
               border: `1px solid ${colors.glass.border}`,
               textAlign: 'center',
-              marginBottom: spacing.xl,
+              marginBottom: spacing.md,
             }}
           >
             <div
               style={{
-                width: 64,
-                height: 64,
+                width: 48,
+                height: 48,
                 borderRadius: borderRadius.full,
                 background: `${colors.accent.primary}20`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto',
-                marginBottom: spacing.md,
+                marginBottom: spacing.sm,
               }}
             >
-              <Bell size={32} color={colors.accent.primary} strokeWidth={1.5} style={{ opacity: 0.8 }} />
+              <Bell size={24} color={colors.accent.primary} strokeWidth={1.5} style={{ opacity: 0.8 }} />
             </div>
             <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
               No reminders yet
@@ -707,7 +692,7 @@ export default function SanctuaryRemindersPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            style={{ marginBottom: spacing.xl }}
+            style={{ marginBottom: spacing.md }}
           >
             <Button
               variant="ghost"

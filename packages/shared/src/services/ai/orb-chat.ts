@@ -1,7 +1,7 @@
 import type { OrbMessage, OrbAddonKey, ConversationStep } from '../../types/orb.types';
+import { AI_MODELS } from '../../constants/ai-models';
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
-const MODEL = 'gpt-4o-mini';
 
 // ─── System prompt assembly ───────────────────────────────────────────────────
 
@@ -95,10 +95,10 @@ export async function sendOrbMessage(opts: OrbChatOptions): Promise<OrbChatResul
       Authorization: `Bearer ${opts.apiKey}`,
     },
     body: JSON.stringify({
-      model: MODEL,
+      model: AI_MODELS.ORB_CHAT,
       messages: requestMessages,
       temperature: 0.8,
-      max_tokens: opts.step === 'script' ? 800 : 300,
+      max_completion_tokens: opts.step === 'script' ? 800 : 300,
     }),
   });
 

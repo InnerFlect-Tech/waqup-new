@@ -4,11 +4,14 @@ import type { SupabaseClientOptions } from '@supabase/supabase-js';
 export interface SupabaseConfig {
   url: string;
   key: string;
+  /** Platform-specific storage adapter (AsyncStorage on mobile, localStorage on web) */
   storage?: { getItem: (key: string) => Promise<string | null>; setItem: (key: string, value: string) => Promise<void>; removeItem: (key: string) => Promise<void> };
+  /** Set true on web to support OAuth/magic-link URL callbacks; false on mobile (mobile uses custom URL schemes) */
+  detectSessionInUrl?: boolean;
 }
 
 export function createSupabaseClient(config: SupabaseConfig): SupabaseClient {
-  const { url, key, storage } = config;
+  const { url, key, storage, detectSessionInUrl = false } = config;
   
   if (!url || !key) {
     throw new Error('Missing Supabase environment variables: URL and key are required');
@@ -19,7 +22,7 @@ export function createSupabaseClient(config: SupabaseConfig): SupabaseClient {
       storage: storage,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false, // Important for mobile
+      detectSessionInUrl,
     },
   };
 
@@ -30,8 +33,7 @@ export async function testSupabaseConnection(
   client: SupabaseClient
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Simple query to test connection
-    const { error } = await client.from('users').select('count').limit(1);
+    const { error } = await client.from('profiles').select('id').limit(1);
     if (error) throw error;
     return { success: true };
   } catch (error) {

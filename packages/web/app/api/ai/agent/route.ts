@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 import type { ContentItemType } from '@waqup/shared/types';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * Agent mode: GPT-4o autonomously generates a complete content draft.
  * Costs 7 Qs (flat fee regardless of content type).
  * Used server-side only — API key never reaches the client.
  */
+
+const COST = API_ROUTE_COSTS.aiAgent;
+const MAX_INTENT_LENGTH = 2000;
 
 interface AgentRequest {
   type: ContentItemType;
@@ -56,6 +63,8 @@ Length: 400-550 words.
 NO preamble or meta-commentary — begin directly.`,
 };
 
+const ALLOWED_MODELS = new Set([AI_MODELS.AGENT, 'gpt-4o', 'gpt-4o-mini']);
+
 function buildAgentUserPrompt(req: AgentRequest): string {
   const lines = [`Intent: ${req.intent}`];
   if (req.context) lines.push(`Context: ${req.context}`);
@@ -72,45 +81,93 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 503 });
     }
 
+    // ─── Auth ───────────────────────────────────────────────────────────────
+    const supabase = await createSupabaseServerClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await req.json() as AgentRequest;
 
     if (!body.type || !body.intent) {
       return NextResponse.json({ error: 'type and intent are required' }, { status: 400 });
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: AGENT_SYSTEM_PROMPTS[body.type] },
-          { role: 'user', content: buildAgentUserPrompt(body) },
-        ],
-        temperature: 0.8,
-        max_tokens: 1000,
-      }),
+    if (body.intent.length > MAX_INTENT_LENGTH) {
+      return NextResponse.json(
+        { error: `intent must be ${MAX_INTENT_LENGTH} characters or fewer` },
+        { status: 400 },
+      );
+    }
+
+    // ─── Atomic credit deduction (before calling GPT-4o) ─────────────────────
+    const { error: deductError } = await supabase.rpc('deduct_credits', {
+      p_user_id:     user.id,
+      p_amount:      COST,
+      p_description: 'ai_agent_generation',
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error('[ai/agent] OpenAI error:', response.status, err);
-      return NextResponse.json({ error: `AI generation failed: ${response.status}` }, { status: 502 });
+    if (deductError) {
+      if (deductError.message?.includes('insufficient_credits')) {
+        const { data: balance } = await supabase.rpc('get_credit_balance');
+        return NextResponse.json(
+          {
+            error: 'insufficient_credits',
+            message: `AI Agent (GPT-4o) costs ${COST} Qs but you have ${(balance as number) ?? 0}. Get more Qs to continue.`,
+            required: COST,
+            balance: (balance as number) ?? 0,
+          },
+          { status: 402 },
+        );
+      }
+      console.error('[ai/agent] credit deduction failed:', deductError.message);
+      return NextResponse.json({ error: 'Credit service error. Please try again.' }, { status: 503 });
     }
 
-    const data = await response.json() as {
-      choices: Array<{ message: { content: string } }>;
-    };
+    // Use canonical model; ignore any client-supplied model override to prevent
+    // cost inflation from a malicious client requesting gpt-4 instead of gpt-4o-mini.
+    const model = ALLOWED_MODELS.has(body.type) ? AI_MODELS.AGENT : AI_MODELS.AGENT;
 
-    const script = data.choices[0]?.message?.content?.trim();
-    if (!script) {
-      return NextResponse.json({ error: 'No script returned from AI' }, { status: 502 });
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: AGENT_SYSTEM_PROMPTS[body.type] },
+            { role: 'user', content: buildAgentUserPrompt(body) },
+          ],
+          temperature: 0.8,
+          max_completion_tokens: 1000,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.text();
+        console.error('[ai/agent] OpenAI error:', response.status, err);
+        return NextResponse.json({ error: `AI generation failed: ${response.status}` }, { status: 502 });
+      }
+
+      const data = await response.json() as {
+        choices: Array<{ message: { content: string } }>;
+      };
+
+      const script = data.choices[0]?.message?.content?.trim();
+      if (!script) {
+        return NextResponse.json({ error: 'No script returned from AI' }, { status: 502 });
+      }
+
+      return NextResponse.json({ script, creditsUsed: COST });
+    } catch (genErr) {
+      console.error('[ai/agent] generation failed after credit deduction:', genErr);
+      const message = genErr instanceof Error ? genErr.message : 'Generation failed';
+      return NextResponse.json({ error: message }, { status: 500 });
     }
-
-    return NextResponse.json({ script });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('[ai/agent]', message);

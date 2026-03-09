@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button, TestLoginButton } from '@/components';
+import { Typography, Button, TestLoginButton, AvatarOrb, AVATAR_SWATCHES } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { useAuthStore } from '@/stores';
-import { clearCreateInitSeen } from '@/hooks';
+import { clearCreateInitSeen, useAvatarColors } from '@/hooks';
 import { clearStoredOverride } from '@/lib/auth-override';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -86,6 +86,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const { user } = useAuthStore();
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
+  const { colors: avatarColors, setColor: setAvatarColor } = useAvatarColors();
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -113,28 +114,23 @@ export default function SettingsPage() {
   };
 
   const sectionStyle: React.CSSProperties = {
-    padding: spacing.xl,
+    padding: spacing.lg,
     borderRadius: borderRadius.xl,
     background: colors.glass.light,
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     border: `1px solid ${colors.glass.border}`,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   };
 
   return (
     <PageShell intensity="medium">
       <PageContent width="narrow">
-        <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.xl }}>
-          <Typography variant="small" style={{ color: colors.text.secondary }}>
-            ← Sanctuary
-          </Typography>
-        </Link>
 
-        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300, textAlign: 'center' }}>
           Settings
         </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
+        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textAlign: 'center' }}>
           Customize your sanctuary experience
         </Typography>
 
@@ -164,6 +160,51 @@ export default function SettingsPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, opacity: 0.7 }}>
             Profile editing coming soon
           </Typography>
+        </motion.div>
+
+        {/* Avatar section */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} style={sectionStyle}>
+          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+            Avatar
+          </Typography>
+
+          {/* Live preview */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: spacing.lg }}>
+            <AvatarOrb colors={avatarColors} size="lg" pulse />
+          </div>
+
+          {/* 3 swatch rows */}
+          {(['Core', 'Ring', 'Glow'] as const).map((label, slot) => (
+            <div key={label} style={{ marginBottom: spacing.lg }}>
+              <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
+                {label}
+              </Typography>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm }}>
+                {AVATAR_SWATCHES.map((swatch) => {
+                  const isActive = avatarColors[slot as 0 | 1 | 2] === swatch.hex;
+                  return (
+                    <button
+                      key={swatch.hex}
+                      title={swatch.name}
+                      onClick={() => setAvatarColor(slot as 0 | 1 | 2, swatch.hex)}
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: '50%',
+                        background: swatch.hex,
+                        border: isActive ? '2.5px solid #fff' : '2.5px solid transparent',
+                        boxShadow: isActive ? `0 0 0 1.5px ${swatch.hex}` : `0 0 6px ${swatch.hex}55`,
+                        cursor: 'pointer',
+                        transition: 'transform 0.15s, box-shadow 0.15s',
+                        transform: isActive ? 'scale(1.18)' : 'scale(1)',
+                        flexShrink: 0,
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </motion.div>
 
         {/* Theme section */}
@@ -215,7 +256,7 @@ export default function SettingsPage() {
           <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
             Notifications
           </Typography>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
             {NOTIFICATION_OPTIONS.map((opt) => (
               <div key={opt.key} style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
                 <div style={{ flex: 1 }}>
@@ -276,7 +317,7 @@ export default function SettingsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           style={{
-            padding: spacing.xl,
+            padding: spacing.lg,
             borderRadius: borderRadius.xl,
             border: `1px solid ${colors.error}30`,
             background: `${colors.error}08`,

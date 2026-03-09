@@ -469,7 +469,6 @@ export default function ShowcasePage() {
 
         {/* Utility nav */}
         <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
-          <Link href="/pages" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>← Pages</Link>
           <Link href="/system" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>System</Link>
           <Link href="/sitemap-view" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Sitemap</Link>
         </div>

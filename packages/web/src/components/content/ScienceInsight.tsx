@@ -14,7 +14,8 @@ export type ScienceTopic =
   | 'voice-identity'
   | 'visualization'
   | 'sleep-subconscious'
-  | 'sacred-frequencies';
+  | 'sacred-frequencies'
+  | 'audio-layers';
 
 const TOPIC_META: Record<ScienceTopic, { label: string; color: string }> = {
   'neuroplasticity': { label: 'Neuroplasticity', color: '#c084fc' },
@@ -23,6 +24,7 @@ const TOPIC_META: Record<ScienceTopic, { label: string; color: string }> = {
   'visualization': { label: 'Visualization', color: '#34d399' },
   'sleep-subconscious': { label: 'Sleep & Subconscious', color: '#a78bfa' },
   'sacred-frequencies': { label: 'Sacred Frequencies', color: '#fb7185' },
+  'audio-layers': { label: 'Sound Layering', color: '#4ade80' },
 };
 
 export interface ScienceInsightProps {

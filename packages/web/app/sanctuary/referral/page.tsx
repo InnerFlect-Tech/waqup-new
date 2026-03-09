@@ -27,7 +27,7 @@ const REWARD_STEPS: Array<{
 }> = [
   { icon: Users, label: 'Friend signs up', sub: 'Using your link', color: '#c084fc' },
   { icon: Gift, label: 'They get onboarded', sub: 'Complete their profile', color: '#60a5fa' },
-  { icon: Gift, iconNode: <QCoin size="md" color="#34d399" />, label: 'You both earn', sub: '10 Qs each', color: '#34d399' },
+  { icon: Gift, iconNode: <QCoin size="md" />, label: 'You both earn', sub: '10 Qs each', color: '#34d399' },
 ];
 
 export default function ReferralPage() {
@@ -76,21 +76,16 @@ export default function ReferralPage() {
   return (
     <PageShell intensity="medium">
       <PageContent width="narrow">
-        <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.xl }}>
-          <Typography variant="small" style={{ color: colors.text.secondary }}>
-            ← Sanctuary
-          </Typography>
-        </Link>
 
-        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300, textAlign: 'center' }}>
           Share & Earn
         </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
+        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textAlign: 'center' }}>
           Invite friends to waQup. When they join and complete onboarding, you both get 10 Qs.
         </Typography>
 
         {/* How it works */}
-        <div style={{ marginBottom: spacing.xxl }}>
+        <div style={{ marginBottom: spacing.lg }}>
           <Typography
             variant="h4"
             style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
@@ -118,18 +113,18 @@ export default function ReferralPage() {
                 >
                   <div
                     style={{
-                      width: 44,
-                      height: 44,
+                      width: 36,
+                      height: 36,
                       borderRadius: borderRadius.md,
                       background: `${step.color}20`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       margin: '0 auto',
-                      marginBottom: spacing.md,
+                      marginBottom: spacing.sm,
                     }}
                   >
-                    {step.iconNode ?? <step.icon size={22} color={step.color} strokeWidth={2} />}
+                    {step.iconNode ?? <step.icon size={18} color={step.color} strokeWidth={2} />}
                   </div>
                   <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, marginBottom: spacing.xs }}>
                     {step.label}
@@ -224,7 +219,7 @@ export default function ReferralPage() {
         </motion.div>
 
         {/* Share buttons */}
-        <div style={{ marginBottom: spacing.xxl }}>
+        <div style={{ marginBottom: spacing.lg }}>
           <Typography
             variant="h4"
             style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}

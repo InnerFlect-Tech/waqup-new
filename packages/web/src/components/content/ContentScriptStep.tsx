@@ -1,22 +1,26 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Typography, Button } from '@/components';
+import { Typography, Button, AiCostNotice } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { Sparkles, RefreshCw, Edit3, Check } from 'lucide-react';
+import { Sparkles, RefreshCw, Edit3, Check, ChevronLeft } from 'lucide-react';
+import { API_ROUTE_COSTS } from '@waqup/shared/constants';
+import { generateScript } from '@/lib/api-client';
+
+const SCRIPT_COST = API_ROUTE_COSTS.generateScript;
 
 export interface ContentScriptStepProps {
   backHref: string;
   nextHref: string;
 }
 
-type ScriptState = 'idle' | 'generating' | 'ready' | 'editing' | 'error';
+type ScriptState = 'idle' | 'confirming' | 'generating' | 'ready' | 'editing' | 'error';
 
 function ScriptSkeleton() {
   const { theme } = useTheme();
@@ -50,30 +54,28 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
   const [editValue, setEditValue] = useState(script);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
+  const [showRegenerateConfirm, setShowRegenerateConfirm] = useState(false);
 
   const generate = useCallback(async () => {
+    if (!intent.trim()) {
+      setError('No intent found. Please go back and fill in your intent first.');
+      setState('error');
+      return;
+    }
     setState('generating');
     setError('');
+    setShowRegenerateConfirm(false);
     try {
-      const res = await fetch('/api/generate-script', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: contentType, intent, context, personalization }),
-      });
-      if (!res.ok) throw new Error('Generation failed');
-      const { script: generated } = await res.json() as { script: string };
+      const generated = await generateScript({ type: contentType, intent, context, personalization });
       setScript(generated);
       setEditValue(generated);
       setState('ready');
-    } catch {
-      setError('Something went wrong. Please try again.');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setError(message);
       setState('error');
     }
   }, [contentType, intent, context, personalization, setScript]);
-
-  useEffect(() => {
-    if (state === 'idle') generate();
-  }, []);
 
   const handleSaveEdit = () => {
     setScript(editValue);
@@ -101,153 +103,253 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
         <Typography variant="body" style={{ color: colors.text.secondary }}>
           {state === 'generating'
             ? 'AI is weaving your intent into language'
+            : state === 'idle'
+            ? 'Ready to generate your personalised script'
             : 'Read through, edit freely, then record in your own voice'}
         </Typography>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        style={{ marginBottom: spacing.xl }}
-      >
-        <div
-          style={{
-            padding: spacing.xl,
-            borderRadius: borderRadius.xl,
-            background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: `1px solid ${state === 'ready' ? colors.accent.primary + '40' : colors.glass.border}`,
-            minHeight: 200,
-            position: 'relative',
-          }}
-        >
-          {/* Generating indicator */}
-          <AnimatePresence>
-            {state === 'generating' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: spacing.xl }}
-              >
-                <div style={{ marginBottom: spacing.lg, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-                  >
-                    <Sparkles size={18} color={colors.accent.primary} />
-                  </motion.div>
-                  <Typography variant="small" style={{ color: colors.accent.primary }}>
-                    Generating…
-                  </Typography>
-                </div>
-                <ScriptSkeleton />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Script content */}
-          {state === 'ready' && !isEditing && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
-              <Typography
-                variant="body"
-                style={{
-                  color: colors.text.primary,
-                  lineHeight: 1.9,
-                  whiteSpace: 'pre-wrap',
-                  fontSize: 15,
-                }}
-              >
-                {displayScript}
-              </Typography>
-            </motion.div>
-          )}
-
-          {/* Edit mode */}
-          {isEditing && (
-            <textarea
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              rows={12}
-              style={{
-                width: '100%',
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                resize: 'vertical',
-                fontSize: 15,
-                lineHeight: 1.9,
-                color: colors.text.primary,
-                fontFamily: 'inherit',
-              }}
-            />
-          )}
-
-          {state === 'error' && (
-            <div style={{ textAlign: 'center', padding: spacing.xl }}>
-              <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
-                {error}
-              </Typography>
-              <Button variant="ghost" size="md" onClick={generate}>
-                Try again
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        {state === 'ready' && (
+      {/* Idle state — explicit generate button with cost notice */}
+      <AnimatePresence mode="wait">
+        {state === 'idle' && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            style={{ display: 'flex', gap: spacing.sm, marginTop: spacing.md, flexWrap: 'wrap' }}
+            key="idle"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            style={{
+              padding: spacing.xl,
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+              textAlign: 'center',
+              marginBottom: spacing.xl,
+            }}
           >
-            {isEditing ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSaveEdit}
-                style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.accent.primary }}
-              >
-                <Check size={14} />
-                Save edits
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => { setEditValue(script); setIsEditing(true); }}
-                style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.text.secondary }}
-              >
-                <Edit3 size={14} />
-                Edit
-              </Button>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={generate}
-              style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.text.secondary }}
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: borderRadius.full,
+                background: `${colors.accent.primary}20`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: `0 auto ${spacing.lg}`,
+              }}
             >
-              <RefreshCw size={14} />
-              Regenerate
+              <Sparkles size={24} color={colors.accent.primary} />
+            </div>
+            <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+              Generate your script
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, fontSize: 14 }}>
+              AI will craft a personalised script based on your intent.
+            </Typography>
+            <AiCostNotice
+              cost={SCRIPT_COST}
+              costLabel="for this generation"
+              description="GPT-4o-mini · personalised to your intent"
+              style={{ marginBottom: spacing.lg, textAlign: 'left' }}
+            />
+            <Button variant="primary" size="lg" onClick={generate}>
+              <Sparkles size={16} style={{ marginRight: spacing.xs }} />
+              Generate Script — {SCRIPT_COST} Qs
             </Button>
           </motion.div>
         )}
 
-        <ScienceInsight
-          topic="voice-identity"
-          insight="The script is a starting point. Editing it in your own words deepens the neural encoding — the more it sounds like you, the more powerfully it lands."
-        />
-      </motion.div>
+        {/* Generating state */}
+        {state === 'generating' && (
+          <motion.div
+            key="generating"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              padding: spacing.xl,
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+              minHeight: 200,
+              marginBottom: spacing.xl,
+            }}
+          >
+            <div style={{ marginBottom: spacing.lg, display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+              >
+                <Sparkles size={18} color={colors.accent.primary} />
+              </motion.div>
+              <Typography variant="small" style={{ color: colors.accent.primary }}>
+                Generating…
+              </Typography>
+            </div>
+            <ScriptSkeleton />
+          </motion.div>
+        )}
+
+        {/* Ready / editing state */}
+        {(state === 'ready' || state === 'editing') && (
+          <motion.div
+            key="ready"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ marginBottom: spacing.xl }}
+          >
+            <div
+              style={{
+                padding: spacing.xl,
+                borderRadius: borderRadius.xl,
+                background: colors.glass.light,
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: `1px solid ${colors.accent.primary + '40'}`,
+                minHeight: 200,
+              }}
+            >
+              {!isEditing ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+                  <Typography
+                    variant="body"
+                    style={{
+                      color: colors.text.primary,
+                      lineHeight: 1.9,
+                      whiteSpace: 'pre-wrap',
+                      fontSize: 15,
+                    }}
+                  >
+                    {displayScript}
+                  </Typography>
+                </motion.div>
+              ) : (
+                <textarea
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  rows={12}
+                  style={{
+                    width: '100%',
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    resize: 'vertical',
+                    fontSize: 15,
+                    lineHeight: 1.9,
+                    color: colors.text.primary,
+                    fontFamily: 'inherit',
+                  }}
+                />
+              )}
+            </div>
+
+            {/* Actions */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginTop: spacing.md }}
+            >
+              <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+                {isEditing ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSaveEdit}
+                    style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.accent.primary }}
+                  >
+                    <Check size={14} />
+                    Save edits
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setEditValue(script); setIsEditing(true); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.text.secondary }}
+                  >
+                    <Edit3 size={14} />
+                    Edit
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowRegenerateConfirm(true)}
+                  style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.text.secondary }}
+                >
+                  <RefreshCw size={14} />
+                  Regenerate — {SCRIPT_COST} Qs
+                </Button>
+              </div>
+
+              {/* Regenerate confirmation */}
+              <AnimatePresence>
+                {showRegenerateConfirm && (
+                  <AiCostNotice
+                    cost={SCRIPT_COST}
+                    costLabel="to regenerate"
+                    description="A new script will replace the current one"
+                    confirmLabel="Regenerate"
+                    onConfirm={generate}
+                    onCancel={() => setShowRegenerateConfirm(false)}
+                  />
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            <ScienceInsight
+              topic="voice-identity"
+              insight="The script is a starting point. Editing it in your own words deepens the neural encoding — the more it sounds like you, the more powerfully it lands."
+            />
+          </motion.div>
+        )}
+
+        {/* Error state */}
+        {state === 'error' && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              padding: spacing.xl,
+              borderRadius: borderRadius.xl,
+              background: colors.glass.light,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${colors.glass.border}`,
+              textAlign: 'center',
+              marginBottom: spacing.xl,
+            }}
+          >
+            <Typography variant="body" style={{ color: colors.error ?? '#ef4444', marginBottom: spacing.sm, fontWeight: 600 }}>
+              Script generation failed
+            </Typography>
+            <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, fontSize: 13 }}>
+              {error}
+            </Typography>
+            <div style={{ display: 'flex', gap: spacing.sm, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Button variant="primary" size="md" onClick={generate}>
+                Try again — {SCRIPT_COST} Qs
+              </Button>
+              <Link href="/health" target="_blank" style={{ textDecoration: 'none' }}>
+                <Button variant="ghost" size="md" style={{ color: colors.text.secondary, fontSize: 13 }}>
+                  Check API health ↗
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href={backHref} style={{ textDecoration: 'none' }}>
-          <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
-            ← Back
+          <Button variant="ghost" size="md" style={{ color: colors.text.secondary, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ChevronLeft size={16} /> Back
           </Button>
         </Link>
         <Button

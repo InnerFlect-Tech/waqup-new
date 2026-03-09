@@ -32,10 +32,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // No override user — run full Supabase auth initialization.
     let unsubscribe: (() => void) | null = null;
-    initializeAuth().then((unsub) => {
-      unsubscribe = unsub;
-      setIsReady(true);
-    });
+    initializeAuth()
+      .then((unsub) => {
+        unsubscribe = unsub;
+      })
+      .catch((err) => {
+        console.error('[AuthProvider] initializeAuth failed:', err);
+      })
+      .finally(() => {
+        setIsReady(true);
+      });
 
     return () => {
       if (unsubscribe) {
@@ -67,7 +73,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isPublicRoute =
       publicRoutes.includes(pathname) ||
       pathname.startsWith('/showcase') ||
-      pathname.startsWith('/onboarding');
+      pathname.startsWith('/onboarding') ||
+      pathname.startsWith('/explanation');
     const isProtectedRoute =
       pathname.startsWith('/home') ||
       pathname.startsWith('/library') ||
@@ -78,12 +85,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pathname.startsWith('/marketplace');
 
     if (isProtectedRoute && !user) {
-      // Redirect to login if trying to access protected route without auth
-      router.push('/login');
+      router.push(`/login?next=${encodeURIComponent(pathname)}`);
     } else if (!isPublicRoute && !isProtectedRoute && pathname !== '/') {
-      // If on an unknown route and not authenticated, redirect to home or login
       if (!user) {
-        router.push('/login');
+        router.push(`/login?next=${encodeURIComponent(pathname)}`);
       }
     }
   }, [user, isReady, isInitialized, pathname, router]);

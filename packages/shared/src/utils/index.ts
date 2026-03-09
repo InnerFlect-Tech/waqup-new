@@ -9,3 +9,4 @@ export * from './component-helpers';
 export * from './content-helpers';
 export * from './credits-format';
 export * from './errors';
+export * from './analytics';

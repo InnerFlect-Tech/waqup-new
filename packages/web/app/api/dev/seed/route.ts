@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 
+export const dynamic = 'force-dynamic';
+
 /** Example content items for seeding the library */
 const EXAMPLE_ITEMS = [
   { type: 'affirmation' as const, title: 'Morning confidence', description: 'Start each day with intention', script: 'I am capable and ready for today.', duration: '2 min', frequency: 'daily', status: 'complete' as const },

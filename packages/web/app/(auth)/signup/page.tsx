@@ -27,7 +27,7 @@ export default function SignupPage() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     watch,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
@@ -49,8 +49,16 @@ export default function SignupPage() {
   const onSubmit = async (data: SignupFormData) => {
     setError(null);
     const result = await signup(data.email, data.password);
-    
+
     if (result.success) {
+      // When Supabase email confirmation is disabled, the user is immediately
+      // authenticated after signup — redirect them into the app.
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
+        router.push('/home');
+        return;
+      }
+      // Email confirmation required — show "Check Your Email" screen.
       setUserEmail(data.email);
       setSignupSuccess(true);
     }
@@ -293,13 +301,14 @@ export default function SignupPage() {
                 type="submit"
                 variant="primary"
                 size="lg"
-                loading={isLoading}
+                loading={isSubmitting}
                 fullWidth
+                disabled={isSubmitting}
                 style={{
                   marginBottom: spacing.lg,
                 }}
               >
-                {isLoading ? 'Creating account...' : 'Create Account'}
+                {isSubmitting ? 'Creating account...' : 'Create Account'}
               </Button>
 
               <div style={{ textAlign: 'center', marginTop: spacing.lg }}>

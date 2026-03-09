@@ -1,9 +1,12 @@
 /**
- * ElevenLabs Professional Voice Cloning API integration.
- * Used for voice setup: create PVC voice, add samples, TTS preview.
+ * ElevenLabs API integration.
+ * Uses Instant Voice Cloning (IVC) — available on all tiers including free.
+ * PVC (Professional Voice Cloning) is NOT used as it requires a paid Creator plan.
  */
+import { AI_MODELS } from '../../constants/ai-models';
 
-const ELEVENLABS_BASE = 'https://api.elevenlabs.io/v1';
+export const ELEVENLABS_BASE_URL = 'https://api.elevenlabs.io/v1';
+const ELEVENLABS_BASE = ELEVENLABS_BASE_URL;
 
 function getApiKey(): string {
   const key = process.env.ELEVENLABS_API_KEY;
@@ -37,64 +40,73 @@ async function elevenLabsFetch(
   });
 }
 
-export interface CreatePvcVoiceInput {
+export interface CreateInstantVoiceInput {
   name: string;
-  language: string;
+  files: Blob[];
   description?: string;
-  labels?: Record<string, string>;
+  removeBackgroundNoise?: boolean;
 }
 
-export interface CreatePvcVoiceResponse {
+export interface CreateInstantVoiceResponse {
   voice_id: string;
 }
 
-/** Create a new PVC voice with metadata (no samples yet). */
-export async function createPvcVoice(input: CreatePvcVoiceInput): Promise<string> {
-  const payload = JSON.stringify({
-    name: input.name,
-    language: input.language,
-    ...(input.description && { description: input.description }),
-    ...(input.labels && { labels: input.labels }),
-  });
-  const res = await elevenLabsFetch('/voices/pvc', {
+/**
+ * Create a new Instant Voice Clone (IVC) by uploading audio samples.
+ * Available on all ElevenLabs tiers including free (up to 3 custom voices).
+ * Combines voice creation + sample upload in a single API call.
+ */
+export async function createInstantVoice(input: CreateInstantVoiceInput): Promise<string> {
+  const formData = new FormData();
+  formData.append('name', input.name);
+  input.files.forEach((file) => formData.append('files', file));
+  if (input.description) {
+    formData.append('description', input.description);
+  }
+  if (input.removeBackgroundNoise) {
+    formData.append('remove_background_noise', 'true');
+  }
+
+  const res = await elevenLabsFetch('/voices/add', {
     method: 'POST',
-    body: payload,
+    body: formData,
+    headers: {},
   });
+
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`ElevenLabs create PVC failed: ${res.status} ${err}`);
+    throw new Error(`ElevenLabs create voice failed: ${res.status} ${err}`);
   }
-  const data = (await res.json()) as CreatePvcVoiceResponse;
+
+  const data = (await res.json()) as CreateInstantVoiceResponse;
   return data.voice_id;
 }
 
-/** Add audio samples to a PVC voice. */
-export async function addSamplesToPvc(
+/**
+ * Edit an existing IVC voice — replaces samples and/or updates name.
+ * Use this to add more samples after the initial creation.
+ */
+export async function editVoice(
   voiceId: string,
   files: Blob[],
   removeBackgroundNoise = false
-): Promise<{ sample_ids: string[] }> {
+): Promise<void> {
   const formData = new FormData();
-  files.forEach((file) => {
-    formData.append('files', file);
-  });
+  files.forEach((file) => formData.append('files', file));
   if (removeBackgroundNoise) {
     formData.append('remove_background_noise', 'true');
   }
-  const res = await elevenLabsFetch(`/voices/pvc/${voiceId}/samples`, {
+
+  const res = await elevenLabsFetch(`/voices/${voiceId}/edit`, {
     method: 'POST',
     body: formData,
-    headers: {}, // FormData sets Content-Type with boundary
+    headers: {},
   });
+
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`ElevenLabs add samples failed: ${res.status} ${err}`);
+    throw new Error(`ElevenLabs edit voice failed: ${res.status} ${err}`);
   }
-  const data = (await res.json()) as Array<{ sample_id?: string }>;
-  const sample_ids = Array.isArray(data)
-    ? data.map((s) => s.sample_id).filter((id): id is string => !!id)
-    : [];
-  return { sample_ids };
 }
 
 /** Get voice metadata. */
@@ -111,9 +123,9 @@ export async function getVoice(voiceId: string): Promise<{
   return res.json() as Promise<{ voice_id: string; name: string; labels?: Record<string, string> }>;
 }
 
-/** Generate TTS for preview/verification. */
-export async function textToSpeech(voiceId: string, text: string): Promise<ArrayBuffer> {
-  const payload = JSON.stringify({ text, model_id: 'eleven_multilingual_v2' });
+/** Generate TTS audio for preview or content. */
+export async function textToSpeech(voiceId: string, text: string, modelId?: string): Promise<ArrayBuffer> {
+  const payload = JSON.stringify({ text, model_id: modelId ?? AI_MODELS.TTS_STANDARD });
   const res = await elevenLabsFetch(`/text-to-speech/${voiceId}`, {
     method: 'POST',
     body: payload,

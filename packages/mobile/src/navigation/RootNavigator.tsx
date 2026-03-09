@@ -5,6 +5,7 @@ import { RootStackParamList } from './types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import ShowcaseScreen from '@/screens/ShowcaseScreen';
+import HealthScreen from '@/screens/HealthScreen';
 import { useAuthStore } from '@/stores';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -16,6 +17,7 @@ const linking = {
   config: {
     screens: {
       Showcase: 'showcase', // Hidden route accessible via URL only
+      Health: 'health', // Hidden health check route accessible via URL only
       Auth: 'auth', // Auth navigator routes handled internally
       Main: 'main', // Main navigator routes handled internally
     },
@@ -61,6 +63,7 @@ export default function RootNavigator() {
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
         <Stack.Screen name="Showcase" component={ShowcaseScreen} />
+        <Stack.Screen name="Health" component={HealthScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

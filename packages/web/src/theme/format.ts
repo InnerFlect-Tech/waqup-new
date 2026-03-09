@@ -52,8 +52,14 @@ export const HEADER_PADDING_X = px(layout.headerPaddingX);
 export const HEADER_PADDING_X_SM = px(layout.headerPaddingXSm);
 export const PAGE_PADDING = spacing.xl;
 export const SECTION_GAP = spacing.xl;
+/** Standard glass card padding - use for most cards */
+export const CARD_PADDING = spacing.lg;
+/** Hero/featured card padding - use for auth cards and prominent feature cards */
+export const CARD_PADDING_HERO = spacing.xl;
 export const CARD_PADDING_AUTH = spacing.xl;
 export const CARD_PADDING_CONTENT = spacing.xl;
+/** Inter-section margin - gap between stacked sections */
+export const SECTION_MARGIN = spacing.lg;
 export const INPUT_GAP = spacing.lg;
 
 /** Semantic spacing helpers - use for consistent UI patterns */

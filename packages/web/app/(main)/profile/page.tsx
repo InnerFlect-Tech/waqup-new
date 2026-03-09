@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typography, Button } from '@/components';
@@ -8,9 +8,11 @@ import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { useAuthStore } from '@/stores';
+import { useCreditBalance } from '@/hooks';
+import { supabase } from '@/lib/supabase';
 import { clearStoredOverride } from '@/lib/auth-override';
 import Link from 'next/link';
-import { LogOut, ChevronRight } from 'lucide-react';
+import { LogOut, ChevronRight, Edit2, Check, X } from 'lucide-react';
 import { PROFILE_MENU_ITEMS } from '@/lib';
 
 function getInitials(name: string): string {
@@ -27,6 +29,15 @@ export default function ProfilePage() {
   const colors = theme.colors;
   const router = useRouter();
   const { user: authUser } = useAuthStore();
+  const { balance, isLoading: balanceLoading } = useCreditBalance();
+
+  const [contentCount, setContentCount] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState(false);
+  const [editingBio, setEditingBio] = useState(false);
+  const [nameValue, setNameValue] = useState('');
+  const [bioValue, setBioValue] = useState('');
+  const [savingName, setSavingName] = useState(false);
+  const [savingBio, setSavingBio] = useState(false);
 
   const displayName =
     authUser?.user_metadata?.full_name ||
@@ -35,15 +46,54 @@ export default function ProfilePage() {
     authUser?.email?.split('@')[0] ||
     'User';
   const displayEmail = authUser?.email || '';
+  const bio = (authUser?.user_metadata?.bio as string | undefined) ?? '';
   const initials = getInitials(displayName);
   const memberSince = authUser?.created_at
     ? new Date(authUser.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : 'Recently';
 
+  const fetchContentCount = useCallback(async () => {
+    if (!authUser) return;
+    const { count } = await supabase
+      .from('content_items')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', authUser.id);
+    setContentCount(count ?? 0);
+  }, [authUser]);
+
+  useEffect(() => {
+    setNameValue(displayName);
+    setBioValue(bio);
+    fetchContentCount();
+  }, [displayName, bio, fetchContentCount]);
+
+  const saveName = async () => {
+    if (!nameValue.trim()) return;
+    setSavingName(true);
+    await supabase.auth.updateUser({ data: { full_name: nameValue.trim() } });
+    setSavingName(false);
+    setEditingName(false);
+  };
+
+  const saveBio = async () => {
+    setSavingBio(true);
+    await supabase.auth.updateUser({ data: { bio: bioValue.trim().slice(0, 160) } });
+    setSavingBio(false);
+    setEditingBio(false);
+  };
+
   const STATS = [
-    { label: 'Content', value: '—' },
-    { label: 'Qs', value: '50' },
-    { label: 'Member since', value: memberSince },
+    {
+      label: 'Content',
+      value: contentCount === null ? '—' : String(contentCount),
+      href: '/library',
+    },
+    {
+      label: 'Qs',
+      value: balanceLoading ? '—' : String(balance),
+      href: '/sanctuary/credits',
+    },
+    { label: 'Member since', value: memberSince, href: null },
   ];
 
   return (
@@ -64,7 +114,7 @@ export default function ProfilePage() {
             marginBottom: spacing.xl,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xl }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: spacing.xl }}>
             {/* Initials avatar */}
             <div
               style={{
@@ -87,12 +137,116 @@ export default function ProfilePage() {
             </div>
 
             <div style={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.xs, fontWeight: 300 }}>
-                {displayName}
-              </Typography>
-              <Typography variant="body" style={{ color: colors.text.secondary }}>
+              {editingName ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>
+                  <input
+                    autoFocus
+                    value={nameValue}
+                    onChange={(e) => setNameValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') saveName();
+                      if (e.key === 'Escape') { setEditingName(false); setNameValue(displayName); }
+                    }}
+                    style={{
+                      background: colors.glass.light,
+                      border: `1px solid ${colors.accent.primary}50`,
+                      borderRadius: borderRadius.md,
+                      color: colors.text.primary,
+                      fontSize: 22,
+                      fontWeight: 300,
+                      padding: `${spacing.xs} ${spacing.sm}`,
+                      outline: 'none',
+                      flex: 1,
+                      minWidth: 0,
+                    }}
+                  />
+                  <button type="button" onClick={saveName} disabled={savingName} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs }}>
+                    <Check size={18} color={colors.accent.primary} />
+                  </button>
+                  <button type="button" onClick={() => { setEditingName(false); setNameValue(displayName); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs }}>
+                    <X size={18} color={colors.text.secondary} />
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs }}>
+                  <Typography variant="h2" style={{ color: colors.text.primary, margin: 0, fontWeight: 300 }}>
+                    {displayName}
+                  </Typography>
+                  <button
+                    type="button"
+                    onClick={() => setEditingName(true)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs, opacity: 0.5 }}
+                  >
+                    <Edit2 size={14} color={colors.text.secondary} />
+                  </button>
+                </div>
+              )}
+
+              <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
                 {displayEmail}
               </Typography>
+
+              {/* Marketplace bio */}
+              {editingBio ? (
+                <div>
+                  <textarea
+                    autoFocus
+                    value={bioValue}
+                    onChange={(e) => setBioValue(e.target.value.slice(0, 160))}
+                    placeholder="How you show up in the marketplace…"
+                    rows={2}
+                    style={{
+                      width: '100%',
+                      background: colors.glass.light,
+                      border: `1px solid ${colors.accent.primary}50`,
+                      borderRadius: borderRadius.md,
+                      color: colors.text.primary,
+                      fontSize: 13,
+                      padding: `${spacing.xs} ${spacing.sm}`,
+                      outline: 'none',
+                      resize: 'none',
+                      fontFamily: 'inherit',
+                      lineHeight: 1.5,
+                      marginBottom: spacing.xs,
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, justifyContent: 'space-between' }}>
+                    <Typography variant="small" style={{ color: colors.text.secondary, opacity: 0.5, margin: 0, fontSize: 11 }}>
+                      {bioValue.length}/160
+                    </Typography>
+                    <div style={{ display: 'flex', gap: spacing.xs }}>
+                      <button type="button" onClick={saveBio} disabled={savingBio} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs }}>
+                        <Check size={16} color={colors.accent.primary} />
+                      </button>
+                      <button type="button" onClick={() => { setEditingBio(false); setBioValue(bio); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs }}>
+                        <X size={16} color={colors.text.secondary} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setEditingBio(true)}
+                  style={{
+                    background: 'none',
+                    border: `1px dashed ${colors.glass.border}`,
+                    borderRadius: borderRadius.md,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    width: '100%',
+                  }}
+                >
+                  <Typography
+                    variant="small"
+                    style={{ color: bio ? colors.text.secondary : `${colors.text.secondary}60`, margin: 0, lineHeight: 1.4, fontSize: 13 }}
+                  >
+                    {bio || 'Add a short bio — how you show up in the marketplace'}
+                  </Typography>
+                </button>
+              )}
             </div>
           </div>
 
@@ -107,16 +261,24 @@ export default function ProfilePage() {
               borderTop: `1px solid ${colors.glass.border}`,
             }}
           >
-            {STATS.map((stat) => (
-              <div key={stat.label} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
-                  {stat.value}
-                </Typography>
-                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                  {stat.label}
-                </Typography>
-              </div>
-            ))}
+            {STATS.map((stat) => {
+              const inner = (
+                <div key={stat.label} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                  <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
+                    {stat.value}
+                  </Typography>
+                  <Typography variant="small" style={{ color: stat.href ? colors.accent.tertiary : colors.text.secondary, margin: 0, fontSize: 12 }}>
+                    {stat.label}
+                  </Typography>
+                </div>
+              );
+
+              return stat.href ? (
+                <Link key={stat.label} href={stat.href} style={{ textDecoration: 'none' }}>
+                  {inner}
+                </Link>
+              ) : inner;
+            })}
           </div>
         </motion.div>
 
@@ -213,13 +375,6 @@ export default function ProfilePage() {
           </Button>
         </motion.div>
 
-        <div style={{ marginTop: spacing.xl, textAlign: 'center' }}>
-          <Link href="/sanctuary" style={{ textDecoration: 'none' }}>
-            <Button variant="ghost" size="sm" style={{ color: colors.text.secondary }}>
-              ← Back to Sanctuary
-            </Button>
-          </Link>
-        </div>
       </PageContent>
     </PageShell>
   );

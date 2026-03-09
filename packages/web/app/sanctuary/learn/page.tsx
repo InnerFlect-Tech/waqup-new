@@ -114,16 +114,11 @@ export default function LearnPage() {
   return (
     <PageShell intensity="medium">
       <PageContent>
-        <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.xl }}>
-          <Typography variant="small" style={{ color: colors.text.secondary }}>
-            ← Sanctuary
-          </Typography>
-        </Link>
 
-        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
+        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300, textAlign: 'center' }}>
           The Science of Transformation
         </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
+        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textAlign: 'center' }}>
           The mind encodes what it repeatedly experiences as real. These are the mechanisms.
         </Typography>
 
@@ -152,7 +147,7 @@ export default function LearnPage() {
                   onClick={() => setExpanded(isOpen ? null : topic.title)}
                   style={{
                     width: '100%',
-                    padding: spacing.xl,
+                    padding: spacing.lg,
                     background: 'transparent',
                     border: 'none',
                     cursor: 'pointer',
@@ -164,8 +159,8 @@ export default function LearnPage() {
                 >
                   <div
                     style={{
-                      width: 48,
-                      height: 48,
+                      width: 40,
+                      height: 40,
                       borderRadius: borderRadius.md,
                       background: `${topic.color}20`,
                       display: 'flex',
@@ -174,7 +169,7 @@ export default function LearnPage() {
                       flexShrink: 0,
                     }}
                   >
-                    <Icon size={24} color={topic.color} strokeWidth={2} />
+                    <Icon size={18} color={topic.color} strokeWidth={2} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, marginBottom: spacing.xs }}>

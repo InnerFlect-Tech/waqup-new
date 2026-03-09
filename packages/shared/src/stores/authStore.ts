@@ -24,11 +24,12 @@ export function createAuthStore(options: CreateAuthStoreOptions) {
   const { client, storage } = options;
   const authService = createAuthService(client);
 
-  // Initial state
+  // Initial state — isLoading starts false; initializeAuth sets it true when it runs.
+  // isInitialized: false is what gates rendering until auth is resolved.
   const initialState: AuthState = {
     user: null,
     session: null,
-    isLoading: true,
+    isLoading: false,
     error: null,
     isInitialized: false,
   };

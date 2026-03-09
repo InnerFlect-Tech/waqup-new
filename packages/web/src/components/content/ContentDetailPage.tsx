@@ -101,12 +101,6 @@ export function ContentDetailPage({
   return (
     <PageShell intensity="medium">
       <PageContent width="narrow">
-        <Link href={backHref} style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.lg }}>
-          <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary }}>
-            ← Back to {contentType}s
-          </Typography>
-        </Link>
-
         <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
           {title}
         </Typography>

@@ -1,13 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Typography, Button, QCoin } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import Link from 'next/link';
-import { Sparkles, Users, Zap, Plus, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import { Sparkles, Users, Zap, Plus, ArrowDownLeft, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { useCreditBalance } from '@/hooks';
+import { createCreditsService } from '@waqup/shared/services';
+import type { CreditTransaction } from '@waqup/shared/types';
+import { supabase } from '@/lib/supabase';
 
 const EARN_METHODS = [
   {
@@ -30,80 +34,104 @@ const EARN_METHODS = [
   },
 ];
 
-const MOCK_TRANSACTIONS = [
-  { id: 1, label: 'Created affirmation', type: 'debit', amount: -5, date: 'Today' },
-  { id: 2, label: 'Referral bonus', type: 'credit', amount: 10, date: 'Yesterday' },
-  { id: 3, label: 'Created meditation', type: 'debit', amount: -8, date: '2 days ago' },
-  { id: 4, label: '7-day streak bonus', type: 'credit', amount: 5, date: '3 days ago' },
-  { id: 5, label: 'Welcome Qs', type: 'credit', amount: 50, date: 'Feb 28' },
-];
+const creditsService = createCreditsService(supabase);
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
 
 export default function CreditsPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const { balance, isLoading } = useCreditBalance();
+  const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
+  const [txLoading, setTxLoading] = useState(true);
+
+  const loadTransactions = useCallback(async () => {
+    setTxLoading(true);
+    const result = await creditsService.getTransactionHistory(5);
+    if (result.success) {
+      setTransactions(result.transactions);
+    }
+    setTxLoading(false);
+  }, []);
+
+  useEffect(() => {
+    void loadTransactions();
+  }, [loadTransactions]);
 
   return (
     <PageShell intensity="medium">
       <PageContent width="narrow">
-        <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.xl }}>
-          <Typography variant="small" style={{ color: colors.text.secondary }}>
-            ← Sanctuary
+        <div style={{ textAlign: 'center', marginBottom: spacing.md }}>
+          <Typography variant="h3" style={{ color: colors.text.primary, fontWeight: 300, marginBottom: 4 }}>
+            Your Qs
           </Typography>
-        </Link>
-
-        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
-          Your Qs
-        </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xxl }}>
-          Qs power your content creation. Practice is always free.
-        </Typography>
+          <Typography variant="small" style={{ color: colors.text.secondary }}>
+            Qs power creation. Practice is always free.
+          </Typography>
+        </div>
 
         {/* Balance card */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
-            padding: spacing.xxl,
+            padding: `${spacing.lg} ${spacing.xl}`,
             borderRadius: borderRadius.xl,
-            background: `linear-gradient(145deg, ${colors.accent.primary}25, ${colors.accent.secondary}15)`,
-            border: `1px solid ${colors.accent.primary}40`,
-            boxShadow: `0 16px 48px ${colors.accent.primary}25`,
-            marginBottom: spacing.xl,
-            textAlign: 'center',
+            background: `linear-gradient(145deg, ${colors.accent.primary}18, ${colors.accent.secondary}0d)`,
+            border: `1px solid ${colors.accent.primary}30`,
+            boxShadow: `0 8px 32px ${colors.accent.primary}18`,
+            marginBottom: spacing.md,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: spacing.lg,
           }}
         >
-          <QCoin size="lg" style={{ marginBottom: spacing.md }} />
-          <div style={{ fontSize: 64, fontWeight: 200, color: colors.text.primary, lineHeight: 1, marginBottom: spacing.sm }}>
-            50
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+            <QCoin size="md" />
+            <div>
+              <div style={{ fontSize: 36, fontWeight: 200, color: colors.text.primary, lineHeight: 1 }}>
+                {isLoading ? '–' : balance}
+              </div>
+              <div style={{ fontSize: 11, color: colors.text.secondary, marginTop: 2, letterSpacing: '0.04em' }}>
+                Qs available
+              </div>
+            </div>
           </div>
-          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl }}>
-            Qs available
-          </Typography>
-          <Link href="/pricing" style={{ textDecoration: 'none' }}>
-            <Button variant="primary" size="lg">
-              <Plus size={20} />
-              Get more Qs
+          <Link href="/sanctuary/credits/buy" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <Button variant="primary" size="sm">
+              <Plus size={14} />
+              Get Qs
             </Button>
           </Link>
         </motion.div>
 
         {/* How to earn */}
-        <div style={{ marginBottom: spacing.xxl }}>
+        <div style={{ marginBottom: spacing.md }}>
           <Typography
             variant="h4"
-            style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
+            style={{ color: colors.text.secondary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 10 }}
           >
-            How to earn Qs
+            How to earn
           </Typography>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: spacing.sm }}>
             {EARN_METHODS.map((method, index) => (
               <motion.div
                 key={method.title}
-                initial={{ opacity: 0, x: -12 }}
+                initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + index * 0.08 }}
+                transition={{ delay: 0.1 + index * 0.06 }}
                 style={{
-                  padding: spacing.lg,
+                  padding: spacing.md,
                   borderRadius: borderRadius.lg,
                   background: colors.glass.light,
                   backdropFilter: 'blur(12px)',
@@ -111,41 +139,33 @@ export default function CreditsPage() {
                   border: `1px solid ${colors.glass.border}`,
                   display: 'flex',
                   alignItems: 'flex-start',
-                  gap: spacing.md,
+                  gap: spacing.sm,
                 }}
               >
                 <div
                   style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: borderRadius.md,
-                    background: `${colors.accent.primary}20`,
+                    width: 28,
+                    height: 28,
+                    borderRadius: borderRadius.sm,
+                    background: `${colors.accent.primary}18`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    marginTop: spacing.xs,
+                    marginTop: 1,
                   }}
                 >
-                  <method.icon size={20} color={colors.accent.primary} strokeWidth={2} />
+                  <method.icon size={14} color={colors.accent.primary} strokeWidth={2} />
                 </div>
-                <div style={{ flex: 1 }}>
-                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: colors.text.primary, marginBottom: 2 }}>
                     {method.title}
-                  </Typography>
-                  <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 1.5 }}>
+                  </div>
+                  <div style={{ fontSize: 11, color: colors.text.secondary, lineHeight: 1.45 }}>
                     {method.description}
-                  </Typography>
+                  </div>
                 </div>
-                <span
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 700,
-                    color: '#34d399',
-                    flexShrink: 0,
-                    paddingTop: spacing.xs,
-                  }}
-                >
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#34d399', flexShrink: 0, paddingTop: 1 }}>
                   {method.credits}
                 </span>
               </motion.div>
@@ -155,15 +175,22 @@ export default function CreditsPage() {
 
         {/* Transaction history */}
         <div>
-          <Typography
-            variant="h4"
-            style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
-          >
-            Recent transactions
-          </Typography>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm }}>
+            <Typography
+              variant="h4"
+              style={{ color: colors.text.secondary, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 10, margin: 0 }}
+            >
+              Recent
+            </Typography>
+            <Link href="/sanctuary/credits/transactions" style={{ textDecoration: 'none' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: colors.accent.tertiary, fontSize: 11 }}>
+                View all <ArrowRight size={11} />
+              </span>
+            </Link>
+          </div>
           <div
             style={{
-              borderRadius: borderRadius.xl,
+              borderRadius: borderRadius.lg,
               background: colors.glass.light,
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
@@ -171,56 +198,67 @@ export default function CreditsPage() {
               overflow: 'hidden',
             }}
           >
-            {MOCK_TRANSACTIONS.map((tx, index) => (
-              <div
-                key={tx.id}
-                style={{
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  paddingRight: spacing.xl,
-                  borderBottom: index < MOCK_TRANSACTIONS.length - 1 ? `1px solid ${colors.glass.border}` : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.md,
-                }}
-              >
+            {txLoading ? (
+              <div style={{ padding: spacing.lg, textAlign: 'center' }}>
+                <Typography variant="small" style={{ color: colors.text.secondary }}>Loading...</Typography>
+              </div>
+            ) : transactions.length === 0 ? (
+              <div style={{ padding: spacing.lg, textAlign: 'center' }}>
+                <Typography variant="small" style={{ color: colors.text.secondary }}>
+                  No transactions yet. Start creating to earn and spend Qs.
+                </Typography>
+              </div>
+            ) : (
+              transactions.map((tx, index) => (
                 <div
+                  key={tx.id}
                   style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: borderRadius.full,
-                    background: tx.type === 'credit' ? '#34d39920' : `${colors.error}15`,
+                    padding: `10px ${spacing.md}`,
+                    borderBottom: index < transactions.length - 1 ? `1px solid ${colors.glass.border}` : 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
+                    gap: spacing.sm,
                   }}
                 >
-                  {tx.type === 'credit' ? (
-                    <ArrowDownLeft size={14} color="#34d399" />
-                  ) : (
-                    <ArrowUpRight size={14} color={colors.error} />
-                  )}
+                  <div
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: borderRadius.full,
+                      background: tx.type === 'credit' ? `${colors.success}18` : `${colors.error}12`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {tx.type === 'credit' ? (
+                      <ArrowDownLeft size={12} color={colors.success} />
+                    ) : (
+                      <ArrowUpRight size={12} color={colors.error} />
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, color: colors.text.primary, lineHeight: 1.3 }}>
+                      {tx.description || (tx.type === 'credit' ? 'Credit' : 'Debit')}
+                    </div>
+                    <div style={{ fontSize: 11, color: colors.text.secondary, marginTop: 1 }}>
+                      {formatDate(tx.created_at)}
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: tx.type === 'credit' ? colors.success : colors.error,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {tx.amount > 0 ? `+${tx.amount}` : tx.amount}
+                  </span>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontSize: 14 }}>
-                    {tx.label}
-                  </Typography>
-                  <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                    {tx.date}
-                  </Typography>
-                </div>
-                <span
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: tx.type === 'credit' ? '#34d399' : colors.error,
-                    marginLeft: spacing.md,
-                  }}
-                >
-                  {tx.amount > 0 ? `+${tx.amount}` : tx.amount}
-                </span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </PageContent>

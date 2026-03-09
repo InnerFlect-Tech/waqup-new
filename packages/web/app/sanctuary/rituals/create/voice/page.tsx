@@ -12,7 +12,7 @@ export default function RitualVoicePage() {
   return (
     <ContentVoiceStep
       backHref="/sanctuary/rituals/create/script"
-      nextHref="/sanctuary/rituals/create/complete"
+      nextHref="/sanctuary/rituals/create/audio"
     />
   );
 }

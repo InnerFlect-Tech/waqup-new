@@ -25,12 +25,6 @@ export default function SystemPage() {
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
             Technical overview of database schema, architecture, and data flow. For developers and technical stakeholders.
           </Typography>
-          <Link
-            href="/pages"
-            style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}
-          >
-            ← Back to Pages index
-          </Link>
         </div>
 
         {/* Architecture Overview */}
@@ -220,12 +214,12 @@ OAuth: /auth/callback exchanges code for session, sets cookies.`}
           </Typography>
         </Section>
 
-        <div style={{ marginTop: spacing.xl, paddingTop: spacing.lg, borderTop: `1px solid ${colors.glass.border}` }}>
+        <div style={{ marginTop: spacing.xl, paddingTop: spacing.lg, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
           <Link
-            href="/pages"
+            href="/health"
             style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}
           >
-            ← Back to Pages index
+            🩺 API Health
           </Link>
         </div>
       </div>

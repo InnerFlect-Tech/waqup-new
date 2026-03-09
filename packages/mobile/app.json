@@ -18,10 +18,22 @@
     },
     "ios": {
       "bundleIdentifier": "com.waqup.app",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"],
+        "NSMicrophoneUsageDescription": "waQup needs microphone access to record your voice for personalized audio content.",
+        "NSFaceIDUsageDescription": "waQup uses Face ID to securely unlock your Sanctuary."
+      }
     },
     "android": {
       "package": "com.waqup.app",
+      "permissions": [
+        "RECORD_AUDIO",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"

@@ -68,7 +68,7 @@ export default function CreatePage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ marginBottom: spacing.xxl }}
+          style={{ marginBottom: spacing.xl, textAlign: 'center' }}
         >
           <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontWeight: 300 }}>
             Create New Content
@@ -83,9 +83,9 @@ export default function CreatePage() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gridAutoRows: 'minmax(320px, 1fr)',
-            gap: spacing.xl,
-            marginBottom: spacing.xxl,
+            gridAutoRows: 'minmax(260px, 1fr)',
+            gap: spacing.lg,
+            marginBottom: spacing.xl,
           }}
         >
           {CONTENT_TYPES.map((card, index) => {
@@ -102,7 +102,7 @@ export default function CreatePage() {
                   onMouseEnter={() => setHovered(card.name)}
                   onMouseLeave={() => setHovered(null)}
                   style={{
-                    padding: spacing.xxl,
+                    padding: spacing.xl,
                     borderRadius: borderRadius.xl,
                     background: isHovered
                       ? `linear-gradient(145deg, ${card.accentColor}18, ${colors.glass.light})`
@@ -117,7 +117,7 @@ export default function CreatePage() {
                     transition: 'all 0.25s ease',
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: 320,
+                    minHeight: 260,
                     height: '100%',
                     transform: isHovered ? 'translateY(-4px)' : 'none',
                   }}
@@ -125,8 +125,8 @@ export default function CreatePage() {
                   {/* Icon */}
                   <div
                     style={{
-                      width: 72,
-                      height: 72,
+                      width: 56,
+                      height: 56,
                       borderRadius: borderRadius.xl,
                       background: isHovered
                         ? `linear-gradient(135deg, ${card.accentColor}60, ${card.accentColor}30)`
@@ -134,12 +134,12 @@ export default function CreatePage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginBottom: spacing.xl,
+                      marginBottom: spacing.md,
                       boxShadow: isHovered ? `0 8px 24px ${card.accentColor}40` : 'none',
                       transition: 'all 0.25s ease',
                     }}
                   >
-                    <IconComponent size={36} color={card.accentColor} strokeWidth={2} />
+                    <IconComponent size={28} color={card.accentColor} strokeWidth={2} />
                   </div>
 
                   {/* Type badge */}
@@ -167,8 +167,8 @@ export default function CreatePage() {
                   {/* Footer: depth + credits */}
                   <div
                     style={{
-                      marginTop: spacing.xl,
-                      paddingTop: spacing.md,
+                      marginTop: spacing.lg,
+                      paddingTop: spacing.sm,
                       borderTop: `1px solid ${colors.glass.border}`,
                       display: 'flex',
                       alignItems: 'center',
@@ -179,7 +179,7 @@ export default function CreatePage() {
                       {card.depth}
                     </Typography>
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                      <QCoin size="sm" color={card.accentColor} />
+                      <QCoin size="sm" />
                       <Typography variant="small" style={{ color: card.accentColor, fontWeight: 600 }}>
                         {formatQs(costs.base)}
                         {costs.withAi > costs.base ? ` (${formatQs(costs.withAi)} with AI)` : ''}
@@ -230,13 +230,6 @@ export default function CreatePage() {
           </div>
         </div>
 
-        <div style={{ marginTop: spacing.lg, textAlign: 'center' }}>
-          <Link href="/sanctuary" style={{ textDecoration: 'none' }}>
-            <Button variant="ghost" size="sm" style={{ color: colors.text.secondary }}>
-              ← Back to Sanctuary
-            </Button>
-          </Link>
-        </div>
       </PageContent>
     </PageShell>
   );

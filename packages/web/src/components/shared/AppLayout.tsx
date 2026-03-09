@@ -11,17 +11,16 @@ import {
   Menu,
   X,
   LogOut,
-  User,
   Share2,
   Mic,
   FileText,
+  CreditCard,
+  HelpCircle,
 } from 'lucide-react';
-import { Button, Logo, QCoin } from '@/components';
+import { Button, Logo, QCoin, AvatarOrb } from '@/components';
 import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, HEADER_PADDING_X, HEADER_PADDING_X_SM } from '@/theme';
 import { useAuthStore } from '@/stores';
-import { SANCTUARY_MENU_ITEMS } from '@/lib';
-
-const CREDITS_BALANCE = SANCTUARY_MENU_ITEMS.find((m) => m.name === 'Qs')?.count ?? 50;
+import { useCreditBalance, useAvatarColors } from '@/hooks';
 
 interface NavItem {
   name: string;
@@ -40,7 +39,6 @@ interface UserMenuItem {
 const NAV_ITEMS: NavItem[] = [
   { name: 'Sanctuary', path: '/sanctuary', icon: <Home className="w-5 h-5" /> },
   { name: 'Speak', path: '/speak', icon: <Mic className="w-5 h-5" /> },
-  { name: 'Library', path: '/library', icon: <Library className="w-5 h-5" /> },
   {
     name: 'Reminders',
     path: '/sanctuary/reminders',
@@ -49,25 +47,23 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 const USER_MENU_ITEMS: UserMenuItem[] = [
-  {
-    name: 'Qs',
-    path: '/sanctuary/credits',
-    icon: <QCoin size="sm" />,
-    showBalance: true,
-  },
+  { name: 'My Library', path: '/library', icon: <Library className="w-4 h-4" /> },
+  { name: 'Plan', path: '/sanctuary/plan', icon: <CreditCard className="w-4 h-4" /> },
+  { name: 'Settings', path: '/sanctuary/settings', icon: <Settings className="w-4 h-4" /> },
+];
+
+const USER_MENU_ITEMS_SECONDARY: UserMenuItem[] = [
   {
     name: 'Share & Earn',
     path: '/sanctuary/referral',
     icon: <Share2 className="w-4 h-4" />,
     highlight: true,
   },
-  { name: 'Settings', path: '/sanctuary/settings', icon: <Settings className="w-4 h-4" /> },
+  { name: 'Help & Feedback', path: '/sanctuary/help', icon: <HelpCircle className="w-4 h-4" /> },
 ];
 
-/** Routes that redirect logged-in users to sanctuary (pricing is excluded so users can upgrade).
- * Homepage (/) and how-it-works are excluded so the marketing site stays accessible when logged in. */
-const ROUTES_REDIRECT_WHEN_LOGGED_IN: string[] = [];
 const ONBOARDING_ROUTES = [
+  '/explanation',
   '/onboarding',
   '/onboarding/profile',
   '/onboarding/preferences',
@@ -87,18 +83,28 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const colors = theme.colors;
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.user_metadata?.display_name ||
+    user?.email?.split('@')[0] ||
+    null;
   const router = useRouter();
   const pathname = usePathname();
+  const { balance: creditsBalance } = useCreditBalance();
+  const { colors: avatarColors } = useAvatarColors();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const ENABLE_TEST_LOGIN = process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true';
-  const isTestSession = ENABLE_TEST_LOGIN || user?.id?.startsWith?.('override-');
+
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
-    ...(isTestSession ? [{ name: 'Pages', path: '/pages', icon: <FileText className="w-5 h-5" /> }] : []),
+    ...(ENABLE_TEST_LOGIN
+      ? [{ name: 'Pages', path: '/pages', icon: <FileText className="w-5 h-5" /> }]
+      : []),
   ];
 
   useEffect(() => {
@@ -113,12 +119,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     setShowProfileMenu(false);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [pathname]);
-
-  useEffect(() => {
-    if (user && pathname && ROUTES_REDIRECT_WHEN_LOGGED_IN.includes(pathname)) {
-      router.push('/sanctuary');
-    }
-  }, [user, pathname, router]);
 
   const isOnboardingRoute =
     pathname && ONBOARDING_ROUTES.some((route) => pathname.startsWith(route));
@@ -202,83 +202,165 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}
+                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}
                   >
-                    <User className="w-5 h-5" style={{ color: colors.text.primary }} />
-                    <span className="hidden sm:inline" style={{ color: colors.text.primary }}>
-                      {user?.email}
-                    </span>
+                    <AvatarOrb colors={avatarColors} size="sm" />
                     <span
-                      className="rounded-full text-sm whitespace-nowrap shrink-0"
+                      className="rounded-full shrink-0"
                       style={{
-                        padding: `${spacing.xs} ${spacing.sm}`,
-                        background: `${colors.accent.tertiary}30`,
-                        color: colors.accent.tertiary,
-                        whiteSpace: 'nowrap',
+                        padding: '2px 7px 2px 4px',
+                        background: 'rgba(147,51,234,0.15)',
+                        border: '1px solid rgba(168,85,247,0.25)',
                         flexShrink: 0,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 3,
                       }}
                     >
-                      {CREDITS_BALANCE} Qs
+                      <QCoin size="sm" />
+                      <span style={{ fontSize: 11, fontWeight: 600, color: '#C084FC', lineHeight: 1 }}>
+                        {creditsBalance}
+                      </span>
                     </span>
                   </Button>
 
                   {showProfileMenu && (
                     <div
-                      className="absolute right-0 w-64 rounded-lg shadow-lg backdrop-blur-lg"
+                      className="absolute right-0 w-72 rounded-xl shadow-2xl"
                       style={{
                         marginTop: spacing.sm,
-                        padding: `${spacing.sm} ${spacing.md}`,
-                        background: 'rgba(0,0,0,0.9)',
-                        border: '1px solid rgba(255,255,255,0.12)',
+                        background: 'rgba(15,5,35,0.88)',
+                        backdropFilter: 'blur(20px)',
+                        WebkitBackdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(168,85,247,0.20)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.08)',
+                        overflow: 'hidden',
                       }}
                     >
-                      {USER_MENU_ITEMS.map((item) => (
-                        <button
-                          key={item.path}
-                          type="button"
-                          className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
-                          style={{
-                            padding: `${spacing.md} ${spacing.lg}`,
-                            gap: spacing.sm,
-                            color: item.highlight
-                              ? colors.accent.tertiary
-                              : colors.text.onDark,
-                            background: 'transparent',
-                          }}
-                          onClick={() => {
-                            router.push(item.path);
-                            setShowProfileMenu(false);
-                          }}
-                        >
-                          <span style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                      {/* Account card */}
+                      <div
+                        style={{
+                          padding: `${spacing.lg} ${spacing.xl}`,
+                          background: 'rgba(147,51,234,0.08)',
+                          borderBottom: '1px solid rgba(168,85,247,0.15)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: spacing.md,
+                        }}
+                      >
+                        <AvatarOrb colors={avatarColors} size="md" pulse />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          {displayName && (
+                            <p
+                              className="text-sm font-medium truncate"
+                              style={{ color: colors.text.primary, marginBottom: 2 }}
+                            >
+                              {displayName}
+                            </p>
+                          )}
+                          <p
+                            className="text-xs truncate"
+                            style={{ color: colors.text.secondary, marginBottom: spacing.xs }}
+                          >
+                            {user?.email}
+                          </p>
+                          <button
+                            type="button"
+                            className="inline-flex items-center rounded-full border-0 cursor-pointer"
+                            style={{
+                              padding: `${spacing.xs} ${spacing.sm}`,
+                              gap: spacing.xs,
+                              background: 'rgba(147,51,234,0.20)',
+                              border: '1px solid rgba(168,85,247,0.30)',
+                              fontSize: '0.75rem',
+                              color: colors.text.secondary,
+                            }}
+                            onClick={() => {
+                              router.push('/sanctuary/credits');
+                              setShowProfileMenu(false);
+                            }}
+                          >
+                            <QCoin size="sm" showAmount={creditsBalance} />
+                            <span style={{ marginLeft: spacing.xs }}>Qs</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Primary items */}
+                      <div style={{ padding: `${spacing.sm} ${spacing.sm}` }}>
+                        {USER_MENU_ITEMS.map((item) => (
+                          <button
+                            key={item.path}
+                            type="button"
+                            className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                            style={{
+                              padding: `${spacing.md} ${spacing.lg}`,
+                              gap: spacing.md,
+                              color: colors.text.onDark,
+                              background: 'transparent',
+                            }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                            onClick={() => {
+                              router.push(item.path);
+                              setShowProfileMenu(false);
+                            }}
+                          >
                             {item.icon}
                             {item.name}
-                          </span>
-                          {item.showBalance && (
-                            <span style={{ color: colors.accent.tertiary }}>
-                              {CREDITS_BALANCE} Qs
-                            </span>
-                          )}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+
+                      {/* Secondary items */}
+                      <div style={{ padding: `${spacing.sm} ${spacing.sm}` }}>
+                        {USER_MENU_ITEMS_SECONDARY.map((item) => (
+                          <button
+                            key={item.path}
+                            type="button"
+                            className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                            style={{
+                              padding: `${spacing.md} ${spacing.lg}`,
+                              gap: spacing.md,
+                              color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
+                              background: 'transparent',
+                            }}
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                            onClick={() => {
+                              router.push(item.path);
+                              setShowProfileMenu(false);
+                            }}
+                          >
+                            {item.icon}
+                            {item.name}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+
+                      {/* Sign out */}
+                      <div style={{ padding: `${spacing.sm} ${spacing.sm}` }}>
+                        <button
+                          type="button"
+                          className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                          style={{
+                            padding: `${spacing.md} ${spacing.lg}`,
+                            gap: spacing.md,
+                            color: colors.text.secondary,
+                            background: 'transparent',
+                          }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                          onClick={handleSignOut}
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign out
                         </button>
-                      ))}
-
-                      <div
-                        style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }}
-                      />
-
-                      <button
-                        type="button"
-                        className="w-full flex items-center gap-2 text-sm rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
-                        style={{
-                          padding: `${spacing.md} ${spacing.lg}`,
-                          color: colors.text.onDark,
-                          background: 'transparent',
-                        }}
-                        onClick={handleSignOut}
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign out
-                      </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -332,14 +414,75 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }}
               />
 
+              {/* Account card (mobile) */}
+              <button
+                type="button"
+                className="w-full text-left rounded-lg border-0 cursor-pointer"
+                style={{
+                  padding: `${spacing.md} ${spacing.lg}`,
+                  background: 'rgba(147,51,234,0.08)',
+                  border: '1px solid rgba(168,85,247,0.15)',
+                }}
+                onClick={() => {
+                  router.push('/sanctuary/credits');
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                {displayName && (
+                  <p className="text-sm font-medium truncate" style={{ color: colors.text.primary, marginBottom: 2 }}>
+                    {displayName}
+                  </p>
+                )}
+                <p className="text-xs truncate" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
+                  {user?.email}
+                </p>
+                <span
+                  className="inline-flex items-center rounded-full"
+                  style={{
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    gap: spacing.xs,
+                    background: 'rgba(147,51,234,0.20)',
+                    border: '1px solid rgba(168,85,247,0.30)',
+                    fontSize: '0.75rem',
+                    color: colors.text.secondary,
+                  }}
+                >
+                  <QCoin size="sm" showAmount={creditsBalance} />
+                  <span style={{ marginLeft: spacing.xs }}>Qs</span>
+                </span>
+              </button>
+
               {USER_MENU_ITEMS.map((item) => (
                 <button
                   key={item.path}
                   type="button"
-                  className="w-full flex items-center justify-between rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
+                  className="w-full flex items-center rounded-lg border-0 cursor-pointer"
                   style={{
                     padding: `${spacing.md} ${spacing.lg}`,
-                    gap: spacing.sm,
+                    gap: spacing.md,
+                    color: colors.text.onDark,
+                    background: 'transparent',
+                  }}
+                  onClick={() => {
+                    router.push(item.path);
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  {item.icon}
+                  {item.name}
+                </button>
+              ))}
+
+              <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+
+              {USER_MENU_ITEMS_SECONDARY.map((item) => (
+                <button
+                  key={item.path}
+                  type="button"
+                  className="w-full flex items-center rounded-lg border-0 cursor-pointer"
+                  style={{
+                    padding: `${spacing.md} ${spacing.lg}`,
+                    gap: spacing.md,
                     color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
                     background: 'transparent',
                   }}
@@ -348,22 +491,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     setIsMobileMenuOpen(false);
                   }}
                 >
-                  <span className="flex items-center gap-2">
-                    {item.icon}
-                    {item.name}
-                  </span>
-                  {item.showBalance && (
-                    <span style={{ color: colors.accent.tertiary }}>{CREDITS_BALANCE} Qs</span>
-                  )}
+                  {item.icon}
+                  {item.name}
                 </button>
               ))}
 
+              <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+
               <button
                 type="button"
-                className="w-full flex items-center gap-2 text-sm rounded-lg border-0 cursor-pointer transition-colors hover:opacity-90"
+                className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer"
                 style={{
                   padding: `${spacing.md} ${spacing.lg}`,
-                  color: colors.text.onDark,
+                  gap: spacing.md,
+                  color: colors.text.secondary,
                   background: 'transparent',
                 }}
                 onClick={handleSignOut}

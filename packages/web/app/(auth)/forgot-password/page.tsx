@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
@@ -150,8 +150,9 @@ export default function ForgotPasswordPage() {
                 type="submit"
                 variant="primary"
                 size="lg"
-                loading={isLoading}
+                loading={isSubmitting}
                 fullWidth
+                disabled={isSubmitting}
                 style={{
                   background: colors.gradients.primary,
                   marginBottom: spacing.lg,
@@ -160,7 +161,7 @@ export default function ForgotPasswordPage() {
                   fontWeight: 600,
                 }}
               >
-                {isLoading ? 'Sending...' : 'Send Reset Link'}
+                {isSubmitting ? 'Sending...' : 'Send Reset Link'}
               </Button>
 
               <div style={{ textAlign: 'center', marginTop: spacing.lg }}>

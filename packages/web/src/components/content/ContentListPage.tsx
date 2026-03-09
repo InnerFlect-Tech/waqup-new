@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Button, Badge, Loading } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
@@ -12,6 +12,7 @@ import type { ContentItem, ContentItemType } from './ContentItem';
 import { getContentDetailHref } from './getContentDetailHref';
 import { getContentTypeIcon } from '@/lib/content-helpers';
 import { getContentTypeBadgeVariant } from '@waqup/shared/utils';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
 export interface ContentListPageProps {
   title: string;
@@ -26,11 +27,7 @@ export interface ContentListPageProps {
   onRetry?: () => void;
 }
 
-const TYPE_COLOR: Record<ContentItemType, string> = {
-  affirmation: '#c084fc',
-  meditation: '#60a5fa',
-  ritual: '#34d399',
-};
+const TYPE_COLOR: Record<ContentItemType, string> = CONTENT_TYPE_COLORS;
 
 function formatDate(iso?: string) {
   if (!iso) return '';
@@ -286,10 +283,17 @@ export function ContentListPage({
   const { theme } = useTheme();
   const colors = theme.colors;
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const typeColor = TYPE_COLOR[contentType] ?? '#9333EA';
 
+  // Debounce search input to avoid filtering on every keystroke
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
   const filteredContent = content.filter((item) =>
-    searchQuery ? item.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
+    debouncedQuery ? item.title.toLowerCase().includes(debouncedQuery.toLowerCase()) : true
   );
 
   return (

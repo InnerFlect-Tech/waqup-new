@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Target, Mic, Music, Sparkles } from 'lucide-react';
+import { Target, Sparkles, Mic, Music, Eye } from 'lucide-react';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { ContentModeSelector } from '@/components/content/ContentModeSelector';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
+import { CONTENT_CREDIT_COSTS, AI_MODE_COSTS } from '@waqup/shared/constants';
 
 const AFFIRMATION_STEPS = [
   {
@@ -26,7 +26,12 @@ const AFFIRMATION_STEPS = [
   {
     icon: Music,
     title: 'Mix & Enhance',
-    description: 'Add sacred frequencies and customize your audio',
+    description: 'Add sacred frequencies and customize your audio experience',
+  },
+  {
+    icon: Eye,
+    title: 'Review & Save',
+    description: 'Preview your affirmation and save it to your sanctuary',
   },
 ];
 
@@ -43,12 +48,8 @@ export default function AffirmationCreateInitPage() {
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
 
   const costs = CONTENT_CREDIT_COSTS.affirmation;
-  const creditRange =
-    costs.withAi > costs.base
-      ? `${costs.base}–${costs.withAi} Qs`
-      : costs.base === 1
-        ? '1 Q'
-        : `${costs.base} Qs`;
+  const maxCost = AI_MODE_COSTS.chat + costs.withAi;
+  const creditRange = `${costs.base}–${maxCost} Qs`;
 
   return (
     <CreateFlowInitStep
@@ -61,6 +62,7 @@ export default function AffirmationCreateInitPage() {
         <ContentModeSelector
           formHref="/sanctuary/affirmations/create/intent"
           chatHref="/create/conversation?type=affirmation"
+          agentHref="/create/orb?type=affirmation"
         />
       }
     />

@@ -9,7 +9,7 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation, type PersonalizationData } from '@/lib/contexts/ContentCreationContext';
-import { Check } from 'lucide-react';
+import { Check, ChevronLeft } from 'lucide-react';
 
 const CORE_VALUES = [
   { id: 'courage', label: 'Courage', color: '#f59e0b' },
@@ -208,8 +208,8 @@ export function ContentPersonalizationStep({ backHref, nextHref }: ContentPerson
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href={backHref} style={{ textDecoration: 'none' }}>
-          <Button variant="ghost" size="md" style={{ color: colors.text.secondary }}>
-            ← Back
+          <Button variant="ghost" size="md" style={{ color: colors.text.secondary, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ChevronLeft size={16} /> Back
           </Button>
         </Link>
         <Button variant="primary" size="lg" disabled={!canContinue} onClick={handleContinue}>

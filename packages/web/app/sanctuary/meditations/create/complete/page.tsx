@@ -1,13 +1,24 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ContentCompleteStep } from '@/components/content/ContentCompleteStep';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 
-export default function MeditationCompletePage() {
+function MeditationCompleteInner() {
   const { setCurrentStep } = useContentCreation();
+  const searchParams = useSearchParams();
+  const savedId = searchParams.get('id') ?? undefined;
 
   useEffect(() => { setCurrentStep('complete'); }, [setCurrentStep]);
 
-  return <ContentCompleteStep />;
+  return <ContentCompleteStep savedId={savedId} />;
+}
+
+export default function MeditationCompletePage() {
+  return (
+    <Suspense fallback={null}>
+      <MeditationCompleteInner />
+    </Suspense>
+  );
 }

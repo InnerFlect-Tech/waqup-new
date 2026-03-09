@@ -36,7 +36,7 @@ export default function SanctuaryHomePage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          style={{ marginBottom: spacing.xl }}
+          style={{ marginBottom: spacing.lg }}
         >
           <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontWeight: 300 }}>
             Welcome back, <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{displayName}</span>
@@ -52,7 +52,7 @@ export default function SanctuaryHomePage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: spacing.md,
-            marginBottom: spacing.xl,
+            marginBottom: spacing.lg,
           }}
         >
           {STATS.map((stat, i) => {
@@ -65,7 +65,7 @@ export default function SanctuaryHomePage() {
                 transition={{ delay: i * 0.07, duration: 0.35 }}
                 whileHover={isLibrary ? { scale: 1.02, y: -2 } : undefined}
                 style={{
-                  padding: spacing.lg,
+                  padding: spacing.md,
                   borderRadius: borderRadius.lg,
                   background: isLibrary
                     ? `linear-gradient(135deg, ${colors.accent.primary}20, ${colors.accent.secondary}10)`
@@ -77,7 +77,7 @@ export default function SanctuaryHomePage() {
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: spacing.md,
+                  gap: spacing.sm,
                   cursor: isLibrary ? 'pointer' : 'default',
                   transition: 'box-shadow 0.2s ease',
                 }}
@@ -118,16 +118,16 @@ export default function SanctuaryHomePage() {
         </div>
 
         {/* Quick Actions */}
-        <div style={{ marginBottom: spacing.xxl }}>
-          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+        <div style={{ marginBottom: spacing.lg }}>
+          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
             Quick Actions
           </Typography>
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-              gridAutoRows: 'minmax(160px, 1fr)',
-              gap: spacing.lg,
+              gridAutoRows: 'minmax(120px, 1fr)',
+              gap: spacing.md,
             }}
           >
             {SANCTUARY_QUICK_ACTIONS.map((action, index) => (
@@ -138,7 +138,7 @@ export default function SanctuaryHomePage() {
                   transition={{ delay: 0.2 + index * 0.08, duration: 0.35 }}
                   whileHover={{ scale: 1.02, y: -2 }}
                   style={{
-                    padding: spacing.xl,
+                    padding: spacing.lg,
                     borderRadius: borderRadius.xl,
                     background: index === 0 ? `linear-gradient(135deg, ${colors.accent.primary}20, ${colors.accent.secondary}10)` : colors.glass.light,
                     backdropFilter: 'blur(20px)',
@@ -155,24 +155,24 @@ export default function SanctuaryHomePage() {
                 >
                   <div
                     style={{
-                      width: 48,
-                      height: 48,
+                      width: 40,
+                      height: 40,
                       borderRadius: borderRadius.lg,
                       background: index === 0 ? colors.gradients.primary : colors.glass.medium,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginBottom: spacing.md,
+                      marginBottom: spacing.sm,
                       flexShrink: 0,
                       boxShadow: index === 0 ? `0 4px 16px ${colors.accent.primary}60` : 'none',
                     }}
                   >
-                    <action.icon size={22} color={index === 0 ? colors.text.onDark : colors.accent.primary} strokeWidth={2.5} />
+                    <action.icon size={18} color={index === 0 ? colors.text.onDark : colors.accent.primary} strokeWidth={2.5} />
                   </div>
-                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.sm, flexShrink: 0 }}>
+                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs, flexShrink: 0 }}>
                     {action.name}
                   </Typography>
-                  <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 13, flex: 1, minHeight: 0 }}>
+                  <Typography variant="caption" style={{ color: colors.text.secondary, flex: 1, minHeight: 0 }}>
                     {action.description}
                   </Typography>
                 </motion.div>
@@ -183,15 +183,15 @@ export default function SanctuaryHomePage() {
 
         {/* Menu Grid */}
         <div>
-          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
             Your Sanctuary
           </Typography>
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gridAutoRows: 'minmax(88px, 1fr)',
-              gap: spacing.md,
+              gridAutoRows: 'minmax(72px, 1fr)',
+              gap: spacing.sm,
             }}
           >
             {SANCTUARY_MENU_ITEMS.map((item, index) => (
@@ -202,7 +202,7 @@ export default function SanctuaryHomePage() {
                   transition={{ delay: 0.35 + index * 0.06, duration: 0.3 }}
                   whileHover={{ scale: 1.015 }}
                   style={{
-                    padding: spacing.lg,
+                    padding: spacing.md,
                     borderRadius: borderRadius.lg,
                     background: colors.glass.light,
                     backdropFilter: 'blur(20px)',

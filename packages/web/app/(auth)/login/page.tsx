@@ -55,7 +55,7 @@ export default function LoginPage() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -114,15 +114,21 @@ export default function LoginPage() {
     setGoogleLoading(true);
     try {
       if (!supabase) throw new Error('Authentication service unavailable');
-      const returnUrl = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') || '/home' : '/home';
+      const returnUrl = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') || '/sanctuary' : '/sanctuary';
       const baseUrl =
         process.env.NEXT_PUBLIC_APP_URL ||
         (typeof window !== 'undefined' ? window.location.origin : '');
+
+      // Store the post-login destination in a cookie so the redirectTo URL stays
+      // clean (no query params). Supabase rejects redirectTo URLs with query params
+      // unless they are explicitly listed — a clean URL is far easier to allowlist.
+      document.cookie = `oauth_next=${encodeURIComponent(returnUrl)}; path=/; max-age=300; SameSite=Lax`;
+
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${baseUrl}/auth/callback?next=${encodeURIComponent(returnUrl)}`,
-          queryParams: { access_type: 'offline', prompt: 'consent' },
+          redirectTo: `${baseUrl}/auth/callback`,
+          queryParams: { access_type: 'offline', prompt: 'select_account consent' },
         },
       });
       if (oauthError) throw oauthError;
@@ -136,10 +142,11 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
+    const nextUrl = searchParams.get('next') || '/sanctuary';
     const result = await login(data.email, data.password);
 
     if (result.success) {
-      router.push('/home');
+      router.push(nextUrl);
       return;
     }
 
@@ -155,7 +162,7 @@ export default function LoginPage() {
         const overrideUser = applyOverrideLogin(data.email);
         useAuthStore.getState().setUser(overrideUser);
         useAuthStore.getState().setError(null);
-        router.push('/home');
+        router.push(nextUrl);
         return;
       }
     } catch {
@@ -296,14 +303,14 @@ export default function LoginPage() {
                 type="submit"
                 variant="primary"
                 size="lg"
-                loading={isLoading}
+                loading={isSubmitting}
                 fullWidth
-                disabled={googleLoading}
+                disabled={googleLoading || isSubmitting}
                 style={{
                   marginBottom: spacing.lg,
                 }}
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isSubmitting ? 'Signing in...' : 'Sign In'}
               </Button>
 
               {/* Or continue with divider */}

@@ -1,152 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Typography, Button, Badge } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import Link from 'next/link';
-import { Star, Play, Clock, Users } from 'lucide-react';
+import { Star, Play, Clock, Share2, TrendingUp, Zap } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
 import { GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
 import { getContentTypeIcon } from '@/lib';
+import { ElevatedBadge, ShareModal } from '@/components/marketplace';
+import type { SharePlatform } from '@/components/marketplace';
+import { getMarketplaceItems } from '@/lib/api-client';
+import type { MarketplaceItem } from '@/lib/api-client';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
-interface MarketplaceItem {
-  id: string;
-  type: 'affirmation' | 'ritual' | 'meditation';
-  title: string;
-  creator: string;
-  rating: number;
-  ratingCount: number;
-  duration: string;
-  plays: number;
-  description: string;
-  featured?: boolean;
-}
+const TYPE_COLORS: Record<string, string> = CONTENT_TYPE_COLORS;
 
-const MOCK_ITEMS: MarketplaceItem[] = [
-  {
-    id: '1',
-    type: 'affirmation',
-    title: 'Morning Power Activation',
-    creator: 'Sarah K.',
-    rating: 4.9,
-    ratingCount: 234,
-    duration: '8 min',
-    plays: 1240,
-    description: 'Start every morning anchored in your power and purpose.',
-    featured: true,
-  },
-  {
-    id: '2',
-    type: 'meditation',
-    title: 'Deep Calm',
-    creator: 'Mindful Studio',
-    rating: 4.8,
-    ratingCount: 156,
-    duration: '20 min',
-    plays: 890,
-    description: 'A deep descent into stillness for nervous system reset.',
-    featured: true,
-  },
-  {
-    id: '3',
-    type: 'ritual',
-    title: 'New Moon Intention Setting',
-    creator: 'Luna Rituals',
-    rating: 4.7,
-    ratingCount: 89,
-    duration: '15 min',
-    plays: 567,
-    description: 'Harness the new moon energy to plant seeds of transformation.',
-    featured: true,
-  },
-  {
-    id: '4',
-    type: 'affirmation',
-    title: 'Abundance Flow',
-    creator: 'Prosperity Co',
-    rating: 4.6,
-    ratingCount: 312,
-    duration: '10 min',
-    plays: 1890,
-    description: 'Open your mind to receive abundance in all areas of life.',
-  },
-  {
-    id: '5',
-    type: 'meditation',
-    title: 'Sleep Descent',
-    creator: 'Dream Lab',
-    rating: 4.9,
-    ratingCount: 445,
-    duration: '25 min',
-    plays: 3200,
-    description: 'Drift into deep restorative sleep through guided body relaxation.',
-  },
-  {
-    id: '6',
-    type: 'ritual',
-    title: 'Confidence Embodiment',
-    creator: 'Empowerment Hub',
-    rating: 4.7,
-    ratingCount: 178,
-    duration: '12 min',
-    plays: 760,
-    description: 'Step into your most confident self through voice and intention.',
-  },
-  {
-    id: '7',
-    type: 'affirmation',
-    title: 'Anxiety Release',
-    creator: 'Calm Collective',
-    rating: 4.8,
-    ratingCount: 523,
-    duration: '6 min',
-    plays: 4100,
-    description: 'Gentle affirmations to dissolve anxiety and return to centre.',
-  },
-  {
-    id: '8',
-    type: 'meditation',
-    title: 'Focus Flow State',
-    creator: 'Peak Performance',
-    rating: 4.6,
-    ratingCount: 267,
-    duration: '18 min',
-    plays: 1450,
-    description: 'Enter a state of effortless focus and creative flow.',
-  },
-  {
-    id: '9',
-    type: 'ritual',
-    title: 'Evening Integration',
-    creator: 'Sacred Space Studio',
-    rating: 4.5,
-    ratingCount: 94,
-    duration: '10 min',
-    plays: 430,
-    description: 'Close the day with gratitude and conscious release.',
-  },
-  {
-    id: '10',
-    type: 'affirmation',
-    title: 'Body Love',
-    creator: 'Wholeness Within',
-    rating: 4.8,
-    ratingCount: 389,
-    duration: '7 min',
-    plays: 2100,
-    description: 'Cultivate deep appreciation and love for your physical form.',
-  },
-];
+const SORT_OPTIONS = [
+  { id: 'trending', label: 'Trending', icon: TrendingUp },
+  { id: 'recent', label: 'Recent', icon: Zap },
+  { id: 'top', label: 'Most played', icon: Play },
+] as const;
 
-const TYPE_COLORS: Record<string, string> = {
-  affirmation: '#c084fc',
-  meditation: '#60a5fa',
-  ritual: '#34d399',
-};
+type SortId = 'trending' | 'recent' | 'top';
 
-function formatPlays(n: number): string {
+function formatCount(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
   return String(n);
 }
@@ -154,27 +34,40 @@ function formatPlays(n: number): string {
 export default function MarketplacePage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [filter, setFilter] = useState<'all' | 'affirmation' | 'ritual' | 'meditation'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const featured = MOCK_ITEMS.filter((i) => i.featured);
-  const filteredItems = MOCK_ITEMS.filter((item) => {
-    if (filter !== 'all' && item.type !== filter) return false;
-    if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
-  });
+  const [filter, setFilter] = useState<'all' | 'affirmation' | 'ritual' | 'meditation'>('all');
+  const [sort, setSort] = useState<SortId>('trending');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [items, setItems] = useState<MarketplaceItem[]>([]);
+  const [elevatedItems, setElevatedItems] = useState<MarketplaceItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [shareTarget, setShareTarget] = useState<MarketplaceItem | null>(null);
+
+  const loadItems = useCallback(async () => {
+    setIsLoading(true);
+    const [all, elevated] = await Promise.all([
+      getMarketplaceItems({ type: filter === 'all' ? undefined : filter, sort }),
+      filter === 'all' ? getMarketplaceItems({ elevated: true, sort: 'trending' }) : Promise.resolve([]),
+    ]);
+    setItems(all);
+    setElevatedItems(elevated);
+    setIsLoading(false);
+  }, [filter, sort]);
+
+  useEffect(() => { void loadItems(); }, [loadItems]);
+
+  const filteredItems = searchQuery
+    ? items.filter((i) => i.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    : items;
+
+  const showElevated = filter === 'all' && !searchQuery && elevatedItems.length > 0;
 
   return (
     <PageShell intensity="medium">
       <PageContent>
         {/* Header */}
         <div style={{ marginBottom: spacing.xl }}>
-          <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: spacing.md }}>
-            <Typography variant="small" style={{ color: colors.text.secondary }}>
-              ← Sanctuary
-            </Typography>
-          </Link>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: spacing.md }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: spacing.md }}>
             <div>
               <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontWeight: 300 }}>
                 Marketplace
@@ -184,22 +77,23 @@ export default function MarketplacePage() {
               </Typography>
             </div>
             <Link href="/marketplace/creator" style={{ textDecoration: 'none' }}>
-              <Button variant="outline" size="md">
-                Creator Dashboard
-              </Button>
+              <Button variant="outline" size="md">Creator Dashboard</Button>
             </Link>
           </div>
         </div>
 
-        {/* Featured section */}
-        {filter === 'all' && !searchQuery && (
+        {/* Elevated section */}
+        {showElevated && (
           <div style={{ marginBottom: spacing.xxl }}>
-            <Typography
-              variant="h4"
-              style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}
-            >
-              Featured
-            </Typography>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.lg }}>
+              <ElevatedBadge size="md" />
+              <Typography
+                variant="small"
+                style={{ color: colors.text.secondary, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.08em' }}
+              >
+                Curated by waQup
+              </Typography>
+            </div>
             <div
               style={{
                 display: 'grid',
@@ -208,7 +102,7 @@ export default function MarketplacePage() {
                 gap: spacing.lg,
               }}
             >
-              {featured.map((item, index) => {
+              {elevatedItems.map((item, index) => {
                 const accent = TYPE_COLORS[item.type] ?? colors.accent.primary;
                 return (
                   <motion.div
@@ -230,36 +124,42 @@ export default function MarketplacePage() {
                       height: '100%',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
-                      {React.createElement(getContentTypeIcon(item.type), { size: 18, color: accent, strokeWidth: 2.5 })}
-                      <Badge size="sm" variant="default" style={{ color: accent, background: `${accent}20`, border: 'none' }}>
-                        {item.type}
-                      </Badge>
-                    </div>
-                    <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                      {item.title}
-                    </Typography>
-                    <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', flex: 1, minHeight: 0 }}>
-                      {item.description}
-                    </Typography>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-                      <Typography variant="small" style={{ color: colors.text.secondary }}>
-                        by {item.creator}
-                      </Typography>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                        {React.createElement(getContentTypeIcon(item.type), { size: 18, color: accent, strokeWidth: 2.5 })}
+                        <Badge size="sm" variant="default" style={{ color: accent, background: `${accent}20`, border: 'none' }}>
+                          {item.type}
+                        </Badge>
+                      </div>
+                      <ElevatedBadge size="sm" />
+                    </div>
+                    <Link href={`/marketplace/${item.contentItemId}`} style={{ textDecoration: 'none', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+                        {item.title}
+                      </Typography>
+                      <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', flex: 1, lineHeight: 1.5 }}>
+                        {item.description}
+                      </Typography>
+                    </Link>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+                        {item.duration && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                            <Clock size={11} color={colors.text.secondary} />
+                            <Typography variant="small" style={{ color: colors.text.secondary }}>{item.duration}</Typography>
+                          </div>
+                        )}
                         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                          <Star size={12} fill={accent} color={accent} />
-                          <Typography variant="small" style={{ color: colors.text.secondary }}>
-                            {item.rating}
-                          </Typography>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                          <Clock size={12} color={colors.text.secondary} />
-                          <Typography variant="small" style={{ color: colors.text.secondary }}>
-                            {item.duration}
-                          </Typography>
+                          <Share2 size={11} color={colors.text.secondary} />
+                          <Typography variant="small" style={{ color: colors.text.secondary }}>{formatCount(item.shareCount)}</Typography>
                         </div>
                       </div>
+                      <button
+                        onClick={(e) => { e.preventDefault(); setShareTarget(item); }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs, color: colors.text.secondary, display: 'flex', alignItems: 'center' }}
+                      >
+                        <Share2 size={15} color={accent} />
+                      </button>
                     </div>
                   </motion.div>
                 );
@@ -268,15 +168,15 @@ export default function MarketplacePage() {
           </div>
         )}
 
-        {/* Filters + search */}
+        {/* Filters + Sort + Search */}
         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, flexWrap: 'wrap', marginBottom: spacing.xl }}>
-          <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
             {(['all', 'affirmation', 'meditation', 'ritual'] as const).map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
                 style={{
-                  padding: `${spacing.xs} ${spacing.md}`,
+                  padding: `${spacing.xs}px ${spacing.md}px`,
                   borderRadius: borderRadius.full,
                   border: `1px solid ${filter === f ? colors.accent.primary : colors.glass.border}`,
                   background: filter === f ? colors.gradients.primary : 'transparent',
@@ -290,6 +190,33 @@ export default function MarketplacePage() {
               </button>
             ))}
           </div>
+
+          {/* Sort pills */}
+          <div style={{ display: 'flex', gap: spacing.xs }}>
+            {SORT_OPTIONS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setSort(id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  padding: `${spacing.xs}px ${spacing.sm}px`,
+                  borderRadius: borderRadius.full,
+                  border: `1px solid ${sort === id ? colors.accent.secondary ?? colors.accent.primary : colors.glass.border}`,
+                  background: sort === id ? `${colors.accent.primary}15` : 'transparent',
+                  color: sort === id ? colors.accent.primary : colors.text.secondary,
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                <Icon size={11} />
+                {label}
+              </button>
+            ))}
+          </div>
+
           <input
             type="text"
             placeholder="Search content..."
@@ -298,7 +225,7 @@ export default function MarketplacePage() {
             style={{
               flex: 1,
               maxWidth: SEARCH_INPUT_MAX_WIDTH,
-              padding: `${spacing.sm} ${spacing.md}`,
+              padding: `${spacing.sm}px ${spacing.md}px`,
               borderRadius: borderRadius.full,
               border: `1px solid ${colors.glass.border}`,
               background: colors.glass.light,
@@ -310,7 +237,23 @@ export default function MarketplacePage() {
         </div>
 
         {/* All items grid */}
-        {filteredItems.length > 0 ? (
+        {isLoading ? (
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(${GRID_CARD_MIN}, 1fr))`, gap: spacing.lg }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  height: 200,
+                  borderRadius: borderRadius.lg,
+                  background: colors.glass.light,
+                  border: `1px solid ${colors.glass.border}`,
+                  opacity: 0.5,
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              />
+            ))}
+          </div>
+        ) : filteredItems.length > 0 ? (
           <div
             style={{
               display: 'grid',
@@ -326,7 +269,7 @@ export default function MarketplacePage() {
                   key={item.id}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  transition={{ delay: index * 0.04 }}
                   whileHover={{ scale: 1.02, y: -2 }}
                   style={{
                     padding: spacing.lg,
@@ -334,52 +277,71 @@ export default function MarketplacePage() {
                     background: colors.glass.light,
                     backdropFilter: 'blur(12px)',
                     WebkitBackdropFilter: 'blur(12px)',
-                    border: `1px solid ${colors.glass.border}`,
+                    border: `1px solid ${item.isElevated ? accent + '40' : colors.glass.border}`,
                     cursor: 'pointer',
-                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
+                    position: 'relative',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
-                    {React.createElement(getContentTypeIcon(item.type), { size: 16, color: accent, strokeWidth: 2.5 })}
-                    <span
+                  {/* Elevated indicator stripe */}
+                  {item.isElevated && (
+                    <div
                       style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.06em',
-                        color: accent,
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: 3,
+                        borderRadius: `${borderRadius.lg}px ${borderRadius.lg}px 0 0`,
+                        background: 'linear-gradient(90deg, #f59e0b, #f97316)',
                       }}
-                    >
-                      {item.type}
-                    </span>
+                    />
+                  )}
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                      {React.createElement(getContentTypeIcon(item.type), { size: 16, color: accent, strokeWidth: 2.5 })}
+                      <span style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: accent }}>
+                        {item.type}
+                      </span>
+                    </div>
+                    {item.isElevated && <ElevatedBadge size="sm" />}
                   </div>
-                  <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                    {item.title}
-                  </Typography>
-                  <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', lineHeight: 1.5, flex: 1, minHeight: 0 }}>
-                    {item.description}
-                  </Typography>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-                    <Typography variant="small" style={{ color: colors.text.secondary }}>
-                      by {item.creator}
+
+                  <Link href={`/marketplace/${item.contentItemId}`} style={{ textDecoration: 'none', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+                      {item.title}
                     </Typography>
+                    <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, display: 'block', lineHeight: 1.5, flex: 1 }}>
+                      {item.description}
+                    </Typography>
+                  </Link>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                        <Star size={11} fill={accent} color={accent} />
-                        <Typography variant="small" style={{ color: colors.text.secondary }}>{item.rating}</Typography>
-                      </div>
+                      {item.duration && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                          <Clock size={11} color={colors.text.secondary} />
+                          <Typography variant="small" style={{ color: colors.text.secondary }}>{item.duration}</Typography>
+                        </div>
+                      )}
                       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
                         <Play size={11} color={colors.text.secondary} />
-                        <Typography variant="small" style={{ color: colors.text.secondary }}>{formatPlays(item.plays)}</Typography>
+                        <Typography variant="small" style={{ color: colors.text.secondary }}>{formatCount(item.playCount)}</Typography>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                        <Clock size={11} color={colors.text.secondary} />
-                        <Typography variant="small" style={{ color: colors.text.secondary }}>{item.duration}</Typography>
+                        <Share2 size={11} color={colors.text.secondary} />
+                        <Typography variant="small" style={{ color: colors.text.secondary }}>{formatCount(item.shareCount)}</Typography>
                       </div>
                     </div>
+                    <button
+                      onClick={(e) => { e.preventDefault(); setShareTarget(item); }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs, color: colors.text.secondary, display: 'flex', alignItems: 'center' }}
+                    >
+                      <Share2 size={14} color={accent} />
+                    </button>
                   </div>
                 </motion.div>
               );
@@ -396,31 +358,65 @@ export default function MarketplacePage() {
             }}
           >
             <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
-              No results found
+              {searchQuery ? 'No results found' : 'Nothing here yet'}
             </Typography>
             <Typography variant="body" style={{ color: colors.text.secondary }}>
-              Try a different search or filter.
+              {searchQuery ? 'Try a different search or filter.' : 'Be the first to publish your content.'}
             </Typography>
+            {!searchQuery && (
+              <Link href="/marketplace/creator" style={{ textDecoration: 'none', display: 'inline-block', marginTop: spacing.lg }}>
+                <Button variant="primary" size="md">Publish content</Button>
+              </Link>
+            )}
           </div>
         )}
 
-        {/* Coming soon notice */}
+        {/* Creator CTA */}
         <div
           style={{
             marginTop: spacing.xxl,
-            padding: spacing.lg,
-            borderRadius: borderRadius.lg,
-            background: `${colors.accent.primary}10`,
-            border: `1px solid ${colors.accent.primary}25`,
-            textAlign: 'center',
+            padding: spacing.xl,
+            borderRadius: borderRadius.xl,
+            background: `${colors.accent.primary}08`,
+            border: `1px solid ${colors.accent.primary}20`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: spacing.lg,
+            flexWrap: 'wrap',
           }}
         >
-          <Typography variant="body" style={{ color: colors.text.secondary }}>
-            <span style={{ color: colors.accent.primary, fontWeight: 600 }}>Creator publishing coming soon.</span>
-            {' '}Share your own content and earn Qs when others practice with it.
-          </Typography>
+          <div>
+            <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+              Share your practice
+            </Typography>
+            <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
+              Publish your content and earn credits every time someone shares it with the world.
+            </Typography>
+          </div>
+          <Link href="/marketplace/creator" style={{ textDecoration: 'none', flexShrink: 0 }}>
+            <Button variant="outline" size="md">Go to Creator Dashboard</Button>
+          </Link>
         </div>
       </PageContent>
+
+      {/* Share modal */}
+      {shareTarget && (
+        <ShareModal
+          isOpen={!!shareTarget}
+          onClose={() => setShareTarget(null)}
+          contentId={shareTarget.contentItemId}
+          title={shareTarget.title}
+          contentType={shareTarget.type}
+          onShare={(_platform: SharePlatform) => {
+            setItems((prev) =>
+              prev.map((i) =>
+                i.id === shareTarget.id ? { ...i, shareCount: i.shareCount + 1 } : i,
+              ),
+            );
+          }}
+        />
+      )}
     </PageShell>
   );
 }

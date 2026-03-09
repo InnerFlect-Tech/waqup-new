@@ -80,15 +80,16 @@ export default function LandingPage() {
       {/* Hero Section */}
         <section
           style={{
-            padding: `${spacing.xxl} ${spacing.xl}`,
+            padding: `0 ${spacing.xl} 10vh`,
             textAlign: 'center',
             maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
-            minHeight: '80vh',
+            height: 'calc(100dvh - 64px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
+            boxSizing: 'border-box',
           }}
         >
           {/* AI POWERED Badge */}
@@ -99,7 +100,7 @@ export default function LandingPage() {
               background: `${colors.accent.tertiary}20`,
               border: `1px solid ${colors.accent.tertiary}40`,
               display: 'inline-block',
-              marginBottom: spacing.lg,
+              marginBottom: spacing.md,
             }}
           >
             <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -110,10 +111,10 @@ export default function LandingPage() {
           {/* Large Logo - Text Only, Very Thin Font Weight */}
           <div
             style={{
-              fontSize: 'clamp(64px, 12vw, 120px)',
+              fontSize: 'clamp(52px, 10vw, 100px)',
               fontWeight: 300,
               lineHeight: 1,
-              marginBottom: spacing.lg,
+              marginBottom: spacing.md,
               color: colors.text.primary,
               letterSpacing: '-2px',
               WebkitFontSmoothing: 'antialiased',
@@ -130,12 +131,13 @@ export default function LandingPage() {
           <Typography
             variant="body"
             style={{
-              fontSize: 'clamp(20px, 3vw, 32px)',
+              fontSize: 'clamp(15px, 2vw, 20px)',
               color: colors.text.secondary,
               maxWidth: CONTENT_NARROW,
-              margin: `0 auto ${spacing.xxl} auto`,
+              margin: `0 auto ${spacing.xl} auto`,
               lineHeight: 1.4,
               fontWeight: 300,
+              letterSpacing: '0.01em',
             }}
           >
             Transform Your Mind with Voice and Sacred Frequencies
@@ -144,20 +146,19 @@ export default function LandingPage() {
           {/* Founding Member Card */}
           <div
             style={{
-              width: '100%',
-              maxWidth: CONTENT_MEDIUM,
-              padding: `${spacing.xxl} ${spacing.xl}`,
+            width: '100%',
+            maxWidth: CONTENT_MEDIUM,
+            padding: `${spacing.xl} ${spacing.xl}`,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               border: `1px solid ${colors.glass.border}`,
               boxShadow: `0 16px 64px ${colors.accent.primary}40`,
-              marginBottom: spacing.xxl,
             }}
           >
             {/* LIMITED TIME OFFER Indicator */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, marginBottom: spacing.lg }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
               <div
                 style={{
                   width: '8px',
@@ -173,12 +174,12 @@ export default function LandingPage() {
             </div>
 
             {/* Become a Founding Member */}
-            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.lg, fontSize: 'clamp(24px, 4vw, 32px)' }}>
+            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md, fontSize: 'clamp(18px, 2.5vw, 24px)', fontWeight: 400 }}>
               Become a Founding Member
             </Typography>
 
             {/* Benefits */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.xl, flexWrap: 'wrap', marginBottom: spacing.xl }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.lg, flexWrap: 'wrap', marginBottom: spacing.lg }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
                 <Shield size={16} color={colors.text.secondary} />
                 <Typography variant="caption" color="secondary">

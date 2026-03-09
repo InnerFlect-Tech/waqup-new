@@ -3,20 +3,14 @@ import { createSupabaseClient } from '@waqup/shared/services';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-const isDev = process.env.NODE_ENV === 'development';
 const missing = !supabaseUrl || !supabaseKey;
 
-if (missing && !isDev) {
-  throw new Error(
-    'Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Copy packages/web/.env.example to .env.local and add your values.'
-  );
-}
+// Use placeholders at build/prerender time so static generation doesn't throw.
+// Pages that need live Supabase data must export `dynamic = 'force-dynamic'`.
+const url = supabaseUrl || 'https://placeholder.supabase.co';
+const key = supabaseKey || 'placeholder-anon-key-build-only';
 
-// In development, use placeholders when vars are missing so the app loads (auth/API calls will fail until .env is set)
-const url = supabaseUrl || (isDev ? 'https://placeholder.supabase.co' : '');
-const key = supabaseKey || (isDev ? 'placeholder-anon-key-dev-only' : '');
-
-if (missing && isDev && typeof window !== 'undefined') {
+if (missing && typeof window !== 'undefined') {
   console.warn(
     '[waQup] Supabase not configured. Copy packages/web/.env.example to .env.local and set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY for auth and data.'
   );
@@ -25,5 +19,5 @@ if (missing && isDev && typeof window !== 'undefined') {
 export const supabase = createSupabaseClient({
   url,
   key,
-  // No storage needed - Supabase uses browser localStorage by default
+  detectSessionInUrl: true, // Required on web for OAuth/magic-link URL callbacks
 });

@@ -7,6 +7,8 @@ import { AuthProvider } from '@/components/auth/AuthProvider';
 import { AppLayout } from '@/components';
 import { ToastProvider } from '@/components/ui/Toast';
 import { QueryProvider } from '@/components/shared/QueryProvider';
+import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
+import { AnalyticsProvider } from '@/components/AnalyticsProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -63,6 +65,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
+        <ServiceWorkerRegistration />
+        <AnalyticsProvider />
         <QueryProvider>
           <ThemeProvider defaultThemeName="mystical-purple">
             <AuthProvider>

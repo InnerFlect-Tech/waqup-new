@@ -12,7 +12,7 @@ export default function MeditationVoicePage() {
   return (
     <ContentVoiceStep
       backHref="/sanctuary/meditations/create/script"
-      nextHref="/sanctuary/meditations/create/complete"
+      nextHref="/sanctuary/meditations/create/audio"
     />
   );
 }

@@ -247,10 +247,10 @@ export function createAuthService(client: SupabaseClient): AuthService {
      */
     async resetPassword(data: ResetPasswordData): Promise<AuthServiceResult<void>> {
       try {
-        // Check if we have a session (user clicked reset link)
-        const { data: sessionData } = await client.auth.getSession();
-        
-        if (!sessionData.session) {
+        // Verify the user is authenticated (server-verified, not just cookie-based)
+        const { data: userData, error: userError } = await client.auth.getUser();
+
+        if (userError || !userData.user) {
           return {
             success: false,
             error: 'Invalid or expired reset link. Please request a new password reset.',

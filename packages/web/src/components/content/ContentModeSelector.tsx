@@ -3,65 +3,75 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Typography, Button } from '@/components';
+import { Typography } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
-import { useContentCreation, type CreationMode } from '@/lib/contexts/ContentCreationContext';
-import { LayoutList, MessageSquare, Mic } from 'lucide-react';
+import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
+import type { CreationMode } from '@waqup/shared/constants';
+import { LayoutList, MessageSquare, Bot, Mic } from 'lucide-react';
+import { AI_MODE_COSTS } from '@waqup/shared/constants';
 
 export interface ContentModeSelectorProps {
   formHref: string;
-  orbHref?: string;
   chatHref?: string;
+  agentHref?: string;
 }
 
-export function ContentModeSelector({ formHref, chatHref = '/create/conversation', orbHref }: ContentModeSelectorProps) {
+const MODES: Array<{
+  mode: CreationMode;
+  icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+  label: string;
+  tagline: string;
+  color: string;
+  cost: number | null;
+}> = [
+  {
+    mode: 'form',
+    icon: LayoutList,
+    label: 'Step-by-step',
+    tagline: 'Guided prompts — structured and clear',
+    color: '#c084fc',
+    cost: null,
+  },
+  {
+    mode: 'chat',
+    icon: MessageSquare,
+    label: 'Chat with AI',
+    tagline: 'GPT-4o-mini · 1Q per reply · 2Q for script',
+    color: '#60a5fa',
+    cost: AI_MODE_COSTS.chat,
+  },
+  {
+    mode: 'agent',
+    icon: Mic,
+    label: 'Speak to Orb',
+    tagline: 'Voice-first · GPT-4o-mini · 1Q per reply',
+    color: '#34d399',
+    cost: AI_MODE_COSTS.agent,
+  },
+];
+
+export function ContentModeSelector({ formHref, chatHref = '/create/conversation', agentHref }: ContentModeSelectorProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
   const { setCreationMode } = useContentCreation();
 
-  const handleSelect = (mode: CreationMode, href: string) => {
-    setCreationMode(mode);
-    router.push(href);
+  const resolvedAgentHref = agentHref ?? chatHref.replace('conversation', 'orb');
+
+  const hrefMap: Record<CreationMode, string> = {
+    form: formHref,
+    chat: chatHref,
+    agent: resolvedAgentHref,
   };
 
-  const modes: Array<{
-    mode: CreationMode;
-    href: string;
-    icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
-    label: string;
-    tagline: string;
-    color: string;
-  }> = [
-    {
-      mode: 'form',
-      href: formHref,
-      icon: LayoutList,
-      label: 'Step-by-step',
-      tagline: 'Guided prompts — structured and clear',
-      color: '#c084fc',
-    },
-    {
-      mode: 'conversation',
-      href: chatHref,
-      icon: MessageSquare,
-      label: 'Chat with AI',
-      tagline: 'Conversational — just talk it through',
-      color: '#60a5fa',
-    },
-    {
-      mode: 'orb',
-      href: orbHref ?? chatHref.replace('conversation', 'orb'),
-      icon: Mic,
-      label: 'Speak to Orb',
-      tagline: 'Voice-first — say it aloud',
-      color: '#34d399',
-    },
-  ];
+  const handleSelect = (mode: CreationMode) => {
+    setCreationMode(mode);
+    router.push(hrefMap[mode]);
+  };
 
   return (
-    <div style={{ marginTop: spacing.xl }}>
+    <div style={{ marginTop: spacing.lg }}>
       <Typography
         variant="small"
         style={{
@@ -77,16 +87,16 @@ export function ContentModeSelector({ formHref, chatHref = '/create/conversation
         Choose how to create
       </Typography>
       <div style={{ display: 'flex', gap: spacing.md }}>
-        {modes.map(({ mode, href, icon: Icon, label, tagline, color }, i) => (
+        {MODES.map(({ mode, icon: Icon, label, tagline, color, cost }, i) => (
           <motion.button
             key={mode}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            onClick={() => handleSelect(mode, href)}
+            onClick={() => handleSelect(mode)}
             style={{
               flex: 1,
-              padding: spacing.lg,
+              padding: spacing.md,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
               backdropFilter: 'blur(12px)',
@@ -124,6 +134,20 @@ export function ContentModeSelector({ formHref, chatHref = '/create/conversation
             <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 12, lineHeight: 1.5 }}>
               {tagline}
             </Typography>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}>
+              {cost !== null ? (
+                <>
+                  <Bot size={11} color={color} strokeWidth={2} />
+                  <Typography variant="caption" style={{ color, margin: 0, fontSize: 11, fontWeight: 600 }}>
+                    {cost} Qs
+                  </Typography>
+                </>
+              ) : (
+                <Typography variant="caption" style={{ color: colors.text.secondary, margin: 0, fontSize: 11 }}>
+                  Free
+                </Typography>
+              )}
+            </div>
           </motion.button>
         ))}
       </div>

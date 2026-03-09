@@ -4,9 +4,16 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@waqup/shared'],
+  // Keep native/binary packages out of the Turbopack bundle so Node resolves them at runtime
+  serverExternalPackages: ['@ffmpeg-installer/ffmpeg', 'fluent-ffmpeg'],
   turbopack: {
     // Monorepo: root must include where next/package.json is resolvable
     root: path.join(__dirname, '../..'),
+  },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
   },
   // Production optimizations
   output: 'standalone',

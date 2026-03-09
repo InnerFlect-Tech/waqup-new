@@ -1,16 +1,42 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/theme';
 import { MainTabParamList, MainStackParamList } from './types';
-import { HomeScreen, LibraryScreen, CreateScreen, ProfileScreen } from '@/screens';
+import { HomeScreen, LibraryScreen } from '@/screens';
+import SpeakScreen from '@/screens/main/SpeakScreen';
 import ContentDetailScreen from '@/screens/content/ContentDetailScreen';
 import CreateModeScreen from '@/screens/content/CreateModeScreen';
 import ContentCreateScreen from '@/screens/content/ContentCreateScreen';
+import { CreditsScreen, ProgressScreen, SettingsScreen, RemindersScreen } from '@/screens/sanctuary';
+import { QCoin } from '@/components';
+import { useCreditBalance } from '@/hooks';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const Stack = createNativeStackNavigator<MainStackParamList>();
+
+/** Persistent Q balance badge shown in the top-right corner across all tabs */
+function QBalanceBadge() {
+  const navigation = useNavigation();
+  const { balance } = useCreditBalance();
+
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        // Navigate to Library tab where content and profile are accessed
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (navigation as any).navigate('Tabs', { screen: 'Library' });
+      }}
+      style={{ marginRight: 16 }}
+      activeOpacity={0.75}
+    >
+      <QCoin size="sm" showAmount={balance} />
+    </TouchableOpacity>
+  );
+}
 
 function MainTabs() {
   const { theme } = useTheme();
@@ -41,16 +67,32 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
       <Tab.Screen name="Library" component={LibraryScreen} options={{ tabBarLabel: 'Library' }} />
-      <Tab.Screen name="Create" component={CreateScreen} options={{ tabBarLabel: 'Create' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
+      <Tab.Screen name="Speak" component={SpeakScreen} options={{ tabBarLabel: 'Speak' }} />
     </Tab.Navigator>
   );
 }
 
 export default function MainNavigator() {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Tabs" component={MainTabs} />
+      <Stack.Screen
+        name="Tabs"
+        component={MainTabs}
+        options={{
+          headerShown: true,
+          headerTitle: '',
+          headerTransparent: true,
+          headerRight: () => <QBalanceBadge />,
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerShadowVisible: false,
+          headerTintColor: colors.text.primary,
+        }}
+      />
       <Stack.Screen
         name="ContentDetail"
         component={ContentDetailScreen}
@@ -64,6 +106,26 @@ export default function MainNavigator() {
       <Stack.Screen
         name="ContentCreate"
         component={ContentCreateScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="Credits"
+        component={CreditsScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="Progress"
+        component={ProgressScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="Reminders"
+        component={RemindersScreen}
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>

@@ -1,21 +1,27 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, Button, QCoin } from '@/components';
 import { useAuthStore } from '@/stores/authStore';
+import { useCreditBalance } from '@/hooks';
+import { MainStackParamList } from '@/navigation/types';
+
+type ProfileNav = NativeStackNavigationProp<MainStackParamList>;
 
 interface MenuItem {
   label: string;
   description: string;
   icon: string;
-  color?: string;
+  screen?: keyof MainStackParamList;
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { label: 'Account Settings', description: 'Email, password, notifications', icon: '⚙️' },
-  { label: 'Progress', description: 'Your practice journey & streaks', icon: '📈' },
-  { label: 'Reminders', description: 'Daily practice reminders', icon: '🔔' },
+  { label: 'Account Settings', description: 'Email, password, notifications', icon: '⚙️', screen: 'Settings' },
+  { label: 'Progress', description: 'Your practice journey & streaks', icon: '📈', screen: 'Progress' },
+  { label: 'Reminders', description: 'Daily practice reminders', icon: '🔔', screen: 'Reminders' },
   { label: 'Voice Settings', description: 'Your cloned ElevenLabs voice', icon: '🎙️' },
   { label: 'Privacy & Data', description: 'Data export and deletion', icon: '🔒' },
 ];
@@ -24,6 +30,8 @@ export default function ProfileScreen() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const { user, logout } = useAuthStore();
+  const { balance: creditBalance } = useCreditBalance();
+  const navigation = useNavigation<ProfileNav>();
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -101,7 +109,7 @@ export default function ProfileScreen() {
                 </Typography>
               </View>
               <Typography variant="h3" style={{ color: colors.text.primary }}>
-                0
+                {creditBalance}
               </Typography>
             </View>
             <View style={[styles.creditDivider, { backgroundColor: colors.glass.border }]} />
@@ -114,7 +122,7 @@ export default function ProfileScreen() {
               </Typography>
             </View>
             <View style={[styles.creditDivider, { backgroundColor: colors.glass.border }]} />
-            <TouchableOpacity style={styles.creditItem} activeOpacity={0.8}>
+            <TouchableOpacity style={styles.creditItem} activeOpacity={0.8} onPress={() => navigation.navigate('Credits')}>
               <Typography variant="captionBold" style={{ color: colors.accent.primary }}>
                 Get Credits →
               </Typography>
@@ -125,7 +133,15 @@ export default function ProfileScreen() {
         {/* Menu items */}
         <View style={styles.menuSection}>
           {MENU_ITEMS.map((item) => (
-            <TouchableOpacity key={item.label} activeOpacity={0.8}>
+            <TouchableOpacity
+              key={item.label}
+              activeOpacity={0.8}
+              onPress={() => {
+                if (item.screen) {
+                  navigation.navigate(item.screen);
+                }
+              }}
+            >
               <Card
                 variant="default"
                 style={[

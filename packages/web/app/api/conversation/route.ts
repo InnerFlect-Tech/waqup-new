@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateConversationReply } from '@waqup/shared/services/ai';
+import { API_ROUTE_COSTS } from '@waqup/shared/constants';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 import type { ContentItemType } from '@waqup/shared/types';
+
+export const dynamic = 'force-dynamic';
+
+const COST = API_ROUTE_COSTS.conversation;
 
 const CONVERSATION_SYSTEM_PROMPTS: Record<ContentItemType, string> = {
   affirmation: `You are a supportive creation guide helping someone craft a personal affirmation practice. Your role is to draw out their intent through empathetic, focused questions — one at a time.
@@ -54,19 +60,55 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 503 });
     }
 
+    // ─── Auth ───────────────────────────────────────────────────────────────
+    const supabase = await createSupabaseServerClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await req.json() as ConversationRequest;
 
     if (!body.type || !body.messages) {
       return NextResponse.json({ error: 'type and messages are required' }, { status: 400 });
     }
 
+    // ─── Atomic credit deduction (before calling OpenAI) ─────────────────────
+    const { error: deductError } = await supabase.rpc('deduct_credits', {
+      p_user_id:     user.id,
+      p_amount:      COST,
+      p_description: 'conversation_reply',
+    });
+
+    if (deductError) {
+      if (deductError.message?.includes('insufficient_credits')) {
+        const { data: balance } = await supabase.rpc('get_credit_balance');
+        return NextResponse.json(
+          {
+            error: 'insufficient_credits',
+            message: `You need ${COST} Q to continue the conversation but have ${(balance as number) ?? 0}. Get more Qs to keep going.`,
+            required: COST,
+            balance: (balance as number) ?? 0,
+          },
+          { status: 402 },
+        );
+      }
+      console.error('[conversation] credit deduction failed:', deductError.message);
+      return NextResponse.json({ error: 'Credit service error. Please try again.' }, { status: 503 });
+    }
+
     const systemPrompt = CONVERSATION_SYSTEM_PROMPTS[body.type];
-    const reply = await generateConversationReply(body.messages, systemPrompt, apiKey);
 
-    const shouldGenerateScript = reply.includes('[GENERATE_SCRIPT]');
-    const cleanReply = reply.replace('[GENERATE_SCRIPT]', '').trim();
-
-    return NextResponse.json({ reply: cleanReply, shouldGenerateScript });
+    try {
+      const reply = await generateConversationReply(body.messages, systemPrompt, apiKey);
+      const shouldGenerateScript = reply.includes('[GENERATE_SCRIPT]');
+      const cleanReply = reply.replace('[GENERATE_SCRIPT]', '').trim();
+      return NextResponse.json({ reply: cleanReply, shouldGenerateScript, creditsUsed: COST });
+    } catch (genErr) {
+      console.error('[conversation] generation failed after credit deduction:', genErr);
+      const message = genErr instanceof Error ? genErr.message : 'Generation failed';
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('[conversation]', message);

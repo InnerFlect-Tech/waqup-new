@@ -1,4 +1,5 @@
 import type { ContentItemType } from '../../types/content';
+import { AI_MODELS } from '../../constants/ai-models';
 
 export interface ScriptGenerationInput {
   type: ContentItemType;
@@ -90,13 +91,13 @@ export async function generateScript(
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: AI_MODELS.SCRIPT_GENERATION,
       messages: [
         { role: 'system', content: SYSTEM_PROMPTS[input.type] },
         { role: 'user', content: buildUserPrompt(input) },
       ],
       temperature: 0.75,
-      max_tokens: 800,
+      max_completion_tokens: 800,
     }),
   });
 
@@ -114,23 +115,54 @@ export async function generateScript(
   return content.trim();
 }
 
+export interface ConversationReplyOptions {
+  model?:            string;
+  temperature?:      number;
+  maxTokens?:        number;
+  topP?:             number;
+  presencePenalty?:  number;
+  frequencyPenalty?: number;
+  seed?:             number | null;
+  stop?:             string[];
+}
+
 export async function generateConversationReply(
   messages: Array<{ role: 'user' | 'assistant'; content: string }>,
   systemPrompt: string,
   apiKey: string,
+  options: ConversationReplyOptions = {},
 ): Promise<string> {
+  const {
+    model            = AI_MODELS.CONVERSATION,
+    temperature      = 0.7,
+    maxTokens        = 400,
+    topP,
+    presencePenalty,
+    frequencyPenalty,
+    seed,
+    stop,
+  } = options;
+
+  const body: Record<string, unknown> = {
+    model,
+    messages: [{ role: 'system', content: systemPrompt }, ...messages],
+    temperature,
+    max_completion_tokens: maxTokens,
+  };
+
+  if (topP             !== undefined) body.top_p              = topP;
+  if (presencePenalty  !== undefined) body.presence_penalty   = presencePenalty;
+  if (frequencyPenalty !== undefined) body.frequency_penalty  = frequencyPenalty;
+  if (seed             !== null && seed !== undefined) body.seed = seed;
+  if (stop             && stop.length > 0)            body.stop = stop.slice(0, 4);
+
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
     },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [{ role: 'system', content: systemPrompt }, ...messages],
-      temperature: 0.7,
-      max_tokens: 400,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

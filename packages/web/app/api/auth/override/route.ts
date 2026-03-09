@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 /**
  * Override login: validate credentials against env and allow bypassing Supabase.
  * Use only for dev/admin access. Set OVERRIDE_LOGIN_EMAIL and OVERRIDE_LOGIN_PASSWORD in env.
  * Disabled in production.
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
