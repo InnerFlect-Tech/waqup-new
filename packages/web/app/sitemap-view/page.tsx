@@ -49,11 +49,20 @@ export default function SitemapPage() {
             </div>
           ))}
 
-          <Link href="/pages" style={{ textDecoration: 'none', marginTop: spacing.lg, display: 'inline-block' }}>
-            <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 500 }}>
-              View full pages index
-            </Typography>
-          </Link>
+          <div style={{ marginTop: spacing.lg, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+            <Link href="/pages" style={{ color: colors.accent.primary, fontSize: 14, textDecoration: 'none', fontWeight: 500 }}>
+              Pages index
+            </Link>
+            <Link href="/system" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
+              System
+            </Link>
+            <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
+              Creation Steps
+            </Link>
+            <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </PageShell>

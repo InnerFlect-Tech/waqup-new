@@ -18,7 +18,7 @@ interface PlaceholderPageProps {
 export function PlaceholderPage({
   title,
   description,
-  backHref = '/home',
+  backHref = '/sanctuary',
   backLabel = 'Back',
   children,
 }: PlaceholderPageProps) {

@@ -24,9 +24,10 @@ import {
   Activity,
   Layout,
   Map,
+  Store,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb } from '@/components';
-import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
+import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
 import { LEGAL_CONFIG } from '@/config/legal';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
@@ -49,6 +50,7 @@ interface UserMenuItem {
 const NAV_ITEMS: NavItem[] = [
   { name: 'Sanctuary', path: '/sanctuary', icon: <Home className="w-5 h-5" /> },
   { name: 'Speak', path: '/speak', icon: <Mic className="w-5 h-5" /> },
+  { name: 'Marketplace', path: '/marketplace', icon: <Store className="w-5 h-5" /> },
   {
     name: 'Reminders',
     path: '/sanctuary/reminders',
@@ -201,6 +203,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
+            paddingTop: `max(${spacing.sm}, env(safe-area-inset-top, 0px))`,
             paddingLeft: HEADER_PADDING_X,
             paddingRight: HEADER_PADDING_X,
             ...(isScrolled
@@ -706,7 +709,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </motion.div>
         </motion.nav>
 
-        <main>{children}</main>
+        <main style={{ paddingTop: NAV_TOP_OFFSET }}>
+          {children}
+        </main>
       </div>
     );
   }
@@ -725,6 +730,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
+            paddingTop: `max(${spacing.sm}, env(safe-area-inset-top, 0px))`,
             paddingLeft: HEADER_PADDING_X,
             paddingRight: HEADER_PADDING_X,
             ...(isScrolled
@@ -848,12 +854,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </motion.div>
       </motion.nav>
-      <main
-        style={{
-          flex: 1,
-          paddingTop: NAV_HEIGHT,
-        }}
-      >
+      <main style={{ flex: 1, paddingTop: NAV_TOP_OFFSET }}>
         {children}
       </main>
 

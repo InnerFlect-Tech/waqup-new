@@ -34,10 +34,12 @@ interface UseContentResult {
 
 export function useContent(type?: ContentItemType): UseContentResult {
   const { data, isLoading, error, refetch } = useContentQuery(type);
+  const errorMessage =
+    error instanceof Error ? error.message : error != null ? String(error) : null;
   return {
-    items: data ?? [],
+    items: Array.isArray(data) ? data : [],
     isLoading,
-    error: error ? error.message : null,
+    error: errorMessage,
     refetch: () => { void refetch(); },
   };
 }

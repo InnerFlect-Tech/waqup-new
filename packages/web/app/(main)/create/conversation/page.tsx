@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, Suspense } from 'react
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button } from '@/components';
 import { PageShell } from '@/components';
+import { spacing } from '@/theme';
 import Link from 'next/link';
 import { Send, ArrowLeft } from 'lucide-react';
 import { spacing, borderRadius } from '@/theme';
@@ -297,7 +298,7 @@ function ConversationPageInner() {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          paddingTop: 80,
+          paddingTop: spacing.lg,
           paddingBottom: spacing.xl,
           paddingLeft: spacing.md,
           paddingRight: spacing.md,

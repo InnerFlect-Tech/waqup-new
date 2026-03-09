@@ -3,6 +3,12 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      { source: '/home', destination: '/sanctuary', permanent: true },
+      { source: '/auth/beta-signup', destination: '/waitlist', permanent: true },
+    ];
+  },
   transpilePackages: ['@waqup/shared'],
   // Keep native/binary packages out of the Turbopack bundle so Node resolves them at runtime
   serverExternalPackages: ['@ffmpeg-installer/ffmpeg', 'fluent-ffmpeg'],

@@ -6,7 +6,6 @@ import type { NextRequest } from 'next/server'
 // Superadmin-only paths are included here so that unauthenticated users are
 // redirected to /login before the page's SuperAdminGate component runs.
 const PROTECTED_PREFIXES = [
-  '/home',
   '/library',
   '/create',
   '/profile',

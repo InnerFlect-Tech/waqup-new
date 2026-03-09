@@ -61,7 +61,7 @@ export default function SpeakTestPage() {
             flexDirection: 'column',
             alignItems: 'center',
             minHeight: `calc(100dvh - ${PAGE_VERTICAL_PADDING_PX}px)`,
-            paddingTop: spacing.xxl,
+            paddingTop: spacing.lg,
             paddingBottom: spacing.xxl,
             boxSizing: 'border-box',
           }}

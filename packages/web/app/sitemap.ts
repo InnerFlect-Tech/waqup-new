@@ -11,12 +11,10 @@ const STATIC_ROUTES = [
   '/login',
   '/signup',
   '/confirm-email',
-  '/auth/beta-signup',
   '/onboarding',
   '/onboarding/profile',
   '/onboarding/preferences',
   '/onboarding/guide',
-  '/home',
   '/library',
   '/create',
   '/profile',
@@ -39,9 +37,6 @@ const STATIC_ROUTES = [
   '/create/conversation',
   '/marketplace',
   '/marketplace/creator',
-  '/showcase',
-  '/pages',
-  '/sitemap-view',
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

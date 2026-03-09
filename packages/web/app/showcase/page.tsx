@@ -256,7 +256,7 @@ export default function ShowcasePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: spacing.md }}>
             <PagePreview title="Login" route="/login" colors={colors} />
             <PagePreview title="Signup" route="/signup" colors={colors} />
-            <PagePreview title="Home" route="/home" colors={colors} />
+            <PagePreview title="Home" route="/sanctuary" colors={colors} />
             <PagePreview title="Library" route="/library" colors={colors} />
             <PagePreview title="Create" route="/create" colors={colors} />
             <PagePreview title="Profile" route="/profile" colors={colors} />
@@ -469,9 +469,14 @@ export default function ShowcasePage() {
           </Card>
         </Section>
 
-        {/* Utility nav */}
-        <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+        {/* Superadmin nav */}
+        <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap', alignItems: 'center' }}>
+          <span style={{ fontSize: 11, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.08em', marginRight: spacing.sm }}>Superadmin</span>
+          <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Admin</Link>
           <Link href="/system" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>System</Link>
+          <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Creation Steps</Link>
+          <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Health</Link>
+          <Link href="/pages" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Pages</Link>
           <Link href="/sitemap-view" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Sitemap</Link>
         </div>
 

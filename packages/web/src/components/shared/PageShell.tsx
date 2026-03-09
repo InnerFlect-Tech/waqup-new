@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTheme } from '@/theme';
 import { AnimatedBackground } from './AnimatedBackground';
-import { CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
+import { CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING, HEADER_PADDING_X } from '@/theme';
 
 export interface PageShellProps {
   children: React.ReactNode;
@@ -30,13 +30,19 @@ export const PageShell: React.FC<PageShellProps> = ({
   const { theme } = useTheme();
   const colors = theme.colors;
 
+  /** Auth/centered pages use smaller padding; main app pages use responsive padding that aligns with header on large screens */
+  const horizontalPadding =
+    centered || (typeof maxWidth === 'number' && maxWidth < 600)
+      ? PAGE_PADDING
+      : `clamp(${PAGE_PADDING}, 5vw, ${HEADER_PADDING_X})`;
+
   const contentStyle: React.CSSProperties = {
     position: 'relative',
     zIndex: 1,
     minHeight: '100vh',
     paddingTop: centered ? PAGE_PADDING : PAGE_TOP_PADDING,
-    paddingLeft: PAGE_PADDING,
-    paddingRight: PAGE_PADDING,
+    paddingLeft: horizontalPadding,
+    paddingRight: horizontalPadding,
     paddingBottom: PAGE_PADDING,
     ...(centered && {
       display: 'flex',

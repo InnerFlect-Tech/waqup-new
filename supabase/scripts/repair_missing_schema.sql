@@ -4,8 +4,66 @@
 -- Apply this in Supabase SQL Editor to add missing tables, columns, and functions
 -- that failed verification. Run verify_database.sql again after to confirm.
 --
--- Based on: 20260309000001, 20260309000004, 20260310000003
+-- Based on: 20260308000000, 20260308000001, 20260309000001, 20260309000004,
+--           20260310000001, 20260310000003
 -- =============================================================================
+
+-- ─── 0. content_items (required for Library page) ─────────────────────────────
+create extension if not exists "pgcrypto";
+
+create or replace function public.set_updated_at()
+returns trigger language plpgsql as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create table if not exists public.content_items (
+  id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null references auth.users(id) on delete cascade,
+  type          text not null check (type in ('affirmation', 'meditation', 'ritual')),
+  title         text not null,
+  description   text not null default '',
+  script        text,
+  duration      text not null default '',
+  frequency     text,
+  status        text not null default 'draft' check (status in ('draft', 'processing', 'ready', 'failed', 'complete')),
+  last_played_at  timestamptz,
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+
+create index if not exists content_items_user_id_idx on public.content_items (user_id, created_at desc);
+create index if not exists content_items_user_type_idx on public.content_items (user_id, type, created_at desc);
+
+drop trigger if exists content_items_updated_at on public.content_items;
+create trigger content_items_updated_at before update on public.content_items
+  for each row execute function public.set_updated_at();
+
+alter table public.content_items enable row level security;
+drop policy if exists "Users can view own content" on public.content_items;
+create policy "Users can view own content" on public.content_items for select using (auth.uid() = user_id);
+drop policy if exists "Users can create own content" on public.content_items;
+create policy "Users can create own content" on public.content_items for insert with check (auth.uid() = user_id);
+drop policy if exists "Users can update own content" on public.content_items;
+create policy "Users can update own content" on public.content_items for update using (auth.uid() = user_id);
+drop policy if exists "Users can delete own content" on public.content_items;
+create policy "Users can delete own content" on public.content_items for delete using (auth.uid() = user_id);
+
+alter table public.content_items add column if not exists audio_url text;
+alter table public.content_items add column if not exists voice_type text;
+alter table public.content_items add column if not exists audio_settings jsonb;
+alter table public.content_items add column if not exists voice_url text;
+alter table public.content_items add column if not exists ambient_url text;
+alter table public.content_items add column if not exists binaural_url text;
+alter table public.content_items add column if not exists default_vol_voice integer not null default 80;
+alter table public.content_items add column if not exists default_vol_ambient integer not null default 40;
+alter table public.content_items add column if not exists default_vol_binaural integer not null default 30;
+alter table public.content_items add column if not exists play_count integer default 0;
+alter table public.content_items add column if not exists share_count integer default 0;
+alter table public.content_items add column if not exists is_elevated boolean default false;
+alter table public.content_items add column if not exists is_listed boolean default false;
 
 -- ─── 1. atomic_credit_deduct: deduct_credits() + oracle_sessions ───────────────
 

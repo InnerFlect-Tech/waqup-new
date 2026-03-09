@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useCreditBalance } from '@/hooks';
-import { useTheme, NAV_HEIGHT, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT } from '@/theme';
+import { useTheme, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT } from '@/theme';
 import type { OrbState } from '@/components/audio';
 
 const VoiceOrb = dynamic(
@@ -653,13 +653,13 @@ export default function SpeakPage() {
   const repliesLeft     = session ? session.repliesTotal - session.repliesUsed : 0;
   const isLowCredits    = creditBalance !== undefined && creditBalance < 1;
 
-  const orbSize = `min(calc(100dvh - ${NAV_HEIGHT} - ${SPEAK_BOTTOM_UI_HEIGHT}), 72vmin, 460px)`;
+  const orbSize = `min(calc(100dvh - ${NAV_TOP_OFFSET} - ${SPEAK_BOTTOM_UI_HEIGHT}), 72vmin, 460px)`;
 
   return (
     <div
       style={{
         position: 'fixed',
-        top:    NAV_HEIGHT,
+        top:    NAV_TOP_OFFSET,
         left:   0,
         right:  0,
         bottom: 0,

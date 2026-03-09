@@ -10,7 +10,7 @@ import type { ContentItemType } from '@waqup/shared/types';
 const PADDING_STYLE: React.CSSProperties = {
   minHeight: '100vh',
   width: '100%',
-  paddingTop: spacing.xl,
+  paddingTop: spacing.lg,
   paddingBottom: spacing.xl,
   paddingLeft: spacing.md,
   paddingRight: spacing.md,

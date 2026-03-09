@@ -103,7 +103,7 @@ export default function SystemPage() {
             </pre>
           </div>
           <Typography variant="body" style={{ color: colors.text.secondary, marginTop: spacing.sm, fontSize: '13px' }}>
-            Future tables (Phases 9–14): profiles, credit_transactions, conversations, marketplace_*.
+            Other tables: profiles (role, access_granted), credit_transactions, reminders, user_voices, waitlist, investor_inquiries. Future: conversations (Phase 9), marketplace_* (Phase 14).
           </Typography>
         </Section>
 
@@ -215,12 +215,15 @@ OAuth: /auth/callback exchanges code for session, sets cookies.`}
           </Typography>
         </Section>
 
-        <div style={{ marginTop: spacing.xl, paddingTop: spacing.lg, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
-          <Link
-            href="/health"
-            style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}
-          >
-            🩺 API Health
+        <div style={{ marginTop: spacing.xl, paddingTop: spacing.lg, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>
+            Creation Steps
+          </Link>
+          <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>
+            API Health
+          </Link>
+          <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>
+            Admin Dashboard
           </Link>
         </div>
       </div>

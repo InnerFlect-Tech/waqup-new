@@ -41,7 +41,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [initializeAuth]);
 
   const isProtectedRoute =
-    pathname.startsWith('/home') ||
     pathname.startsWith('/library') ||
     pathname.startsWith('/create') ||
     pathname.startsWith('/profile') ||
@@ -60,7 +59,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/forgot-password',
       '/reset-password',
       '/confirm-email',
-      '/auth/beta-signup',
       '/how-it-works',
       '/pricing',
       '/get-qs', // Public Q packs — anyone can view; login required only when buying

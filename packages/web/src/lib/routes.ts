@@ -36,7 +36,6 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/forgot-password', section: 'Auth', description: 'Forgot password', status: 'exists' },
   { path: '/reset-password', section: 'Auth', description: 'Reset password', status: 'exists' },
   { path: '/confirm-email', section: 'Auth', description: 'Confirm email', status: 'exists' },
-  { path: '/auth/beta-signup', section: 'Auth', description: 'Beta email capture — now redirects to /waitlist', status: 'to_delete' },
   { path: '/coming-soon', section: 'Auth', description: 'Access gate — shown to logged-in users pending waitlist approval', status: 'exists' },
 
   // ── Onboarding ─────────────────────────────────────────────────────────────
@@ -46,7 +45,6 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/onboarding/guide', section: 'Onboarding', description: 'Getting started guide', status: 'to_change', note: 'Stub' },
 
   // ── Main App ───────────────────────────────────────────────────────────────
-  { path: '/home', section: 'Main App', description: 'Dashboard redirect → /sanctuary', status: 'to_delete', note: 'Thin redirect, remove when /sanctuary is fully canonical' },
   { path: '/library', section: 'Main App', description: 'Content library', status: 'exists' },
   { path: '/create', section: 'Main App', description: 'Create — content type selector', status: 'exists' },
   { path: '/create/conversation', section: 'Main App', description: 'Text conversational creation', status: 'exists' },

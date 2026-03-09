@@ -4,7 +4,7 @@ import React from 'react';
 import { Typography, SuperAdminGate } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell } from '@/components';
-import { spacing, borderRadius, CONTENT_MAX_WIDTH } from '@/theme';
+import { spacing, borderRadius, CONTENT_MAX_WIDTH, BLUR } from '@/theme';
 import Link from 'next/link';
 import { ALL_PIPELINE_STEPS, CONTENT_TYPE_META, CONVERSATION_STEP_PROMPTS } from '@/lib/creation-steps';
 import type { ContentType } from '@/lib/contexts/ContentCreationContext';
@@ -158,8 +158,8 @@ export default function CreationStepsPage() {
                         padding: spacing.md,
                         borderRadius: borderRadius.lg,
                         background: colors.glass.light,
-                        backdropFilter: 'blur(12px)',
-                        WebkitBackdropFilter: 'blur(12px)',
+                        backdropFilter: BLUR.lg,
+                        WebkitBackdropFilter: BLUR.lg,
                         border: `1px solid ${status === 'built' ? meta.color + '20' : colors.glass.border}`,
                         display: 'flex',
                         alignItems: 'flex-start',
@@ -246,8 +246,8 @@ export default function CreationStepsPage() {
               padding: spacing.md,
               borderRadius: borderRadius.lg,
               background: colors.glass.light,
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
+              backdropFilter: BLUR.lg,
+              WebkitBackdropFilter: BLUR.lg,
               border: `1px solid ${colors.glass.border}`,
               overflowX: 'auto',
             }}

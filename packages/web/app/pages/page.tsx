@@ -74,7 +74,7 @@ const CARD_GRID_STYLE: React.CSSProperties = {
   gap: spacing.sm,
 };
 
-const SECTION_FLOW = ['Landing & Marketing', 'Auth', 'Onboarding', 'Main', 'Sanctuary', 'Utility (public by exception)', 'Voice & conversation', 'Marketplace (Phase 14)'];
+const SECTION_FLOW = ['Landing & Marketing', 'Legal', 'Auth', 'Onboarding', 'Main App', 'Voice & Speak', 'Sanctuary', 'Credits', 'Content (Affirmations · Meditations · Rituals)', 'Marketplace', 'Superadmin'];
 
 export default function PagesIndexPage() {
   const { theme } = useTheme();
@@ -255,11 +255,14 @@ export default function PagesIndexPage() {
           </GlassCard>
         ))}
 
-        {/* Admin dashboard shortcut */}
-        <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
+        {/* Admin dashboard & Legal shortcuts */}
+        <div style={{ marginTop: spacing.xl, paddingTop: spacing.xl, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap', alignItems: 'center' }}>
           <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Admin Dashboard</Link>
           <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>API Health</Link>
           <Link href="/sitemap-view" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Sitemap</Link>
+          <span style={{ color: colors.text.tertiary, fontSize: 12 }}>|</span>
+          <Link href="/privacy" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Privacy Policy</Link>
+          <Link href="/terms" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>Terms of Service</Link>
         </div>
       </div>
     </PageShell>

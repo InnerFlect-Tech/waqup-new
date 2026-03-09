@@ -8,11 +8,9 @@ export type AuthRoutes = {
   '/signup': undefined;
   '/forgot-password': undefined;
   '/confirm-email': undefined;
-  '/auth/beta-signup': undefined;
 };
 
 export type MainRoutes = {
-  '/home': undefined;
   '/library': undefined;
   '/create': undefined;
   '/profile': undefined;
@@ -50,11 +48,9 @@ export const AUTH_ROUTES = {
   SIGNUP: '/signup',
   FORGOT_PASSWORD: '/forgot-password',
   CONFIRM_EMAIL: '/confirm-email',
-  BETA_SIGNUP: '/auth/beta-signup',
 } as const;
 
 export const MAIN_ROUTES = {
-  HOME: '/home',
   LIBRARY: '/library',
   CREATE: '/create',
   PROFILE: '/profile',

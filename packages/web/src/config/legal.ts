@@ -15,4 +15,6 @@ export const LEGAL_CONFIG = {
   privacyEffectiveDate: '2026-03-09',
   /** Terms of service effective date */
   termsEffectiveDate: '2026-03-09',
+  /** Jurisdiction for dispute resolution (e.g. "the State of California, USA") */
+  jurisdiction: 'the State of California, USA',
 } as const;

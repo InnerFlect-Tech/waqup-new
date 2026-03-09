@@ -398,11 +398,20 @@ export default function HealthPage() {
             flexWrap: 'wrap',
           }}
         >
+          <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
+            Admin
+          </Link>
           <Link href="/system" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
             System
           </Link>
+          <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
+            Creation Steps
+          </Link>
           <Link href="/showcase" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
             Showcase
+          </Link>
+          <Link href="/sitemap-view" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none' }}>
+            Sitemap
           </Link>
         </div>
       </div>

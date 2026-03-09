@@ -57,10 +57,12 @@ function ContentCard({
   colors: ReturnType<typeof useTheme>['theme']['colors'];
   onShare?: (item: ContentItem) => void;
 }) {
+  if (!item?.id || !item?.type) return null;
   const typeColor = TYPE_COLOR[item.type as ContentTypeFilter] ?? colors.accent.primary;
+  const detailHref = getContentDetailHref(item.type, item.id);
 
   return (
-    <Link href={getContentDetailHref(item.type, item.id)} style={{ textDecoration: 'none' }}>
+    <Link href={detailHref} style={{ textDecoration: 'none' }}>
       <div
         className="library-card"
         style={{
@@ -400,9 +402,10 @@ export default function LibraryPage() {
   };
 
   const filteredContent = useMemo(() => {
-    const filtered = allContent.filter((item) => {
+    const validItems = allContent.filter((item) => item?.id && item?.type);
+    const filtered = validItems.filter((item) => {
       if (typeFilter !== 'all' && item.type !== typeFilter) return false;
-      if (searchQuery && !item.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (searchQuery && !(item.title ?? '').toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     });
 
