@@ -5,7 +5,7 @@ import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
 import { spacing, borderRadius } from '@/theme';
-import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
 import Link from 'next/link';
 import {
   Brain,
@@ -263,24 +263,24 @@ export default function LaunchPage() {
     <PageShell intensity="high" bare>
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="wq-hero" style={{ padding: `0 ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
+      <section className="wq-hero" style={{ padding: `0 ${PAGE_PADDING}`, marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`, marginLeft: 'auto', marginRight: 'auto', maxWidth: CONTENT_MAX_WIDTH, minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: '80px', boxSizing: 'border-box' }}>
         <div className="wq-hero-copy" style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 32 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 24 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: colors.success, animation: 'wqPulse 2s ease-in-out infinite' }} />
             <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.7px', fontSize: 11 }}>Voice-First Wellness · AI-Powered</Typography>
           </div>
 
-          <h1 style={{ fontSize: 'clamp(40px, 5.5vw, 72px)', fontWeight: 300, lineHeight: 1.08, letterSpacing: '-2px', color: colors.text.primary, margin: '0 0 28px' }}>
+          <h1 style={{ fontSize: 'clamp(40px, 5.5vw, 72px)', fontWeight: 300, lineHeight: 1.08, letterSpacing: '-2px', color: colors.text.primary, margin: '0 0 24px' }}>
             Become the person<br />
             you&apos;ve always<br />
             <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>known you could be.</span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(17px, 1.8vw, 21px)', color: colors.text.secondary, lineHeight: 1.65, maxWidth: 500, margin: '0 0 48px', fontWeight: 300 }}>
+          <p style={{ fontSize: 'clamp(17px, 1.8vw, 21px)', color: colors.text.secondary, lineHeight: 1.65, maxWidth: 500, margin: '0 0 32px', fontWeight: 300 }}>
             waQup creates personalized affirmations, meditations, and rituals, voiced by you, that rewire your subconscious. Not generic content. Your story. Your voice. Your transformation.
           </p>
 
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 36 }}>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 28 }}>
             <Link href="/waitlist" style={{ textDecoration: 'none' }}>
               <Button variant="primary" size="lg" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: '17px', padding: '16px 36px', boxShadow: `0 8px 48px ${colors.accent.primary}50` }}>
                 Join the Waitlist <ArrowRight size={18} color={colors.text.onDark} />
@@ -663,7 +663,7 @@ export default function LaunchPage() {
         .wq-hero-mockup { display: flex; justify-content: center; flex-shrink: 0; }
 
         @media (max-width: 960px) {
-          .wq-hero { flex-direction: column !important; padding-top: 60px !important; padding-bottom: 60px !important; min-height: auto !important; align-items: flex-start !important; }
+          .wq-hero { flex-direction: column !important; padding-top: 40px !important; padding-bottom: 48px !important; min-height: auto !important; align-items: flex-start !important; margin-top: 0 !important; }
           .wq-hero-mockup { width: 100%; padding: 32px 0; }
           .wq-before-after { grid-template-columns: 1fr !important; }
           .wq-bento { grid-template-columns: 1fr !important; }
