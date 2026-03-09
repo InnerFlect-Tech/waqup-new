@@ -69,4 +69,6 @@ export const layout = {
   maxWidth7xl: 1280,
   /** Header horizontal padding — lateral space for logo and nav buttons */
   headerPaddingX: 96,
+  /** Speak page bottom UI panel height — SSOT for orb centering area */
+  speakBottomUiHeight: 220,
 } as const;

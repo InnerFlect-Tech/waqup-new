@@ -42,6 +42,8 @@ export const AUTH_CARD_MAX_WIDTH = px(layout.authCardMaxWidth);
 export const CONTENT_NARROW = px(layout.contentNarrow);
 export const CONTENT_MEDIUM = px(layout.contentMedium);
 export const NAV_HEIGHT = px(layout.navHeight);
+/** Distance from top of viewport to where page content starts (nav clearance). Use for main paddingTop and fixed layouts (e.g. speak page). */
+export const NAV_TOP_OFFSET = `calc(${NAV_HEIGHT} + max(${spacing.sm}, env(safe-area-inset-top, 0px)))`;
 export const GRID_CARD_MIN = px(layout.gridCardMin);
 export const SEARCH_INPUT_MAX_WIDTH = px(layout.searchInputMaxWidth);
 export const PAGE_TOP_PADDING = px(layout.pageTopPadding);
@@ -53,6 +55,8 @@ export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
  * Same value for left and right so logo and nav buttons align symmetrically.
  */
 export const HEADER_PADDING_X = px(layout.headerPaddingX);
+/** Speak page bottom UI height — SSOT for orb centering area */
+export const SPEAK_BOTTOM_UI_HEIGHT = px(layout.speakBottomUiHeight);
 export const PAGE_PADDING = spacing.xl;
 /** Standard glass card padding - use for most cards */
 export const CARD_PADDING = spacing.lg;

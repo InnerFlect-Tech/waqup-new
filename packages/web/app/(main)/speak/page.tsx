@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useCreditBalance } from '@/hooks';
-import { useTheme, NAV_HEIGHT } from '@/theme';
+import { useTheme, NAV_HEIGHT, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT } from '@/theme';
 import type { OrbState } from '@/components/audio';
 
 const VoiceOrb = dynamic(
@@ -566,9 +566,10 @@ export default function SpeakPage() {
       };
 
       if (!res.ok) {
-        setSessionError(data.message ?? (res.status === 402
+        const msg = data.message ?? data.error ?? (res.status === 402
           ? 'Not enough Qs. Get more to continue.'
-          : 'Failed to start session. Please try again.'));
+          : 'Failed to start session. Please try again.');
+        setSessionError(msg);
         setOrbState('idle');
         return;
       }
@@ -652,8 +653,7 @@ export default function SpeakPage() {
   const repliesLeft     = session ? session.repliesTotal - session.repliesUsed : 0;
   const isLowCredits    = creditBalance !== undefined && creditBalance < 1;
 
-  const BOTTOM_UI_PX = 220;
-  const orbSize = `min(calc(100dvh - ${NAV_HEIGHT} - ${BOTTOM_UI_PX * 2}px), 72vmin, 460px)`;
+  const orbSize = `min(calc(100dvh - ${NAV_HEIGHT} - ${SPEAK_BOTTOM_UI_HEIGHT}), 72vmin, 460px)`;
 
   return (
     <div
@@ -665,10 +665,8 @@ export default function SpeakPage() {
         bottom: 0,
         display:        'flex',
         flexDirection:  'column',
-        alignItems:     'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'transparent',
+        overflow:       'hidden',
+        background:     'transparent',
       }}
     >
       {/* ── Background glow ── */}
@@ -698,7 +696,7 @@ export default function SpeakPage() {
               width:      'min(640px, 90vw)',
               maxHeight:  '30vh',
               overflowY:  'auto',
-              bottom:     `${BOTTOM_UI_PX + 8}px`,
+              bottom:     `calc(${SPEAK_BOTTOM_UI_HEIGHT} + 8px)`,
               zIndex:     2,
               display:    'flex',
               flexDirection: 'column',
@@ -770,17 +768,17 @@ export default function SpeakPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Orb ── */}
+      {/* ── Orb area (flex: 1, centers orb in content space above bottom UI) ── */}
       <div
         onClick={handleOrbTap}
         style={{
-          display:    'flex',
-          alignItems: 'center',
+          flex:        1,
+          display:     'flex',
+          alignItems:  'center',
           justifyContent: 'center',
-          flexShrink: 0,
-          paddingTop: BOTTOM_UI_PX,
-          cursor: orbState === 'speaking' ? 'pointer' : 'default',
-          zIndex: 3,
+          minHeight:   0,
+          cursor:      orbState === 'speaking' ? 'pointer' : 'default',
+          zIndex:      3,
         }}
       >
         <motion.div
@@ -806,7 +804,7 @@ export default function SpeakPage() {
             exit={{ opacity: 0, y: -4 }}
             style={{
               position:   'absolute',
-              bottom:     `${BOTTOM_UI_PX - 4}px`,
+              bottom:     `calc(${SPEAK_BOTTOM_UI_HEIGHT} - 4px)`,
               left:       '50%',
               transform:  'translateX(-50%)',
               whiteSpace: 'nowrap',
@@ -828,18 +826,16 @@ export default function SpeakPage() {
       {/* ── Bottom UI panel ── */}
       <div
         style={{
-          position:    'absolute',
-          bottom:      0,
-          left:        0,
-          right:       0,
-          height:      `${BOTTOM_UI_PX}px`,
-          display:     'flex',
+          flex:         0,
+          flexShrink:   0,
+          height:       SPEAK_BOTTOM_UI_HEIGHT,
+          display:      'flex',
           flexDirection: 'column',
-          alignItems:  'center',
+          alignItems:   'center',
           justifyContent: 'flex-end',
           paddingBottom: 28,
-          gap:         12,
-          zIndex:      5,
+          gap:          12,
+          zIndex:       5,
         }}
       >
         <AnimatePresence mode="wait">
