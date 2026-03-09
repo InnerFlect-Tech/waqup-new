@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,7 @@ import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores/authStore';
 import { spacing, borderRadius } from '@/theme';
 import type { LoginFormData } from '@waqup/shared/schemas';
+import { signInWithGoogle } from '@/services/googleAuth';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -18,6 +19,8 @@ export default function LoginScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const colors = theme.colors;
   const { login, isLoading, error, setError } = useAuthStore();
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const message = route.params?.message;
 
   const {
@@ -41,12 +44,19 @@ export default function LoginScreen({ navigation, route }: Props) {
 
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
-    const result = await login(data.email, data.password);
-    
-    if (result.success) {
-      // Navigation will happen automatically via RootNavigator auth state check
+    await login(data.email, data.password);
+    // Navigation happens automatically via RootNavigator auth state check
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleError(null);
+    setGoogleLoading(true);
+    const result = await signInWithGoogle();
+    setGoogleLoading(false);
+    if (result.error) {
+      setGoogleError(result.error);
     }
-    // Error is already set in the store
+    // On success, onAuthStateChange fires SIGNED_IN → RootNavigator navigates automatically
   };
 
   return (
@@ -157,6 +167,46 @@ export default function LoginScreen({ navigation, route }: Props) {
                   Forgot Password?
                 </Typography>
               </TouchableOpacity>
+
+              {/* Divider */}
+              <View style={styles.dividerRow}>
+                <View style={[styles.dividerLine, { backgroundColor: colors.glass.border }]} />
+                <Typography variant="small" style={[styles.dividerText, { color: colors.text.secondary }]}>
+                  or
+                </Typography>
+                <View style={[styles.dividerLine, { backgroundColor: colors.glass.border }]} />
+              </View>
+
+              {/* Google error */}
+              {googleError && (
+                <View style={[styles.errorContainer, { backgroundColor: `${colors.error}20`, borderColor: colors.error, marginBottom: spacing.sm }]}>
+                  <Typography variant="body" style={{ color: colors.error }}>
+                    {googleError}
+                  </Typography>
+                </View>
+              )}
+
+              {/* Google Sign In */}
+              <TouchableOpacity
+                onPress={handleGoogleSignIn}
+                disabled={googleLoading || isLoading}
+                style={[
+                  styles.googleButton,
+                  {
+                    borderColor: colors.glass.border,
+                    backgroundColor: colors.glass.opaque,
+                    opacity: googleLoading || isLoading ? 0.6 : 1,
+                  },
+                ]}
+                activeOpacity={0.75}
+              >
+                <Typography variant="body" style={{ fontSize: 18, lineHeight: 22 }}>
+                  G
+                </Typography>
+                <Typography variant="bodyBold" style={{ color: colors.text.primary, marginLeft: spacing.sm }}>
+                  {googleLoading ? 'Connecting...' : 'Continue with Google'}
+                </Typography>
+              </TouchableOpacity>
             </Card>
 
             {/* Sign Up Link */}
@@ -238,5 +288,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: spacing.xl,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: spacing.lg,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+  dividerText: {
+    marginHorizontal: spacing.md,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    minHeight: 52,
   },
 });

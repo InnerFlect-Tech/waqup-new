@@ -11,15 +11,25 @@ import { useAuthStore } from '@/stores';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Deep linking configuration
-// Showcase is accessible via URL: waqup://showcase or https://waqup.app/showcase
+// waqup://auth/callback is used as the OAuth redirect URI for Google (and future providers)
 const linking = {
   prefixes: ['waqup://', 'https://waqup.app', 'https://www.waqup.app'],
   config: {
     screens: {
-      Showcase: 'showcase', // Hidden route accessible via URL only
-      Health: 'health', // Hidden health check route accessible via URL only
-      Auth: 'auth', // Auth navigator routes handled internally
-      Main: 'main', // Main navigator routes handled internally
+      Showcase: 'showcase',
+      Health: 'health',
+      Auth: {
+        screens: {
+          Login: 'auth/login',
+          Signup: 'auth/signup',
+          ForgotPassword: 'auth/forgot-password',
+          ResetPassword: 'auth/reset-password',
+        },
+      },
+      Main: 'main',
+      // auth/callback is handled by expo-web-browser's openAuthSessionAsync —
+      // it intercepts the redirect and returns the URL directly, so we do NOT
+      // need a screen for it here.
     },
   },
 };

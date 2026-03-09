@@ -7,109 +7,154 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography } from '@/components';
+import { useAuthStore } from '@/stores';
 
 const CONTENT_TYPES = [
   {
     label: 'Affirmations',
     subtitle: 'Rewire your beliefs',
+    description: 'Short, powerful statements that reshape your mindset',
     icon: '☀',
-    color: '#c084fc',
-    bg: '#3b0764',
+    accentColor: '#c084fc',
+    bgColor: '#3b0764',
     contentType: 'affirmation' as const,
   },
   {
     label: 'Meditations',
     subtitle: 'Induce calm states',
+    description: 'Guided sessions to quiet the mind and restore focus',
     icon: '☽',
-    color: '#818cf8',
-    bg: '#1e1b4b',
+    accentColor: '#818cf8',
+    bgColor: '#1e1b4b',
     contentType: 'meditation' as const,
   },
   {
     label: 'Rituals',
     subtitle: 'Encode identity',
+    description: 'Daily practices that align you with who you are becoming',
     icon: '◎',
-    color: '#a78bfa',
-    bg: '#2e1065',
+    accentColor: '#a78bfa',
+    bgColor: '#2e1065',
     contentType: 'ritual' as const,
   },
-];
+] as const;
 
-function getGreeting(): string {
+function getGreeting(): { label: string; emoji: string } {
   const hour = new Date().getHours();
-  if (hour < 12) return 'GOOD MORNING';
-  if (hour < 17) return 'GOOD AFTERNOON';
-  return 'GOOD EVENING';
+  if (hour < 12) return { label: 'Good morning', emoji: '☀' };
+  if (hour < 17) return { label: 'Good afternoon', emoji: '◑' };
+  return { label: 'Good evening', emoji: '☽' };
 }
 
 export default function HomeScreen() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
+  const { user } = useAuthStore();
+
+  const greeting = getGreeting();
+  const firstName = user?.user_metadata?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? '';
 
   const handleTypePress = (contentType: 'affirmation' | 'meditation' | 'ritual') => {
     navigation.navigate('CreateMode', { contentType });
   };
 
   return (
-    <Screen scrollable padding={false}>
+    // Screen handles the background color; scrolling is done by the inner ScrollView
+    <Screen padding={false}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: spacing.xl, paddingBottom: insets.bottom + spacing.xxl },
+        ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Greeting */}
+        {/* Greeting header */}
         <View style={styles.header}>
           <Typography
             variant="small"
-            style={[styles.greeting, { color: colors.text.secondary }]}
+            style={[styles.greetingLabel, { color: colors.text.secondary }]}
           >
-            {getGreeting()}
+            {greeting.label}{firstName ? `, ${firstName}` : ''} {greeting.emoji}
           </Typography>
           <Typography
-            variant="h1"
+            variant="h2"
             style={[styles.headline, { color: colors.text.primary }]}
           >
-            {'Ready to transform? ✨'}
+            What would you like to{'\n'}practice today?
           </Typography>
         </View>
 
-        {/* Content type list */}
-        <View style={styles.list}>
+        {/* Section label */}
+        <Typography
+          variant="small"
+          style={[styles.sectionLabel, { color: colors.text.secondary }]}
+        >
+          CHOOSE A PRACTICE
+        </Typography>
+
+        {/* Content type cards */}
+        <View style={styles.cardList}>
           {CONTENT_TYPES.map((item) => (
             <TouchableOpacity
               key={item.contentType}
-              activeOpacity={0.75}
+              activeOpacity={0.8}
               onPress={() => handleTypePress(item.contentType)}
               style={[
-                styles.row,
-                { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border },
+                styles.card,
+                {
+                  backgroundColor: colors.glass.opaque,
+                  borderColor: colors.glass.border,
+                },
               ]}
             >
-              {/* Icon tile */}
-              <View style={[styles.iconTile, { backgroundColor: item.bg }]}>
-                <Typography style={[styles.iconText, { color: item.color }]}>
+              {/* Icon column */}
+              <View style={[styles.iconTile, { backgroundColor: item.bgColor }]}>
+                <Typography style={[styles.iconText, { color: item.accentColor }]}>
                   {item.icon}
                 </Typography>
               </View>
 
-              {/* Labels */}
-              <View style={styles.rowLabels}>
-                <Typography variant="captionBold" style={{ color: colors.text.primary }}>
+              {/* Text column */}
+              <View style={styles.cardText}>
+                <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
                   {item.label}
                 </Typography>
-                <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 2 }}>
+                <Typography
+                  variant="caption"
+                  style={{ color: colors.text.secondary, marginTop: 2 }}
+                >
                   {item.subtitle}
+                </Typography>
+                <Typography
+                  variant="small"
+                  style={{ color: colors.text.tertiary, marginTop: 4 }}
+                  numberOfLines={2}
+                >
+                  {item.description}
                 </Typography>
               </View>
 
               {/* Chevron */}
-              <Typography style={{ color: colors.text.secondary, fontSize: 18 }}>›</Typography>
+              <View style={styles.chevronWrapper}>
+                <Typography style={[styles.chevron, { color: item.accentColor }]}>›</Typography>
+              </View>
             </TouchableOpacity>
           ))}
+        </View>
+
+        {/* Quick tip */}
+        <View style={[styles.tipCard, { backgroundColor: colors.glass.transparent, borderColor: colors.glass.border }]}>
+          <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 18 }}>
+            💡 <Typography variant="smallBold" style={{ color: colors.text.primary }}>Tip:</Typography>
+            {' '}Practice is always free — credits are only used when creating new content.
+          </Typography>
         </View>
       </ScrollView>
     </Screen>
@@ -118,47 +163,64 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   scrollContent: {
-    padding: spacing.xl,
-    paddingTop: spacing.xxl,
-    paddingBottom: spacing.xxxl,
+    paddingHorizontal: spacing.lg,
   },
   header: {
-    marginBottom: spacing.xxxl,
+    marginBottom: spacing.xl,
   },
-  greeting: {
-    letterSpacing: 2,
-    textTransform: 'uppercase',
+  greetingLabel: {
+    letterSpacing: 0.5,
     marginBottom: spacing.sm,
   },
   headline: {
     fontWeight: '300',
-    letterSpacing: -0.5,
-    lineHeight: 44,
+    letterSpacing: -0.3,
+    lineHeight: 34,
   },
-  list: {
+  sectionLabel: {
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+  },
+  cardList: {
     gap: spacing.md,
+    marginBottom: spacing.xl,
   },
-  row: {
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.lg,
     borderRadius: borderRadius.xl,
     borderWidth: 1,
-    gap: spacing.lg,
+    gap: spacing.md,
+    minHeight: 88,
   },
   iconTile: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     borderRadius: borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
   },
   iconText: {
-    fontSize: 22,
-    fontWeight: '300',
+    fontSize: 24,
   },
-  rowLabels: {
+  cardText: {
     flex: 1,
+  },
+  chevronWrapper: {
+    flexShrink: 0,
+    width: 24,
+    alignItems: 'center',
+  },
+  chevron: {
+    fontSize: 22,
+    lineHeight: 26,
+  },
+  tipCard: {
+    padding: spacing.md,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
   },
 });
