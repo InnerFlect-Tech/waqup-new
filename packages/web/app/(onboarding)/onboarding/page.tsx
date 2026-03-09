@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTheme, spacing, borderRadius } from '@/theme';
+import { useTheme, spacing, borderRadius, BLUR } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { Typography, Button } from '@/components';
 import { useAuthStore } from '@/stores';
@@ -34,9 +34,8 @@ export default function OnboardingPage() {
     if (!selected) return;
     setIsSubmitting(true);
     Analytics.onboardingStepCompleted('intention', user?.id);
-    // Small delay for UX feel, then enter the Sanctuary
     await new Promise((r) => setTimeout(r, 600));
-    router.push('/sanctuary');
+    router.push(`/onboarding/profile?intention=${encodeURIComponent(selected)}`);
   };
 
   return (
@@ -52,7 +51,7 @@ export default function OnboardingPage() {
           gap: spacing.xl,
         }}
       >
-        {/* Progress indicator */}
+        {/* Progress indicator — 4 dots */}
         <div
           style={{
             display: 'flex',
@@ -60,18 +59,21 @@ export default function OnboardingPage() {
             paddingTop: spacing.md,
           }}
         >
-          {[0, 1].map((i) => (
-            <div
-              key={i}
-              style={{
-                height: '3px',
-                width: '32px',
-                borderRadius: borderRadius.full,
-                background: i === 0 ? colors.accent.primary : `${colors.accent.primary}30`,
-                transition: 'background 0.3s ease',
-              }}
-            />
-          ))}
+          {([1, 2, 3, 4] as const).map((i) => {
+            const isActive = i === 1;
+            return (
+              <div
+                key={i}
+                style={{
+                  height: '3px',
+                  width: '32px',
+                  borderRadius: borderRadius.full,
+                  background: isActive ? colors.accent.primary : `${colors.accent.primary}30`,
+                  transition: 'background 0.3s ease',
+                }}
+              />
+            );
+          })}
         </div>
 
         {/* Header */}
@@ -127,8 +129,8 @@ export default function OnboardingPage() {
                   padding: `${spacing.lg} ${spacing.md}`,
                   borderRadius: borderRadius.lg,
                   background: isActive ? `${colors.accent.primary}25` : colors.glass.light,
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
+                  backdropFilter: BLUR.lg,
+                  WebkitBackdropFilter: BLUR.lg,
                   border: `1px solid ${isActive ? colors.accent.primary : colors.glass.border}`,
                   display: 'flex',
                   flexDirection: 'column',
@@ -187,7 +189,7 @@ export default function OnboardingPage() {
               transition: 'opacity 0.2s ease',
             }}
           >
-            {isSubmitting ? 'Setting up your Sanctuary…' : 'Enter Your Sanctuary →'}
+            {isSubmitting ? 'Continuing…' : 'Continue →'}
           </Button>
 
           <button

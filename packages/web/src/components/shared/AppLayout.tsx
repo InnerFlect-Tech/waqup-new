@@ -25,6 +25,7 @@ import {
   Layout,
   Map,
   Store,
+  BarChart3,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb } from '@/components';
 import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
@@ -110,11 +111,12 @@ const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
   { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
   { name: 'Users', path: '/admin/users', icon: <Users className="w-4 h-4" /> },
   { name: 'Waitlist', path: '/admin/waitlist', icon: <ListChecks className="w-4 h-4" /> },
+  { name: 'Content Overview', path: '/admin/content', icon: <BarChart3 className="w-4 h-4" /> },
   { name: 'Oracle / AI', path: '/admin/oracle', icon: <Cpu className="w-4 h-4" /> },
-  { name: 'All Pages', path: '/pages', icon: <FileText className="w-4 h-4" /> },
   { name: 'System', path: '/system', icon: <Settings className="w-4 h-4" /> },
   { name: 'Creation Steps', path: '/system/creation-steps', icon: <Layout className="w-4 h-4" /> },
   { name: 'API Health', path: '/health', icon: <Activity className="w-4 h-4" /> },
+  { name: 'All Pages', path: '/pages', icon: <FileText className="w-4 h-4" /> },
   { name: 'Showcase', path: '/showcase', icon: <Layout className="w-4 h-4" /> },
   { name: 'Sitemap', path: '/sitemap-view', icon: <Map className="w-4 h-4" /> },
 ];

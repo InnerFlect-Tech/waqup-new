@@ -14,8 +14,12 @@ import {
   Library,
   Shield,
   ListChecks,
+  BarChart3,
+  BookOpen,
+  Database,
+  Wrench,
 } from 'lucide-react';
-import { PageShell, GlassCard, SuperAdminGate } from '@/components';
+import { PageShell, SuperAdminGate } from '@/components';
 import { Typography } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
@@ -25,99 +29,42 @@ interface AdminCard {
   description: string;
   href: string;
   icon: React.ReactNode;
-  category: 'platform' | 'tools' | 'content';
+  category: 'ops' | 'config' | 'docs' | 'system' | 'tools';
 }
 
 const ADMIN_CARDS: AdminCard[] = [
-  // Platform operations
-  {
-    title: 'User Management',
-    description: 'View all users, credit balances, subscriptions, and transaction history.',
-    href: '/admin/users',
-    icon: <Users />,
-    category: 'platform',
-  },
-  {
-    title: 'Waitlist & Access',
-    description: 'Review waitlist signups and manually approve or revoke app access.',
-    href: '/admin/waitlist',
-    icon: <ListChecks />,
-    category: 'platform',
-  },
-  {
-    title: 'Oracle / AI Config',
-    description: 'Configure the Oracle AI system prompt, ElevenLabs voices, and live test.',
-    href: '/admin/oracle',
-    icon: <Cpu />,
-    category: 'platform',
-  },
-  // Content & creation
-  {
-    title: 'Orb Creator',
-    description: 'Access the voice orb creation flow used for building content.',
-    href: '/create/orb',
-    icon: <Mic />,
-    category: 'content',
-  },
-  {
-    title: 'Content Library',
-    description: 'Browse the full content library.',
-    href: '/library',
-    icon: <Library />,
-    category: 'content',
-  },
-  // Internal tools
-  {
-    title: 'All Pages',
-    description: 'Full index of every route — status, auth requirement, and notes.',
-    href: '/pages',
-    icon: <FileText />,
-    category: 'tools',
-  },
-  {
-    title: 'System Overview',
-    description: 'Database schema, table status, and migration state.',
-    href: '/system',
-    icon: <Settings />,
-    category: 'tools',
-  },
-  {
-    title: 'Creation Steps',
-    description: 'Pipeline step status for all three content creation flows.',
-    href: '/system/creation-steps',
-    icon: <Layout />,
-    category: 'tools',
-  },
-  {
-    title: 'API Health',
-    description: 'Live status of all API integrations: Supabase, OpenAI, ElevenLabs, Stripe.',
-    href: '/health',
-    icon: <Activity />,
-    category: 'tools',
-  },
-  {
-    title: 'Design Showcase',
-    description: 'Component library and design system showcase.',
-    href: '/showcase',
-    icon: <Layout />,
-    category: 'tools',
-  },
-  {
-    title: 'Sitemap',
-    description: 'Visual sitemap of all public and protected routes.',
-    href: '/sitemap-view',
-    icon: <Map />,
-    category: 'tools',
-  },
+  // Operations — day-to-day admin
+  { title: 'User Management', description: 'Users, credit balances, subscriptions, transactions.', href: '/admin/users', icon: <Users />, category: 'ops' },
+  { title: 'Waitlist & Access', description: 'Review signups, approve or revoke app access.', href: '/admin/waitlist', icon: <ListChecks />, category: 'ops' },
+  { title: 'Content Overview', description: 'Counts by type/status, recent activity.', href: '/admin/content', icon: <BarChart3 />, category: 'ops' },
+  // Configuration
+  { title: 'Oracle / AI Config', description: 'System prompt, ElevenLabs voices, live test.', href: '/admin/oracle', icon: <Cpu />, category: 'config' },
+  // Documentation — how the solution works
+  { title: 'Pipelines Reference', description: 'Scientific foundations, pipeline comparison.', href: '/system/pipelines', icon: <BookOpen />, category: 'docs' },
+  { title: 'Creation Steps', description: 'Step status for form, chat, and orb flows.', href: '/system/creation-steps', icon: <Layout />, category: 'docs' },
+  { title: 'Audio & TTS', description: 'ElevenLabs, voice cloning, recording flow.', href: '/system/audio', icon: <Mic />, category: 'docs' },
+  { title: 'Conversation Flow', description: 'LLM state machine, chat vs orb, handoff.', href: '/system/conversation', icon: <BookOpen />, category: 'docs' },
+  // System & Infrastructure
+  { title: 'System Docs', description: 'Architecture, schema, data flow.', href: '/system', icon: <Settings />, category: 'system' },
+  { title: 'Schema Live Status', description: 'Live DB checks — tables, columns.', href: '/system/schema', icon: <Database />, category: 'system' },
+  { title: 'API Health', description: 'Supabase, OpenAI, ElevenLabs, Stripe status.', href: '/health', icon: <Activity />, category: 'system' },
+  // Tools & shortcuts
+  { title: 'All Pages', description: 'Full route index — status, auth, notes.', href: '/pages', icon: <FileText />, category: 'tools' },
+  { title: 'Sitemap', description: 'Visual sitemap of all routes.', href: '/sitemap-view', icon: <Map />, category: 'tools' },
+  { title: 'Design Showcase', description: 'Component library and design system.', href: '/showcase', icon: <Layout />, category: 'tools' },
+  { title: 'Orb Creator', description: 'Voice orb creation flow (shortcut).', href: '/create/orb', icon: <Mic />, category: 'tools' },
+  { title: 'Content Library', description: 'Browse content (shortcut).', href: '/library', icon: <Library />, category: 'tools' },
 ];
 
-const CATEGORY_LABELS: Record<AdminCard['category'], string> = {
-  platform: 'Platform Operations',
-  content: 'Content & Creation',
-  tools: 'Internal Tools',
+const CATEGORY_CONFIG: Record<AdminCard['category'], { label: string; order: number }> = {
+  ops: { label: 'Operations', order: 0 },
+  config: { label: 'Configuration', order: 1 },
+  docs: { label: 'Documentation', order: 2 },
+  system: { label: 'System & Infrastructure', order: 3 },
+  tools: { label: 'Tools & Shortcuts', order: 4 },
 };
 
-const CATEGORY_ORDER: AdminCard['category'][] = ['platform', 'content', 'tools'];
+const CATEGORY_ORDER: AdminCard['category'][] = ['ops', 'config', 'docs', 'system', 'tools'];
 
 function AdminTile({
   card,
@@ -195,7 +142,6 @@ export default function AdminDashboardPage() {
             padding: spacing.xl,
           }}
         >
-          {/* Header */}
           <div style={{ marginBottom: spacing.xl }}>
             <div
               style={{
@@ -211,13 +157,14 @@ export default function AdminDashboardPage() {
               </Typography>
             </div>
             <Typography variant="body" style={{ color: colors.text.secondary }}>
-              Platform operations, configuration, and internal tooling.
+              Operations, configuration, documentation, and internal tools.
             </Typography>
           </div>
 
-          {/* Sections */}
           {CATEGORY_ORDER.map((category) => {
             const cards = ADMIN_CARDS.filter((c) => c.category === category);
+            const config = CATEGORY_CONFIG[category];
+            if (cards.length === 0) return null;
             return (
               <div key={category} style={{ marginBottom: spacing.xl }}>
                 <Typography
@@ -231,7 +178,7 @@ export default function AdminDashboardPage() {
                     fontSize: 11,
                   }}
                 >
-                  {CATEGORY_LABELS[category]}
+                  {config.label}
                 </Typography>
                 <div
                   style={{

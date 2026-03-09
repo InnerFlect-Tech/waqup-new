@@ -216,15 +216,13 @@ OAuth: /auth/callback exchanges code for session, sets cookies.`}
         </Section>
 
         <div style={{ marginTop: spacing.xl, paddingTop: spacing.lg, borderTop: `1px solid ${colors.glass.border}`, display: 'flex', gap: spacing.md, flexWrap: 'wrap', alignItems: 'center' }}>
-          <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>
-            Creation Steps
-          </Link>
-          <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>
-            API Health
-          </Link>
-          <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>
-            Admin Dashboard
-          </Link>
+          <Link href="/system/pipelines" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>Pipelines</Link>
+          <Link href="/system/creation-steps" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>Creation Steps</Link>
+          <Link href="/system/audio" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>Audio & TTS</Link>
+          <Link href="/system/conversation" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>Conversation</Link>
+          <Link href="/system/schema" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>Schema</Link>
+          <Link href="/health" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>API Health</Link>
+          <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: '14px', textDecoration: 'none' }}>Admin</Link>
         </div>
       </div>
     </PageShell>
