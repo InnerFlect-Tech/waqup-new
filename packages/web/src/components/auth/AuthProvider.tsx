@@ -4,10 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
-import {
-  getOverrideUserToRestore,
-  setTestSessionCookie,
-} from '@/lib/auth-override';
 
 /**
  * Auth Provider Component
@@ -25,15 +21,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { hasAccess, isLoading: isProfileLoading } = useSuperAdmin();
 
   useEffect(() => {
-    const overrideUser = getOverrideUserToRestore();
-    if (overrideUser) {
-      setTestSessionCookie();
-      useAuthStore.getState().setUser(overrideUser);
-      useAuthStore.getState().setInitialized(true);
-      queueMicrotask(() => setIsReady(true));
-      return;
-    }
-
     let unsubscribe: (() => void) | null = null;
     initializeAuth()
       .then((unsub) => {
