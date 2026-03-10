@@ -73,12 +73,10 @@ export async function GET() {
       }
     );
 
-    // Get credit balance via DB function, fall back to 0 gracefully
+    // Get credit balance via DB function (parameterless, uses auth.uid())
     let balance = 0;
     try {
-      const { data: balanceData } = await supabase.rpc('get_credit_balance', {
-        p_user_id: user.id,
-      });
+      const { data: balanceData } = await supabase.rpc('get_credit_balance');
       balance = (balanceData as number) ?? 0;
     } catch {
       // Table may not exist yet — return 0, non-blocking

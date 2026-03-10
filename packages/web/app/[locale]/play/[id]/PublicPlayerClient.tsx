@@ -9,7 +9,7 @@ import { useWebAudioPlayer } from '@/hooks';
 import { SpeakingAnimation } from '@/components/audio';
 import { ShareModal } from '@/components/marketplace';
 import type { AudioLayers } from '@waqup/shared/types';
-import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { CONTENT_TYPE_COLORS, CONTENT_TYPE_GRADIENT_DARK } from '@waqup/shared/constants';
 import { BLUR, useTheme, CONTENT_READABLE } from '@/theme';
 
 interface PublicItem {
@@ -34,9 +34,9 @@ interface Props {
 }
 
 const TYPE_GRADIENT: Record<string, string> = {
-  affirmation: `radial-gradient(ellipse at 30% 20%, #4a1a6e88, transparent 60%), radial-gradient(ellipse at 70% 80%, ${CONTENT_TYPE_COLORS.affirmation}22, transparent 60%)`,
-  meditation: `radial-gradient(ellipse at 30% 20%, #1a2a4e88, transparent 60%), radial-gradient(ellipse at 70% 80%, ${CONTENT_TYPE_COLORS.meditation}22, transparent 60%)`,
-  ritual: `radial-gradient(ellipse at 30% 20%, #0a2e1a88, transparent 60%), radial-gradient(ellipse at 70% 80%, ${CONTENT_TYPE_COLORS.ritual}22, transparent 60%)`,
+  affirmation: `radial-gradient(ellipse at 30% 20%, ${CONTENT_TYPE_GRADIENT_DARK.affirmation}88, transparent 60%), radial-gradient(ellipse at 70% 80%, ${CONTENT_TYPE_COLORS.affirmation}22, transparent 60%)`,
+  meditation: `radial-gradient(ellipse at 30% 20%, ${CONTENT_TYPE_GRADIENT_DARK.meditation}88, transparent 60%), radial-gradient(ellipse at 70% 80%, ${CONTENT_TYPE_COLORS.meditation}22, transparent 60%)`,
+  ritual: `radial-gradient(ellipse at 30% 20%, ${CONTENT_TYPE_GRADIENT_DARK.ritual}88, transparent 60%), radial-gradient(ellipse at 70% 80%, ${CONTENT_TYPE_COLORS.ritual}22, transparent 60%)`,
 };
 
 const TYPE_ACCENT: Record<string, string> = CONTENT_TYPE_COLORS;

@@ -1,246 +1,779 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Link } from '@/i18n/navigation';
-import { useTheme, spacing } from '@/theme';
-import { PageShell, GlassCard, Logo } from '@/components';
+import React from 'react';
 import { Typography, Button } from '@/components';
+import { useTheme } from '@/theme';
+import { PageShell, WaitlistCTA } from '@/components';
+import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
+import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
+import { Link } from '@/i18n/navigation';
+import Image from 'next/image';
+import {
+  ArrowRight,
+  Brain,
+  Check,
+  Clock,
+  Mic,
+  Moon,
+  Sun,
+  Volume2,
+} from 'lucide-react';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type ThemeColors = ReturnType<typeof useTheme>['theme']['colors'];
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const SECTION_PY = '72px';
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 
 /**
- * The Science — Mechanism explanation
+ * The Science — Research-backed mechanisms behind waQup
  *
  * Purpose: Proof, credibility, why voice + affirmations work.
  * Visitor intent: "Is this real? Why does my own voice matter?"
  *
- * Distinct from Our Story (founder narrative) and How It Works (process steps).
+ * Design: Mirrors how-it-works page — full-width sections, photo dividers,
+ * glass cards, badge/label patterns, research-backed copy.
  */
-const STEPS = [
-  {
-    icon: '🧠',
-    headline: 'Your mind runs on patterns formed early',
-    body: 'By age 7, core beliefs about what you deserve and what is possible were often set — by early experiences, not by choice. waQup helps you consciously reshape those patterns.',
-  },
-  {
-    icon: '🔊',
-    headline: 'Your voice activates deeper pathways',
-    body: 'Research shows that hearing your own voice activates neural pathways that written affirmations or external audio cannot reach. Your subconscious filters out strangers — but it responds to you.',
-  },
-  {
-    icon: '✨',
-    headline: 'Change happens in 21–66 days',
-    body: 'Neuroplasticity is real. Repeated, emotionally resonant voice experiences can physically reshape your brain. Consistent practice compounds over time.',
-  },
-];
-
-const SOCIAL_PROOF = [
-  '"I stopped self-sabotaging in 3 weeks. I still can\'t explain it."',
-  '"My anxiety dropped noticeably. My therapist asked what changed."',
-  '"I got the promotion. I genuinely believed I deserved it for the first time."',
-];
-
-export default function ExplanationPage() {
+export default function SciencePage() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const [quoteIndex, setQuoteIndex] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setQuoteIndex((i) => (i + 1) % SOCIAL_PROOF.length);
-    }, 3500);
-    return () => clearInterval(t);
-  }, []);
 
   return (
-    <PageShell intensity="strong" maxWidth={520} allowDocumentScroll>
-      <div
+    <PageShell intensity="high" bare allowDocumentScroll>
+
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section
+        className="science-hero"
         style={{
-          minHeight: '100vh',
+          padding: `${spacing.xxl} ${PAGE_PADDING}`,
+          maxWidth: CONTENT_MAX_WIDTH,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          minHeight: 'calc(100dvh - 64px)',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          paddingTop: spacing.xl,
-          paddingBottom: spacing.xxxl,
-          gap: spacing.xl,
+          justifyContent: 'center',
+          boxSizing: 'border-box',
         }}
       >
-        {/* Proper Logo */}
-        <div style={{ textAlign: 'center', paddingTop: spacing.md }}>
-          <Logo size="lg" showIcon={false} href="/" />
-        </div>
-
-        {/* Section label */}
-        <Typography
-          variant="body"
+        <div
           style={{
-            color: colors.text.tertiary,
-            fontSize: '12px',
-            fontWeight: 600,
-            textTransform: 'uppercase',
-            letterSpacing: '0.12em',
-          }}
-        >
-          The Science
-        </Typography>
-
-        {/* Hero */}
-        <GlassCard
-          style={{
-            textAlign: 'center',
-            padding: `${spacing.xxxl} ${spacing.xl}`,
-            width: '100%',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            padding: '6px 16px',
+            borderRadius: borderRadius.full,
+            background: `${colors.accent.tertiary}15`,
+            border: `1px solid ${colors.accent.tertiary}30`,
+            marginBottom: 32,
           }}
         >
           <div
             style={{
-              fontSize: '48px',
-              marginBottom: spacing.lg,
-              lineHeight: 1,
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: colors.accent.secondary,
+              animation: 'wqPulse 2s ease-in-out infinite',
             }}
-          >
-            💤
-          </div>
+          />
           <Typography
-            variant="h1"
+            variant="smallBold"
             style={{
-              color: colors.text.primary,
-              fontSize: 'clamp(26px, 5vw, 36px)',
-              lineHeight: 1.2,
-              fontWeight: 900,
-              marginBottom: spacing.lg,
+              color: colors.accent.tertiary,
+              textTransform: 'uppercase',
+              letterSpacing: '0.7px',
+              fontSize: 11,
             }}
           >
-            Your mind follows patterns you didn&apos;t choose.
-          </Typography>
-          <Typography
-            variant="body"
-            style={{
-              color: colors.text.secondary,
-              fontSize: '17px',
-              lineHeight: 1.65,
-            }}
-          >
-            Most of your thoughts, decisions, and self-limits are shaped by subconscious conditioning. waQup helps you reshape them — using the voice your brain trusts most: yours.
-          </Typography>
-        </GlassCard>
-
-        {/* 3-step psychological framing */}
-        <div
-          style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: spacing.md,
-          }}
-        >
-          {STEPS.map((step, i) => (
-            <GlassCard
-              key={i}
-              style={{
-                display: 'flex',
-                gap: spacing.lg,
-                alignItems: 'flex-start',
-                padding: `${spacing.lg} ${spacing.xl}`,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: '28px',
-                  lineHeight: 1,
-                  flexShrink: 0,
-                  paddingTop: '2px',
-                }}
-              >
-                {step.icon}
-              </div>
-              <div>
-                <Typography
-                  variant="h3"
-                  style={{
-                    color: colors.text.primary,
-                    fontWeight: 700,
-                    fontSize: '16px',
-                    marginBottom: spacing.sm,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {step.headline}
-                </Typography>
-                <Typography
-                  variant="body"
-                  style={{
-                    color: colors.text.secondary,
-                    fontSize: '14px',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {step.body}
-                </Typography>
-              </div>
-            </GlassCard>
-          ))}
-        </div>
-
-        {/* Rotating social proof */}
-        <div
-          style={{
-            width: '100%',
-            textAlign: 'center',
-            padding: `0 ${spacing.md}`,
-          }}
-        >
-          <Typography
-            variant="body"
-            key={quoteIndex}
-            style={{
-              color: colors.text.secondary,
-              fontSize: '14px',
-              lineHeight: 1.6,
-              opacity: 0.8,
-              letterSpacing: '-0.2px',
-              transition: 'opacity 0.4s ease',
-            }}
-          >
-            {SOCIAL_PROOF[quoteIndex]}
+            Research-Backed
           </Typography>
         </div>
 
-        {/* CTA */}
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: spacing.md, alignItems: 'center' }}>
-          <Link href="/onboarding" style={{ width: '100%', textDecoration: 'none' }}>
+        <h1
+          style={{
+            fontSize: 'clamp(40px, 5.5vw, 72px)',
+            fontWeight: 300,
+            lineHeight: 1.08,
+            letterSpacing: '-2px',
+            color: colors.text.primary,
+            margin: '0 0 28px',
+          }}
+        >
+          The science behind
+          <br />
+          <span
+            style={{
+              background: colors.gradients.primary,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            voice transformation.
+          </span>
+        </h1>
+
+        <p
+          style={{
+            fontSize: 'clamp(17px, 1.8vw, 21px)',
+            color: colors.text.secondary,
+            lineHeight: 1.65,
+            maxWidth: 520,
+            margin: '0 0 48px',
+            fontWeight: 300,
+          }}
+        >
+          Neuroplasticity, voice memory, and spaced repetition — the research that explains why hearing your own voice say affirmations works when reading them does not.
+        </p>
+
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 36 }}>
+          <Link href="/signup" style={{ textDecoration: 'none' }}>
             <Button
               variant="primary"
               size="lg"
               style={{
-                width: '100%',
-                minHeight: '56px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
                 fontSize: '17px',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
+                padding: '16px 36px',
+                boxShadow: `0 8px 48px ${colors.accent.primary}50`,
               }}
             >
-              Begin Your Transformation →
+              Start Free Today
+              <ArrowRight size={18} color={colors.text.onDark} />
             </Button>
           </Link>
-
-          <Link href="/sanctuary" style={{ textDecoration: 'none' }}>
-            <Typography
-              variant="body"
-              style={{
-                color: colors.text.secondary,
-                fontSize: '13px',
-                opacity: 0.6,
-                cursor: 'pointer',
-                padding: `${spacing.sm} 0`,
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              Skip for now
-            </Typography>
+          <Link href="/how-it-works" style={{ textDecoration: 'none' }}>
+            <Button variant="outline" size="lg" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: '17px' }}>
+              How It Works
+            </Button>
           </Link>
         </div>
+
+        <div style={{ display: 'flex', gap: 28 }}>
+          {[
+            { n: '21 days', l: 'first measurable shift' },
+            { n: '66 days', l: 'patterns become automatic' },
+            { n: 'Your voice', l: 'deepest neural activation' },
+          ].map(({ n, l }) => (
+            <div key={l}>
+              <div style={{ fontSize: 20, fontWeight: 500, color: colors.text.primary, letterSpacing: '-0.5px' }}>
+                {n}
+              </div>
+              <div style={{ fontSize: 12, color: colors.text.tertiary, marginTop: 2 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Pillar divider ─────────────────────────────────── */}
+      <div style={{ background: 'rgba(255,255,255,0.02)' }}>
+        <div
+          className="science-pillar-divider"
+          style={{
+            maxWidth: CONTENT_MAX_WIDTH,
+            margin: '0 auto',
+            padding: `${spacing.xxl} ${PAGE_PADDING}`,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 0,
+          }}
+        >
+          {[
+            { n: '01', label: 'Neuroplasticity', icon: Brain },
+            { n: '02', label: 'Voice memory', icon: Volume2 },
+            { n: '03', label: 'Timing & repetition', icon: Clock },
+          ].map(({ n, label, icon: Icon }, i) => (
+            <div
+              key={n}
+              style={{
+                textAlign: 'center',
+                padding: '0 32px',
+                borderRight: i < 2 ? `1px solid ${colors.glass.border}` : 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 10,
+              }}
+            >
+              <div style={{ fontSize: 11, color: colors.accent.primary, fontWeight: 700, letterSpacing: '0.1em' }}>
+                {n}
+              </div>
+              <Icon size={18} color={colors.text.secondary} />
+              <div style={{ fontSize: 14, color: colors.text.secondary, fontWeight: 400 }}>{label}</div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* ── Neuroplasticity ───────────────────────────────── */}
+      <section
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          padding: `${SECTION_PY} ${PAGE_PADDING}`,
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+        }}
+      >
+        <div
+          className="science-neuro"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 48,
+            alignItems: 'center',
+          }}
+        >
+          {/* Left — neuroplasticity image */}
+          <div style={{ position: 'relative', minHeight: 520 }}>
+            <Image
+              src="/images/neuroplasticity-visual.png"
+              alt="Neural pathways lighting up as sound waves enter the brain"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'radial-gradient(ellipse at 55% 50%, transparent 45%, rgba(0,0,0,0.7) 80%, rgba(0,0,0,1) 100%)',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '30%',
+                background: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '35%',
+                background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%)',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 52,
+                left: 28,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+                alignItems: 'flex-start',
+              }}
+            >
+              {[
+                { label: 'Neuroplasticity', color: colors.accent.primary },
+                { label: 'Neural rewiring', color: colors.accent.secondary },
+                { label: 'Emotional resonance', color: colors.accent.tertiary },
+                { label: 'Repeated exposure', color: colors.accent.primary },
+              ].map(({ label, color }) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: '5px 13px',
+                    borderRadius: borderRadius.full,
+                    background: 'rgba(0,0,0,0.7)',
+                    backdropFilter: BLUR.md,
+                    WebkitBackdropFilter: BLUR.md,
+                    border: `1px solid ${color}35`,
+                    fontSize: 11,
+                    color,
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right — copy */}
+          <div>
+            <div
+              style={{
+                fontSize: 11,
+                color: colors.accent.tertiary,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                fontWeight: 600,
+                marginBottom: 16,
+              }}
+            >
+              Neuroplasticity
+            </div>
+            <h2
+              style={{
+                fontSize: 'clamp(32px, 3.5vw, 48px)',
+                fontWeight: 300,
+                letterSpacing: '-1.2px',
+                color: colors.text.primary,
+                margin: '0 0 28px',
+                lineHeight: 1.15,
+              }}
+            >
+              Your brain rewires itself. Measurably.
+            </h2>
+            <p style={{ fontSize: 17, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 24px' }}>
+              The brain changes through repeated exposure to emotionally resonant stimuli. No stimulus is more resonant to your brain than your own voice.
+            </p>
+            <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 40px' }}>
+              Hear yourself say &ldquo;I am confident&rdquo; daily for 21 days and your neural pathways literally change. Not metaphorically. Measurably.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {[
+                { label: '21 days', desc: 'to notice the first measurable shift' },
+                { label: '66 days', desc: 'for new patterns to become fully automatic' },
+                { label: 'Consistency', desc: 'repeated exposure is what drives change' },
+              ].map(({ label, desc }) => (
+                <div key={label} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  <div
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: '50%',
+                      background: `${colors.accent.primary}20`,
+                      border: `1px solid ${colors.accent.primary}40`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: 1,
+                    }}
+                  >
+                    <Check size={11} color={colors.accent.primary} strokeWidth={3} />
+                  </div>
+                  <div>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: colors.text.primary }}>{label} </span>
+                    <span style={{ fontSize: 15, color: colors.text.secondary }}>{desc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Photo divider ──────────────────────────────────── */}
+      <section style={{ position: 'relative', height: 500, overflow: 'visible' }}>
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+          <Image
+            src="/images/hero-transform.png"
+            alt="Person in transformation — headphones, cosmic identity shift"
+            fill
+            unoptimized
+            style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+          />
+        </div>
+        <div style={{ ...imageEdgeFades(colors.background.primary).top }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).bottom }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).left }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).right }} />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: `0 ${PAGE_PADDING}`,
+            textAlign: 'center',
+            pointerEvents: 'none',
+          }}
+        >
+          <div style={{ padding: '48px 56px', maxWidth: 700, ...FROSTED_GLASS_HERO, borderRadius: 24 }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 'clamp(20px, 2.5vw, 28px)',
+                fontWeight: 300,
+                lineHeight: 1.4,
+                color: '#fff',
+                letterSpacing: '-0.5px',
+                textShadow: '0 2px 20px rgba(0,0,0,0.4)',
+              }}
+            >
+              &ldquo;Your subconscious filters out strangers. It responds to you.&rdquo;
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Three Science Pillars ──────────────────────────── */}
+      <section
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          padding: `${SECTION_PY} ${PAGE_PADDING}`,
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div
+            style={{
+              fontSize: 11,
+              color: colors.accent.tertiary,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              fontWeight: 600,
+              marginBottom: 16,
+              paddingLeft: '0.12em',
+            }}
+          >
+            Research Pillars
+          </div>
+          <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>
+            Why your own voice changes everything
+          </h2>
+          <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>
+            Three mechanisms explain why waQup works when generic affirmations and meditation apps fall short.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+          {[
+            {
+              icon: Brain,
+              name: 'Neuroplasticity',
+              tagline: 'Brains rewire through repetition',
+              desc: 'Repeated exposure to emotionally resonant stimuli physically reshapes neural pathways. Affirmations heard in your own voice activate deeper circuits than reading or hearing a stranger.',
+              color: colors.accent.primary,
+              gradient: `linear-gradient(160deg, ${colors.accent.primary}18, ${colors.accent.secondary}06)`,
+              science: 'Spaced repetition + personal voice = faster neural rewiring.',
+            },
+            {
+              icon: Volume2,
+              name: 'Voice Memory',
+              tagline: 'Your brain trusts your voice most',
+              desc: 'Research shows the subconscious filters out external voices but responds strongly to self-voice. Hearing yourself say affirmations bypasses the critical mind and reaches the parts that shape behavior.',
+              color: colors.accent.secondary,
+              gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
+              science: 'Self-voice activates deeper pathways than any other stimulus.',
+            },
+            {
+              icon: Mic,
+              name: 'Timing & Theta',
+              tagline: 'Waking and sleep onset are gateways',
+              desc: 'Transitional states — right after waking, and while falling asleep — dramatically lower the critical mind\'s resistance. Theta brainwaves (4–8 Hz) dominate these states. Practice at these moments amplifies impact.',
+              color: colors.accent.tertiary,
+              gradient: `linear-gradient(160deg, ${colors.accent.tertiary}18, ${colors.accent.primary}06)`,
+              science: 'Theta entrainment for deep state change.',
+            },
+          ].map(({ icon: Icon, name, tagline, desc, color, gradient, science }) => (
+            <div
+              key={name}
+              style={{
+                borderRadius: borderRadius.xl,
+                background: gradient,
+                backdropFilter: BLUR.xl,
+                WebkitBackdropFilter: BLUR.xl,
+                border: `1px solid ${color}22`,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-10px)';
+                e.currentTarget.style.boxShadow = `0 40px 100px ${color}30`;
+                e.currentTarget.style.borderColor = `${color}45`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = `${color}22`;
+              }}
+            >
+              <div style={{ padding: '48px 40px 36px', position: 'relative', borderBottom: `1px solid ${color}12` }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: -20,
+                    right: -20,
+                    width: 140,
+                    height: 140,
+                    borderRadius: '50%',
+                    background: `radial-gradient(circle, ${color}15, transparent 70%)`,
+                    pointerEvents: 'none',
+                  }}
+                />
+                <div
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: 20,
+                    background: `${color}18`,
+                    border: `1px solid ${color}30`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 28,
+                    boxShadow: `0 0 40px ${color}20`,
+                  }}
+                >
+                  <Icon size={34} color={color} />
+                </div>
+                <h3 style={{ fontSize: 26, fontWeight: 400, color: colors.text.primary, margin: '0 0 6px', letterSpacing: '-0.5px' }}>
+                  {name}
+                </h3>
+                <p style={{ fontSize: 14, color, fontWeight: 500, margin: 0, letterSpacing: '0.02em' }}>{tagline}</p>
+              </div>
+              <div style={{ padding: '32px 40px 40px', flex: 1, display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.7, margin: 0 }}>{desc}</p>
+                <p
+                  style={{
+                    fontSize: 12,
+                    color: colors.text.secondary,
+                    lineHeight: 1.6,
+                    margin: 0,
+                    padding: '12px 16px',
+                    borderRadius: 10,
+                    background: `${color}10`,
+                    border: `1px solid ${color}20`,
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {science}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Day & Night Science ───────────────────────────── */}
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
+        <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>
+              Timing Matters
+            </div>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>
+              Why morning and night work best
+            </h2>
+            <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>
+              The science of transitional states: theta waves, sleep onset, and the critical mind&apos;s lowered resistance.
+            </p>
+          </div>
+
+          <div
+            className="science-timeline"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 32,
+              maxWidth: 820,
+              margin: '0 auto',
+            }}
+          >
+            {[
+              { icon: Sun, label: 'Morning', sub: '6–8 AM', desc: 'Right after waking, theta waves linger. The critical mind hasn\'t fully engaged. Affirmations heard then bypass resistance and encode into subconscious patterns.', color: colors.accent.primary },
+              { icon: Moon, label: 'Night', sub: 'Before sleep', desc: 'Falling asleep is dominated by theta (4–8 Hz). Evening meditation increases theta power — helping you wind down and consolidate the day\'s learning.', color: colors.accent.secondary },
+              { icon: Clock, label: 'Consistency', sub: '5 min × 2', desc: 'Just 5 minutes morning and night. No lifestyle overhaul. Two bookends that compound over 21–66 days.', color: colors.accent.tertiary },
+            ].map(({ icon: Icon, label, sub, desc, color }) => (
+              <div
+                key={label}
+                style={{
+                  padding: '40px 36px',
+                  borderRadius: borderRadius.xl,
+                  background: colors.glass.light,
+                  backdropFilter: BLUR.xl,
+                  WebkitBackdropFilter: BLUR.xl,
+                  border: `1px solid ${colors.glass.border}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 16,
+                }}
+              >
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 18,
+                    background: `${color}18`,
+                    border: `1px solid ${color}30`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon size={30} color={color} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 22, fontWeight: 500, color: colors.text.primary, marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: 12, color, fontWeight: 600, letterSpacing: '0.05em', marginBottom: 12 }}>{sub}</div>
+                  <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Voice Cloning Photo Divider ───────────────────── */}
+      <section style={{ position: 'relative', height: 520, overflow: 'visible' }}>
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+          <Image
+            src="/images/voice-cloning-hero.png"
+            alt="Person with headphones in cosmic transformation"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            unoptimized
+          />
+        </div>
+        <div style={{ ...imageEdgeFades(colors.background.primary).top }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).bottom }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).left }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).right }} />
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
+          <div style={{ width: '100%', maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `0 ${PAGE_PADDING}` }}>
+            <div style={{ maxWidth: 520, padding: '48px 56px', ...FROSTED_GLASS_HERO, borderRadius: 24 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: colors.accent.tertiary,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  fontWeight: 600,
+                  marginBottom: 20,
+                }}
+              >
+                Voice Cloning
+              </div>
+              <h3
+                style={{
+                  fontSize: 'clamp(28px, 3vw, 44px)',
+                  fontWeight: 300,
+                  letterSpacing: '-1px',
+                  color: '#fff',
+                  margin: '0 0 24px',
+                  lineHeight: 1.15,
+                  textShadow: '0 2px 20px rgba(0,0,0,0.4)',
+                }}
+              >
+                Hear yourself say it.
+                <br />
+                <span
+                  style={{
+                    background: colors.gradients.primary,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Something shifts permanently.
+                </span>
+              </h3>
+              <p
+                style={{
+                  fontSize: 16,
+                  color: 'rgba(255,255,255,0.8)',
+                  lineHeight: 1.75,
+                  margin: '0 0 32px',
+                  fontWeight: 300,
+                }}
+              >
+                Record 60 seconds of your natural voice. waQup clones it, then voices everything you create. Your own voice reminding you who you already are.
+              </p>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                <div
+                  style={{
+                    padding: '10px 22px',
+                    borderRadius: borderRadius.full,
+                    background: `${colors.accent.primary}25`,
+                    border: `1px solid ${colors.accent.primary}50`,
+                    fontSize: 13,
+                    color: '#C084FC',
+                    fontWeight: 500,
+                  }}
+                >
+                  60 sec recording
+                </div>
+                <div
+                  style={{
+                    padding: '10px 22px',
+                    borderRadius: borderRadius.full,
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    fontSize: 13,
+                    color: 'rgba(255,255,255,0.7)',
+                  }}
+                >
+                  Optional
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA ─────────────────────────────────────── */}
+      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, position: 'relative', overflow: 'hidden' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 800,
+            height: 800,
+            borderRadius: '50%',
+            background: `radial-gradient(circle, ${colors.accent.primary}14 0%, transparent 65%)`,
+            pointerEvents: 'none',
+          }}
+        />
+        <div style={{ maxWidth: CONTENT_MEDIUM, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <WaitlistCTA
+            variant="banner"
+            headline="Ready to rewire your mind?"
+            subtext={`Join the waitlist and be first to access waQup. No credit card required. ${PRACTICE_IS_FREE_ONE_LINER}`}
+          />
+        </div>
+      </section>
+
+      {/* ── Global Styles ─────────────────────────────────── */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        @keyframes wqPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+        html { scroll-snap-type: y proximity; }
+        section { scroll-snap-align: start; scroll-snap-stop: normal; }
+
+        .science-hero { min-height: calc(100dvh - 64px); }
+        .science-neuro { grid-template-columns: 1fr 1fr; }
+        .science-pillar-divider { grid-template-columns: repeat(3, 1fr); }
+        .science-timeline { grid-template-columns: repeat(3, 1fr); }
+
+        @media (max-width: 960px) {
+          .science-hero { min-height: auto !important; padding-top: 60px !important; padding-bottom: 60px !important; }
+          .science-neuro { grid-template-columns: 1fr !important; }
+          .science-pillar-divider { grid-template-columns: 1fr !important; }
+          .science-timeline { grid-template-columns: 1fr !important; }
+        }
+      `,
+        }}
+      />
     </PageShell>
   );
 }

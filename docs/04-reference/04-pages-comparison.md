@@ -4,7 +4,9 @@
 
 **Platforms**: **Web** (Next.js) and **Mobile** (Expo/React Native). Web has full route coverage; Mobile has basic auth + main tabs only.
 
-**References**: Roadmap `rebuild-roadmap/01-planning/01-roadmap.md`, phases `rebuild-roadmap/02-phases/*`; **Current vs Final**: [09-current-vs-final-solution.md](./09-current-vs-final-solution.md).
+**References**: Roadmap `rebuild-roadmap/01-planning/01-roadmap.md`, phases `rebuild-roadmap/02-phases/*`; **Current vs Final**: [09-current-vs-final-solution.md](./09-current-vs-final-solution.md). **Route map**: [16-route-map.md](./16-route-map.md).
+
+**Canonical completeness** (from `routes.ts`): `complete` = UI final; `wired` = API-connected; `stub` = basic structure; `placeholder` = generic; `mock` = mock data; `to_change` = needs refactor (e.g. conversational create). **Pages index**: `/pages` (superadmin) shows all routes with completeness filter.
 
 ---
 
@@ -26,8 +28,16 @@
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
 | `/` | Homepage / landing | Exists |
+| `/launch` | Primary marketing landing | Exists |
 | `/how-it-works` | How it works | Exists |
 | `/pricing` | Pricing | Exists |
+| `/explanation` | The Science | Exists |
+| `/our-story` | Our Story | Exists |
+| `/join` | Founding member sign-up | Exists |
+| `/waitlist` | Waitlist form | Exists |
+| `/get-qs` | Public Q packs | Exists |
+| `/for-coaches`, `for-creators`, `for-studios`, `for-teachers` | Audience pages | Exists |
+| `/privacy`, `/terms`, `/data-deletion` | Legal | Exists |
 
 ---
 
@@ -36,7 +46,7 @@
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
 | `/onboarding` | Onboarding / setup (Step 2.4) | Exists |
-| `/onboarding/profile`, `preferences`, `guide` | Extended onboarding | Exists |
+| `/onboarding/profile`, `preferences`, `guide`, `role` | Extended onboarding | Exists |
 
 ---
 
@@ -56,12 +66,15 @@
 
 | What is (current) | What needs to be (docs/roadmap) | Comparison |
 |-------------------|---------------------------------|------------|
-| `/sanctuary/settings` | Settings | Exists |
-| `/sanctuary/credits` | Credits (Phase 10, value economy) | Exists |
-| `/sanctuary/progress` | Progress | Exists |
-| `/sanctuary/referral` | Referral | Exists |
-| `/sanctuary/reminders` | Reminders / notifications | Exists |
-| `/sanctuary/learn` | Learn / help | Exists |
+| `/sanctuary/settings` | Settings | Exists (stub) |
+| `/sanctuary/credits`, `credits/buy`, `credits/transactions` | Credits (Phase 10, value economy) | Exists (wired) |
+| `/sanctuary/progress` | Progress | Exists (stub) |
+| `/sanctuary/referral` | Referral | Exists (stub) |
+| `/sanctuary/reminders` | Reminders / notifications | Exists (stub) |
+| `/sanctuary/learn`, `/sanctuary/help` | Learn / help | Exists (stub) |
+| `/sanctuary/voice`, `/sanctuary/voices` | Voice cloning / voice library | Exists (wired) |
+| `/sanctuary/plan` | Subscription plan picker | Exists (wired) |
+| `/sanctuary/series`, `/sanctuary/series/[id]` | Series list & detail | Exists (wired) |
 
 ---
 
@@ -152,5 +165,5 @@
 
 **Note**: Edit-audio routes = **Audio page** — volumes, waves, effects. See [02-pipeline-affirmations.md](../01-core/02-pipeline-affirmations.md) and [06-audio-generation-summary.md](../01-core/06-audio-generation-summary.md).
 
-**Last updated**: 2026-02-16  
-**Status**: Web – all pages implemented (frontend); Mobile – basic only. See [09-current-vs-final-solution.md](./09-current-vs-final-solution.md).
+**Last updated**: 2026-03-10  
+**Status**: Web – all pages implemented (frontend); Mobile – basic only. See [09-current-vs-final-solution.md](./09-current-vs-final-solution.md). Canonical route list with completeness in [routes.ts](../../packages/web/src/lib/routes.ts); `/pages` (superadmin) shows all routes with completeness filter.

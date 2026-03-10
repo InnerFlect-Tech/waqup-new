@@ -9,15 +9,22 @@ Use these prompts with **ChatGPT** (DALL·E 3) to generate images for the public
 | # | Image | Status | Notes |
 |---|-------|--------|-------|
 | 1 | landing-hero-bg | ✅ | Hero background |
-| 2 | landing-your-voice | ✅ | Card image |
-| 3 | landing-ai-creates | ✅ | Card image |
-| 4 | landing-replay-forever | ✅ | Card image |
+| 2 | landing-your-voice | ✅ | Card image (reference quality) |
+| 3 | landing-ai-creates | ⚡ | Regenerate with v2 prompt for sharper quality |
+| 4 | landing-replay-forever | ⚡ | Regenerate with v2 prompt for sharper silhouette |
 | 5 | our-story-hero | ✅ | Hero background |
 | 6 | our-story-insight | ✅ | Insight section background |
 | 7 | our-story-founder | ✅ | Founder portrait in GlassCard |
-| 8 | pricing-hero | ❌ | Not generated yet — page uses text-only header until ready |
-| 9 | pricing-comparison | ⚠️ | Similar image may exist; prompt asks for split visual (generic left / personal right) |
+| 8 | pricing-hero | ✅ | Contemplating sunset — person, headphones, window, purple glow |
+| 9 | pricing-comparison | ✅ | Split visual — generic left / personal right, applied in comparison section |
 | 10 | waitlist-bg | ✅ | Subtle background |
+| 11 | for-teachers-analytics | ✅ | Dashboard/analytics visual above comparison table |
+| 12 | for-creators-hero | ✅ | Recording setup — laptop, mic, headphones, purple glow |
+| 13 | for-coaches-hero | ✅ | Coach and client in calm session |
+| 14 | for-coaches-notes | ✅ | Writing lamp at night — session notes visual |
+| 15 | for-creators-growth | ✅ | Glowing upward graph — success, scaling |
+| 16 | for-studios-qr | ✅ | QR code moment — phone scanning in studio, yoga mat, candle |
+| 17 | get-qs-hero | ✅ | Serene rhythm in purple light — woman, headphones, cosmic glow |
 
 ---
 
@@ -86,7 +93,7 @@ When you provide this image for download, suggest the filename: landing-your-voi
 | Filename | `landing-ai-creates.png` |
 
 ```
-Abstract visualization of neural pathways or sound waves in dark space. Purple, violet and indigo gradients. Soft glowing connections. Scientific, brain-related, transformation vibe. No text.
+Ultra-sharp abstract visualization of neural pathways or interconnected light filaments in dark space. Purple, violet and indigo gradients. Crisp glowing connections, high resolution, no softness or blur. Center-weighted composition — main visual interest in center third. Scientific, brain-related, transformation vibe. Professional product-quality rendering. Premium wellness app aesthetic. No text.
 When you provide this image for download, suggest the filename: landing-ai-creates.png
 ```
 
@@ -97,7 +104,7 @@ When you provide this image for download, suggest the filename: landing-ai-creat
 | Filename | `landing-replay-forever.png` |
 
 ```
-Person in silhouette wearing wireless headphones at dawn or dusk. Cosmic purple sky, transformative atmosphere. Peaceful, mindful moment. Dark aesthetic, premium feel. No text.
+Person in sharp silhouette wearing over-ear headphones at dawn or dusk. Cosmic purple and violet sky gradient. Silhouette and headphone outline must be crisp, high-resolution — no soft edges. Center-weighted composition — figure in center. Peaceful, mindful moment. Dark aesthetic, premium feel. Professional, product-photography quality. No text.
 When you provide this image for download, suggest the filename: landing-replay-forever.png
 ```
 
@@ -203,6 +210,17 @@ When you provide this image for download, suggest the filename: for-teachers-her
 ```
 Person creating content: laptop, microphone, calm environment. Purple ambient light. Creator at work, professional, modern. No text.
 When you provide this image for download, suggest the filename: for-teachers-workflow.png
+```
+
+### 5.3 Analytics / dashboard
+
+| Size | 1792×1024 (16:9) |
+|------|------------------|
+| Filename | `for-teachers-analytics.png` |
+
+```
+Digital tablet displaying an educational or analytics dashboard. Charts, progress metrics. Mug and books beside it. Vibrant purple ethereal background. Calm, focused learning. Professional. No text.
+When you provide this image for download, suggest the filename: for-teachers-analytics.png
 ```
 
 ---

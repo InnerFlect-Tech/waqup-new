@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 import type { ContentItemType } from '@waqup/shared/types';
 
 export const dynamic = 'force-dynamic';
@@ -82,11 +82,9 @@ export async function POST(req: NextRequest) {
     }
 
     // ─── Auth ───────────────────────────────────────────────────────────────
-    const supabase = await createSupabaseServerClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await getAuthenticatedUserForApi(req);
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { supabase, user } = auth;
 
     const body = await req.json() as AgentRequest;
 

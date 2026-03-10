@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
-import { Typography, Button } from '@/components';
+import { Typography, Button, Input } from '@/components';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
@@ -189,27 +189,14 @@ export default function ProfilePage() {
               {/* Marketplace bio */}
               {editingBio ? (
                 <div>
-                  <textarea
+                  <Input
+                    multiline
+                    rows={2}
                     autoFocus
                     value={bioValue}
                     onChange={(e) => setBioValue(e.target.value.slice(0, 160))}
                     placeholder="How you show up in the marketplace…"
-                    rows={2}
-                    style={{
-                      width: '100%',
-                      background: colors.glass.light,
-                      border: `1px solid ${colors.accent.primary}50`,
-                      borderRadius: borderRadius.md,
-                      color: colors.text.primary,
-                      fontSize: 13,
-                      padding: `${spacing.xs} ${spacing.sm}`,
-                      outline: 'none',
-                      resize: 'none',
-                      fontFamily: 'inherit',
-                      lineHeight: 1.5,
-                      marginBottom: spacing.xs,
-                      boxSizing: 'border-box',
-                    }}
+                    wrapperStyle={{ marginBottom: spacing.xs }}
                   />
                   <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, justifyContent: 'space-between' }}>
                     <Typography variant="small" style={{ color: colors.text.secondary, opacity: 0.5, margin: 0, fontSize: 11 }}>

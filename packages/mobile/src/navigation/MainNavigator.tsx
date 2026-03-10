@@ -10,6 +10,7 @@ import { HomeScreen, LibraryScreen } from '@/screens';
 import SpeakScreen from '@/screens/main/SpeakScreen';
 import MarketplaceScreen from '@/screens/main/MarketplaceScreen';
 import ContentDetailScreen from '@/screens/content/ContentDetailScreen';
+import ContentEditScreen from '@/screens/content/ContentEditScreen';
 import CreateModeScreen from '@/screens/content/CreateModeScreen';
 import ContentCreateScreen from '@/screens/content/ContentCreateScreen';
 import { CreditsScreen, ProgressScreen, SettingsScreen, RemindersScreen } from '@/screens/sanctuary';
@@ -99,6 +100,11 @@ export default function MainNavigator() {
       <Stack.Screen
         name="ContentDetail"
         component={ContentDetailScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="ContentEdit"
+        component={ContentEditScreen}
         options={{ animation: 'slide_from_right' }}
       />
       <Stack.Screen

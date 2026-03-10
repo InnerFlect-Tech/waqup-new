@@ -4,7 +4,9 @@
 
 **Canonical schema source**: `supabase/migrations/` — all schema changes must be versioned there. Deploy with `supabase db push`. Local and production stay in sync via the same migration files.
 
-**Last updated**: 2026-03-09
+**Last updated**: 2026-03-10
+
+**Product decisions**: See `docs/04-reference/product-decisions-audit.md` for orb tables, creator_proposals, conversations, and mobile onboarding decisions.
 
 ---
 
@@ -58,7 +60,11 @@ Or link your remote project first: `supabase link --project-ref <your-project-re
 | **content_items** | ✅ Verify in DB | Unified content (affirmations, meditations, rituals). Fields: content_type, script, audio_url, etc. |
 | **feedback** | ✅ Exists | User feedback from Help page (syncs to ClickUp) |
 | **credit_transactions** | ✅ Exists | Phase 10 – credits tracking (from 20260308000007_create_credit_system.sql) |
-| **conversations** | ⏳ May need creation | Phase 9 – conversational creation state (see 03-conversational-system) |
+| **conversations** | ❌ Not used | Phase 9 – conversational creation is stateless (messages in request); oracle uses `oracle_sessions` |
+| **orb_config** | ✅ Migration | Speak/Orb config (20260328000001) |
+| **user_orb_settings** | ✅ Migration | Per-user orb settings |
+| **user_profiles** | ✅ Migration | Orb personalization (distinct from profiles) |
+| **creator_proposals** | ✅ Migration | Creator marketplace proposals (20260328000002) |
 
 ### Content types
 
@@ -83,7 +89,7 @@ Or link your remote project first: `supabase link --project-ref <your-project-re
 - [ ] Verify `content_items` structure and RLS in Supabase
 - [ ] Verify `profiles` and auth integration
 - [ ] Create or verify `credit_transactions` when implementing Phase 10
-- [ ] Create or verify `conversations` when implementing Phase 9
+- [x] ~~conversations~~ — not used; flow is stateless
 - [ ] When starting Phase 14, add marketplace tables and RLS per Phase 14 analysis
 
 ---

@@ -1,5 +1,8 @@
 'use client';
 
+import { DEFAULT_BRAND_COLORS, withOpacity } from '@waqup/shared/theme';
+import { spacing } from '@/theme';
+
 /**
  * Root-level error boundary — catches errors in app/layout.tsx.
  * Must include its own <html> and <body> (replaces entire document).
@@ -21,17 +24,17 @@ export default function GlobalError({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 100%)',
-          padding: '2rem',
+          background: DEFAULT_BRAND_COLORS.errorBackground,
+          padding: spacing.xl,
           textAlign: 'center',
           fontFamily: 'system-ui, sans-serif',
           margin: 0,
         }}
       >
-        <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>⚠️</div>
+        <div style={{ fontSize: '3rem', marginBottom: spacing.lg }}>⚠️</div>
         <h1
           style={{
-            color: '#f1f5f9',
+            color: DEFAULT_BRAND_COLORS.textOnDark,
             fontSize: '1.75rem',
             fontWeight: 300,
             letterSpacing: '-0.5px',
@@ -42,11 +45,11 @@ export default function GlobalError({
         </h1>
         <p
           style={{
-            color: '#94a3b8',
+            color: DEFAULT_BRAND_COLORS.textMuted,
             fontSize: '1rem',
             lineHeight: 1.6,
             maxWidth: 480,
-            marginBottom: '2rem',
+            marginBottom: spacing.xl,
           }}
         >
           An unexpected error occurred. Please try again.
@@ -54,11 +57,11 @@ export default function GlobalError({
         <button
           onClick={reset}
           style={{
-            background: 'rgba(168, 85, 247, 0.2)',
-            border: '1px solid rgba(168, 85, 247, 0.5)',
-            color: '#A855F7',
-            padding: '0.75rem 2rem',
-            borderRadius: '0.75rem',
+            background: withOpacity(DEFAULT_BRAND_COLORS.accent, 0.2),
+            border: `1px solid ${withOpacity(DEFAULT_BRAND_COLORS.accent, 0.5)}`,
+            color: DEFAULT_BRAND_COLORS.accent,
+          padding: `${spacing.sm} ${spacing.xl}`,
+          borderRadius: '0.75rem',
             fontSize: '0.875rem',
             fontWeight: 600,
             cursor: 'pointer',

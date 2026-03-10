@@ -21,11 +21,12 @@ export interface ScriptResponse {
 
 export async function sendConversationMessage(
   type: ContentItemType,
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
 ): Promise<ConversationResponse> {
   const res = await fetch(`${API_BASE_URL}/api/conversation`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: await authHeaders(getSession),
     body: JSON.stringify({ type, messages }),
   });
   if (!res.ok) throw new Error(`Conversation API error: ${res.status}`);
@@ -35,11 +36,12 @@ export async function sendConversationMessage(
 export async function generateScript(
   type: ContentItemType,
   intent: string,
-  context?: string
+  context: string | undefined,
+  getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
 ): Promise<ScriptResponse> {
   const res = await fetch(`${API_BASE_URL}/api/generate-script`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: await authHeaders(getSession),
     body: JSON.stringify({ type, intent, context }),
   });
   if (!res.ok) throw new Error(`Generate script API error: ${res.status}`);
@@ -49,16 +51,12 @@ export async function generateScript(
 export async function generateAgentScript(
   type: ContentItemType,
   intent: string,
-  options?: {
-    context?: string;
-    name?: string;
-    coreValues?: string[];
-    whyThisMatters?: string;
-  }
+  options: { context?: string; name?: string; coreValues?: string[]; whyThisMatters?: string } | undefined,
+  getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
 ): Promise<ScriptResponse> {
   const res = await fetch(`${API_BASE_URL}/api/ai/agent`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: await authHeaders(getSession),
     body: JSON.stringify({ type, intent, ...options }),
   });
   if (!res.ok) throw new Error(`Agent API error: ${res.status}`);
@@ -86,10 +84,11 @@ export async function renderContentAudio(
   contentId: string,
   text: string,
   voiceId: string,
+  getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
 ): Promise<RenderResponse | RenderInsufficientCreditsError> {
   const res = await fetch(`${API_BASE_URL}/api/ai/render`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: await authHeaders(getSession),
     body: JSON.stringify({ contentId, text, voiceId }),
   });
 
@@ -101,9 +100,25 @@ export async function renderContentAudio(
   return res.json() as Promise<RenderResponse>;
 }
 
+export interface OracleSessionResponse {
+  sessionId: string;
+  repliesAllowed: number;
+  qs: number;
+  creditsUsed: number;
+  expiresAt: string;
+}
+
+export interface OracleSessionInsufficientCreditsError {
+  code: 'insufficient_credits';
+  message: string;
+  required: number;
+  balance: number;
+}
+
 export interface OracleResponse {
   reply: string;
-  creditsUsed: number;
+  creditsUsed?: number;
+  repliesUsed?: number;
 }
 
 export interface OracleInsufficientCreditsError {
@@ -111,22 +126,78 @@ export interface OracleInsufficientCreditsError {
   message: string;
 }
 
+/** Creates an auth headers object with Bearer token from Supabase session. Caller must pass getSession. */
+async function authHeaders(getSession: () => Promise<{ data: { session: { access_token: string } | null } }>): Promise<HeadersInit> {
+  const { data: { session } } = await getSession();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (session?.access_token) {
+    headers.Authorization = `Bearer ${session.access_token}`;
+  }
+  return headers;
+}
+
 /**
- * Sends a conversation to the Oracle voice AI.
- * Costs 1 Q per reply — deducted server-side.
- * Throws `OracleInsufficientCreditsError` when the user has no credits.
+ * Starts an Oracle session. Costs 1 Q per bundle (3 replies).
+ * Must be called before sendOracleMessage. Throws on insufficient credits.
  */
-export async function sendOracleMessage(
-  messages: ChatMessage[]
-): Promise<OracleResponse> {
-  const res = await fetch(`${API_BASE_URL}/api/oracle`, {
+export async function createOracleSession(
+  qs: number,
+  getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
+): Promise<OracleSessionResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/oracle/session`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages }),
+    headers: await authHeaders(getSession),
+    body: JSON.stringify({ qs: Math.max(1, Math.min(20, Math.round(qs))) }),
   });
 
   if (res.status === 402) {
-    const data = await res.json() as { message?: string };
+    const data = await res.json() as { message?: string; required?: number; balance?: number };
+    const err: OracleSessionInsufficientCreditsError & Error = Object.assign(
+      new Error(data.message ?? 'Not enough Qs to start a session.'),
+      {
+        code: 'insufficient_credits' as const,
+        required: data.required ?? 1,
+        balance: data.balance ?? 0,
+      }
+    );
+    throw err;
+  }
+
+  if (!res.ok) throw new Error(`Oracle session API error: ${res.status}`);
+  const body = await res.json() as { sessionId: string; repliesAllowed: number; qs: number; creditsUsed: number; expiresAt: string };
+  return {
+    sessionId: body.sessionId,
+    repliesAllowed: body.repliesAllowed,
+    qs: body.qs,
+    creditsUsed: body.creditsUsed,
+    expiresAt: body.expiresAt,
+  };
+}
+
+/**
+ * Sends a conversation to the Oracle AI. Requires an active session (from createOracleSession).
+ * Consumes one reply from the session. Throws when session exhausted or insufficient credits.
+ */
+export async function sendOracleMessage(
+  sessionId: string,
+  messages: ChatMessage[],
+  getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
+): Promise<OracleResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/oracle`, {
+    method: 'POST',
+    headers: await authHeaders(getSession),
+    body: JSON.stringify({ sessionId, messages }),
+  });
+
+  if (res.status === 402) {
+    const data = await res.json() as { error?: string; message?: string };
+    if (data.error === 'session_exhausted') {
+      const err = Object.assign(
+        new Error(data.message ?? 'Session used up. Start a new conversation.'),
+        { code: 'session_exhausted' as const }
+      );
+      throw err;
+    }
     const err: OracleInsufficientCreditsError & Error = Object.assign(
       new Error(data.message ?? 'Not enough Qs to continue.'),
       { code: 'insufficient_credits' as const }
@@ -134,6 +205,9 @@ export async function sendOracleMessage(
     throw err;
   }
 
+  if (res.status === 404) throw new Error('Session not found. Please start a new conversation.');
+  if (res.status === 410) throw new Error('Session expired. Please start a new conversation.');
   if (!res.ok) throw new Error(`Oracle API error: ${res.status}`);
-  return res.json() as Promise<OracleResponse>;
+  const body = await res.json() as { reply: string; repliesUsed?: number };
+  return { reply: body.reply, repliesUsed: body.repliesUsed };
 }

@@ -6,6 +6,7 @@ import { OnboardingStepLayout } from '@/components';
 import { Typography, Button } from '@/components';
 import { useTheme, spacing, borderRadius, BLUR } from '@/theme';
 import { useAuthStore } from '@/stores';
+import { supabase } from '@/lib/supabase';
 import { Analytics } from '@waqup/shared/utils';
 import { Sparkles, ArrowRight, Play } from 'lucide-react';
 
@@ -46,12 +47,18 @@ export default function OnboardingGuidePage() {
   const handleEnter = async () => {
     setIsSubmitting(true);
     Analytics.onboardingStepCompleted('guide', user?.id);
+    if (user?.id) {
+      await supabase.from('profiles').update({ onboarding_completed_at: new Date().toISOString() }).eq('id', user.id);
+    }
     await new Promise((r) => setTimeout(r, 400));
     router.push('/sanctuary');
   };
 
-  const handleCreateNow = (href: string) => {
+  const handleCreateNow = async (href: string) => {
     Analytics.onboardingStepCompleted('guide-create', user?.id);
+    if (user?.id) {
+      await supabase.from('profiles').update({ onboarding_completed_at: new Date().toISOString() }).eq('id', user.id);
+    }
     router.push(href);
   };
 

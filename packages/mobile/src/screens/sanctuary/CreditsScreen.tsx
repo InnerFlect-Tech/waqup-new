@@ -8,16 +8,26 @@ import {
   Alert,
   Platform,
   Linking,
+  AppState,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { PurchasesOffering, PurchasesPackage } from 'react-native-purchases';
+import * as WebBrowser from 'expo-web-browser';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, Button, QCoin } from '@/components';
 import { useCreditBalance } from '@/hooks';
-import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
+import {
+  PRACTICE_IS_FREE_ONE_LINER,
+  CONTENT_TYPE_COLORS,
+  ELEVATED_BADGE_COLOR,
+  CREDIT_PACKS,
+  getPackSavings,
+  type CreditPackId,
+} from '@waqup/shared/constants';
 import { getOfferings, purchasePackage, restorePurchases } from '@/services/iap';
+import { createCreditCheckoutSession } from '@/services/stripe-checkout';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Credits'>;
 
@@ -30,7 +40,7 @@ const PLAN_META = [
     identifier: 'com.waqup.credits.50',
     name: 'Starter',
     qs: 50,
-    color: '#60a5fa',
+    color: CONTENT_TYPE_COLORS.meditation,
     description: '50 Qs — perfect for exploring',
     popular: false,
   },
@@ -38,7 +48,7 @@ const PLAN_META = [
     identifier: 'com.waqup.credits.200',
     name: 'Growth',
     qs: 200,
-    color: '#c084fc',
+    color: CONTENT_TYPE_COLORS.affirmation,
     description: '200 Qs — fuel for daily practice',
     popular: true,
   },
@@ -46,7 +56,7 @@ const PLAN_META = [
     identifier: 'com.waqup.credits.500',
     name: 'Devotion',
     qs: 500,
-    color: '#f59e0b',
+    color: ELEVATED_BADGE_COLOR,
     description: '500 Qs — serious transformation',
     popular: false,
   },
@@ -64,6 +74,7 @@ export default function CreditsScreen({ navigation }: Props) {
   const [offering, setOffering] = useState<PurchasesOffering | null>(null);
   const [loadingOffering, setLoadingOffering] = useState(true);
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const [stripePurchasingId, setStripePurchasingId] = useState<CreditPackId | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
 
   useEffect(() => {
@@ -76,6 +87,14 @@ export default function CreditsScreen({ navigation }: Props) {
     });
     return () => { mounted = false; };
   }, []);
+
+  // Refetch balance when app comes to foreground (e.g. after Stripe checkout in browser)
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void refreshBalance();
+    });
+    return () => sub.remove();
+  }, [refreshBalance]);
 
   const handlePurchase = async (pkg: PurchasesPackage) => {
     if (purchasingId) return;
@@ -90,6 +109,26 @@ export default function CreditsScreen({ navigation }: Props) {
       }
     } finally {
       setPurchasingId(null);
+    }
+  };
+
+  const handleStripeCheckout = async (packId: CreditPackId) => {
+    if (stripePurchasingId) return;
+    setStripePurchasingId(packId);
+    try {
+      const result = await createCreditCheckoutSession(packId);
+      if (!result.success) {
+        Alert.alert('Checkout', result.error ?? 'Something went wrong. Please try again.');
+        return;
+      }
+      if (!result.url) return;
+      await WebBrowser.openBrowserAsync(result.url);
+      await refreshBalance();
+      Alert.alert('Purchase Complete', 'Your Qs have been added to your balance.');
+    } catch (err) {
+      Alert.alert('Error', err instanceof Error ? err.message : 'Failed to open checkout.');
+    } finally {
+      setStripePurchasingId(null);
     }
   };
 
@@ -158,11 +197,72 @@ export default function CreditsScreen({ navigation }: Props) {
             </Typography>
           </View>
         ) : packages.length === 0 ? (
-          /* Fallback when StoreKit is unavailable (e.g. simulator without StoreKit config) */
-          <View style={styles.unavailableBox}>
-            <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center' }}>
-              Purchases are not available on this device.{'\n'}
-              Please use a physical iPhone to purchase Qs.
+          /* Fallback: Stripe checkout when RevenueCat/StoreKit unavailable (e.g. simulator) */
+          <View style={{ gap: spacing.md }}>
+            <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
+              Buy Qs with your card
+            </Typography>
+            {CREDIT_PACKS.map((pack) => {
+              const savings = getPackSavings(pack);
+              const isBestValue = pack.badge === 'Best Value';
+              const isPurchasing = stripePurchasingId === pack.id;
+
+              return (
+                <Card
+                  key={pack.id}
+                  variant="default"
+                  style={[
+                    styles.planCard,
+                    {
+                      backgroundColor: isBestValue ? `${colors.accent.primary}18` : colors.glass.opaque,
+                      borderColor: isBestValue ? `${colors.accent.primary}50` : colors.glass.border,
+                    },
+                  ]}
+                >
+                  {isBestValue && (
+                    <View style={[styles.popularBadge, { backgroundColor: colors.accent.primary }]}>
+                      <Typography variant="small" style={{ color: colors.text.onDark, fontSize: 10, fontWeight: '700' }}>
+                        BEST VALUE
+                      </Typography>
+                    </View>
+                  )}
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm }}>
+                    <Typography variant="h3" style={{ color: colors.text.primary, fontWeight: '500' }}>
+                      {pack.name}
+                    </Typography>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+                      <QCoin size="sm" />
+                      <Typography variant="h3" style={{ color: colors.accent.primary, fontWeight: '700' }}>
+                        {pack.credits}
+                      </Typography>
+                    </View>
+                  </View>
+                  <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
+                    {pack.description}
+                  </Typography>
+                  {savings && (
+                    <Typography variant="small" style={{ color: colors.accent.tertiary, marginBottom: spacing.sm }}>
+                      Save {savings.discountPercent}% · €{savings.savedEuros.toFixed(2)} vs Spark
+                    </Typography>
+                  )}
+                  <Button
+                    variant={isBestValue ? 'primary' : 'outline'}
+                    size="md"
+                    fullWidth
+                    onPress={() => void handleStripeCheckout(pack.id)}
+                    disabled={!!stripePurchasingId}
+                  >
+                    {isPurchasing ? (
+                      <ActivityIndicator size="small" color={colors.text.onDark} />
+                    ) : (
+                      `${pack.ctaLabel} · €${pack.price.toFixed(2)}`
+                    )}
+                  </Button>
+                </Card>
+              );
+            })}
+            <Typography variant="small" style={{ color: colors.text.secondary, textAlign: 'center', marginTop: spacing.sm }}>
+              Opens in browser. Return to the app to see your balance.
             </Typography>
           </View>
         ) : (
@@ -191,7 +291,7 @@ export default function CreditsScreen({ navigation }: Props) {
                 >
                   {meta.popular && (
                     <View style={[styles.popularBadge, { backgroundColor: meta.color }]}>
-                      <Typography variant="small" style={{ color: '#fff', fontSize: 10, fontWeight: '700' }}>
+                      <Typography variant="small" style={{ color: colors.text.onDark, fontSize: 10, fontWeight: '700' }}>
                         MOST POPULAR
                       </Typography>
                     </View>
@@ -220,7 +320,7 @@ export default function CreditsScreen({ navigation }: Props) {
                     disabled={!!purchasingId}
                   >
                     {isPurchasing ? (
-                      <ActivityIndicator size="small" color="#fff" />
+                      <ActivityIndicator size="small" color={colors.text.onDark} />
                     ) : (
                       `${pkg.product.priceString} / month`
                     )}
@@ -238,24 +338,26 @@ export default function CreditsScreen({ navigation }: Props) {
           </Typography>
         )}
 
-        {/* Restore purchases — required by Apple */}
-        <TouchableOpacity
-          onPress={() => void handleRestore()}
-          disabled={isRestoring}
-          style={{ marginTop: spacing.xl, alignItems: 'center', paddingVertical: spacing.md }}
-          activeOpacity={0.7}
-        >
-          {isRestoring ? (
-            <ActivityIndicator size="small" color={colors.accent.primary} />
-          ) : (
-            <Typography variant="body" style={{ color: colors.accent.primary }}>
-              Restore Purchases
-            </Typography>
-          )}
-        </TouchableOpacity>
+        {/* Restore purchases — required by Apple (only when IAP available) */}
+        {packages.length > 0 && (
+          <TouchableOpacity
+            onPress={() => void handleRestore()}
+            disabled={isRestoring}
+            style={{ marginTop: spacing.xl, alignItems: 'center', paddingVertical: spacing.md }}
+            activeOpacity={0.7}
+          >
+            {isRestoring ? (
+              <ActivityIndicator size="small" color={colors.accent.primary} />
+            ) : (
+              <Typography variant="body" style={{ color: colors.accent.primary }}>
+                Restore Purchases
+              </Typography>
+            )}
+          </TouchableOpacity>
+        )}
 
-        {/* Manage subscriptions link */}
-        {Platform.OS === 'ios' && (
+        {/* Manage subscriptions link (only when IAP available) */}
+        {packages.length > 0 && Platform.OS === 'ios' && (
           <TouchableOpacity
             onPress={handleManageSubscriptions}
             style={{ alignItems: 'center', paddingVertical: spacing.sm }}
@@ -302,13 +404,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     borderBottomLeftRadius: borderRadius.md,
-  },
-  unavailableBox: {
-    padding: spacing.xl,
-    borderRadius: borderRadius.xl,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    alignItems: 'center',
   },
 });

@@ -39,11 +39,14 @@
   },
   "footerTagline": "A sua voz. A sua transformação.",
   "joinWaitlist": "Entrar na Lista",
+  "signIn": "Entrar",
   "language": "Idioma",
   "closeMenu": "Fechar menu",
   "footerProduct": "Produto",
+  "footerForProfessionals": "Para Profissionais",
   "footerCompany": "Empresa",
   "footerLegal": "Legal",
+  "footerMailingList": "Mailing List",
   "footerHowItWorks": "Como Funciona",
   "footerTheScience": "A Ciência",
   "footerPricing": "Preços",
@@ -54,6 +57,7 @@
   "footerFoundingMembers": "Membros Fundadores",
   "footerPrivacyPolicy": "Política de Privacidade",
   "footerTerms": "Termos de Serviço",
+  "footerDataDeletion": "Eliminação de Dados",
   "footerPaymentNote": "Praticar é sempre gratuito. Pagamento: cartões (Stripe) · Bitcoin em breve",
   "comingSoon": {
     "title": "Em Breve",
@@ -83,6 +87,7 @@
     "practiceInYourVoice": "Pratique na sua própria voz",
     "foundingMembersLink": "Membros Fundadores →",
     "memberLogin": "Entrar como Membro",
+    "signInButton": "Sign In",
     "forTeachers": "Para professores",
     "forCoaches": "Para coaches",
     "forStudios": "Para estúdios",
@@ -97,10 +102,10 @@
     "coreValue": {
       "title": "Feito para transformação",
       "subtitle": "Não é outra app de meditação. Um estúdio de prática pessoal que funciona como você.",
-      "yourVoice": { "title": "A sua voz, não áudio genérico", "desc": "Grave uma vez. Cada prática soa como si, a falar consigo mesmo." },
+      "yourVoice": { "title": "A sua voz, não áudio genérico", "desc": "Grave uma vez. Cada prática soa como você, a falar consigo mesmo.", "benefit1": "60 segundos de gravação", "benefit2": "Gravação única, uso ilimitado", "cta": "Criar a minha primeira prática" },
       "aiHelps": { "title": "A IA ajuda a criar, não substitui", "desc": "Conte ao orbe a sua intenção. Reveja, ajuste e possua cada palavra." },
       "replay": { "title": "Práticas que realmente repetirá", "desc": "Feitas para si. Na sua voz. Pensadas para uso diário." },
-      "minutes": { "title": "Leva minutos, não horas", "desc": "Crie em menos de 5 minutos. Pratique grátis para sempre." }
+      "minutes": { "title": "Leva minutos, não horas", "desc": "Crie em menos de 5 minutos. Pratique grátis para sempre.", "badge": "5 min" }
     },
     "howItWorks": {
       "title": "Como funciona",
@@ -126,11 +131,11 @@
     },
     "benefitsSection": {
       "title": "Por que o waQup funciona",
-      "benefit1": "Ouça-se dizer o que mais precisa ouvir",
-      "benefit2": "Práticas personalizadas, não áudio genérico",
-      "benefit3": "Pratique grátis para sempre — a criação é que usa créditos",
-      "benefit4": "Funciona em minutos, compõe para a vida",
-      "benefit5": "Os seus dados de voz ficam sempre seus"
+      "benefit1": "Ouça-se dizer o que precisa",
+      "benefit2": "Personalizadas, não genéricas",
+      "benefit3": "Pratique grátis — créditos só na criação",
+      "benefit4": "Minutos para criar, vida para praticar",
+      "benefit5": "Os seus dados de voz são sempre seus"
     },
     "features": {
       "voice": {

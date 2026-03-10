@@ -4,10 +4,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
+import OnboardingNavigator from './OnboardingNavigator';
 import ShowcaseScreen from '@/screens/ShowcaseScreen';
 import HealthScreen from '@/screens/HealthScreen';
 import SetupScreen from '@/screens/SetupScreen';
 import { useAuthStore } from '@/stores';
+import { useOnboardingStatus } from '@/hooks/useOnboardingStatus';
+import OnboardingWrapper from './OnboardingWrapper';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,6 +31,7 @@ const linking = {
           ResetPassword: 'auth/reset-password',
         },
       },
+      Onboarding: 'onboarding-flow',
       Main: 'main',
     },
   },
@@ -35,43 +39,53 @@ const linking = {
 
 export default function RootNavigator() {
   const { user, isInitialized, initializeAuth } = useAuthStore();
+  const { needsOnboarding, isLoading: isOnboardingLoading, refetch: refetchOnboarding } = useOnboardingStatus();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Initialize auth state on mount
     let unsubscribe: (() => void) | null = null;
-    
     initializeAuth().then((unsub) => {
       unsubscribe = unsub;
       setIsReady(true);
     });
-    
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      if (unsubscribe) unsubscribe();
     };
   }, [initializeAuth]);
 
-  // Show nothing while initializing
   if (!isReady || !isInitialized) {
-    return null; // Or a loading screen
+    return null;
   }
 
   const isAuthenticated = !!user;
 
+  // Authenticated + needs onboarding → show 4-step onboarding flow
+  // Wait for onboarding status to load to avoid flashing wrong screen
+  const showOnboarding = isAuthenticated && needsOnboarding && !isOnboardingLoading;
+  const onboardingLoading = isAuthenticated && isOnboardingLoading;
+
+  if (onboardingLoading) {
+    return null; // Brief loading while checking onboarding status
+  }
+
   return (
     <NavigationContainer linking={linking as LinkingOptions<RootStackParamList>}>
       <Stack.Navigator
+        key={isAuthenticated ? (showOnboarding ? 'onboarding' : 'main') : 'auth'}
         screenOptions={{ headerShown: false }}
-        initialRouteName={isAuthenticated ? 'Main' : 'Setup'}
+        initialRouteName={
+          !isAuthenticated ? 'Setup' : showOnboarding ? 'Onboarding' : 'Main'
+        }
       >
-        {/* Onboarding — shown to unauthenticated users before Auth screens */}
         <Stack.Screen name="Setup" component={SetupScreen} />
-        {isAuthenticated ? (
-          <Stack.Screen name="Main" component={MainNavigator} />
-        ) : (
+        {!isAuthenticated ? (
           <Stack.Screen name="Auth" component={AuthNavigator} />
+        ) : showOnboarding ? (
+          <Stack.Screen name="Onboarding">
+            {() => <OnboardingWrapper onComplete={refetchOnboarding} />}
+          </Stack.Screen>
+        ) : (
+          <Stack.Screen name="Main" component={MainNavigator} />
         )}
         <Stack.Screen name="Showcase" component={ShowcaseScreen} />
         <Stack.Screen name="Health" component={HealthScreen} />

@@ -14,7 +14,8 @@ import { ElevatedBadge, ShareModal } from '@/components/marketplace';
 import type { SharePlatform } from '@/components/marketplace';
 import { getMarketplaceItems } from '@/lib/api-client';
 import type { MarketplaceItem } from '@/lib/api-client';
-import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { CONTENT_TYPE_COLORS, ELEVATED_BADGE_COLOR, ELEVATED_BADGE_COLOR_SECONDARY } from '@waqup/shared/constants';
+import { withOpacity } from '@waqup/shared/theme';
 
 const TYPE_COLORS: Record<string, string> = CONTENT_TYPE_COLORS;
 
@@ -305,7 +306,7 @@ export default function MarketplacePage() {
                       style={{
                         height: 64,
                         background: item.isElevated
-                          ? 'linear-gradient(180deg, rgba(245,158,11,0.4) 0%, rgba(249,115,22,0.15) 100%)'
+                          ? `linear-gradient(180deg, ${withOpacity(ELEVATED_BADGE_COLOR, 0.4)} 0%, ${withOpacity(ELEVATED_BADGE_COLOR_SECONDARY, 0.15)} 100%)`
                           : `linear-gradient(135deg, ${accent}30, ${accent}08)`,
                         display: 'flex',
                         alignItems: 'center',
@@ -321,7 +322,7 @@ export default function MarketplacePage() {
                             left: 0,
                             right: 0,
                             height: 3,
-                            background: 'linear-gradient(90deg, #f59e0b, #f97316)',
+                            background: `linear-gradient(90deg, ${ELEVATED_BADGE_COLOR}, ${ELEVATED_BADGE_COLOR_SECONDARY})`,
                           }}
                         />
                       )}

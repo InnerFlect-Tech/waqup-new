@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Typography, Button, Card, Badge } from '@/components';
+import { withOpacity } from '@waqup/shared/theme';
 import { UserProgressCard } from '@/components/user';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
@@ -162,7 +163,7 @@ function LockedState({
           pointerEvents: 'none',
           userSelect: 'none',
           opacity: 0.12,
-          filter: 'blur(3px) saturate(0.4)',
+          filter: `${BLUR.sm} saturate(0.4)`,
           position: 'absolute',
           inset: 0,
           overflow: 'hidden',
@@ -207,23 +208,23 @@ function LockedState({
             width: 72,
             height: 72,
             borderRadius: borderRadius.full,
-            background: 'linear-gradient(135deg, #a78bfa22, #7c3aed22)',
-            border: '1.5px solid #a78bfa44',
-            boxShadow: '0 0 32px #a78bfa22',
+            background: `linear-gradient(135deg, ${withOpacity(colors.accent.primary, 0.15)}, ${withOpacity(colors.accent.secondary, 0.15)})`,
+            border: `1.5px solid ${withOpacity(colors.accent.primary, 0.3)}`,
+            boxShadow: `0 0 32px ${withOpacity(colors.accent.primary, 0.15)}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <Lock size={30} color="#a78bfa" />
+          <Lock size={30} color={colors.accent.primary} />
         </motion.div>
 
         {/* Heading + badge */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.sm }}>
-          <Badge variant="outline" style={{ borderColor: '#a78bfa44', marginBottom: spacing.xs, alignSelf: 'center' }}>
+          <Badge variant="outline" style={{ borderColor: withOpacity(colors.accent.primary, 0.3), marginBottom: spacing.xs, alignSelf: 'center' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Sparkles size={10} color="#a78bfa" />
-              <span style={{ color: '#a78bfa', fontWeight: 700, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              <Sparkles size={10} color={colors.accent.primary} />
+              <span style={{ color: colors.accent.primary, fontWeight: 700, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 Available Soon
               </span>
             </span>
@@ -231,7 +232,7 @@ function LockedState({
           <Typography variant="h2" style={{ fontWeight: 800 }}>Creator Marketplace</Typography>
           <Typography variant="body" color="secondary" style={{ maxWidth: 480, lineHeight: 1.6 }}>
             Publish your affirmations, meditations, and rituals to the world.
-            Earn <strong style={{ color: '#a78bfa' }}>Q credits</strong> every time someone shares your work.
+            Earn <strong style={{ color: colors.accent.primary }}>Q credits</strong> every time someone shares your work.
           </Typography>
         </div>
 
@@ -245,9 +246,9 @@ function LockedState({
           }}
         >
           {[
-            { icon: <TrendingUp size={18} />, color: '#34d399', title: 'Reach thousands', body: 'Your content surfaces in the discovery feed to all users' },
-            { icon: <Coins size={18} />, color: '#f59e0b', title: 'Earn Q credits', body: '+1 Q every time someone shares your content' },
-            { icon: <Users size={18} />, color: '#60a5fa', title: 'Build an audience', body: 'Track plays, shares, and followers per creation' },
+            { icon: <TrendingUp size={18} />, color: colors.success, title: 'Reach thousands', body: 'Your content surfaces in the discovery feed to all users' },
+            { icon: <Coins size={18} />, color: colors.warning, title: 'Earn Q credits', body: '+1 Q every time someone shares your content' },
+            { icon: <Users size={18} />, color: colors.info, title: 'Build an audience', body: 'Track plays, shares, and followers per creation' },
           ].map(({ icon, color, title, body }) => (
             <div
               key={title}
@@ -310,11 +311,11 @@ function LockedState({
                 gap: spacing.md,
                 padding: `${spacing.xl} ${spacing.lg}`,
                 borderRadius: borderRadius.xl,
-                background: 'linear-gradient(135deg, #10b98115, #10b98108)',
-                border: '1px solid #10b98130',
+                background: `linear-gradient(135deg, ${withOpacity(colors.success, 0.1)}, ${withOpacity(colors.success, 0.04)})`,
+                border: `1px solid ${withOpacity(colors.success, 0.2)}`,
               }}
             >
-              <CheckCircle2 size={36} color="#10b981" />
+              <CheckCircle2 size={36} color={colors.success} />
               <Typography variant="h4" style={{ fontWeight: 700 }}>Proposal submitted</Typography>
               <Typography variant="body" color="secondary">
                 We&apos;ll be in touch when the Creator Marketplace opens.
@@ -565,7 +566,7 @@ function GateSkeleton({ children }: { children: React.ReactNode }) {
     <div style={{ position: 'relative', minHeight: '100vh' }}>
       <div
         aria-hidden="true"
-        style={{ opacity: 0.08, filter: 'blur(4px)', position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}
+        style={{ opacity: 0.08, filter: BLUR.sm, position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}
       >
         {children}
       </div>

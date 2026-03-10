@@ -5,7 +5,7 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { Typography } from './Typography';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+type BaseInputProps = {
   label?: string;
   error?: string;
   helperText?: string;
@@ -14,7 +14,13 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   containerStyle?: React.CSSProperties;
   /** Override wrapper styles (e.g. marginBottom: 0 for inline forms) */
   wrapperStyle?: React.CSSProperties;
-}
+  /** Render textarea instead of input */
+  multiline?: boolean;
+  rows?: number;
+};
+
+export type InputProps = BaseInputProps &
+  (React.InputHTMLAttributes<HTMLInputElement> | React.TextareaHTMLAttributes<HTMLTextAreaElement>);
 
 export const Input: React.FC<InputProps> = ({
   label,
@@ -26,6 +32,8 @@ export const Input: React.FC<InputProps> = ({
   wrapperStyle,
   style,
   className,
+  multiline,
+  rows = 3,
   onFocus,
   onBlur,
   ...props
@@ -51,10 +59,25 @@ export const Input: React.FC<InputProps> = ({
     WebkitBackdropFilter: BLUR.md,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
-    minHeight: '44px',
+    alignItems: multiline ? 'flex-start' : 'center',
+    minHeight: multiline ? undefined : '44px',
     transition: 'all 0.2s ease-in-out',
     ...containerStyle,
+  };
+
+  const baseInputStyle: React.CSSProperties = {
+    flex: 1,
+    paddingLeft: leftIcon ? spacing.sm : spacing.md,
+    paddingRight: rightIcon ? spacing.sm : spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
+    fontSize: 16,
+    color: colors.text.primary,
+    backgroundColor: 'transparent',
+    border: 'none',
+    outline: 'none',
+    fontFamily: 'inherit',
+    ...(style as React.CSSProperties),
   };
 
   return (
@@ -65,37 +88,50 @@ export const Input: React.FC<InputProps> = ({
         </Typography>
       )}
       <div style={inputContainerStyle} className={className}>
-        {leftIcon && <div style={{ paddingLeft: spacing.md, display: 'flex', alignItems: 'center' }}>{leftIcon}</div>}
-        <input
-          style={{
-            flex: 1,
-            paddingLeft: leftIcon ? spacing.sm : spacing.md,
-            paddingRight: rightIcon ? spacing.sm : spacing.md,
-            paddingTop: spacing.sm,
-            paddingBottom: spacing.sm,
-            fontSize: 16,
-            color: colors.text.primary,
-            backgroundColor: 'transparent',
-            border: 'none',
-            outline: 'none',
-            minHeight: '44px',
-            fontFamily: 'inherit',
-            ...style,
-          }}
-          onFocus={(e) => {
-            setFocused(true);
-            onFocus?.(e);
-          }}
-          onBlur={(e) => {
-            setFocused(false);
-            onBlur?.(e);
-          }}
-          aria-label={label}
-          aria-describedby={error || helperText ? `${props.id || 'input'}-helper` : undefined}
-          aria-invalid={!!error}
-          {...props}
-        />
-        {rightIcon && <div style={{ paddingRight: spacing.md, display: 'flex', alignItems: 'center' }}>{rightIcon}</div>}
+        {leftIcon && <div style={{ paddingLeft: spacing.md, display: 'flex', alignItems: 'center', paddingTop: multiline ? spacing.sm : 0 }}>{leftIcon}</div>}
+        {multiline ? (
+          <textarea
+            style={{
+              ...baseInputStyle,
+              minHeight: '80px',
+              resize: 'none',
+              lineHeight: 1.5,
+            }}
+            rows={rows}
+            onFocus={(e) => {
+              setFocused(true);
+              (onFocus as React.FocusEventHandler<HTMLTextAreaElement>)?.(e);
+            }}
+            onBlur={(e) => {
+              setFocused(false);
+              (onBlur as React.FocusEventHandler<HTMLTextAreaElement>)?.(e);
+            }}
+            aria-label={label}
+            aria-describedby={error || helperText ? `${props.id || 'input'}-helper` : undefined}
+            aria-invalid={!!error}
+            {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+          />
+        ) : (
+          <input
+            style={{
+              ...baseInputStyle,
+              minHeight: '44px',
+            }}
+            onFocus={(e) => {
+              setFocused(true);
+              (onFocus as React.FocusEventHandler<HTMLInputElement>)?.(e);
+            }}
+            onBlur={(e) => {
+              setFocused(false);
+              (onBlur as React.FocusEventHandler<HTMLInputElement>)?.(e);
+            }}
+            aria-label={label}
+            aria-describedby={error || helperText ? `${props.id || 'input'}-helper` : undefined}
+            aria-invalid={!!error}
+            {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+          />
+        )}
+        {rightIcon && <div style={{ paddingRight: spacing.md, display: 'flex', alignItems: 'center', paddingTop: multiline ? spacing.sm : 0 }}>{rightIcon}</div>}
       </div>
       {error && (
         <Typography variant="small" style={{ marginTop: spacing.xs, color: colors.error }}>

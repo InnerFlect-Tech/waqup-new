@@ -3,7 +3,7 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { borderRadius, spacing } from '@/theme';
-import { useTheme } from '@/theme';
+import { ELEVATED_BADGE_COLOR } from '@waqup/shared/constants';
 
 interface ElevatedBadgeProps {
   size?: 'sm' | 'md';
@@ -15,9 +15,6 @@ interface ElevatedBadgeProps {
  * for platform-curated content. Not paid placement — purely quality curation.
  */
 export function ElevatedBadge({ size = 'sm', style }: ElevatedBadgeProps) {
-  const { theme } = useTheme();
-  const colors = theme.colors;
-
   const isSm = size === 'sm';
 
   return (
@@ -28,15 +25,15 @@ export function ElevatedBadge({ size = 'sm', style }: ElevatedBadgeProps) {
         gap: isSm ? 3 : 4,
         padding: isSm ? `2px ${spacing.xs}` : `${spacing.xs} ${spacing.sm}`,
         borderRadius: borderRadius.full,
-        background: 'linear-gradient(135deg, #f59e0b22, #f97316 22)',
-        border: '1px solid #f59e0b55',
-        boxShadow: '0 0 12px #f59e0b18',
+        background: `linear-gradient(135deg, ${ELEVATED_BADGE_COLOR}22, ${ELEVATED_BADGE_COLOR}22)`,
+        border: `1px solid ${ELEVATED_BADGE_COLOR}55`,
+        boxShadow: `0 0 12px ${ELEVATED_BADGE_COLOR}18`,
         ...style,
       }}
     >
       <Sparkles
         size={isSm ? 10 : 13}
-        color="#f59e0b"
+        color={ELEVATED_BADGE_COLOR}
         style={{ flexShrink: 0 }}
       />
       <span
@@ -45,7 +42,7 @@ export function ElevatedBadge({ size = 'sm', style }: ElevatedBadgeProps) {
           fontWeight: 700,
           letterSpacing: '0.06em',
           textTransform: 'uppercase',
-          color: '#f59e0b',
+          color: ELEVATED_BADGE_COLOR,
           lineHeight: 1,
         }}
       >

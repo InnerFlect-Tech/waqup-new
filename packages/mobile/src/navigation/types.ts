@@ -10,9 +10,17 @@ export type { ContentItemType };
 export type RootStackParamList = {
   Setup: undefined;
   Auth: undefined;
+  Onboarding: undefined;
   Main: undefined;
   Showcase: undefined;
   Health: undefined;
+};
+
+export type OnboardingStackParamList = {
+  OnboardingIntention: undefined;
+  OnboardingProfile: { intention?: string };
+  OnboardingPreferences: undefined;
+  OnboardingGuide: undefined;
 };
 
 export type AuthStackParamList = {
@@ -33,9 +41,9 @@ export type MainTabParamList = {
 export type MainStackParamList = {
   Tabs: undefined;
   ContentDetail: { contentId: string; contentType: ContentItemType };
+  ContentEdit: { contentId: string; contentType: ContentItemType };
   CreateMode: { contentType: ContentItemType };
   ContentCreate: { contentType: ContentItemType; mode: 'form' | 'chat' | 'agent' };
-  ContentEdit: { contentId: string; contentType: ContentItemType };
   Credits: undefined;
   Progress: undefined;
   Settings: undefined;

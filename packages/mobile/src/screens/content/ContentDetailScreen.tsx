@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,11 +19,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography } from '@/components';
+import { Typography, Loading } from '@/components';
 import { VoiceOrb } from '@/components/audio';
 import { useAudioPlayer } from '@/components/audio';
 import { useContentItem } from '@/hooks';
 import { formatTime } from '@waqup/shared/utils';
+import { API_BASE_URL } from '@/constants/app';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'ContentDetail'>;
 
@@ -30,7 +32,15 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ORB_SIZE = Math.min(SCREEN_WIDTH * 0.52, 220);
 const BAR_COUNT = 28;
 
-function WaveformBar({ isPlaying, index }: { isPlaying: boolean; index: number }) {
+function WaveformBar({
+  isPlaying,
+  index,
+  colors,
+}: {
+  isPlaying: boolean;
+  index: number;
+  colors: { accent: { primary: string; secondary: string } };
+}) {
   const phase = useSharedValue(0);
 
   useEffect(() => {
@@ -55,16 +65,26 @@ function WaveformBar({ isPlaying, index }: { isPlaying: boolean; index: number }
 
   return (
     <Animated.View
-      style={[styles.bar, animStyle, { backgroundColor: isPlaying ? '#a855f7' : '#4c1d95' }]}
+      style={[
+        styles.bar,
+        animStyle,
+        { backgroundColor: isPlaying ? colors.accent.primary : colors.accent.secondary },
+      ]}
     />
   );
 }
 
-function WaveformBars({ isPlaying }: { isPlaying: boolean }) {
+function WaveformBars({
+  isPlaying,
+  colors,
+}: {
+  isPlaying: boolean;
+  colors: ReturnType<typeof useTheme>['theme']['colors'];
+}) {
   return (
     <View style={styles.waveform}>
       {Array.from({ length: BAR_COUNT }, (_, i) => (
-        <WaveformBar key={i} isPlaying={isPlaying} index={i} />
+        <WaveformBar key={i} isPlaying={isPlaying} index={i} colors={colors} />
       ))}
     </View>
   );
@@ -79,6 +99,16 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
   const { state, position, play, pause, seek, isReady } = useAudioPlayer({
     layers: { voiceUrl: item?.audioUrl ?? null },
   });
+
+  if (isLoading || !item) {
+    return (
+      <Screen scrollable={false} padding={false}>
+        <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', paddingTop: spacing.xxl }]}>
+          <Loading variant="spinner" size="lg" />
+        </View>
+      </Screen>
+    );
+  }
 
   const isPlaying = state === 'playing';
   const isAudioLoading = state === 'loading' || (!isReady && !!item?.audioUrl);
@@ -102,20 +132,40 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
     seek(Math.min(position.durationMs, position.positionMs + 15000));
   };
 
-  const title = isLoading ? 'Loading…' : item?.title ?? 'Untitled';
+  const title = item?.title ?? 'Untitled';
   const duration = position.durationMs > 0 ? formatTime(position.durationMs) : '--:--';
+
+  const handleEdit = () => {
+    navigation.navigate('ContentEdit', { contentId, contentType });
+  };
+
+  const handleEditAudio = () => {
+    const plural = contentType === 'affirmation' ? 'affirmations' : `${contentType}s`;
+    const url = `${API_BASE_URL}/en/sanctuary/${plural}/${contentId}/edit-audio`;
+    void WebBrowser.openBrowserAsync(url);
+  };
 
   return (
     <Screen scrollable={false} padding={false}>
       <View style={styles.container}>
-        {/* Back button */}
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.8}
-          style={styles.backBtn}
-        >
-          <Typography variant="body" style={{ color: colors.accent.primary }}>←</Typography>
-        </TouchableOpacity>
+        {/* Back button and actions */}
+        <View style={styles.topRow}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.8}
+            style={styles.backBtn}
+          >
+            <Typography variant="body" style={{ color: colors.accent.primary }}>← Back</Typography>
+          </TouchableOpacity>
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={handleEdit} activeOpacity={0.8} style={styles.actionBtn}>
+              <Typography variant="small" style={{ color: colors.accent.primary }}>Edit</Typography>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleEditAudio} activeOpacity={0.8} style={styles.actionBtn}>
+              <Typography variant="small" style={{ color: colors.accent.primary }}>Edit audio</Typography>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         {/* NOW PLAYING label */}
         <Typography style={[styles.nowPlayingLabel, { color: colors.text.secondary }]}>
@@ -142,7 +192,7 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
         </View>
 
         {/* Waveform */}
-        <WaveformBars isPlaying={isPlaying} />
+        <WaveformBars isPlaying={isPlaying} colors={colors} />
 
         {/* Progress scrub */}
         <View style={styles.scrubContainer}>
@@ -154,7 +204,7 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
               style={[
                 styles.scrubDot,
                 progressBarStyle,
-                { backgroundColor: '#fff', borderColor: colors.accent.primary },
+                { backgroundColor: colors.text.onDark, borderColor: colors.accent.primary },
               ]}
             />
           </View>
@@ -180,9 +230,9 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
             style={[styles.playBtn, { backgroundColor: colors.accent.primary }]}
           >
             {isAudioLoading ? (
-              <Typography style={{ color: '#fff', fontSize: 20 }}>…</Typography>
+              <Typography style={{ color: colors.text.onDark, fontSize: 20 }}>…</Typography>
             ) : (
-              <Typography style={[styles.playIcon, { color: '#fff' }]}>
+              <Typography style={[styles.playIcon, { color: colors.text.onDark }]}>
                 {isPlaying ? '⏸' : '▶'}
               </Typography>
             )}
@@ -205,10 +255,23 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
     paddingBottom: spacing.xxxl,
   },
-  backBtn: {
-    alignSelf: 'flex-start',
-    paddingVertical: spacing.sm,
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
     marginBottom: spacing.md,
+  },
+  backBtn: {
+    paddingVertical: spacing.sm,
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: spacing.lg,
+  },
+  actionBtn: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
   },
   nowPlayingLabel: {
     letterSpacing: 3,

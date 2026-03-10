@@ -15,8 +15,9 @@ import { Typography, Card } from '@/components';
 import { VoiceOrb } from '@/components/audio';
 import type { OrbState } from '@/components/audio';
 import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
-import { sendOracleMessage } from '@/services/ai';
+import { createOracleSession, sendOracleMessage } from '@/services/ai';
 import type { ChatMessage } from '@/services/ai';
+import { supabase } from '@/services/supabase';
 
 type SpeakState = 'idle' | 'requesting' | 'listening' | 'processing' | 'speaking' | 'error';
 
@@ -53,6 +54,9 @@ export default function SpeakScreen() {
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   const conversationRef = useRef<ChatMessage[]>([]);
+  const sessionIdRef = useRef<string | null>(null);
+
+  const getSession = useCallback(() => supabase.auth.getSession(), []);
 
   const requestPermission = async (): Promise<boolean> => {
     if (Platform.OS === 'web') return true;
@@ -145,8 +149,16 @@ export default function SpeakScreen() {
         { role: 'user', content: transcript },
       ];
 
+      // Ensure we have an Oracle session (create on first message)
+      let sessionId = sessionIdRef.current;
+      if (!sessionId) {
+        const session = await createOracleSession(1, getSession);
+        sessionId = session.sessionId;
+        sessionIdRef.current = sessionId;
+      }
+
       // Send to Oracle AI
-      const response = await sendOracleMessage(conversationRef.current);
+      const response = await sendOracleMessage(sessionId, conversationRef.current, getSession);
 
       const assistantTurn: ConversationTurn = { role: 'assistant', content: response.reply };
       setConversation(prev => [...prev, assistantTurn]);
@@ -163,16 +175,26 @@ export default function SpeakScreen() {
         'code' in err &&
         (err as { code: string }).code === 'insufficient_credits';
 
+      const isSessionExhausted =
+        err &&
+        typeof err === 'object' &&
+        'code' in err &&
+        (err as { code: string }).code === 'session_exhausted';
+
       if (isInsufficientCredits) {
         const message = (err as { message?: string }).message ?? 'Not enough Qs.';
         Alert.alert('Not Enough Qs', message);
         setSpeakState('idle');
+      } else if (isSessionExhausted) {
+        sessionIdRef.current = null;
+        setSpeakState('idle');
+        Alert.alert('Session Used', 'Tap the orb to start a new conversation.');
       } else {
         setRecording(null);
         setSpeakState('error');
       }
     }
-  }, [recording, speakState]);
+  }, [recording, speakState, getSession]);
 
   const handleOrbPress = () => {
     if (speakState === 'listening') {
@@ -185,6 +207,7 @@ export default function SpeakScreen() {
   const handleReset = () => {
     setConversation([]);
     conversationRef.current = [];
+    sessionIdRef.current = null;
     setSpeakState('idle');
   };
 
@@ -268,13 +291,15 @@ export default function SpeakScreen() {
                       key={i}
                       style={[
                         styles.bubble,
-                        turn.role === 'user' ? styles.bubbleUser : styles.bubbleAssistant,
+                        turn.role === 'user'
+                          ? [styles.bubbleUser, { backgroundColor: colors.accent.primary }]
+                          : [styles.bubbleAssistant, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border, borderWidth: 1 }],
                       ]}
                     >
                       <Typography
                         variant="small"
                         style={{
-                          color: turn.role === 'user' ? '#fff' : colors.text.primary,
+                          color: turn.role === 'user' ? colors.text.onDark : colors.text.primary,
                           lineHeight: 20,
                         }}
                       >
@@ -353,14 +378,10 @@ const styles = StyleSheet.create({
     maxWidth: '90%',
   },
   bubbleUser: {
-    backgroundColor: '#9333EA',
     alignSelf: 'flex-end',
     borderBottomRightRadius: 4,
   },
   bubbleAssistant: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 4,
   },

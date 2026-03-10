@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -15,7 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
-import { Typography, Button, PageShell, PublicFooter } from '@/components';
+import { Typography, Button, PageShell } from '@/components';
 
 const MOMENTS = [
   {
@@ -230,6 +231,27 @@ export default function ForStudiosPage() {
             The QR acquisition loop
           </Typography>
 
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: 560,
+              aspectRatio: '1',
+              borderRadius: borderRadius.lg,
+              overflow: 'hidden',
+              margin: '0 auto',
+              marginBottom: spacing.xxl,
+            }}
+          >
+            <Image
+              src="/images/for-studios-qr.png"
+              alt="QR code in studio — student scanning, yoga mat, wellness space"
+              fill
+              sizes="(max-width: 768px) 100vw, 560px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: spacing.lg }}>
             {LOOP.map((l) => (
               <div
@@ -287,8 +309,6 @@ export default function ForStudiosPage() {
             </Link>
           </div>
         </motion.section>
-
-        <PublicFooter />
       </div>
     </PageShell>
   );

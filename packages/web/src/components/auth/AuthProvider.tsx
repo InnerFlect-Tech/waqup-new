@@ -86,6 +86,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/get-qs', // Public Q packs — anyone can view; login required only when buying
       '/funnels',
       '/investors',
+      '/for-teachers',
+      '/for-coaches',
+      '/for-studios',
+      '/for-creators',
       // Superadmin routes (/pages, /sitemap-view, /system, /admin/*, /health, /showcase) excluded — require auth; SuperAdminGate handles role check
       '/coming-soon',
       '/waitlist',
@@ -100,7 +104,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pathname.startsWith('/onboarding') ||
       pathname.startsWith('/explanation') ||
       pathname.startsWith('/our-story') ||
-      pathname.startsWith('/play'); // Public audio player for sharing
+      pathname.startsWith('/play') || // Public audio player for sharing
+      pathname.includes('/for-teachers') ||
+      pathname.includes('/for-coaches') ||
+      pathname.includes('/for-studios') ||
+      pathname.includes('/for-creators');
 
     if (isProtectedRoute && !user) {
       router.replace('/');

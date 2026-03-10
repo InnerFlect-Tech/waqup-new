@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -14,8 +15,8 @@ import {
   Star,
   BarChart3,
 } from 'lucide-react';
-import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
-import { Typography, Button, PageShell, PublicFooter } from '@/components';
+import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X } from '@/theme';
+import { Typography, Button, PageShell } from '@/components';
 
 const TIERS = [
   {
@@ -110,27 +111,47 @@ export default function ForCreatorsPage() {
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
-      <div
+      {/* Hero — full width, outside max-width wrapper */}
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         style={{
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          padding: `0 ${spacing.xl}`,
+          position: 'relative',
+          width: '100%',
+          minHeight: '90dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          paddingTop: '120px',
+          paddingBottom: spacing.xxl,
           marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`,
         }}
       >
-        {/* Hero */}
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Background — full viewport width */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/images/for-creators-hero.png"
+            alt=""
+            fill
+            priority
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
+        </div>
+        {/* Hero content — centered with padding */}
+        <div
           style={{
-            minHeight: '90dvh',
+            position: 'relative',
+            zIndex: 1,
+            width: '100%',
+            maxWidth: CONTENT_MAX_WIDTH,
+            margin: '0 auto',
+            padding: `0 ${HEADER_PADDING_X}`,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'center',
-            textAlign: 'center',
-            paddingTop: '120px',
-            paddingBottom: spacing.xxl,
           }}
         >
           <div
@@ -262,8 +283,17 @@ export default function ForCreatorsPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to start · Earn from day one · Revenue share at Partner tier
           </Typography>
-        </motion.section>
+        </div>
+      </motion.section>
 
+      {/* Content — max-width wrapper */}
+      <div
+        style={{
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+          padding: `0 ${HEADER_PADDING_X}`,
+        }}
+      >
         {/* Earnings tiers */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -277,6 +307,27 @@ export default function ForCreatorsPage() {
           <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xxl, maxWidth: 520, margin: `0 auto ${spacing.xxl}`, lineHeight: 1.6 }}>
             As your content reaches more people, your earning tier rises automatically. No applications, no waiting periods.
           </Typography>
+
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: 480,
+              aspectRatio: '1',
+              borderRadius: borderRadius.lg,
+              overflow: 'hidden',
+              margin: '0 auto',
+              marginBottom: spacing.xxl,
+            }}
+          >
+            <Image
+              src="/images/for-creators-growth.png"
+              alt="Growth visualization — upward trend, success, scaling"
+              fill
+              sizes="(max-width: 768px) 100vw, 480px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: spacing.xl }}>
             {TIERS.map((t) => (
@@ -338,8 +389,8 @@ export default function ForCreatorsPage() {
                 <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, lineHeight: 1.5 }}>
                   {t.perk}
                 </Typography>
-              </div>
-            ))}
+            </div>
+          ))}
           </div>
         </motion.section>
 
@@ -379,7 +430,16 @@ export default function ForCreatorsPage() {
           viewport={{ once: true }}
           style={{ textAlign: 'center', paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
         >
-          <div style={{ padding: spacing.xxl, borderRadius: borderRadius.xl, background: `linear-gradient(135deg, ${gold}0a, ${colors.accent.primary}08)`, border: `1px solid ${gold}25` }}>
+          <div
+            style={{
+              maxWidth: 560,
+              margin: '0 auto',
+              padding: spacing.xxl,
+              borderRadius: borderRadius.xl,
+              background: `linear-gradient(135deg, ${gold}0a, ${colors.accent.primary}08)`,
+              border: `1px solid ${gold}25`,
+            }}
+          >
             <Typography variant="h2" style={{ color: colors.text.primary, fontWeight: 200, marginBottom: spacing.md, letterSpacing: '-0.02em' }}>
               Your voice. Your audience. Your revenue.
             </Typography>
@@ -401,8 +461,6 @@ export default function ForCreatorsPage() {
             </div>
           </div>
         </motion.section>
-
-        <PublicFooter />
       </div>
     </PageShell>
   );

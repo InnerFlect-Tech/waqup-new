@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button, Badge } from '@/components';
+import { Typography, Button, Badge, Loading } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
 import { Play, Pause, Share2, BookOpen, Clock, Users, ArrowLeft } from 'lucide-react';
@@ -163,7 +163,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
       <PageShell intensity="medium">
         <PageContent width="narrow">
           <div style={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Typography variant="body" style={{ color: colors.text.secondary }}>Loading...</Typography>
+            <Loading variant="spinner" size="lg" />
           </div>
         </PageContent>
       </PageShell>

@@ -16,8 +16,8 @@ import {
   Globe,
   Zap,
 } from 'lucide-react';
-import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
-import { Typography, Button, PageShell, WaitlistCTA, PublicFooter } from '@/components';
+import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X } from '@/theme';
+import { Typography, Button, PageShell, WaitlistCTA } from '@/components';
 
 const BENEFITS = [
   {
@@ -94,42 +94,49 @@ export default function ForTeachersPage() {
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
-      <div
+      {/* Hero — full width, outside max-width wrapper */}
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         style={{
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          padding: `0 ${spacing.xl}`,
+          position: 'relative',
+          width: '100%',
+          minHeight: '90dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          paddingTop: '120px',
+          paddingBottom: spacing.xxl,
           marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`,
         }}
       >
-        {/* Hero */}
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+        {/* Background — full viewport width */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/images/for-teachers-hero.png"
+            alt=""
+            fill
+            priority
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
+        </div>
+        {/* Hero content — centered with padding */}
+        <div
           style={{
             position: 'relative',
-            minHeight: '90dvh',
+            zIndex: 1,
+            width: '100%',
+            maxWidth: CONTENT_MAX_WIDTH,
+            margin: '0 auto',
+            padding: `0 ${HEADER_PADDING_X}`,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'center',
-            textAlign: 'center',
-            paddingTop: '120px',
-            paddingBottom: spacing.xxl,
-            overflow: 'hidden',
           }}
         >
-          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <Image
-              src="/images/for-teachers-hero.png"
-              alt=""
-              fill
-              priority
-              style={{ objectFit: 'cover', objectPosition: 'center center' }}
-            />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
-          </div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
           {/* Role badge */}
           <div
             style={{
@@ -230,9 +237,17 @@ export default function ForTeachersPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to join · Teacher Starter Kit included · No credit card
           </Typography>
-          </div>
-        </motion.section>
+        </div>
+      </motion.section>
 
+      {/* Content — max-width wrapper */}
+      <div
+        style={{
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+          padding: `0 ${HEADER_PADDING_X}`,
+        }}
+      >
         {/* How it works */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -338,7 +353,7 @@ export default function ForTeachersPage() {
           </div>
         </motion.section>
 
-        {/* Comparison table */}
+        {/* Analytics visual + Comparison table */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -348,6 +363,25 @@ export default function ForTeachersPage() {
           <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
             Your current workflow vs waQup
           </Typography>
+
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: '16/9',
+              borderRadius: borderRadius.lg,
+              overflow: 'hidden',
+              marginBottom: spacing.xxl,
+            }}
+          >
+            <Image
+              src="/images/for-teachers-analytics.png"
+              alt="Educational dashboard with analytics — play counts, progress tracking"
+              fill
+              sizes="(max-width: 768px) 100vw, 640px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
 
           <div
             style={{
@@ -418,6 +452,8 @@ export default function ForTeachersPage() {
         >
           <div
             style={{
+              maxWidth: 560,
+              margin: '0 auto',
               padding: spacing.xxl,
               borderRadius: borderRadius.xl,
               background: `linear-gradient(135deg, ${colors.accent.primary}14, ${colors.accent.secondary}0a)`,
@@ -446,8 +482,6 @@ export default function ForTeachersPage() {
             </div>
           </div>
         </motion.section>
-
-        <PublicFooter />
       </div>
     </PageShell>
   );

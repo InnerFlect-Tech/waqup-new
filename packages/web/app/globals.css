@@ -39,18 +39,24 @@ a {
   outline-offset: 2px;
 }
 
+/* Logo no header — remove o quadrado roxo em volta para visual mais limpo */
+.waqup-logo-link:focus,
+.waqup-logo-link:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Selection styles — uses theme accent (SSOT) */
 ::selection {
   background: var(--theme-accent-selection, rgba(168, 85, 247, 0.2));
   color: inherit;
 }
 
-/* Utility: glass morphism surface — uses theme vars; blur matches BLUR.md (10px) */
+/* Utility: glass morphism surface — uses theme vars; blur aligned with BLUR.md (blurTokens.md = 10px, SSOT: packages/shared/src/theme/tokens.ts) */
 .glass {
   background: var(--theme-glass-light, rgba(255, 255, 255, 0.05));
-  /* Uses BLUR.md token (10px) - see @/theme */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: var(--theme-blur-md, blur(10px));
+  -webkit-backdrop-filter: var(--theme-blur-md, blur(10px));
   border: 1px solid var(--theme-glass-border, rgba(255, 255, 255, 0.1));
 }
 
@@ -91,6 +97,71 @@ a {
   color: transparent;
 }
 
+/* Core value — hero matches right column height, stack on mobile */
+.core-value-hero-wrap {
+  min-height: 0;
+}
+.core-value-hero-wrap > * {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Stack hero | cards into 1 column before content gets cramped — ensures readable width */
+@media (max-width: 1200px) {
+  .core-value-grid > div:first-child {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 768px) {
+  .core-value-grid [data-layout="horizontal"] {
+    flex-direction: column !important;
+  }
+  .core-value-grid [data-layout="horizontal"] > div:first-child {
+    flex: none !important;
+    min-height: 160px !important;
+    max-height: min(220px, 58vw) !important;
+    aspect-ratio: 1 !important;
+    width: 100% !important;
+  }
+}
+
+/* Hero mic card — hover interaction */
+.landing-card-hero-mic .hero-mic-img {
+  transition: transform 0.4s ease;
+}
+.landing-card-hero-mic:hover .hero-mic-img {
+  transform: scale(1.05);
+}
+.landing-card-hero-mic:hover .hero-mic-live {
+  opacity: 1 !important;
+  animation: hero-mic-pulse 1.5s ease-in-out infinite;
+}
+@keyframes hero-mic-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* Minutes banner card — subtle badge pulse */
+.landing-card-minutes [data-badge] {
+  animation: minutes-badge-pulse 3s ease-in-out infinite;
+}
+.landing-card-minutes:hover [data-badge] {
+  animation-duration: 1.5s;
+}
+@keyframes minutes-badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* How it works — stack to full width on small screens */
+@media (max-width: 640px) {
+  .how-it-works-step {
+    flex: 1 1 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
 /* Public pages — mobile adaptation */
 @media (max-width: 768px) {
   .hiw-step-card {
@@ -105,7 +176,6 @@ a {
 }
 @media (max-width: 768px) {
   .pricing-content { padding-left: 24px !important; padding-right: 24px !important; }
-  .footer-inner { padding-left: 24px !important; padding-right: 24px !important; }
 }
 
 @media (max-width: 640px) {
@@ -116,6 +186,13 @@ a {
   .landing-section { padding-left: 24px !important; padding-right: 24px !important; }
 }
 
+/* Small screens — reduce hero height so content doesn't feel oversized */
+@media (max-width: 768px) {
+  .landing-hero {
+    min-height: min(75dvh, 520px) !important;
+  }
+}
+
 /* Small phones (iPhone SE, etc.) — reduce padding to prevent overflow */
 @media (max-width: 375px) {
   .wq-hero,
@@ -123,5 +200,7 @@ a {
   .landing-hero,
   .landing-section { padding-left: 16px !important; padding-right: 16px !important; }
   .pricing-content { padding-left: 16px !important; padding-right: 16px !important; }
-  .footer-inner { padding-left: 16px !important; padding-right: 16px !important; }
+  .landing-hero {
+    min-height: min(70dvh, 480px) !important;
+  }
 }

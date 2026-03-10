@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { Plus, Layers, Play, Share2, Eye, EyeOff, Trash2, ArrowRight } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH } from '@/theme';
-import { Typography, Button, PageShell } from '@/components';
+import { Typography, Button, Loading, PageShell } from '@/components';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores';
 
@@ -164,7 +164,7 @@ export default function SeriesPage() {
         {/* Series list */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: spacing.xxl }}>
-            <Typography variant="body" style={{ color: colors.text.secondary }}>Loading...</Typography>
+            <Loading variant="spinner" size="lg" />
           </div>
         ) : series.length === 0 ? (
           <div

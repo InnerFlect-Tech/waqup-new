@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Typography, Button, QCoin } from '@/components';
+import { Typography, Button, QCoin, Loading } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
@@ -216,7 +216,7 @@ export default function CreditsPage() {
           >
             {txLoading ? (
               <div style={{ padding: spacing.lg, textAlign: 'center' }}>
-                <Typography variant="small" style={{ color: colors.text.secondary }}>Loading...</Typography>
+                <Loading variant="spinner" size="lg" />
               </div>
             ) : transactions.length === 0 ? (
               <div style={{ padding: spacing.lg, textAlign: 'center' }}>

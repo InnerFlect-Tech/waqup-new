@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -15,7 +16,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
-import { Typography, Button, PageShell, PublicFooter } from '@/components';
+import { Typography, Button, PageShell } from '@/components';
 
 const PAIN_POINTS = [
   'Clients forget insights between sessions',
@@ -104,6 +105,7 @@ export default function ForCoachesPage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
+            position: 'relative',
             minHeight: '90dvh',
             display: 'flex',
             flexDirection: 'column',
@@ -112,8 +114,20 @@ export default function ForCoachesPage() {
             textAlign: 'center',
             paddingTop: '120px',
             paddingBottom: spacing.xxl,
+            overflow: 'hidden',
           }}
         >
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            <Image
+              src="/images/for-coaches-hero.png"
+              alt=""
+              fill
+              priority
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
+          </div>
+          <div style={{ position: 'relative', zIndex: 1 }}>
           <div
             style={{
               display: 'inline-flex',
@@ -247,6 +261,7 @@ export default function ForCoachesPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to start · Client homework in 5 minutes · No recording equipment needed
           </Typography>
+          </div>
         </motion.section>
 
         {/* Workflow */}
@@ -259,6 +274,27 @@ export default function ForCoachesPage() {
           <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
             A workflow that fits after every session
           </Typography>
+
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: 560,
+              aspectRatio: '1',
+              borderRadius: borderRadius.lg,
+              overflow: 'hidden',
+              margin: '0 auto',
+              marginBottom: spacing.xxl,
+            }}
+          >
+            <Image
+              src="/images/for-coaches-notes.png"
+              alt="Hand writing session notes — focus, clarity, purple glow"
+              fill
+              sizes="(max-width: 768px) 100vw, 560px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: spacing.lg }}>
             {WORKFLOW.map((w, i) => (
@@ -338,8 +374,6 @@ export default function ForCoachesPage() {
             </Link>
           </div>
         </motion.section>
-
-        <PublicFooter />
       </div>
     </PageShell>
   );

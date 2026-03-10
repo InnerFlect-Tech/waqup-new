@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Typography, Button, Card } from '@/components';
+import { Typography, Button, Card, Loading } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
 import { FileText, BarChart3, Plus, Share2, Play, Sparkles, TrendingUp, Coins, ExternalLink, Trophy, Zap } from 'lucide-react';
@@ -235,8 +235,8 @@ function CreatorDashboard() {
           >
             {[
               { label: 'Published', value: analytics.publishedCount, icon: <FileText size={16} color={colors.accent.primary} />, color: colors.accent.primary },
-              { label: 'Total plays', value: formatCount(analytics.totalPlays), icon: <Play size={16} color="#60a5fa" />, color: '#60a5fa' },
-              { label: 'Total shares', value: formatCount(analytics.totalShares), icon: <Share2 size={16} color="#34d399" />, color: '#34d399' },
+              { label: 'Total plays', value: formatCount(analytics.totalPlays), icon: <Play size={16} color={CONTENT_TYPE_COLORS.meditation} />, color: CONTENT_TYPE_COLORS.meditation },
+              { label: 'Total shares', value: formatCount(analytics.totalShares), icon: <Share2 size={16} color={CONTENT_TYPE_COLORS.ritual} />, color: CONTENT_TYPE_COLORS.ritual },
               { label: 'Credits earned', value: analytics.creditsEarned, icon: <Coins size={16} color="#f59e0b" />, color: '#f59e0b' },
             ].map(({ label, value, icon, color }) => (
               <div
@@ -293,7 +293,7 @@ function CreatorDashboard() {
         {/* Tab content */}
         {isLoading ? (
           <div style={{ padding: spacing.xxl, textAlign: 'center' }}>
-            <Typography variant="body" style={{ color: colors.text.secondary }}>Loading...</Typography>
+            <Loading variant="spinner" size="lg" />
           </div>
         ) : activeTab === 'published' ? (
           published.length === 0 ? (
@@ -506,7 +506,7 @@ function CreatorDashboard() {
                       <Typography variant="small" style={{ color: colors.text.secondary }}>Total shares</Typography>
                     </div>
                     <div>
-                      <Typography variant="h2" style={{ color: '#60a5fa', fontWeight: 700 }}>{formatCount(analytics.totalPlays)}</Typography>
+                      <Typography variant="h2" style={{ color: CONTENT_TYPE_COLORS.meditation, fontWeight: 700 }}>{formatCount(analytics.totalPlays)}</Typography>
                       <Typography variant="small" style={{ color: colors.text.secondary }}>Total plays</Typography>
                     </div>
                   </div>

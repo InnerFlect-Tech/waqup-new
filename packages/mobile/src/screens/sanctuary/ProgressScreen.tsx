@@ -5,10 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography, Card } from '@/components';
+import { Typography, Card, Loading } from '@/components';
 import { supabase } from '@/services/supabase';
 import { createProgressService } from '@waqup/shared/services';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { withOpacity } from '@waqup/shared/theme';
 import { LEVEL_COLORS } from '@waqup/shared/types';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Progress'>;
@@ -47,9 +48,9 @@ export default function ProgressScreen({ navigation }: Props) {
   const { data, isLoading } = useQuery({ queryKey: ['progress'], queryFn: fetchProgress });
 
   const stats = [
-    { label: 'Day Streak', value: data?.streak ?? 0, emoji: '🔥', color: '#f97316' },
-    { label: 'Total Sessions', value: data?.totalSessions ?? 0, emoji: '🧘', color: '#c084fc' },
-    { label: 'Minutes Practiced', value: data?.totalMinutes ?? 0, emoji: '⏱️', color: '#60a5fa' },
+    { label: 'Day Streak', value: data?.streak ?? 0, emoji: '🔥', color: colors.warning },
+    { label: 'Total Sessions', value: data?.totalSessions ?? 0, emoji: '🧘', color: CONTENT_TYPE_COLORS.affirmation },
+    { label: 'Minutes Practiced', value: data?.totalMinutes ?? 0, emoji: '⏱️', color: CONTENT_TYPE_COLORS.meditation },
   ];
 
   return (
@@ -68,14 +69,14 @@ export default function ProgressScreen({ navigation }: Props) {
         </View>
 
         {isLoading ? (
-          <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginTop: spacing.xxl }}>
-            Loading…
-          </Typography>
+          <View style={{ alignItems: 'center', paddingTop: spacing.xxl, flex: 1 }}>
+            <Loading variant="spinner" size="lg" />
+          </View>
         ) : (
           <>
             {/* Level badge */}
             {data?.level && data?.totalXp != null && (
-              <View style={[styles.levelCard, { backgroundColor: `${LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary}18`, borderColor: `${LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary}40` }]}>
+              <View style={[styles.levelCard, { backgroundColor: withOpacity(LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary, 0.09), borderColor: withOpacity(LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary, 0.25) }]}>
                 <Typography variant="small" style={{ color: colors.text.secondary, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 2 }}>
                   Level
                 </Typography>

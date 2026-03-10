@@ -9,6 +9,7 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { clearCreateInitSeen, useAvatarColors, useSubscription } from '@/hooks';
 import { getPlanById } from '@waqup/shared/constants';
+import { themes, withOpacity } from '@waqup/shared/theme';
 import { Analytics } from '@waqup/shared/utils';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
@@ -37,14 +38,22 @@ const NOTIFICATION_OPTIONS: { key: keyof NotificationPrefs; label: string; descr
   { key: 'weeklyReport', label: 'Weekly summary', description: 'A digest of your practice insights' },
 ];
 
-const THEME_DISPLAY: Record<string, { label: string; dot: string }> = {
-  'mystical-purple': { label: 'Mystical', dot: '#9333EA' },
-  'professional-blue': { label: 'Professional', dot: '#3B82F6' },
-  'serene-green': { label: 'Serene', dot: '#10B981' },
-  'golden-sunset': { label: 'Golden', dot: '#F59E0B' },
-  'cosmic-dark': { label: 'Cosmic', dot: '#8B5CF6' },
-  'minimalist-light': { label: 'Light', dot: '#2563EB' },
+const THEME_LABELS: Record<string, string> = {
+  'mystical-purple': 'Mystical',
+  'professional-blue': 'Professional',
+  'serene-green': 'Serene',
+  'golden-sunset': 'Golden',
+  'cosmic-dark': 'Cosmic',
+  'minimalist-light': 'Light',
 };
+
+function getThemeDisplay(name: string, fallbackPrimary: string): { label: string; dot: string } {
+  const theme = themes[name];
+  return {
+    label: THEME_LABELS[name] ?? theme?.name ?? name,
+    dot: theme?.colors.accent.primary ?? fallbackPrimary,
+  };
+}
 
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   const { theme } = useTheme();
@@ -73,7 +82,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
           width: 20,
           height: 20,
           borderRadius: '50%',
-          background: '#fff',
+          background: colors.text.onDark,
           boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
         }}
       />
@@ -302,7 +311,7 @@ export default function SettingsPage() {
           </Typography>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.md }}>
             {availableThemes.map((name) => {
-              const info = THEME_DISPLAY[name] ?? { label: name, dot: colors.accent.primary };
+              const info = getThemeDisplay(name, colors.accent.primary);
               const isActive = name === themeName;
               return (
                 <button
@@ -315,7 +324,7 @@ export default function SettingsPage() {
                     padding: `${spacing.sm} ${spacing.md}`,
                     borderRadius: borderRadius.full,
                     border: `1px solid ${isActive ? info.dot : colors.glass.border}`,
-                    background: isActive ? `${info.dot}20` : 'transparent',
+                    background: isActive ? withOpacity(info.dot, 0.125) : 'transparent',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                   }}

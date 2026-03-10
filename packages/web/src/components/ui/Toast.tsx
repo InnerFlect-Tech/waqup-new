@@ -8,7 +8,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useTheme, BLUR } from '@/theme';
+import { useTheme, BLUR, spacing, borderRadius } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -75,12 +76,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
 // ─── Container ───────────────────────────────────────────────────────────────
 
-const VARIANT_STYLES: Record<ToastVariant, { bg: string; border: string; icon: string; color: string }> = {
-  success: { bg: 'rgba(16,185,129,0.12)', border: 'rgba(16,185,129,0.3)', icon: '✓', color: '#10b981' },
-  error:   { bg: 'rgba(239,68,68,0.12)',  border: 'rgba(239,68,68,0.3)',  icon: '✕', color: '#ef4444' },
-  warning: { bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.3)', icon: '!', color: '#f59e0b' },
-  info:    { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)', icon: 'i', color: '#6366f1' },
-};
+function getVariantStyles(colors: {
+  success: string;
+  error: string;
+  warning: string;
+  info: string;
+}): Record<ToastVariant, { bg: string; border: string; icon: string; color: string }> {
+  return {
+    success: { bg: withOpacity(colors.success, 0.12), border: withOpacity(colors.success, 0.3), icon: '✓', color: colors.success },
+    error: { bg: withOpacity(colors.error, 0.12), border: withOpacity(colors.error, 0.3), icon: '✕', color: colors.error },
+    warning: { bg: withOpacity(colors.warning, 0.12), border: withOpacity(colors.warning, 0.3), icon: '!', color: colors.warning },
+    info: { bg: withOpacity(colors.info, 0.12), border: withOpacity(colors.info, 0.3), icon: 'i', color: colors.info },
+  };
+}
 
 function ToastContainer({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: string) => void }) {
   if (toasts.length === 0) return null;
@@ -89,12 +97,12 @@ function ToastContainer({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id
     <div
       style={{
         position: 'fixed',
-        bottom: '1.5rem',
-        right: '1.5rem',
+        bottom: spacing.lg,
+        right: spacing.lg,
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
-        gap: '0.625rem',
+        gap: spacing.sm,
         pointerEvents: 'none',
       }}
     >
@@ -106,7 +114,15 @@ function ToastContainer({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id
 }
 
 function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string) => void }) {
-  const s = VARIANT_STYLES[toast.variant];
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const variantStyles = getVariantStyles({
+    success: colors.success,
+    error: colors.error,
+    warning: colors.warning,
+    info: colors.info,
+  });
+  const s = variantStyles[toast.variant];
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -118,13 +134,14 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '0.75rem',
-        padding: '0.875rem 1.25rem',
-        background: 'rgba(10,10,15,0.92)',
+        gap: spacing.sm,
+        padding: `${spacing.sm} ${spacing.lg}`,
+        background: colors.background.secondary,
         border: `1px solid ${s.border}`,
         borderLeft: `3px solid ${s.color}`,
-        borderRadius: '0.75rem',
+        borderRadius: borderRadius.lg,
         backdropFilter: BLUR.xl,
+        WebkitBackdropFilter: BLUR.xl,
         minWidth: '280px',
         maxWidth: '400px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
@@ -154,7 +171,7 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
       >
         {s.icon}
       </div>
-      <span style={{ color: '#f1f5f9', fontSize: '0.875rem', lineHeight: 1.4, flex: 1 }}>
+      <span style={{ color: colors.text.onDark, fontSize: '0.875rem', lineHeight: 1.4, flex: 1 }}>
         {toast.message}
       </span>
     </div>

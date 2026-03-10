@@ -4,7 +4,7 @@ import { generateConversationReply } from '@waqup/shared/services/ai';
 import { API_ROUTE_COSTS } from '@waqup/shared/constants';
 import { contentTypeSchema } from '@waqup/shared/schemas';
 import type { ContentItemType } from '@waqup/shared/types';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,11 +78,9 @@ export async function POST(req: NextRequest) {
     }
 
     // ─── Auth ───────────────────────────────────────────────────────────────
-    const supabase = await createSupabaseServerClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const auth = await getAuthenticatedUserForApi(req);
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { supabase, user } = auth;
 
     const parsed = conversationRequestSchema.safeParse(await req.json());
     if (!parsed.success) {

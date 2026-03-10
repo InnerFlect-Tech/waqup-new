@@ -1,0 +1,212 @@
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useTheme, spacing, borderRadius } from '@/theme';
+import { Screen } from '@/components/layout';
+import { Typography, Button, Card } from '@/components';
+import { useAuthStore } from '@/stores';
+import { Analytics } from '@waqup/shared/utils';
+import { API_BASE_URL } from '@/constants/app';
+import { supabase } from '@/services/supabase';
+import type { OnboardingStackParamList } from '@/navigation/types';
+
+const INTENTIONS = [
+  { id: 'confidence', emoji: '🦁', label: 'Confidence & Self-Worth', sub: 'Own who you are, fully' },
+  { id: 'abundance', emoji: '💎', label: 'Abundance & Wealth', sub: 'Rewire your money beliefs' },
+  { id: 'peace', emoji: '🌊', label: 'Inner Peace & Calm', sub: 'Quiet the noise inside' },
+  { id: 'love', emoji: '❤️', label: 'Love & Relationships', sub: 'Open your heart completely' },
+  { id: 'purpose', emoji: '🔥', label: 'Purpose & Direction', sub: 'Live with total clarity' },
+  { id: 'health', emoji: '⚡', label: 'Health & Vitality', sub: 'Heal from the inside out' },
+];
+
+type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingIntention'>;
+
+export default function OnboardingIntentionScreen({ navigation }: Props) {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const user = useAuthStore((s) => s.user);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const firstName =
+    user?.user_metadata?.full_name?.split(' ')[0] ||
+    user?.email?.split('@')[0] ||
+    'there';
+
+  // Grant welcome Qs on first visit
+  useEffect(() => {
+    if (!user) return;
+    const run = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      try {
+        await fetch(`${API_BASE_URL}/api/credits/welcome`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+      } catch {}
+    };
+    void run();
+  }, [user]);
+
+  const handleContinue = async () => {
+    if (!selected) return;
+    setIsSubmitting(true);
+    Analytics.onboardingStepCompleted('intention', user?.id);
+    await new Promise((r) => setTimeout(r, 400));
+    navigation.replace('OnboardingProfile', { intention: selected });
+  };
+
+  const handleSkip = () => {
+    Analytics.onboardingStepCompleted('intention_skipped', user?.id);
+    navigation.replace('OnboardingProfile', {});
+  };
+
+  return (
+    <Screen scrollable padding={false}>
+      <View style={styles.content}>
+        {/* Progress */}
+        <View style={styles.progress}>
+          {[1, 2, 3, 4].map((i) => (
+            <View
+              key={i}
+              style={[
+                styles.dot,
+                { backgroundColor: i === 1 ? colors.accent.primary : `${colors.accent.primary}30` },
+              ]}
+            />
+          ))}
+        </View>
+
+        {/* Header */}
+        <Card variant="elevated" style={[styles.headerCard, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+          <Typography variant="h1" style={[styles.title, { color: colors.text.primary }]}>
+            Hey {firstName}, what matters most to you right now?
+          </Typography>
+          <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
+            We'll personalise your voice experience around this. You can always change it later.
+          </Typography>
+        </Card>
+
+        {/* Intention grid */}
+        <View style={styles.grid}>
+          {INTENTIONS.map((intention) => {
+            const isActive = selected === intention.id;
+            return (
+              <TouchableOpacity
+                key={intention.id}
+                onPress={() => setSelected(intention.id)}
+                activeOpacity={0.8}
+                style={[
+                  styles.intentionCard,
+                  {
+                    backgroundColor: isActive ? `${colors.accent.primary}25` : colors.glass.opaque,
+                    borderColor: isActive ? colors.accent.primary : colors.glass.border,
+                  },
+                ]}
+              >
+                <Typography variant="h1" style={styles.emoji}>{intention.emoji}</Typography>
+                <Typography
+                  variant="body"
+                  style={[styles.intentionLabel, { color: isActive ? colors.accent.primary : colors.text.primary }]}
+                >
+                  {intention.label}
+                </Typography>
+                <Typography variant="small" style={[styles.intentionSub, { color: colors.text.secondary }]}>
+                  {intention.sub}
+                </Typography>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* CTA */}
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          onPress={() => void handleContinue()}
+          disabled={!selected || isSubmitting}
+        >
+          {isSubmitting ? 'Creating your first practice…' : 'Start creating →'}
+        </Button>
+
+        <TouchableOpacity onPress={handleSkip} style={styles.skip} activeOpacity={0.7}>
+          <Typography variant="body" style={{ color: colors.text.secondary, opacity: 0.6 }}>
+            Skip — go straight to the orb →
+          </Typography>
+        </TouchableOpacity>
+      </View>
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  content: {
+    padding: spacing.xl,
+    paddingBottom: spacing.xxxl,
+  },
+  progress: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingTop: spacing.md,
+    marginBottom: spacing.xl,
+  },
+  dot: {
+    height: 3,
+    width: 32,
+    borderRadius: borderRadius.full,
+  },
+  headerCard: {
+    padding: spacing.xxl,
+    borderRadius: borderRadius.xl,
+    borderWidth: 1,
+    marginBottom: spacing.xl,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '900',
+    marginBottom: spacing.md,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
+    lineHeight: 24,
+    textAlign: 'center',
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.md,
+    marginBottom: spacing.xl,
+  },
+  intentionCard: {
+    width: '47%',
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    alignItems: 'center',
+    minHeight: 100,
+  },
+  emoji: {
+    fontSize: 28,
+    marginBottom: spacing.sm,
+  },
+  intentionLabel: {
+    fontWeight: '700',
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
+  },
+  intentionSub: {
+    fontSize: 11,
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+  skip: {
+    marginTop: spacing.lg,
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+  },
+});

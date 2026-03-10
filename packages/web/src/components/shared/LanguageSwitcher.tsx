@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { locales, localeNames, type Locale } from '@/i18n/routing';
-import { useTheme, spacing, BLUR } from '@/theme';
+import { useTheme, spacing, BLUR, borderRadius } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
 import { Globe } from 'lucide-react';
 
 interface LanguageSwitcherProps {
@@ -50,9 +51,9 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
             alignItems: 'center',
             gap: spacing.xs,
             padding: `${spacing.xs} ${spacing.sm}`,
-            borderRadius: 8,
-            border: `1px solid ${open ? 'rgba(168,85,247,0.35)' : 'rgba(168,85,247,0.15)'}`,
-            background: open ? 'rgba(147,51,234,0.15)' : 'transparent',
+            borderRadius: borderRadius.sm,
+            border: `1px solid ${open ? withOpacity(colors.accent.tertiary, 0.35) : withOpacity(colors.accent.tertiary, 0.15)}`,
+            background: open ? withOpacity(colors.accent.primary, 0.15) : 'transparent',
             color: colors.text.secondary,
             cursor: 'pointer',
             fontSize: '0.8rem',
@@ -61,13 +62,13 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
             whiteSpace: 'nowrap',
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background = 'rgba(147,51,234,0.12)';
-            (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(168,85,247,0.30)';
+            (e.currentTarget as HTMLButtonElement).style.background = withOpacity(colors.accent.primary, 0.12);
+            (e.currentTarget as HTMLButtonElement).style.borderColor = withOpacity(colors.accent.tertiary, 0.3);
           }}
           onMouseLeave={(e) => {
             if (!open) {
               (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(168,85,247,0.15)';
+              (e.currentTarget as HTMLButtonElement).style.borderColor = withOpacity(colors.accent.tertiary, 0.15);
             }
           }}
         >
@@ -81,12 +82,12 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
             aria-label="Select language"
             style={{
               position: 'absolute',
-              top: 'calc(100% + 4px)',
+              top: `calc(100% + ${spacing.xs})`,
               right: 0,
               minWidth: 160,
-              borderRadius: 10,
-              border: '1px solid rgba(168,85,247,0.20)',
-              background: 'rgba(15,5,35,0.92)',
+              borderRadius: borderRadius.sm,
+              border: `1px solid ${withOpacity(colors.accent.tertiary, 0.2)}`,
+              background: colors.glass.opaque,
               backdropFilter: BLUR.xl,
               WebkitBackdropFilter: BLUR.xl,
               boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
@@ -110,7 +111,7 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
                     width: '100%',
                     padding: `${spacing.sm} ${spacing.md}`,
                     border: 0,
-                    background: isActive ? 'rgba(147,51,234,0.20)' : 'transparent',
+                    background: isActive ? withOpacity(colors.accent.primary, 0.2) : 'transparent',
                     color: isActive ? colors.accent.tertiary : colors.text.onDark,
                     cursor: 'pointer',
                     fontSize: '0.875rem',
@@ -119,7 +120,7 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
                     transition: 'background 0.1s',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
+                    if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = withOpacity(colors.text.onDark, 0.05);
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
@@ -158,9 +159,9 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
             onClick={() => handleSelect(l)}
             style={{
               padding: `${spacing.xs} ${spacing.md}`,
-              borderRadius: 20,
-              border: `1px solid ${isActive ? 'rgba(168,85,247,0.50)' : 'rgba(168,85,247,0.15)'}`,
-              background: isActive ? 'rgba(147,51,234,0.20)' : 'transparent',
+              borderRadius: borderRadius.xl,
+              border: `1px solid ${isActive ? withOpacity(colors.accent.tertiary, 0.5) : withOpacity(colors.accent.tertiary, 0.15)}`,
+              background: isActive ? withOpacity(colors.accent.primary, 0.2) : 'transparent',
               color: isActive ? colors.accent.tertiary : colors.text.secondary,
               cursor: isActive ? 'default' : 'pointer',
               fontSize: '0.8rem',
@@ -169,14 +170,14 @@ export function LanguageSwitcher({ compact = true }: LanguageSwitcherProps) {
             }}
             onMouseEnter={(e) => {
               if (!isActive) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(147,51,234,0.10)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(168,85,247,0.30)';
+                (e.currentTarget as HTMLButtonElement).style.background = withOpacity(colors.accent.primary, 0.1);
+                (e.currentTarget as HTMLButtonElement).style.borderColor = withOpacity(colors.accent.tertiary, 0.3);
               }
             }}
             onMouseLeave={(e) => {
               if (!isActive) {
                 (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(168,85,247,0.15)';
+                (e.currentTarget as HTMLButtonElement).style.borderColor = withOpacity(colors.accent.tertiary, 0.15);
               }
             }}
           >

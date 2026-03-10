@@ -6,6 +6,66 @@
 
 ---
 
+## Full System Audit Plan Implementation (2026-03-10)
+
+### Phase A: Cleanup & SSOT
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - **A1**: Removed dead `CreateScreen.tsx` (CreateModeScreen used); removed `ContentEdit` from MainStackParamList (unregistered).
+  - **A2**: Created `docs/package-scripts.md` documenting all root scripts, surfaces, release-critical commands.
+  - **A3**: Synced route docs — aligned status legend in `16-route-map.md`; updated `04-pages-comparison.md` completeness ref; fixed Mobile Screen Map (tabs: Home, Library, Marketplace, Speak, Profile; CreateMode modal).
+- **Updated**: 2026-03-10
+
+### Phase B: Design System Compliance
+- **Status**: ✅ Complete (representative set)
+- **Completed**: 2026-03-10
+- **Notes**:
+  - **B4 (Web)**: Token migration in create/page, marketplace/page, library/page, PublicPlayerClient, ElevatedBadge. Added ELEVATED_BADGE_COLOR, ELEVATED_BADGE_COLOR_SECONDARY, CONTENT_TYPE_GRADIENT_DARK to shared constants. Replaced hex/rgba with theme.colors, CONTENT_TYPE_COLORS, withOpacity, shadows.
+  - **B5 (Mobile)**: Token migration in AuthNavigator, CreditsScreen, ContentDetailScreen (WaveformBar). Replaced #fff, hex colors with colors.background.primary, colors.text.onDark, CONTENT_TYPE_COLORS, ELEVATED_BADGE_COLOR.
+- **Updated**: 2026-03-10
+
+### Phase C: Mobile Parity (critical for beta)
+- **C6 – Mobile Stripe checkout**: ✅ Complete
+- **Notes**:
+  - API: `getAuthenticatedUserForApi(req)` in `supabase-server.ts` — supports Bearer token auth for mobile (cookies first for web).
+  - Credits checkout route now accepts `Authorization: Bearer <access_token>` when called from mobile.
+  - Mobile: `createCreditCheckoutSession` in `stripe-checkout.ts` — calls API with session token, returns Stripe URL.
+  - CreditsScreen: When RevenueCat unavailable (packages.length === 0), shows CREDIT_PACKS with Stripe checkout. Opens URL in WebBrowser; refetches balance on return (AppState listener).
+- **Updated**: 2026-03-10
+
+- **C7 – Mobile full onboarding**: ✅ Complete
+- **Notes**:
+  - Migration `20260327000001_add_onboarding_completed_at.sql` adds `onboarding_completed_at` to profiles.
+  - Mobile: 4-step flow — OnboardingIntention → OnboardingProfile → OnboardingPreferences → OnboardingGuide. Matches web flow.
+  - useOnboardingStatus hook fetches profile to decide needsOnboarding; OnboardingCompletionContext triggers refetch on complete.
+  - RootNavigator: after auth, shows Onboarding stack if needsOnboarding, else Main. Welcome credits API supports Bearer token.
+  - Web guide page now sets onboarding_completed_at for cross-platform consistency.
+- **Updated**: 2026-03-10
+
+- **C8 – Mobile content detail/edit**: ✅ Complete
+- **Notes**:
+  - ContentDetailScreen: Added Edit and Edit audio buttons. Edit navigates to ContentEdit. Edit audio opens web edit-audio page in WebBrowser.
+  - ContentEditScreen: New screen for editing title, description, script. Uses useContentItemQuery + useUpdateContent.
+  - MainNavigator: Registered ContentEdit screen.
+  - Replaced hardcoded #fff with theme colors (text.onDark) in ContentDetailScreen.
+- **Updated**: 2026-03-10
+
+- **C9 – Mobile SpeakScreen Oracle**: ✅ Complete
+- **Notes**:
+  - API: oracle/session and oracle routes now support Bearer token auth (getAuthenticatedUserForApi) for mobile.
+  - Mobile ai.ts: createOracleSession starts session (1Q, 3 replies), sendOracleMessage requires sessionId. Both use Bearer token.
+  - SpeakScreen: Creates session on first message, stores sessionId, passes to sendOracleMessage. Handles session_exhausted (clear session, prompt to tap again). Replaced hardcoded bubble colors with theme.
+- **Updated**: 2026-03-10
+
+- **D10 – Conversational create (web)**: ✅ Complete
+- **Notes**:
+  - Create page restructured: "Create by talking" is now the primary hero with Talk to the Orb (→ /create/orb) and Chat instead (→ /create/conversation). "Or explore with the Oracle" links to /speak.
+  - Content type cards (affirmation, meditation, ritual) moved to secondary "Or choose a type" section with simplified copy.
+- **Updated**: 2026-03-10
+
+---
+
 ## Final Master Audit (2026-03-10)
 
 ### Summary

@@ -157,7 +157,7 @@ export default function RemindersScreen({ navigation }: Props) {
               value={enabled}
               onValueChange={setEnabled}
               trackColor={{ false: colors.glass.border, true: colors.accent.primary }}
-              thumbColor="#fff"
+              thumbColor={colors.text.onDark}
             />
           </View>
         </Card>
@@ -165,7 +165,7 @@ export default function RemindersScreen({ navigation }: Props) {
         {enabled && (
           <>
             {/* Time picker */}
-            <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xl }]}>
+            <Typography variant="captionBold" style={[styles.sectionLabel, { color: colors.text.tertiary, marginTop: spacing.xl }]}>
               REMINDER TIME
             </Typography>
             <View style={styles.timeGrid}>
@@ -182,7 +182,7 @@ export default function RemindersScreen({ navigation }: Props) {
                   ]}
                   activeOpacity={0.8}
                 >
-                  <Typography variant="captionBold" style={{ color: selectedTime === t ? '#fff' : colors.text.primary }}>
+                  <Typography variant="captionBold" style={{ color: selectedTime === t ? colors.text.onDark : colors.text.primary }}>
                     {t}
                   </Typography>
                 </TouchableOpacity>
@@ -190,7 +190,7 @@ export default function RemindersScreen({ navigation }: Props) {
             </View>
 
             {/* Day picker */}
-            <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xl }]}>
+            <Typography variant="captionBold" style={[styles.sectionLabel, { color: colors.text.tertiary, marginTop: spacing.xl }]}>
               DAYS
             </Typography>
             <View style={styles.dayRow}>
@@ -207,7 +207,7 @@ export default function RemindersScreen({ navigation }: Props) {
                   ]}
                   activeOpacity={0.8}
                 >
-                  <Typography variant="small" style={{ color: selectedDays.includes(d) ? '#fff' : colors.text.primary, fontSize: 11, fontWeight: '600' }}>
+                  <Typography variant="small" style={{ color: selectedDays.includes(d) ? colors.text.onDark : colors.text.primary, fontSize: 11, fontWeight: '600' }}>
                     {d}
                   </Typography>
                 </TouchableOpacity>
@@ -240,7 +240,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   sectionLabel: {
-    color: 'rgba(255,255,255,0.45)',
     marginBottom: spacing.sm,
     fontSize: 11,
     letterSpacing: 1,

@@ -28,7 +28,8 @@ import { getContentTypeIcon } from '@/lib';
 import { getContentTypeBadgeVariant } from '@waqup/shared/utils';
 import { useContent } from '@/hooks';
 import { ShareModal } from '@/components/marketplace';
-import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { CONTENT_TYPE_COLORS, ELEVATED_BADGE_COLOR } from '@waqup/shared/constants';
+import { withOpacity } from '@waqup/shared/theme';
 
 type ContentTypeFilter = 'all' | 'ritual' | 'affirmation' | 'meditation';
 type SortOrder = 'recent' | 'most_played';
@@ -67,7 +68,7 @@ function TodaysPractice({
   return (
     <div style={{ marginBottom: spacing.xl }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.md }}>
-        <Flame size={14} color="#f97316" />
+        <Flame size={14} color={ELEVATED_BADGE_COLOR} />
         <Typography variant="small" style={{ color: colors.text.secondary, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: 11 }}>
           Today&apos;s practice
         </Typography>
@@ -130,7 +131,7 @@ function TodaysPractice({
                 boxShadow: `0 4px 16px ${typeColor}50`,
               }}
             >
-              <Play size={18} color="#fff" strokeWidth={2} style={{ marginLeft: 2 }} />
+              <Play size={18} color={colors.text.onDark} strokeWidth={2} style={{ marginLeft: 2 }} />
             </div>
             <ChevronRight size={16} color={colors.text.secondary} />
           </div>
@@ -351,7 +352,7 @@ function ContentCard({
             position: 'absolute',
             inset: 0,
             background:
-              'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)',
+              `linear-gradient(to top, ${withOpacity(colors.background.primary, 0.7)} 0%, ${withOpacity(colors.background.primary, 0.2)} 60%, transparent 100%)`,
             borderRadius: borderRadius.xl,
             display: 'flex',
             alignItems: 'center',
@@ -367,10 +368,10 @@ function ContentCard({
               width: 52,
               height: 52,
               borderRadius: borderRadius.full,
-              background: 'rgba(255,255,255,0.15)',
+              background: withOpacity(colors.text.onDark, 0.15),
               backdropFilter: BLUR.sm,
               WebkitBackdropFilter: BLUR.sm,
-              border: '1px solid rgba(255,255,255,0.3)',
+              border: `1px solid ${withOpacity(colors.text.onDark, 0.3)}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -378,7 +379,7 @@ function ContentCard({
               pointerEvents: 'none',
             }}
           >
-            <Play size={22} color="#fff" strokeWidth={2} style={{ marginLeft: spacing.xs }} />
+            <Play size={22} color={colors.text.onDark} strokeWidth={2} style={{ marginLeft: spacing.xs }} />
           </div>
           {onShare && (
             <button
@@ -388,10 +389,10 @@ function ContentCard({
                 width: 40,
                 height: 40,
                 borderRadius: borderRadius.full,
-                background: 'rgba(255,255,255,0.12)',
+                background: withOpacity(colors.text.onDark, 0.12),
                 backdropFilter: BLUR.sm,
                 WebkitBackdropFilter: BLUR.sm,
-                border: '1px solid rgba(255,255,255,0.2)',
+                border: `1px solid ${withOpacity(colors.text.onDark, 0.2)}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -399,7 +400,7 @@ function ContentCard({
               }}
               title="Share to marketplace"
             >
-              <Share2 size={16} color="#fff" strokeWidth={2} />
+              <Share2 size={16} color={colors.text.onDark} strokeWidth={2} />
             </button>
           )}
         </div>
@@ -446,7 +447,7 @@ function CreateCard({
             boxShadow: `0 4px 16px ${colors.accent.primary}50`,
           }}
         >
-          <Plus size={22} color="#fff" strokeWidth={2.5} />
+          <Plus size={22} color={colors.text.onDark} strokeWidth={2.5} />
         </div>
         <div style={{ textAlign: 'center' }}>
           <Typography
@@ -831,8 +832,8 @@ export default function LibraryPage() {
         <style>{`
           .library-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-            border-color: rgba(255,255,255,0.2) !important;
+            box-shadow: 0 12px 40px ${withOpacity(colors.background.primary, 0.3)};
+            border-color: ${withOpacity(colors.text.onDark, 0.2)} !important;
           }
           .library-card:hover .library-card-overlay {
             opacity: 1 !important;

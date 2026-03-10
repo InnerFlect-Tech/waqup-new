@@ -3,6 +3,8 @@
 **Last Updated**: 2026-03-10  
 **Source of truth**: This file + `packages/web/src/lib/routes.ts`
 
+**Status legend** (aligned with `routes.ts` completeness): `Live` = complete; `Wired` = API-connected; `Stub` = basic structure; `Placeholder` = generic placeholder; `Mock` = mock data; `Visual` = UI-only (audio page); `Redirect` = redirects elsewhere. Create flows: `to_change` in routes.ts = needs conversational refactor.
+
 ---
 
 ## Locale-Aware Routing
@@ -36,6 +38,18 @@ All user-facing routes live under `app/[locale]/` with `next-intl` (locales: en,
 | `/explanation` | `app/[locale]/explanation/page.tsx` | ✅ | Live | The Science — why voice + affirmations work |
 | `/our-story` | `app/[locale]/(marketing)/our-story/page.tsx` | ✅ | Live | Our Story — founder narrative |
 | `/privacy` | `app/[locale]/privacy/page.tsx` | ✅ | Live | Privacy Policy (full content) |
+| `/join` | `app/[locale]/join/page.tsx` | ✅ | Live | Founding member sign-up |
+| `/waitlist` | `app/[locale]/waitlist/page.tsx` | ✅ | Live | Multi-step waitlist form |
+| `/get-qs` | `app/[locale]/(marketing)/get-qs/page.tsx` | ✅ | Live | Public Q packs |
+| `/funnels` | `app/[locale]/(marketing)/funnels/page.tsx` | ✅ | Live | Sales funnels (internal) |
+| `/investors` | `app/[locale]/(marketing)/investors/page.tsx` | ✅ | Live | Investor pitch |
+| `/play/[id]` | `app/[locale]/play/[id]/page.tsx` | ✅ | Live | Public audio player (SSR + OG) |
+| `/launch` | `app/[locale]/(marketing)/launch/page.tsx` | ✅ | Live | Primary marketing landing |
+| `/for-coaches` | `app/[locale]/(marketing)/for-coaches/page.tsx` | ✅ | Live | For coaches audience page |
+| `/for-creators` | `app/[locale]/(marketing)/for-creators/page.tsx` | ✅ | Live | For creators |
+| `/for-studios` | `app/[locale]/(marketing)/for-studios/page.tsx` | ✅ | Live | For studios |
+| `/for-teachers` | `app/[locale]/(marketing)/for-teachers/page.tsx` | ✅ | Live | For teachers |
+| `/data-deletion` | `app/[locale]/data-deletion/page.tsx` | ✅ | Live | User data deletion (Meta submission) |
 
 ---
 
@@ -47,7 +61,8 @@ All user-facing routes live under `app/[locale]/` with `next-intl` (locales: en,
 | `/signup` | `app/[locale]/(auth)/signup/page.tsx` | ✅ | Live | Email signup with verification flow |
 | `/forgot-password` | `app/[locale]/(auth)/forgot-password/page.tsx` | ✅ | Live | Sends password reset email |
 | `/reset-password` | `app/[locale]/(auth)/reset-password/page.tsx` | ✅ | Live | Consumes reset token from email link |
-| `/confirm-email` | `app/[locale]/(auth)/confirm-email/page.tsx` | ✅ | Exists | Email confirmation landing |
+| `/confirm-email` | `app/[locale]/(auth)/confirm-email/page.tsx` | ✅ | Live | Email confirmation landing |
+| `/coming-soon` | `app/[locale]/coming-soon/page.tsx` | ✅ | Live | Access gate for waitlist-pending users |
 | `/auth/beta-signup` | — | ✅ | Redirect | Redirects to `/waitlist` |
 | `/auth/callback` | `app/[locale]/auth/callback/route.ts` | ✅ | Live | Supabase OAuth code exchange handler |
 
@@ -64,8 +79,11 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 | `/create` | `app/[locale]/(main)/create/page.tsx` | 🔒 | Live | Links to 3 content-type create flows |
 | `/create/conversation` | `app/[locale]/(main)/create/conversation/page.tsx` | 🔒 | Mock | Chat UI — mock AI responses |
 | `/profile` | `app/[locale]/(main)/profile/page.tsx` | 🔒 | Live | Reads real user from auth store |
-| `/speak` | `app/[locale]/(main)/speak/page.tsx` | 🔒 | Visual | Animated orb UI |
+| `/speak` | `app/[locale]/(main)/speak/page.tsx` | 🔒 | Live | Animated orb UI |
+| `/speak/test` | `app/[locale]/(main)/speak/test/page.tsx` | 🔒 | Live | Dev test harness |
+| `/create/orb` | `app/[locale]/(main)/create/orb/page.tsx` | 🔒 | Wired | Voice orb creation |
 | `/marketplace` | `app/[locale]/(main)/marketplace/page.tsx` | 🔒 | Mock | Browse marketplace |
+| `/marketplace/[id]` | `app/[locale]/(main)/marketplace/[id]/page.tsx` | 🔒 | Mock | Item detail + player |
 | `/marketplace/creator` | `app/[locale]/(main)/marketplace/creator/page.tsx` | 🔒 | Stub | Creator dashboard placeholder |
 
 ---
@@ -74,13 +92,21 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 
 | Route | File | Auth | Status | Notes |
 |-------|------|------|--------|-------|
-| `/sanctuary` | `app/[locale]/sanctuary/page.tsx` | 🔒 | UI-only | Quick actions + menu |
+| `/sanctuary` | `app/[locale]/sanctuary/page.tsx` | 🔒 | Live | Quick actions + menu |
 | `/sanctuary/settings` | `app/[locale]/sanctuary/settings/page.tsx` | 🔒 | Stub | Placeholder |
-| `/sanctuary/credits` | `app/[locale]/sanctuary/credits/page.tsx` | 🔒 | Stub | Placeholder |
 | `/sanctuary/progress` | `app/[locale]/sanctuary/progress/page.tsx` | 🔒 | Stub | Placeholder |
 | `/sanctuary/referral` | `app/[locale]/sanctuary/referral/page.tsx` | 🔒 | Stub | Placeholder |
 | `/sanctuary/reminders` | `app/[locale]/sanctuary/reminders/page.tsx` | 🔒 | Stub | Placeholder |
 | `/sanctuary/learn` | `app/[locale]/sanctuary/learn/page.tsx` | 🔒 | Stub | Placeholder |
+| `/sanctuary/help` | `app/[locale]/sanctuary/help/page.tsx` | 🔒 | Stub | Help & support |
+| `/sanctuary/plan` | `app/[locale]/sanctuary/plan/page.tsx` | 🔒 | Wired | Subscription plan picker |
+| `/sanctuary/voice` | `app/[locale]/sanctuary/voice/page.tsx` | 🔒 | Wired | Voice cloning setup |
+| `/sanctuary/voices` | `app/[locale]/sanctuary/voices/page.tsx` | 🔒 | Wired | Voice library browser |
+| `/sanctuary/series` | `app/[locale]/sanctuary/series/page.tsx` | 🔒 | Wired | Series list |
+| `/sanctuary/series/[id]` | `app/[locale]/sanctuary/series/[id]/page.tsx` | 🔒 | Wired | Series detail |
+| `/sanctuary/credits` | `app/[locale]/sanctuary/credits/page.tsx` | 🔒 | Wired | Credit balance |
+| `/sanctuary/credits/buy` | `app/[locale]/sanctuary/credits/buy/page.tsx` | 🔒 | Wired | Buy Qs |
+| `/sanctuary/credits/transactions` | `app/[locale]/sanctuary/credits/transactions/page.tsx` | 🔒 | Wired | Transaction history |
 
 ### Affirmations
 
@@ -128,6 +154,27 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 | `/onboarding/profile` | `app/[locale]/(onboarding)/onboarding/profile/page.tsx` | 🔒 | Placeholder |
 | `/onboarding/preferences` | `app/[locale]/(onboarding)/onboarding/preferences/page.tsx` | 🔒 | Placeholder |
 | `/onboarding/guide` | `app/[locale]/(onboarding)/onboarding/guide/page.tsx` | 🔒 | Placeholder |
+| `/onboarding/role` | `app/[locale]/(onboarding)/onboarding/role/page.tsx` | 🔒 | Placeholder |
+
+---
+
+## Superadmin Routes
+
+| Route | File | Auth | Notes |
+|-------|------|------|-------|
+| `/admin` | `app/[locale]/admin/page.tsx` | 🛡 Superadmin | Dashboard hub |
+| `/admin/oracle` | `app/[locale]/admin/oracle/page.tsx` | 🛡 Superadmin | Oracle AI config |
+| `/admin/users` | `app/[locale]/admin/users/page.tsx` | 🛡 Superadmin | User management |
+| `/admin/waitlist` | `app/[locale]/admin/waitlist/page.tsx` | 🛡 Superadmin | Waitlist dashboard |
+| `/admin/ios-release` | `app/[locale]/admin/ios-release/page.tsx` | 🛡 Superadmin | iOS release management |
+| `/admin/content` | `app/[locale]/admin/content/page.tsx` | 🛡 Superadmin | Content overview |
+| `/system` | `app/[locale]/system/page.tsx` | 🛡 Superadmin | System & schema overview |
+| `/system/creation-steps` | `app/[locale]/system/creation-steps/page.tsx` | 🛡 Superadmin | Creation pipeline status |
+| `/system/pipelines` | `app/[locale]/system/pipelines/page.tsx` | 🛡 Superadmin | Pipelines reference |
+| `/system/audio` | `app/[locale]/system/audio/page.tsx` | 🛡 Superadmin | Audio & TTS reference |
+| `/system/conversation` | `app/[locale]/system/conversation/page.tsx` | 🛡 Superadmin | Conversation flow |
+| `/system/schema` | `app/[locale]/system/schema/page.tsx` | 🛡 Superadmin | Schema live status |
+| `/health` | `app/[locale]/health/page.tsx` | 🛡 Superadmin | API health dashboard |
 
 ---
 
@@ -138,6 +185,9 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 | `/updates` | `app/[locale]/updates/page.tsx` | 🛡 Superadmin | Updates & how-to guides index |
 | `/updates/beta-readiness-implementation` | `app/[locale]/updates/beta-readiness-implementation/page.tsx` | 🛡 Superadmin | Beta readiness |
 | `/updates/beta-tester-recruitment` | `app/[locale]/updates/beta-tester-recruitment/page.tsx` | 🛡 Superadmin | Beta tester recruitment |
+| `/updates/audio-system-implementation` | `app/[locale]/updates/audio-system-implementation/page.tsx` | 🛡 Superadmin | Audio system audit |
+| `/updates/multilingual-i18n-implementation` | `app/[locale]/updates/multilingual-i18n-implementation/page.tsx` | 🛡 Superadmin | Multilingual i18n guide |
+| `/updates/open-items` | `app/[locale]/updates/open-items/page.tsx` | 🛡 Superadmin | Unresolved work before launch |
 
 ---
 
@@ -189,7 +239,12 @@ Auth is enforced at two layers:
 | Auth Stack | Signup | `Signup` | Live |
 | Auth Stack | ForgotPassword | `ForgotPassword` | Live |
 | Auth Stack | ResetPassword | `ResetPassword` | Live |
-| Main Tabs | Home | `Home` | Themed, basic |
-| Main Tabs | Library | `Library` | Themed, empty state |
-| Main Tabs | Create | `Create` | Themed, content-type cards |
-| Main Tabs | Profile | `Profile` | Themed, real user data |
+| Main Tabs | Home | `Home` | Live — create entry (navigates to CreateMode) |
+| Main Tabs | Library | `Library` | Live |
+| Main Tabs | Marketplace | `Marketplace` | Live |
+| Main Tabs | Speak | `Speak` | Partial (no Oracle API) |
+| Main Tabs | Profile | `Profile` | Live |
+| Main Stack | CreateMode | `CreateMode` | Live (modal — content type + mode picker) |
+| Main Stack | ContentCreate | `ContentCreate` | Live |
+| Main Stack | ContentDetail | `ContentDetail` | Partial |
+| Main Stack | Credits, Progress, Settings, Reminders | — | Live |

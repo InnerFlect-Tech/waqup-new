@@ -50,51 +50,43 @@ export const FROSTED_GLASS_HERO = {
   WebkitMaskImage: 'radial-gradient(ellipse 95% 85% at center, black 35%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0.5) 75%, transparent 100%)',
 } as const;
 
-/** Soft radial overlay for hero images — dissolves into image, center stays bright. */
-export const DISSOLVING_OVERLAY = {
-  position: 'absolute' as const,
-  inset: 0,
-  pointerEvents: 'none' as const,
-  background: 'radial-gradient(ellipse 130% 130% at 50% 50%, transparent 35%, rgba(6,2,20,0.08) 55%, rgba(6,2,20,0.2) 75%, rgba(6,2,20,0.45) 100%)',
-};
-
-/** Edge fades — soft gradient only at edges, no solid bar. Dissolve into page background. */
+/** Fader exterior: preto (fora) → transparente (para dentro). Apenas isto. */
 export const imageEdgeFades = (bgColor: string) => ({
   top: {
     position: 'absolute' as const,
-    top: -60,
-    left: -30,
-    right: -30,
-    height: 140,
+    top: -80,
+    left: 0,
+    right: 0,
+    height: 120,
     pointerEvents: 'none' as const,
-    background: `linear-gradient(to bottom, ${bgColor} 0%, transparent 22%)`,
+    background: `linear-gradient(to bottom, ${bgColor} 0%, transparent 100%)`,
   },
   bottom: {
     position: 'absolute' as const,
-    bottom: -60,
-    left: -30,
-    right: -30,
-    height: 140,
+    bottom: -80,
+    left: 0,
+    right: 0,
+    height: 120,
     pointerEvents: 'none' as const,
-    background: `linear-gradient(to top, ${bgColor} 0%, transparent 22%)`,
+    background: `linear-gradient(to top, ${bgColor} 0%, transparent 100%)`,
   },
   left: {
     position: 'absolute' as const,
-    top: -30,
-    bottom: -30,
-    left: -30,
-    width: 90,
+    top: 0,
+    bottom: 0,
+    left: -60,
+    width: 100,
     pointerEvents: 'none' as const,
-    background: `linear-gradient(to right, ${bgColor} 0%, transparent 25%)`,
+    background: `linear-gradient(to right, ${bgColor} 0%, transparent 100%)`,
   },
   right: {
     position: 'absolute' as const,
-    top: -30,
-    bottom: -30,
-    right: -30,
-    width: 90,
+    top: 0,
+    bottom: 0,
+    right: -60,
+    width: 100,
     pointerEvents: 'none' as const,
-    background: `linear-gradient(to left, ${bgColor} 0%, transparent 25%)`,
+    background: `linear-gradient(to left, ${bgColor} 0%, transparent 100%)`,
   },
 });
 

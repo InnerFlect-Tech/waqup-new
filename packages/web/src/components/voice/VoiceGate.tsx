@@ -7,6 +7,8 @@ import { Typography } from '@/components';
 import { UserProgressCard } from '@/components/user';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { withOpacity } from '@waqup/shared/theme';
 import type { ProgressStats } from '@waqup/shared/types';
 import { UNLOCK_THRESHOLDS } from '@waqup/shared/types';
 import { createProgressService } from '@waqup/shared/services';
@@ -81,7 +83,7 @@ function LockedState({
           pointerEvents: 'none',
           userSelect: 'none',
           opacity: 0.12,
-          filter: 'blur(3px) saturate(0.4)',
+          filter: `${BLUR.sm} saturate(0.4)`,
           position: 'absolute',
           inset: 0,
           overflow: 'hidden',
@@ -125,15 +127,15 @@ function LockedState({
             width: 72,
             height: 72,
             borderRadius: borderRadius.full,
-            background: 'linear-gradient(135deg, #60a5fa22, #3b82f622)',
-            border: '1.5px solid #60a5fa44',
-            boxShadow: '0 0 32px #60a5fa22',
+            background: `linear-gradient(135deg, ${withOpacity(CONTENT_TYPE_COLORS.meditation, 0.15)}, ${withOpacity(CONTENT_TYPE_COLORS.meditation, 0.1)})`,
+            border: `1.5px solid ${withOpacity(CONTENT_TYPE_COLORS.meditation, 0.3)}`,
+            boxShadow: `0 0 32px ${withOpacity(CONTENT_TYPE_COLORS.meditation, 0.15)}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <Mic size={30} color="#60a5fa" />
+          <Mic size={30} color={CONTENT_TYPE_COLORS.meditation} />
         </motion.div>
 
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.sm }}>
@@ -144,12 +146,12 @@ function LockedState({
               gap: 4,
               padding: `${spacing.xs} ${spacing.sm}`,
               borderRadius: borderRadius.full,
-              border: '1px solid #60a5fa44',
-              marginBottom: spacing.xs,
+            border: `1px solid ${withOpacity(CONTENT_TYPE_COLORS.meditation, 0.3)}`,
+            marginBottom: spacing.xs,
             }}
           >
-            <Sparkles size={10} color="#60a5fa" />
-            <span style={{ color: '#60a5fa', fontWeight: 700, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <Sparkles size={10} color={CONTENT_TYPE_COLORS.meditation} />
+            <span style={{ color: CONTENT_TYPE_COLORS.meditation, fontWeight: 700, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Unlock at Initiate
             </span>
           </span>
@@ -185,7 +187,7 @@ function GateSkeleton({ children }: { children: React.ReactNode }) {
         aria-hidden="true"
         style={{
           opacity: 0.08,
-          filter: 'blur(4px)',
+          filter: BLUR.sm,
           position: 'absolute',
           inset: 0,
           overflow: 'hidden',

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 import { getStripeClient } from '@/lib/stripe';
 import { getCreditPackById, type CreditPackId } from '@waqup/shared/constants';
 
@@ -20,7 +20,7 @@ const PACK_PRICE_IDS: Record<CreditPackId, string | undefined> = {
  * Creates a Stripe Checkout Session for a one-time Q credit pack purchase.
  *
  * Flow:
- *  1. Verify user is authenticated
+ *  1. Verify user is authenticated (cookies for web, Bearer token for mobile)
  *  2. Validate packId exists in shared constants
  *  3. Resolve the Stripe price ID for this pack
  *  4. Create a one-time Checkout Session
@@ -31,12 +31,11 @@ const PACK_PRICE_IDS: Record<CreditPackId, string | undefined> = {
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const supabase = await createSupabaseServerClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const auth = await getAuthenticatedUserForApi(req);
+    if (!auth) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const { supabase, user } = auth;
 
     const body: CheckoutCreditsBody = await req.json();
     const { packId } = body;

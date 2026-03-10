@@ -1,6 +1,8 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { logError } from '@waqup/shared/utils';
+import { defaultTheme } from '@waqup/shared/theme';
+import { spacing, borderRadius } from '@/theme';
 
 interface Props {
   children: ReactNode;
@@ -60,45 +62,51 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 32,
-    backgroundColor: '#0a0a0f',
-  },
-  emoji: {
-    fontSize: 48,
-    marginBottom: 24,
-  },
-  title: {
-    color: '#f1f5f9',
-    fontSize: 22,
-    fontWeight: '300',
-    letterSpacing: -0.5,
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  body: {
-    color: '#94a3b8',
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    marginBottom: 32,
-    maxWidth: 300,
-  },
-  btn: {
-    backgroundColor: 'rgba(168,85,247,0.2)',
-    borderColor: 'rgba(168,85,247,0.4)',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  btnText: {
-    color: '#a855f7',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
+function getErrorStyles() {
+  const colors = defaultTheme.colors;
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: spacing.xl,
+      backgroundColor: colors.background.primary,
+    },
+    emoji: {
+      fontSize: 48,
+      marginBottom: spacing.lg,
+    },
+    title: {
+      color: colors.text.primary,
+      fontSize: 22,
+      fontWeight: '300',
+      letterSpacing: -0.5,
+      marginBottom: spacing.md,
+      textAlign: 'center',
+    },
+    body: {
+      color: colors.text.secondary,
+      fontSize: 16,
+      lineHeight: 24,
+      textAlign: 'center',
+      marginBottom: spacing.xl,
+      maxWidth: 300,
+    },
+    btn: {
+      backgroundColor: colors.accent.light,
+      borderColor: colors.glass.border,
+      borderWidth: 1,
+      borderRadius: borderRadius.md,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+    },
+    btnText: {
+      color: colors.accent.primary,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+  });
+}
+
+// Static ref for render (ErrorBoundary is a class component)
+const styles = getErrorStyles();

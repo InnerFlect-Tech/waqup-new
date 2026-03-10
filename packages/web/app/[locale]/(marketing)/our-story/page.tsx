@@ -6,7 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { useTheme, spacing, borderRadius } from '@/theme';
-import { PageShell, GlassCard, Logo, PublicFooter } from '@/components';
+import { PageShell, GlassCard, Logo } from '@/components';
 import { Typography, Button } from '@/components';
 import { CONTENT_MEDIUM, CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
 
@@ -500,8 +500,6 @@ export default function OurStoryPage() {
             </div>
           </div>
         </motion.section>
-
-        <PublicFooter />
       </div>
     </PageShell>
   );

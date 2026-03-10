@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Screen } from '@/components/layout';
+import { Typography } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
 import { API_BASE_URL } from '@/constants/app';
 
 type ServiceStatus = 'ok' | 'error' | 'not_configured' | 'loading';
@@ -119,7 +121,7 @@ export default function HealthScreen() {
     <Screen scrollable padding>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text.primary }]}>🩺 API Health</Text>
+        <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>🩺 API Health</Typography>
         <View
           style={[
             styles.overallBadge,
@@ -131,26 +133,24 @@ export default function HealthScreen() {
             },
           ]}
         >
-          <Text
-            style={[
-              styles.overallBadgeText,
-              { color: allOk ? colors.success : colors.warning },
-            ]}
+          <Typography
+            variant="captionBold"
+            style={{ color: allOk ? colors.success : colors.warning }}
           >
             {loading
               ? 'Checking…'
               : allOk
               ? 'All systems operational'
               : `${okCount}/4 OK`}
-          </Text>
+          </Typography>
         </View>
-        <Text style={[styles.subtitle, { color: colors.text.secondary }]}>
+        <Typography variant="caption" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
           Live connection status for all external services.
-        </Text>
+        </Typography>
         {lastChecked && (
-          <Text style={[styles.caption, { color: colors.text.secondary }]}>
+          <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
             Last checked: {lastChecked.toLocaleTimeString()}
-          </Text>
+          </Typography>
         )}
         <TouchableOpacity
           onPress={() => void check()}
@@ -164,9 +164,9 @@ export default function HealthScreen() {
           ]}
         >
           {loading ? (
-            <ActivityIndicator size="small" color={colors.text.primary} />
+            <ActivityIndicator size="small" color={colors.text.onDark} />
           ) : (
-            <Text style={styles.refreshBtnText}>↻ Refresh</Text>
+            <Typography variant="captionBold" style={{ color: colors.text.onDark }}>↻ Refresh</Typography>
           )}
         </TouchableOpacity>
       </View>
@@ -175,18 +175,18 @@ export default function HealthScreen() {
         <View
           style={[
             styles.errorBanner,
-            { backgroundColor: `${colors.error}18`, borderColor: `${colors.error}40` },
+            { backgroundColor: withOpacity(colors.error, 0.09), borderColor: withOpacity(colors.error, 0.25) },
           ]}
         >
-          <Text style={[styles.errorText, { color: colors.error }]}>{fetchError}</Text>
-          <Text style={[styles.errorHint, { color: colors.text.secondary }]}>
+          <Typography variant="captionBold" style={{ color: colors.error, marginBottom: 4 }}>{fetchError}</Typography>
+          <Typography variant="small" style={{ color: colors.text.secondary }}>
             Make sure the web server is running at {API_BASE_URL}
-          </Text>
+          </Typography>
         </View>
       )}
 
       {/* Services */}
-      <Text style={[styles.sectionTitle, { color: colors.text.primary }]}>Services</Text>
+      <Typography variant="captionBold" style={{ color: colors.text.primary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: 0.5 }}>Services</Typography>
       {(Object.keys(services) as (keyof typeof services)[]).map((name) => {
         const result = services[name];
         const meta = SERVICE_META[name];
@@ -200,52 +200,50 @@ export default function HealthScreen() {
                 backgroundColor: colors.glass?.light ?? `${colors.background.secondary}`,
                 borderColor: result.status === 'loading'
                   ? colors.glass?.border
-                  : `${sc}40`,
+                  : withOpacity(sc, 0.25),
               },
             ]}
           >
             <View style={styles.serviceRow}>
-              <Text style={styles.serviceIcon}>{meta?.icon}</Text>
+              <Typography style={{ fontSize: 24, marginRight: spacing.sm }}>{meta?.icon}</Typography>
               <View style={styles.serviceInfo}>
-                <Text style={[styles.serviceLabel, { color: colors.text.primary }]}>
+                <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
                   {meta?.label ?? name}
-                </Text>
-                <Text style={[styles.serviceDescription, { color: colors.text.secondary }]}>
+                </Typography>
+                <Typography variant="small" style={{ color: colors.text.secondary }}>
                   {meta?.description}
-                </Text>
+                </Typography>
               </View>
               <View style={[styles.statusDot, { backgroundColor: sc }]} />
             </View>
             <View style={styles.serviceFooter}>
-              <View style={[styles.statusBadge, { backgroundColor: `${sc}18`, borderColor: `${sc}40` }]}>
-                <Text style={[styles.statusBadgeText, { color: sc }]}>
+              <View style={[styles.statusBadge, { backgroundColor: withOpacity(sc, 0.09), borderColor: withOpacity(sc, 0.25) }]}>
+                <Typography variant="smallBold" style={{ color: sc }}>
                   {statusLabel(result.status)}
-                </Text>
+                </Typography>
               </View>
               {result.latency !== undefined && (
-                <Text
-                  style={[
-                    styles.latencyText,
-                    { color: latencyColor(result.latency, colors) },
-                  ]}
+                <Typography
+                  variant="small"
+                  style={{ color: latencyColor(result.latency, colors), fontWeight: '500' }}
                 >
                   {result.latency}ms
-                </Text>
+                </Typography>
               )}
             </View>
             {result.message && result.status !== 'ok' && (
-              <Text style={[styles.errorMsg, { color: colors.error }]}>
+              <Typography variant="small" style={{ color: colors.error, marginTop: spacing.xs, fontSize: 11 }}>
                 {result.message}
-              </Text>
+              </Typography>
             )}
           </View>
         );
       })}
 
       {/* Env vars */}
-      <Text style={[styles.sectionTitle, { color: colors.text.primary, marginTop: spacing.lg }]}>
+      <Typography variant="captionBold" style={{ color: colors.text.primary, marginTop: spacing.lg, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: 0.5 }}>
         Environment Variables
-      </Text>
+      </Typography>
       <View
         style={[
           styles.envCard,
@@ -258,10 +256,10 @@ export default function HealthScreen() {
         {Object.entries(ENV_LABELS).map(([key, label]) => {
           const set = env[key] ?? false;
           return (
-            <View key={key} style={styles.envRow}>
+            <View key={key} style={[styles.envRow, { borderBottomColor: colors.glass.border }]}>
               <View style={styles.envInfo}>
-                <Text style={[styles.envLabel, { color: colors.text.primary }]}>{label}</Text>
-                <Text style={[styles.envKey, { color: colors.text.secondary }]}>{key}</Text>
+                <Typography variant="captionBold" style={{ color: colors.text.primary }}>{label}</Typography>
+                <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 1 }}>{key}</Typography>
               </View>
               <View
                 style={[
@@ -272,9 +270,9 @@ export default function HealthScreen() {
                   },
                 ]}
               >
-                <Text style={{ color: set ? colors.success : colors.error, fontSize: 11, fontWeight: '600' }}>
+                <Typography variant="smallBold" style={{ color: set ? colors.success : colors.error, fontSize: 11 }}>
                   {set ? 'Set' : 'Missing'}
-                </Text>
+                </Typography>
               </View>
             </View>
           );
@@ -282,12 +280,12 @@ export default function HealthScreen() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={[styles.footerText, { color: colors.text.secondary }]}>
+        <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11 }}>
           API Base: {API_BASE_URL}
-        </Text>
-        <Text style={[styles.footerText, { color: colors.text.secondary }]}>
+        </Typography>
+        <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11 }}>
           Accessible via waqup://health
-        </Text>
+        </Typography>
       </View>
     </Screen>
   );
@@ -297,29 +295,12 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: spacing.xl,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: spacing.sm,
-  },
   overallBadge: {
     alignSelf: 'flex-start',
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: borderRadius.sm,
     borderWidth: 1,
-    marginBottom: spacing.sm,
-  },
-  overallBadgeText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  subtitle: {
-    fontSize: 14,
-    marginBottom: spacing.xs,
-  },
-  caption: {
-    fontSize: 12,
     marginBottom: spacing.sm,
   },
   refreshBtn: {
@@ -331,11 +312,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 36,
-  },
-  refreshBtnText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
   },
   errorBanner: {
     padding: spacing.sm,
@@ -369,21 +345,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.sm,
   },
-  serviceIcon: {
-    fontSize: 24,
-    marginRight: spacing.sm,
-  },
   serviceInfo: {
     flex: 1,
-  },
-  serviceLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    lineHeight: 20,
-  },
-  serviceDescription: {
-    fontSize: 12,
-    lineHeight: 16,
   },
   statusDot: {
     width: 10,
@@ -424,19 +387,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   envInfo: {
     flex: 1,
     marginRight: spacing.sm,
-  },
-  envLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  envKey: {
-    fontSize: 10,
-    marginTop: 1,
   },
   envBadge: {
     paddingHorizontal: spacing.xs,
@@ -448,8 +402,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingTop: spacing.md,
     gap: spacing.xs,
-  },
-  footerText: {
-    fontSize: 11,
   },
 });

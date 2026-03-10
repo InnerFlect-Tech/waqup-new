@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
-import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, DISSOLVING_OVERLAY, imageEdgeFades, HERO_OVERLAY_QUOTE } from '@/theme';
+import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades, HERO_OVERLAY_QUOTE } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
-import { QS_EXPLANATION, PRACTICE_IS_FREE_ONE_LINER, VOICE_CLONING_COPY } from '@waqup/shared/constants';
+import { QS_EXPLANATION, PRACTICE_IS_FREE_ONE_LINER, VOICE_CLONING_COPY, CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
@@ -48,9 +48,9 @@ function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
       </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 9 }}>
         {[
-          { icon: Sun, label: 'Affirmations', sub: 'Rewire your beliefs', color: '#A855F7' },
-          { icon: Moon, label: 'Meditations', sub: 'Induce calm states', color: '#6366F1' },
-          { icon: Flame, label: 'Rituals', sub: 'Encode identity', color: '#9333EA' },
+          { icon: Sun, label: 'Affirmations', sub: 'Rewire your beliefs', color: CONTENT_TYPE_COLORS.affirmation },
+          { icon: Moon, label: 'Meditations', sub: 'Induce calm states', color: CONTENT_TYPE_COLORS.meditation },
+          { icon: Flame, label: 'Rituals', sub: 'Encode identity', color: CONTENT_TYPE_COLORS.ritual },
         ].map(({ icon: Icon, label, sub, color }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 13, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
             <div style={{ width: 34, height: 34, borderRadius: 9, background: `${color}20`, border: `1px solid ${color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -66,8 +66,8 @@ function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
       <div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         {['Home', 'Library', 'Speak'].map((item) => (
           <div key={item} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <div style={{ width: 4, height: 4, borderRadius: '50%', background: item === 'Home' ? '#9333EA' : 'transparent' }} />
-            <div style={{ fontSize: 9, color: item === 'Home' ? '#A855F7' : 'rgba(255,255,255,0.3)' }}>{item}</div>
+            <div style={{ width: 4, height: 4, borderRadius: '50%', background: item === 'Home' ? colors.accent.primary : 'transparent' }} />
+            <div style={{ fontSize: 9, color: item === 'Home' ? colors.accent.tertiary : 'rgba(255,255,255,0.3)' }}>{item}</div>
           </div>
         ))}
       </div>
@@ -427,7 +427,6 @@ export default function HowItWorksPage() {
             style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
           />
         </div>
-        <div style={{ ...DISSOLVING_OVERLAY }} />
         <div style={{ ...imageEdgeFades(colors.background.primary).top }} />
         <div style={{ ...imageEdgeFades(colors.background.primary).bottom }} />
         <div style={{ ...imageEdgeFades(colors.background.primary).left }} />
@@ -662,7 +661,6 @@ export default function HowItWorksPage() {
             unoptimized
           />
         </div>
-        <div style={{ ...DISSOLVING_OVERLAY }} />
         <div style={{ ...imageEdgeFades(colors.background.primary).top }} />
         <div style={{ ...imageEdgeFades(colors.background.primary).bottom }} />
         <div style={{ ...imageEdgeFades(colors.background.primary).left }} />

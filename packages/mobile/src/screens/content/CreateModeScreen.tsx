@@ -5,7 +5,7 @@ import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, QCoin } from '@/components';
-import { CONTENT_CREDIT_COSTS, PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
+import { CONTENT_CREDIT_COSTS, CONTENT_TYPE_COLORS, PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'CreateMode'>;
 
@@ -45,7 +45,7 @@ export default function CreateModeScreen({ navigation, route }: Props) {
       id: 'form',
       title: 'Quick Form',
       icon: '📝',
-      color: '#94a3b8',
+      color: colors.text.tertiary,
       description:
         'Fill in structured fields to craft your practice. Full control, zero AI cost.',
       creditCost: `${costs.base} Q`,
@@ -55,7 +55,7 @@ export default function CreateModeScreen({ navigation, route }: Props) {
       id: 'chat',
       title: 'Guided Chat',
       icon: '💬',
-      color: '#60a5fa',
+      color: CONTENT_TYPE_COLORS.meditation,
       description:
         'Have a conversation with AI to shape your practice. GPT-4o-mini guides you step by step.',
       creditCost: `${costs.withAi} Qs`,
@@ -65,7 +65,7 @@ export default function CreateModeScreen({ navigation, route }: Props) {
       id: 'agent',
       title: 'AI Agent',
       icon: '🤖',
-      color: '#c084fc',
+      color: CONTENT_TYPE_COLORS.affirmation,
       description:
         'Let an autonomous AI agent draft your entire practice from a single goal statement. GPT-4o quality.',
       creditCost: `${costs.withAi + Math.ceil(costs.withAi * 0.5)} Qs`,

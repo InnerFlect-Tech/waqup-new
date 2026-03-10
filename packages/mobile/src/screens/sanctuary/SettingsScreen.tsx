@@ -135,7 +135,7 @@ export default function SettingsScreen({ navigation }: Props) {
         </View>
 
         {/* Profile */}
-        <Typography variant="captionBold" style={styles.sectionLabel}>
+        <Typography variant="captionBold" style={[styles.sectionLabel, { color: colors.text.tertiary }]}>
           PROFILE
         </Typography>
         <Card variant="default" style={[styles.section, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
@@ -162,7 +162,7 @@ export default function SettingsScreen({ navigation }: Props) {
         </Card>
 
         {/* Notifications */}
-        <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xl }]}>
+        <Typography variant="captionBold" style={[styles.sectionLabel, { color: colors.text.tertiary, marginTop: spacing.xl }]}>
           NOTIFICATIONS
         </Typography>
         <Card variant="default" style={[styles.section, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
@@ -175,7 +175,7 @@ export default function SettingsScreen({ navigation }: Props) {
               value={notifPractice}
               onValueChange={setNotifPractice}
               trackColor={{ false: colors.glass.border, true: colors.accent.primary }}
-              thumbColor="#fff"
+              thumbColor={colors.text.onDark}
             />
           </View>
         </Card>
@@ -192,7 +192,7 @@ export default function SettingsScreen({ navigation }: Props) {
         </Button>
 
         {/* Data & Privacy — Apple requires in-app account deletion */}
-        <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xxl }]}>
+        <Typography variant="captionBold" style={[styles.sectionLabel, { color: colors.text.tertiary, marginTop: spacing.xxl }]}>
           DATA &amp; PRIVACY
         </Typography>
         <Card variant="default" style={[styles.section, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   sectionLabel: {
-    color: 'rgba(255,255,255,0.45)',
     marginBottom: spacing.sm,
     fontSize: 11,
     letterSpacing: 1,

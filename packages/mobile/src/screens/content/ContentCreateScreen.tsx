@@ -17,9 +17,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography, Card, Button, Progress } from '@/components';
+import { Typography, Card, Button, Progress, Input } from '@/components';
 import { VoiceOrb } from '@/components/audio';
 import { AI_MODE_COSTS } from '@waqup/shared/constants';
+import { withOpacity } from '@waqup/shared/theme';
 import {
   sendConversationMessage,
   generateScript,
@@ -146,7 +147,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
     const firstUserMsg = chatHistory.find(m => m.role === 'user');
     const allUserContent = chatHistory.filter(m => m.role === 'user').map(m => m.content).join(' ');
     try {
-      const res = await generateScript(contentType, firstUserMsg?.content ?? allUserContent, allUserContent);
+      const res = await generateScript(contentType, firstUserMsg?.content ?? allUserContent, allUserContent, () => supabase.auth.getSession());
       setGeneratedScript(res.script);
       setChatPhase('done');
     } catch {
@@ -173,7 +174,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
         .filter(m => m.id !== 'opening')
         .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
 
-      const res = await sendConversationMessage(contentType, apiMessages);
+      const res = await sendConversationMessage(contentType, apiMessages, () => supabase.auth.getSession());
 
       if ('error' in res && res.error === 'insufficient_credits') {
         setChatCostError((res as { message?: string }).message ?? 'Not enough Qs. Please get more Qs to continue.');
@@ -207,7 +208,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
     setShowAgentConfirm(false);
     setIsAgentGenerating(true);
     try {
-      const res = await generateAgentScript(contentType, agentIntent, { context: agentContext || undefined });
+      const res = await generateAgentScript(contentType, agentIntent, { context: agentContext || undefined }, () => supabase.auth.getSession());
       if ('error' in res && res.error === 'insufficient_credits') {
         setChatCostError((res as { message?: string }).message ?? `AI Agent costs ${AI_MODE_COSTS.agent} Qs but your balance is too low.`);
         return;
@@ -266,7 +267,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
       }
 
       // 3. Render audio via ElevenLabs
-      const result = await renderContentAudio(item.id, generatedScript, voiceId);
+      const result = await renderContentAudio(item.id, generatedScript, voiceId, () => supabase.auth.getSession());
 
       if ('error' in result && result.error === 'insufficient_credits') {
         setRenderError(result.message ?? 'Not enough Qs to render audio.');
@@ -350,24 +351,15 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
             </View>
             <View style={styles.form}>
               {fields.map((field) => (
-                <View key={field.key} style={styles.fieldGroup}>
-                  <Typography variant="captionBold" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
-                    {field.label}
-                  </Typography>
-                  <TextInput
-                    value={formValues[field.key] ?? ''}
-                    onChangeText={(v) => handleFieldChange(field.key, v)}
-                    placeholder={field.placeholder}
-                    placeholderTextColor={colors.text.secondary}
-                    multiline={field.multiline}
-                    numberOfLines={field.multiline ? 4 : 1}
-                    style={[
-                      styles.textInput,
-                      field.multiline && styles.textInputMulti,
-                      { color: colors.text.primary, backgroundColor: colors.glass.opaque, borderColor: formValues[field.key] ? colors.accent.primary : colors.glass.border },
-                    ]}
-                  />
-                </View>
+                <Input
+                  key={field.key}
+                  label={field.label}
+                  value={formValues[field.key] ?? ''}
+                  onChangeText={(v) => handleFieldChange(field.key, v)}
+                  placeholder={field.placeholder}
+                  multiline={field.multiline}
+                  numberOfLines={field.multiline ? 4 : 1}
+                />
               ))}
               <Button variant="primary" size="lg" fullWidth onPress={handleFormSubmit} disabled={!canSubmit || isSubmitting} style={{ marginTop: spacing.xl }}>
                 {isSubmitting ? 'Creating...' : 'Create Practice'}
@@ -391,7 +383,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
                     <VoiceOrb size="sm" orbState="idle" style={{ marginRight: spacing.sm, flexShrink: 0 }} />
                   )}
                   <View style={[styles.bubble, item.role === 'user' ? styles.bubbleUser : styles.bubbleAI]}>
-                    <Typography variant="body" style={{ color: item.role === 'user' ? '#fff' : colors.text.primary, lineHeight: 22 }}>
+                    <Typography variant="body" style={{ color: item.role === 'user' ? colors.text.onDark : colors.text.primary, lineHeight: 22 }}>
                       {item.content}
                     </Typography>
                   </View>
@@ -430,7 +422,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
                 </View>
                 {/* Cost / auth error */}
                 {chatCostError && (
-                  <View style={[styles.costErrorRow, { backgroundColor: `${colors.error}18`, borderColor: `${colors.error}40` }]}>
+                  <View style={[styles.costErrorRow, { backgroundColor: withOpacity(colors.error, 0.09), borderColor: withOpacity(colors.error, 0.25) }]}>
                     <Typography variant="caption" style={{ color: colors.error, fontSize: 12 }}>
                       {chatCostError}
                     </Typography>
@@ -453,7 +445,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
                     activeOpacity={0.8}
                     style={[styles.sendBtn, { backgroundColor: chatInput.trim() && !isChatLoading ? colors.accent.primary : colors.glass.border }]}
                   >
-                    <Typography variant="captionBold" style={{ color: '#fff', fontSize: 16 }}>↑</Typography>
+                    <Typography variant="captionBold" style={{ color: colors.text.onDark, fontSize: 16 }}>↑</Typography>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -528,8 +520,8 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
               >
                 {isAgentGenerating ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-                    <ActivityIndicator size="small" color="#fff" />
-                    <Typography variant="body" style={{ color: '#fff' }}>Generating…</Typography>
+                    <ActivityIndicator size="small" color={colors.text.onDark} />
+                    <Typography variant="body" style={{ color: colors.text.onDark }}>Generating…</Typography>
                   </View>
                 ) : (
                   `Generate with AI · ${AI_MODE_COSTS.agent} Qs`
@@ -588,8 +580,8 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
               >
                 {isRendering ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-                    <ActivityIndicator size="small" color="#fff" />
-                    <Typography variant="body" style={{ color: '#fff' }}>Generating Audio…</Typography>
+                    <ActivityIndicator size="small" color={colors.text.onDark} />
+                    <Typography variant="body" style={{ color: colors.text.onDark }}>Generating Audio…</Typography>
                   </View>
                 ) : (
                   '✨ Generate Audio & Save'
@@ -606,7 +598,7 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
           onRequestClose={() => setShowAgentConfirm(false)}
         >
           <Pressable
-            style={styles.modalOverlay}
+            style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
             onPress={() => setShowAgentConfirm(false)}
           >
             <Pressable
@@ -767,7 +759,6 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.xl,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { HEADER_PADDING_X, MAX_WIDTH_7XL, spacing, borderRadius, BLUR } from '@/theme';
 import { DEFAULT_BRAND_COLORS } from '@waqup/shared/theme';
@@ -58,6 +58,7 @@ function storeDecision(decision: 'accepted' | 'declined') {
 export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     const decision = getStoredDecision();
@@ -71,11 +72,17 @@ export function CookieConsentBanner() {
   }, []);
 
   useLayoutEffect(() => {
+    mountedRef.current = true;
     const mq = window.matchMedia(`(max-width: ${SMALL_SCREEN_BREAKPOINT}px)`);
-    const handler = () => setIsSmallScreen(mq.matches);
+    const handler = () => {
+      if (mountedRef.current) setIsSmallScreen(mq.matches);
+    };
     handler();
     mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
+    return () => {
+      mountedRef.current = false;
+      mq.removeEventListener('change', handler);
+    };
   }, []);
 
   function handleAccept() {

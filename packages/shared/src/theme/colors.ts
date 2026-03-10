@@ -3,12 +3,14 @@
  * Single source of truth for all platforms (web, iOS, Android)
  */
 
-/** Default brand colors (Mystical Purple) — used outside ThemeProvider (CookieConsentBanner, PWA manifest, layout themeColor) */
+/** Default brand colors (Mystical Purple) — used outside ThemeProvider (CookieConsentBanner, PWA manifest, layout themeColor, error boundaries) */
 export const DEFAULT_BRAND_COLORS = {
   primary: '#9333EA',
   secondary: '#7C3AED',
   accent: '#A855F7',
   background: '#0A040C',
+  /** Error boundary full-page gradient — dark with subtle purple tint */
+  errorBackground: 'linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 100%)',
   textMuted: 'rgba(255,255,255,0.65)',
   border: 'rgba(255,255,255,0.12)',
   borderHover: 'rgba(255,255,255,0.3)',

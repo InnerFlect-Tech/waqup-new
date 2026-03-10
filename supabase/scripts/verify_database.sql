@@ -49,6 +49,18 @@ select 'oracle_sessions table', case when exists (select 1 from information_sche
 insert into _verify (check_name, status, detail)
 select 'feedback table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'feedback') then 'PASS' else 'FAIL' end, 'User feedback from Help page';
 
+insert into _verify (check_name, status, detail)
+select 'orb_config table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'orb_config') then 'PASS' else 'FAIL' end, 'Speak/Orb add-on config';
+
+insert into _verify (check_name, status, detail)
+select 'user_orb_settings table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'user_orb_settings') then 'PASS' else 'FAIL' end, 'Speak/Orb per-user settings';
+
+insert into _verify (check_name, status, detail)
+select 'user_profiles table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'user_profiles') then 'PASS' else 'FAIL' end, 'Orb personalization context (distinct from profiles)';
+
+insert into _verify (check_name, status, detail)
+select 'creator_proposals table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'creator_proposals') then 'PASS' else 'FAIL' end, 'Creator marketplace early-access proposals';
+
 -- ─── 1b. Optional / supporting tables (WARN if missing) ──────────────────────
 insert into _verify (check_name, status, detail)
 select 'user_reminders table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'user_reminders') then 'PASS' else 'WARN' end, 'Reminders scheduling';

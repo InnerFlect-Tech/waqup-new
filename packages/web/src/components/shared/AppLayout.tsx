@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -150,7 +151,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [profileProgressStats, setProfileProgressStats] = useState<ProgressStats | null>(null);
+  const [profileMenuPosition, setProfileMenuPosition] = useState<{ top: number; right: number } | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const avatarButtonRef = useRef<HTMLButtonElement>(null);
 
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
@@ -168,7 +171,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setShowProfileMenu(false);
+    setProfileMenuPosition(null);
   }, [pathname]);
+
+  useLayoutEffect(() => {
+    if (!showProfileMenu || typeof document === 'undefined') return;
+    const el = avatarButtonRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const gap = 8; // spacing.sm equivalent
+    setProfileMenuPosition({
+      top: rect.bottom + gap,
+      right: window.innerWidth - rect.right,
+    });
+  }, [showProfileMenu]);
 
   useEffect(() => {
     if (!showProfileMenu) return;
@@ -307,6 +323,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     </span>
                   </Link>
                   <Button
+                    ref={avatarButtonRef}
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -315,27 +332,40 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     <AvatarOrb colors={avatarColors} size="sm" />
                   </Button>
 
-                  {showProfileMenu && (
-                    <div
-                      className="absolute right-0 shadow-2xl"
-                      style={{
-                        width: actualIsSuperAdmin ? 380 : 288,
-                        maxHeight: 'min(85vh, 560px)',
-                        marginTop: spacing.sm,
-                        borderRadius: borderRadius.xl,
-                        background: 'rgba(15,5,35,0.88)',
-                        backdropFilter: BLUR.xl,
-                        WebkitBackdropFilter: BLUR.xl,
-                        border: `1px solid ${colors.glass.border}`,
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-                        overflowY: 'auto',
-                        overflowX: 'hidden',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        isolation: 'isolate',
-                        transform: 'translateZ(0)',
-                      }}
-                    >
+                  {showProfileMenu &&
+                    profileMenuPosition &&
+                    typeof document !== 'undefined' &&
+                    createPortal(
+                      <>
+                        <div
+                          role="button"
+                          tabIndex={-1}
+                          aria-label="Close menu"
+                          className="fixed inset-0 z-[59]"
+                          style={{ cursor: 'default' }}
+                          onClick={() => setShowProfileMenu(false)}
+                        />
+                        <div
+                          className="fixed shadow-2xl z-[60]"
+                        style={{
+                          top: profileMenuPosition.top,
+                          right: profileMenuPosition.right,
+                          width: actualIsSuperAdmin ? 380 : 288,
+                          maxHeight: 'min(85vh, 560px)',
+                          borderRadius: borderRadius.xl,
+                          background: 'rgba(15,5,35,0.88)',
+                          backdropFilter: BLUR.xl,
+                          WebkitBackdropFilter: BLUR.xl,
+                          border: `1px solid ${colors.glass.border}`,
+                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          overflowY: 'auto',
+                          overflowX: 'hidden',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          isolation: 'isolate',
+                          transform: 'translateZ(0)',
+                        }}
+                      >
                       {/* Account card */}
                       <div
                         style={{
@@ -572,6 +602,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         </button>
                       </div>
                     </div>
+                      </>,
+                    document.body
                   )}
                 </div>
 
@@ -893,7 +925,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 onClick={() => router.push('/login')}
                 style={{ color: colors.text.secondary }}
               >
-                Sign In
+                {t('signIn')}
               </Button>
               <Button
                 variant="primary"
@@ -1023,7 +1055,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   className="w-full justify-start"
                   style={{ color: colors.text.secondary }}
                 >
-                  Sign In
+                  {t('signIn')}
                 </Button>
                 <div style={{ marginTop: spacing.md }}>
                   <Button

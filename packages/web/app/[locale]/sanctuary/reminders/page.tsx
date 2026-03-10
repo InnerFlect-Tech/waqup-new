@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Typography, Button, Loading } from '@/components';
+import { Typography, Button, Input, Loading } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
@@ -44,7 +44,9 @@ interface RecommendedSession {
   Icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
 }
 
-const RECOMMENDED_SESSIONS: RecommendedSession[] = [
+const RECOMMENDED_SESSIONS = (
+  colors: { warning: string; accent: { tertiary: string } }
+): RecommendedSession[] => [
   {
     id: 'morning',
     title: 'Morning Practice',
@@ -54,7 +56,7 @@ const RECOMMENDED_SESSIONS: RecommendedSession[] = [
     science:
       'Just after waking, your critical mind is still quiet — the ideal window for planting new beliefs.',
     durations: ['20 min', '40 min', '1 hr'],
-    color: '#f97316',
+    color: colors.warning,
     Icon: Sunrise,
   },
   {
@@ -66,7 +68,7 @@ const RECOMMENDED_SESSIONS: RecommendedSession[] = [
     science:
       'Sleep consolidates what you hear last. Content before sleep has disproportionate influence on encoding.',
     durations: ['20 min', '40 min', '1 hr'],
-    color: '#a78bfa',
+    color: colors.accent.tertiary,
     Icon: Moon,
   },
 ];
@@ -119,7 +121,7 @@ function Toggle({
           width: 20,
           height: 20,
           borderRadius: '50%',
-          background: '#fff',
+          background: colors.text.onDark,
           boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
         }}
       />
@@ -348,7 +350,7 @@ export default function SanctuaryRemindersPage() {
               marginBottom: spacing.md,
             }}
           >
-            {RECOMMENDED_SESSIONS.map((session, index) => {
+            {RECOMMENDED_SESSIONS(colors).map((session, index) => {
               const active = isSessionActive(session);
               const loading = quickAddingId === session.id;
               const SessionIcon = session.Icon;
@@ -734,26 +736,13 @@ export default function SanctuaryRemindersPage() {
               </Typography>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
-                <div>
-                  <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.xs, display: 'block' }}>
-                    Label
-                  </Typography>
-                  <input
-                    type="text"
-                    value={formLabel}
-                    onChange={(e) => setFormLabel(e.target.value)}
-                    placeholder="Practice reminder"
-                    style={{
-                      width: '100%',
-                      padding: `${spacing.md} ${spacing.lg}`,
-                      borderRadius: borderRadius.lg,
-                      border: `1px solid ${colors.glass.border}`,
-                      background: colors.glass.medium,
-                      color: colors.text.primary,
-                      fontSize: 14,
-                    }}
-                  />
-                </div>
+                <Input
+                  label="Label"
+                  value={formLabel}
+                  onChange={(e) => setFormLabel(e.target.value)}
+                  placeholder="Practice reminder"
+                  wrapperStyle={{ marginBottom: 0 }}
+                />
 
                 <div>
                   <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.xs, display: 'block' }}>
@@ -783,21 +772,13 @@ export default function SanctuaryRemindersPage() {
                       </button>
                     ))}
                   </div>
-                  <input
+                  <Input
                     type="time"
                     id="reminder-time"
                     value={formTime}
                     onChange={(e) => setFormTime(e.target.value)}
                     aria-label="Reminder time"
-                    style={{
-                      width: '100%',
-                      padding: `${spacing.md} ${spacing.lg}`,
-                      borderRadius: borderRadius.lg,
-                      border: `1px solid ${colors.glass.border}`,
-                      background: colors.glass.medium,
-                      color: colors.text.primary,
-                      fontSize: 14,
-                    }}
+                    wrapperStyle={{ marginBottom: 0 }}
                   />
                 </div>
 

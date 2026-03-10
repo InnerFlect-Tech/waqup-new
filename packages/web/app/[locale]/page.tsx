@@ -7,7 +7,7 @@ import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA, FoundingMemberModal, PublicFooter } from '@/components';
 import { AppMockup, LandingSection, LandingCard } from '@/components/marketing';
 import { spacing, borderRadius, BLUR } from '@/theme';
-import { CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
+import { CONTENT_MAX_WIDTH, NAV_TOP_OFFSET } from '@/theme';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import {
@@ -23,6 +23,7 @@ import {
   Moon,
   Flame,
 } from 'lucide-react';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
 function formatWaitlistCount(count: number): string {
   if (count >= 1000) return `${(count / 1000).toFixed(1)}k+`;
@@ -60,12 +61,12 @@ export default function LandingPage() {
       <section
         className="landing-hero"
         style={{
-          position: 'relative',
+          position: 'relative' as const,
           minHeight: '100dvh',
           scrollSnapAlign: 'start',
           scrollSnapStop: 'always',
-          padding: '0 clamp(16px, 4vw, 32px)',
-          marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`,
+          padding: `${NAV_TOP_OFFSET} clamp(16px, 4vw, 32px) ${spacing.xxl}`,
+          marginTop: `calc(-1 * ${NAV_TOP_OFFSET})`,
           marginLeft: 'auto',
           marginRight: 'auto',
           textAlign: 'center',
@@ -73,20 +74,30 @@ export default function LandingPage() {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
           alignItems: 'center',
           boxSizing: 'border-box',
           minWidth: 0,
         }}
       >
-        {/* Background image */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        {/* Background image — full viewport width (escapa do maxWidth da section) */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100vw',
+            zIndex: 0,
+          }}
+        >
           <Image
             src="/images/landing-hero-bg.png"
             alt=""
             fill
             priority
             style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            sizes="100vw"
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.85) 0%, rgba(6,2,20,0.6) 50%, rgba(6,2,20,0.9) 100%)' }} />
         </div>
@@ -119,134 +130,170 @@ export default function LandingPage() {
           }}
         />
 
+        {/* Main content — vertically centered */}
         <div
           style={{
-            position: 'relative',
-            zIndex: 2,
-            padding: `${spacing.xs} ${spacing.md}`,
-            borderRadius: borderRadius.full,
-            background: `${colors.accent.tertiary}20`,
-            border: `1px solid ${colors.accent.tertiary}40`,
-            display: 'inline-block',
-            marginBottom: spacing.md,
-          }}
-        >
-          <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {t('landing.badge')}
-          </Typography>
-        </div>
-
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            fontSize: 'clamp(32px, 8vw, 100px)',
-            fontWeight: 300,
-            lineHeight: 1,
-            marginBottom: spacing.md,
-            color: colors.text.primary,
-            letterSpacing: '-2px',
-            WebkitFontSmoothing: 'antialiased',
-            MozOsxFontSmoothing: 'grayscale',
-            textRendering: 'optimizeLegibility',
-          }}
-        >
-          <span style={{ fontWeight: 300, color: colors.text.primary }}>wa</span>
-          <span style={{ color: colors.accent.tertiary, fontWeight: 300 }}>Q</span>
-          <span style={{ fontWeight: 300, color: colors.text.primary }}>up</span>
-        </div>
-
-        <Typography
-          variant="body"
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            fontSize: 'clamp(20px, 2.8vw, 28px)',
-            color: colors.text.primary,
-            maxWidth: 480,
-            margin: `0 auto ${spacing.sm} auto`,
-            lineHeight: 1.25,
-            fontWeight: 300,
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {t('landing.headline')}
-        </Typography>
-
-        <Typography
-          variant="body"
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            fontSize: 'clamp(14px, 1.8vw, 17px)',
-            color: colors.text.secondary,
-            maxWidth: 440,
-            margin: `0 auto ${spacing.xl} auto`,
-            lineHeight: 1.5,
-            fontWeight: 300,
-          }}
-        >
-          {t('landing.subheadline')}
-        </Typography>
-
-        <div style={{ width: '100%', maxWidth: 440, marginBottom: spacing.md }}>
-          <WaitlistCTA
-            variant="inline"
-            subtext={t('landing.earlyAccess')}
-            compact
-          />
-        </div>
-
-        <div
-          style={{
-            marginBottom: spacing.lg,
+            flex: 1,
+            minHeight: 0,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: spacing.md,
-            flexWrap: 'wrap',
-            fontSize: 13,
-            color: colors.text.tertiary ?? colors.text.secondary,
-            fontWeight: 400,
+            width: '100%',
           }}
         >
-          {waitlistCount !== null && waitlistCount > 0 && (
-            <span>{t('landing.waitlistCount', { count: formatWaitlistCount(waitlistCount) })}</span>
-          )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Headphones size={12} color={colors.accent.tertiary} />
-            <span style={{ color: colors.accent.tertiary }}>{t('landing.practiceInYourVoice')}</span>
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 2,
+              padding: `${spacing.xs} ${spacing.md}`,
+              borderRadius: borderRadius.full,
+              background: `${colors.accent.tertiary}20`,
+              border: `1px solid ${colors.accent.tertiary}40`,
+              display: 'inline-block',
+              marginBottom: spacing.md,
+            }}
+          >
+            <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              {t('landing.badge')}
+            </Typography>
+          </div>
+
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 2,
+              fontSize: 'clamp(32px, 8vw, 100px)',
+              fontWeight: 300,
+              lineHeight: 1,
+              marginBottom: spacing.md,
+              color: colors.text.primary,
+              letterSpacing: '-2px',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
+              textRendering: 'optimizeLegibility',
+            }}
+          >
+            <span style={{ fontWeight: 300, color: colors.text.primary }}>wa</span>
+            <span style={{ color: colors.accent.tertiary, fontWeight: 300 }}>Q</span>
+            <span style={{ fontWeight: 300, color: colors.text.primary }}>up</span>
+          </div>
+
+          <Typography
+            variant="body"
+            style={{
+              position: 'relative',
+              zIndex: 2,
+              fontSize: 'clamp(20px, 2.8vw, 28px)',
+              color: colors.text.primary,
+              maxWidth: 480,
+              margin: `0 auto ${spacing.sm} auto`,
+              lineHeight: 1.25,
+              fontWeight: 300,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {t('landing.headline')}
+          </Typography>
+
+          <Typography
+            variant="body"
+            style={{
+              position: 'relative',
+              zIndex: 2,
+              fontSize: 'clamp(14px, 1.8vw, 17px)',
+              color: colors.text.secondary,
+              maxWidth: 440,
+              margin: `0 auto ${spacing.xl} auto`,
+              lineHeight: 1.5,
+              fontWeight: 300,
+            }}
+          >
+            {t('landing.subheadline')}
+          </Typography>
+
+          <div style={{ width: '100%', maxWidth: 440, marginBottom: spacing.md }}>
+            <WaitlistCTA
+              variant="inline"
+              subtext={t('landing.earlyAccess')}
+              compact
+            />
+          </div>
+
+          <div
+            style={{
+              marginBottom: spacing.lg,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.md,
+              flexWrap: 'wrap',
+              fontSize: 13,
+              color: colors.text.tertiary ?? colors.text.secondary,
+              fontWeight: 400,
+            }}
+          >
+            {waitlistCount !== null && waitlistCount > 0 && (
+              <span>{t('landing.waitlistCount', { count: formatWaitlistCount(waitlistCount) })}</span>
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Headphones size={12} color={colors.accent.tertiary} />
+              <span style={{ color: colors.accent.tertiary }}>{t('landing.practiceInYourVoice')}</span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.lg,
+              fontSize: 13,
+              color: colors.text.tertiary ?? colors.text.secondary,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setShowFoundingModal(true)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, fontSize: 'inherit' }}
+            >
+              {t('landing.foundingMembersLink')}
+            </button>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: spacing.md,
+            }}
+          >
+            <Link href="/login" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="outline"
+                size="md"
+                style={{
+                  borderColor: colors.accent.primary,
+                  color: colors.accent.tertiary,
+                  padding: `${spacing.sm} ${spacing.lg}`,
+                  boxShadow: `0 0 0 1px ${colors.accent.primary}40`,
+                }}
+              >
+                {t('landing.signInButton')}
+              </Button>
+            </Link>
           </div>
         </div>
 
+        {/* Footer links — anchored at bottom */}
         <div
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: spacing.lg,
-            fontSize: 13,
-            color: colors.text.tertiary ?? colors.text.secondary,
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setShowFoundingModal(true)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, fontSize: 'inherit' }}
-          >
-            {t('landing.foundingMembersLink')}
-          </button>
-          <Link href="/login" style={{ textDecoration: 'none' }}>
-            <Button variant="ghost" size="sm" style={{ color: colors.text.primary, fontSize: 13 }}>
-              {t('landing.memberLogin')}
-            </Button>
-          </Link>
-        </div>
-
-        <div
-          style={{
-            marginTop: spacing.xl,
+            position: 'absolute',
+            bottom: spacing.xl,
+            left: 0,
+            right: 0,
+            zIndex: 2,
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -272,41 +319,151 @@ export default function LandingPage() {
         />
       </section>
 
-      {/* Section 1 — Core Value (4-column feature grid) */}
+      {/* Section 1 — Core Value (hero + 2 cards, then Minutes full-width) */}
       <LandingSection
         title={t('landing.coreValue.title')}
         subtitle={t('landing.coreValue.subtitle')}
       >
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: spacing.xl,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: spacing.lg,
           }}
+          className="core-value-grid"
         >
-          <LandingCard
-            icon={Mic}
-            title={t('landing.coreValue.yourVoice.title')}
-            description={t('landing.coreValue.yourVoice.desc')}
-            imageSrc="/images/landing-your-voice.png"
-            highlight
-          />
-          <LandingCard
-            icon={Sparkles}
-            title={t('landing.coreValue.aiHelps.title')}
-            description={t('landing.coreValue.aiHelps.desc')}
-            imageSrc="/images/landing-ai-creates.png"
-          />
-          <LandingCard
-            icon={Headphones}
-            title={t('landing.coreValue.replay.title')}
-            description={t('landing.coreValue.replay.desc')}
-            imageSrc="/images/landing-replay-forever.png"
-          />
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.9fr)',
+              gap: spacing.md,
+              alignItems: 'stretch',
+            }}
+          >
+            <div style={{ minWidth: 0, height: '100%', display: 'flex' }} className="core-value-hero-wrap">
+              <LandingCard
+                icon={Mic}
+                title={t('landing.coreValue.yourVoice.title')}
+                description={t('landing.coreValue.yourVoice.desc')}
+                imageSrc="/images/landing-your-voice.png"
+                iconSize="hero"
+                layout="horizontal"
+                highlight
+                priority
+                fillHeight
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.lg,
+                    marginTop: spacing.md,
+                    flex: 1,
+                    minHeight: 0,
+                  }}
+                >
+                  <ul
+                    style={{
+                      listStyle: 'none',
+                      margin: 0,
+                      padding: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: spacing.sm,
+                    }}
+                  >
+                    <li
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: spacing.sm,
+                        fontSize: 'clamp(15px, 1.4vw, 16px)',
+                        lineHeight: 1.45,
+                        color: colors.text.secondary,
+                      }}
+                    >
+                      <span style={{ flexShrink: 0, marginTop: 2 }}>
+                        <Check size={18} color={colors.accent.primary} strokeWidth={2.5} />
+                      </span>
+                      <span>{t('landing.coreValue.yourVoice.benefit1')}</span>
+                    </li>
+                    <li
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: spacing.sm,
+                        fontSize: 'clamp(15px, 1.4vw, 16px)',
+                        lineHeight: 1.45,
+                        color: colors.text.secondary,
+                      }}
+                    >
+                      <span style={{ flexShrink: 0, marginTop: 2 }}>
+                        <Check size={18} color={colors.accent.primary} strokeWidth={2.5} />
+                      </span>
+                      <span>{t('landing.coreValue.yourVoice.benefit2')}</span>
+                    </li>
+                  </ul>
+                  <Link
+                    href="/create"
+                    style={{
+                      alignSelf: 'stretch',
+                      textAlign: 'center',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: spacing.sm,
+                      padding: '14px 20px',
+                      borderRadius: 14,
+                      background: colors.gradients.primary,
+                      color: colors.text.onDark ?? '#fff',
+                      fontWeight: 600,
+                      fontSize: 'clamp(14px, 1.2vw, 15px)',
+                      boxShadow: `0 4px 20px ${colors.accent.primary}50`,
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                      marginTop: 'auto',
+                      lineHeight: 1.3,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = `0 6px 24px ${colors.accent.primary}55`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = `0 4px 20px ${colors.accent.primary}50`;
+                    }}
+                  >
+                    {t('landing.coreValue.yourVoice.cta')}
+                    <ArrowRight size={18} strokeWidth={2.5} />
+                  </Link>
+                </div>
+              </LandingCard>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, minWidth: 0 }}>
+              <LandingCard
+                icon={Sparkles}
+                title={t('landing.coreValue.aiHelps.title')}
+                description={t('landing.coreValue.aiHelps.desc')}
+                compact
+              />
+              <LandingCard
+                icon={Headphones}
+                title={t('landing.coreValue.replay.title')}
+                description={t('landing.coreValue.replay.desc')}
+                compact
+              />
+            </div>
+          </div>
+          {/* Minutes — full width banner card */}
           <LandingCard
             icon={Clock}
             title={t('landing.coreValue.minutes.title')}
             description={t('landing.coreValue.minutes.desc')}
+            badge={t('landing.coreValue.minutes.badge')}
+            featured
+            layout="banner"
+            minHeight={120}
+            className="landing-card-minutes"
           />
         </div>
       </LandingSection>
@@ -320,7 +477,7 @@ export default function LandingPage() {
           style={{
             display: 'flex',
             flexWrap: 'wrap',
-            alignItems: 'center',
+            alignItems: 'stretch',
             justifyContent: 'center',
             gap: spacing.md,
             marginBottom: spacing.xxl,
@@ -333,12 +490,16 @@ export default function LandingPage() {
           ].map(({ icon: Icon, titleKey, descKey }, i) => (
             <React.Fragment key={titleKey}>
               <div
+                className="how-it-works-step"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
+                  justifyContent: 'flex-start',
                   gap: spacing.sm,
-                  maxWidth: 200,
+                  flex: '1 1 180px',
+                  minWidth: 180,
+                  maxWidth: 220,
                   textAlign: 'center',
                 }}
               >
@@ -346,6 +507,7 @@ export default function LandingPage() {
                   style={{
                     width: 56,
                     height: 56,
+                    flexShrink: 0,
                     borderRadius: borderRadius.full,
                     background: colors.gradients.primary,
                     display: 'flex',
@@ -356,15 +518,40 @@ export default function LandingPage() {
                 >
                   <Icon size={24} color={colors.text.onDark} strokeWidth={2.5} />
                 </div>
-                <Typography variant="h4" style={{ color: colors.text.primary, margin: 0 }}>
+                <Typography
+                  variant="h4"
+                  style={{
+                    color: colors.text.primary,
+                    margin: 0,
+                    flexShrink: 0,
+                    fontSize: 18,
+                    fontWeight: 600,
+                    lineHeight: 1.3,
+                    width: '100%',
+                  }}
+                >
                   {t(titleKey)}
                 </Typography>
-                <Typography variant="caption" style={{ color: colors.text.secondary, lineHeight: 1.5 }}>
-                  {t(descKey)}
-                </Typography>
+                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                  <Typography
+                    variant="caption"
+                    style={{
+                      color: colors.text.secondary,
+                      lineHeight: 1.5,
+                      fontSize: 14,
+                      textAlign: 'center',
+                    }}
+                  >
+                    {t(descKey)}
+                  </Typography>
+                </div>
               </div>
               {i < 2 && (
-                <ArrowRight size={20} color={colors.text.tertiary} style={{ flexShrink: 0, opacity: 0.6 }} />
+                <ArrowRight
+                  size={20}
+                  color={colors.text.tertiary}
+                  style={{ flexShrink: 0, opacity: 0.6, alignSelf: 'center' }}
+                />
               )}
             </React.Fragment>
           ))}
@@ -468,18 +655,22 @@ export default function LandingPage() {
             icon={Sun}
             title={t('landing.pillars.affirmations.title')}
             description={t('landing.pillars.affirmations.desc')}
-            accentColor={colors.accent.tertiary}
+            accentColor={CONTENT_TYPE_COLORS.affirmation}
+            iconVariant="solid"
           />
           <LandingCard
             icon={Moon}
             title={t('landing.pillars.meditations.title')}
             description={t('landing.pillars.meditations.desc')}
-            accentColor={colors.accent.secondary}
+            accentColor={CONTENT_TYPE_COLORS.meditation}
+            iconVariant="solid"
           />
           <LandingCard
             icon={Flame}
             title={t('landing.pillars.rituals.title')}
             description={t('landing.pillars.rituals.desc')}
+            accentColor={CONTENT_TYPE_COLORS.ritual}
+            iconVariant="solid"
           />
         </div>
       </LandingSection>
@@ -501,18 +692,29 @@ export default function LandingPage() {
         >
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
               gap: spacing.lg,
               alignItems: 'center',
             }}
           >
             {benefits.map((benefit, index) => (
-              <div key={index} style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing.sm,
+                  flex: '1 1 auto',
+                  minWidth: 240,
+                  maxWidth: 360,
+                }}
+              >
                 <div
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 28,
+                    height: 28,
                     borderRadius: borderRadius.full,
                     background: colors.gradients.primary,
                     display: 'flex',
@@ -521,9 +723,16 @@ export default function LandingPage() {
                     flexShrink: 0,
                   }}
                 >
-                  <Check size={18} color={colors.text.onDark} strokeWidth={3} />
+                  <Check size={14} color={colors.text.onDark} strokeWidth={3} />
                 </div>
-                <Typography variant="body" style={{ color: colors.text.primary }}>
+                <Typography
+                  variant="body"
+                  style={{
+                    color: colors.text.primary,
+                    fontSize: 15,
+                    lineHeight: 1.3,
+                  }}
+                >
                   {benefit}
                 </Typography>
               </div>
@@ -587,7 +796,7 @@ export default function LandingPage() {
           </Button>
         </Link>
         <div style={{ marginTop: spacing.lg, fontSize: 13, color: colors.text.secondary, opacity: 0.6 }}>
-          {t('landing.creatorProgrammePrefix')} <Link href="/for-teachers" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>{t('landing.creatorProgrammeLink')}</Link>
+          {t('landing.creatorProgrammePrefix')} <Link href="/for-creators" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>{t('landing.creatorProgrammeLink')}</Link>
         </div>
       </section>
 

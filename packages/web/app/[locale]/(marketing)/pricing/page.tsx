@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { Check, X, Sparkles, Infinity, Zap, ArrowRight } from 'lucide-react';
@@ -372,20 +373,32 @@ export default function PricingPage() {
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
+      {/* Hero with contemplating sunset background */}
       <div
-        className="pricing-content"
         style={{
-          padding: `${spacing.xxl} ${spacing.xl} ${spacing.xxl}`,
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`,
+          position: 'relative',
+          minHeight: 'min(50dvh, 400px)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden',
         }}
       >
-        {/* Header — pricing-hero.png not generated yet */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/images/pricing-hero.png"
+            alt=""
+            fill
+            priority
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 100%)' }} />
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          style={{ textAlign: 'center', marginBottom: spacing.xxl }}
+          style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: `${spacing.xxl} ${spacing.xl}` }}
         >
           <Typography
             variant="h1"
@@ -414,7 +427,16 @@ export default function PricingPage() {
             rituals. {PRACTICE_IS_FREE_ONE_LINER}
           </Typography>
         </motion.div>
+      </div>
 
+      <div
+        className="pricing-content"
+        style={{
+          padding: `${spacing.xxl} ${spacing.xl} ${spacing.xxl}`,
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+        }}
+      >
         {/* Pricing grid */}
         <div
           style={{
@@ -580,6 +602,25 @@ export default function PricingPage() {
           >
             waQup vs Calm & Headspace
           </Typography>
+
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              aspectRatio: '16/9',
+              borderRadius: borderRadius.lg,
+              overflow: 'hidden',
+              marginBottom: spacing.lg,
+            }}
+          >
+            <Image
+              src="/images/pricing-comparison.png"
+              alt="Generic meditation app (left) vs personalised waQup experience (right)"
+              fill
+              sizes="(max-width: 768px) 100vw, 640px"
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
 
           <div
             style={{

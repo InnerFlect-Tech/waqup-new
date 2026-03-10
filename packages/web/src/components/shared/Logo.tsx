@@ -66,6 +66,7 @@ export const Logo: React.FC<LogoProps> = (props) => {
           letterSpacing: size === 'lg' ? '-2px' : '-1px',
           fontSize: fontSize,
           lineHeight: 1,
+          whiteSpace: 'nowrap',
           fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
@@ -97,7 +98,7 @@ export const Logo: React.FC<LogoProps> = (props) => {
 
   if (renderAsLink) {
     return (
-      <Link href={linkHref} style={{ textDecoration: 'none', display: 'inline-block' }}>
+      <Link href={linkHref} className="waqup-logo-link" style={{ textDecoration: 'none', display: 'inline-block' }}>
         {logoContent}
       </Link>
     );

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Typography, Badge, SuperAdminGate } from '@/components';
 import { useTheme, type Theme } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { CONTENT_MAX_WIDTH } from '@/theme';
-import { getRouteGroupsForPages, pathToHref, type RouteStatus, type RouteGroup } from '@/lib';
+import { getRouteGroupsForPages, pathToHref, type RouteStatus, type RouteGroup, type RouteCompleteness } from '@/lib';
 import { Link } from '@/i18n/navigation';
 
 const STATUS_LABELS: Record<RouteStatus, string> = {
@@ -23,7 +23,31 @@ const STATUS_BADGE_VARIANT: Record<RouteStatus, 'success' | 'warning' | 'error' 
   to_change: 'warning',
 };
 
-function RouteCard({ route, colors }: { route: { path: string; description: string; status: RouteStatus; note?: string }; colors: Theme['colors'] }) {
+const COMPLETENESS_LABELS: Record<RouteCompleteness, string> = {
+  complete: 'Complete',
+  stub: 'Stub',
+  placeholder: 'Placeholder',
+  mock: 'Mock',
+  wired: 'Wired',
+  to_change: 'To change',
+};
+
+const COMPLETENESS_BADGE_VARIANT: Record<RouteCompleteness, 'success' | 'warning' | 'error' | 'info' | 'outline' | 'default'> = {
+  complete: 'success',
+  stub: 'warning',
+  placeholder: 'outline',
+  mock: 'info',
+  wired: 'default',
+  to_change: 'warning',
+};
+
+function RouteCard({
+  route,
+  colors,
+}: {
+  route: { path: string; description: string; status: RouteStatus; completeness?: RouteCompleteness; note?: string };
+  colors: Theme['colors'];
+}) {
   const isAction = route.status === 'to_delete' || route.status === 'to_change';
   const href = pathToHref(route.path);
   return (
@@ -55,6 +79,11 @@ function RouteCard({ route, colors }: { route: { path: string; description: stri
         <Badge variant={STATUS_BADGE_VARIANT[route.status]} size="sm">
           {STATUS_LABELS[route.status]}
         </Badge>
+        {route.completeness && (
+          <Badge variant={COMPLETENESS_BADGE_VARIANT[route.completeness]} size="sm">
+            {COMPLETENESS_LABELS[route.completeness]}
+          </Badge>
+        )}
       </div>
       <Typography variant="small" style={{ color: colors.text.secondary, fontSize: '12px', lineHeight: 1.3 }}>
         {route.description}
@@ -81,11 +110,22 @@ export default function PagesIndexPage() {
   const colors = theme.colors;
   const { public: WITHOUT_AUTH, protected: WITH_AUTH, superadmin: SUPERADMIN } = getRouteGroupsForPages();
 
+  const [completenessFilter, setCompletenessFilter] = useState<RouteCompleteness | 'all'>('all');
+
   const stats = useMemo(() => {
     const allRoutes = [...(WITHOUT_AUTH as RouteGroup[]).flatMap((g) => g.routes), ...(WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes), ...(SUPERADMIN as RouteGroup[]).flatMap((g) => g.routes)];
     const byStatus: Record<RouteStatus, number> = { exists: 0, to_create: 0, to_delete: 0, to_change: 0 };
+    const byCompleteness: Record<RouteCompleteness, number> = {
+      complete: 0,
+      stub: 0,
+      placeholder: 0,
+      mock: 0,
+      wired: 0,
+      to_change: 0,
+    };
     for (const r of allRoutes) {
       byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
+      if (r.completeness) byCompleteness[r.completeness] = (byCompleteness[r.completeness] ?? 0) + 1;
     }
     return {
       total: allRoutes.length,
@@ -93,8 +133,13 @@ export default function PagesIndexPage() {
       protected: (WITH_AUTH as RouteGroup[]).flatMap((g) => g.routes).length,
       superadmin: (SUPERADMIN as RouteGroup[]).flatMap((g) => g.routes).length,
       byStatus,
+      byCompleteness,
     };
   }, [WITHOUT_AUTH, WITH_AUTH, SUPERADMIN]);
+
+  type RouteItem = { path: string; description: string; status: RouteStatus; completeness?: RouteCompleteness; note?: string };
+  const filterRoutes = (routes: RouteItem[]): RouteItem[] =>
+    completenessFilter === 'all' ? routes : routes.filter((r) => r.completeness === completenessFilter);
 
   return (
     <SuperAdminGate>
@@ -105,7 +150,7 @@ export default function PagesIndexPage() {
             All Pages
           </Typography>
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
-            By auth: public (no login) vs protected (login required). Status: exists / to create / to change.
+            By auth: public (no login) vs protected (login required). Status: exists / to create / to change. Completeness: complete / stub / placeholder / mock / wired / to change.
           </Typography>
 
           {/* Route count summary */}
@@ -165,6 +210,42 @@ export default function PagesIndexPage() {
             </div>
           </GlassCard>
 
+          {/* Completeness filter & legend */}
+          <GlassCard variant="content" style={{ marginBottom: spacing.xl }}>
+            <Typography variant="h4" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>Completeness</Typography>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, flexWrap: 'wrap', marginBottom: spacing.sm }}>
+              <label style={{ fontSize: 12, color: colors.text.secondary }}>
+                Filter:
+                <select
+                  value={completenessFilter}
+                  onChange={(e) => setCompletenessFilter(e.target.value as RouteCompleteness | 'all')}
+                  style={{
+                    marginLeft: spacing.xs,
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    borderRadius: borderRadius.sm,
+                    background: colors.background.secondary,
+                    border: `1px solid ${colors.glass.border}`,
+                    color: colors.text.primary,
+                    fontSize: 12,
+                  }}
+                >
+                  <option value="all">All</option>
+                  {(Object.keys(COMPLETENESS_LABELS) as RouteCompleteness[]).map((c) => (
+                    <option key={c} value={c}>{COMPLETENESS_LABELS[c]} ({stats.byCompleteness[c] ?? 0})</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div style={{ display: 'flex', gap: spacing.lg, flexWrap: 'wrap', fontSize: 12, color: colors.text.secondary }}>
+              {(Object.entries(COMPLETENESS_LABELS) as [RouteCompleteness, string][]).map(([key, label]) => (
+                <span key={key} style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                  <Badge variant={COMPLETENESS_BADGE_VARIANT[key]} size="sm">{label}</Badge>
+                  <span style={{ color: colors.text.tertiary }}>×{stats.byCompleteness[key] ?? 0}</span>
+                </span>
+              ))}
+            </div>
+          </GlassCard>
+
           {/* Section flow diagram */}
           <GlassCard variant="content" style={{ marginBottom: spacing.xl }}>
             <Typography variant="h4" style={{ marginBottom: spacing.md, color: colors.text.primary }}>Section flow</Typography>
@@ -216,7 +297,7 @@ export default function PagesIndexPage() {
               {group.title}
             </Typography>
             <div style={CARD_GRID_STYLE}>
-              {group.routes.map((route) => (
+              {filterRoutes(group.routes).map((route) => (
                 <RouteCard key={route.path} route={route} colors={colors} />
               ))}
             </div>
@@ -232,7 +313,7 @@ export default function PagesIndexPage() {
               {group.title}
             </Typography>
             <div style={CARD_GRID_STYLE}>
-              {group.routes.map((route) => (
+              {filterRoutes(group.routes).map((route) => (
                 <RouteCard key={route.path} route={route} colors={colors} />
               ))}
             </div>
@@ -248,7 +329,7 @@ export default function PagesIndexPage() {
               {group.title}
             </Typography>
             <div style={CARD_GRID_STYLE}>
-              {group.routes.map((route) => (
+              {filterRoutes(group.routes).map((route) => (
                 <RouteCard key={route.path} route={route} colors={colors} />
               ))}
             </div>

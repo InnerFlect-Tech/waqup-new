@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme, spacing, borderRadius } from '@/theme';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -70,11 +71,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
 // ─── Stack ───────────────────────────────────────────────────────────────────
 
-const VARIANT_CONFIG: Record<ToastVariant, { color: string; icon: string }> = {
-  success: { color: '#10b981', icon: '✓' },
-  error:   { color: '#ef4444', icon: '✕' },
-  warning: { color: '#f59e0b', icon: '!' },
-  info:    { color: '#6366f1', icon: 'i' },
+const VARIANT_ICONS: Record<ToastVariant, string> = {
+  success: '✓',
+  error: '✕',
+  warning: '!',
+  info: 'i',
 };
 
 function ToastStack({ toasts, onDismiss }: { toasts: ToastItem[]; onDismiss: (id: string) => void }) {
@@ -90,9 +91,13 @@ function ToastStack({ toasts, onDismiss }: { toasts: ToastItem[]; onDismiss: (id
 }
 
 function ToastBubble({ toast }: { toast: ToastItem }) {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const variantColor = { success: colors.success, error: colors.error, warning: colors.warning, info: colors.info }[toast.variant];
+  const icon = VARIANT_ICONS[toast.variant];
+
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
-  const cfg = VARIANT_CONFIG[toast.variant];
 
   useEffect(() => {
     Animated.parallel([
@@ -105,13 +110,19 @@ function ToastBubble({ toast }: { toast: ToastItem }) {
     <Animated.View
       style={[
         styles.bubble,
-        { borderLeftColor: cfg.color, opacity, transform: [{ translateY }] },
+        {
+          backgroundColor: colors.background.secondary,
+          borderColor: colors.glass.border,
+          borderLeftColor: variantColor,
+          opacity,
+          transform: [{ translateY }],
+        },
       ]}
     >
-      <View style={[styles.iconCircle, { borderColor: cfg.color + '55', backgroundColor: cfg.color + '22' }]}>
-        <Text style={[styles.iconText, { color: cfg.color }]}>{cfg.icon}</Text>
+      <View style={[styles.iconCircle, { borderColor: variantColor + '55', backgroundColor: variantColor + '22' }]}>
+        <Text style={[styles.iconText, { color: variantColor }]}>{icon}</Text>
       </View>
-      <Text style={styles.message} numberOfLines={2}>
+      <Text style={[styles.message, { color: colors.text.primary }]} numberOfLines={2}>
         {toast.message}
       </Text>
     </Animated.View>
@@ -121,21 +132,19 @@ function ToastBubble({ toast }: { toast: ToastItem }) {
 const styles = StyleSheet.create({
   stack: {
     position: 'absolute',
-    left: 16,
-    right: 16,
-    gap: 8,
+    left: spacing.md,
+    right: spacing.md,
+    gap: spacing.sm,
     zIndex: 9999,
   },
   bubble: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    padding: 14,
-    backgroundColor: 'rgba(10,10,15,0.95)',
+    gap: spacing.md,
+    padding: spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
     borderLeftWidth: 3,
-    borderRadius: 12,
+    borderRadius: borderRadius.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -157,7 +166,6 @@ const styles = StyleSheet.create({
   },
   message: {
     flex: 1,
-    color: '#f1f5f9',
     fontSize: 14,
     lineHeight: 20,
   },

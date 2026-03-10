@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateConversationReply } from '@waqup/shared/services/ai';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,12 +36,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 503 });
     }
 
-    // ─── Auth ───────────────────────────────────────────────────────────────
-    const supabase = await createSupabaseServerClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const auth = await getAuthenticatedUserForApi(req);
+    if (!auth) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const { supabase, user } = auth;
 
     const body = (await req.json()) as OracleRequest;
 

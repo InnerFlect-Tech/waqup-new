@@ -67,11 +67,14 @@
   },
   "footerTagline": "Your voice. Your transformation. Scientifically designed to rewire the subconscious patterns that shape who you are.",
   "joinWaitlist": "Join Waitlist",
+  "signIn": "Sign In",
   "language": "Language",
   "closeMenu": "Close menu",
   "footerProduct": "Product",
+  "footerForProfessionals": "For Professionals",
   "footerCompany": "Company",
   "footerLegal": "Legal",
+  "footerMailingList": "Mailing List",
   "footerHowItWorks": "How It Works",
   "footerTheScience": "The Science",
   "footerPricing": "Pricing",
@@ -82,6 +85,7 @@
   "footerFoundingMembers": "Founding Members",
   "footerPrivacyPolicy": "Privacy Policy",
   "footerTerms": "Terms of Service",
+  "footerDataDeletion": "Data Deletion",
   "footerPaymentNote": "Practice is free forever. Payment: cards (Stripe) · Bitcoin coming soon",
   "comingSoon": {
     "title": "Coming Soon",
@@ -121,6 +125,7 @@
     "practiceInYourVoice": "Practice in your own voice",
     "foundingMembersLink": "Founding Members →",
     "memberLogin": "Member Login",
+    "signInButton": "Sign In",
     "forTeachers": "For teachers",
     "forCoaches": "For coaches",
     "forStudios": "For studios",
@@ -135,10 +140,10 @@
     "coreValue": {
       "title": "Built for transformation",
       "subtitle": "Not another meditation app. A personal practice studio that works the way you do.",
-      "yourVoice": { "title": "Your voice, not generic audio", "desc": "Record once. Every practice sounds like you, speaking to yourself." },
+      "yourVoice": { "title": "Your voice, not generic audio", "desc": "Record once. Every practice sounds like you, speaking to yourself.", "benefit1": "60 seconds to record", "benefit2": "Unlimited practices in your voice", "cta": "Create my first practice" },
       "aiHelps": { "title": "AI helps you create, not replace you", "desc": "Tell the orb your intention. Review, tweak, and own every word." },
       "replay": { "title": "Practices you actually replay", "desc": "Made for you. In your voice. Built for daily use." },
-      "minutes": { "title": "Takes minutes, not hours", "desc": "Create in under 5 minutes. Practice free forever." }
+      "minutes": { "title": "Takes minutes, not hours", "desc": "Create in under 5 minutes. Practice free forever.", "badge": "5 min" }
     },
     "howItWorks": {
       "title": "How it works",
@@ -164,10 +169,10 @@
     },
     "benefitsSection": {
       "title": "Why waQup works",
-      "benefit1": "Hear yourself say what you most need to hear",
-      "benefit2": "Personal practices, not generic audio",
-      "benefit3": "Practice free forever — creation only uses credits",
-      "benefit4": "Works in minutes, compounds for life",
+      "benefit1": "Hear yourself say what you need",
+      "benefit2": "Personal, not generic",
+      "benefit3": "Practice free — credits only for creation",
+      "benefit4": "Minutes to create, lifetime to practice",
       "benefit5": "Your voice data stays yours"
     },
     "features": {

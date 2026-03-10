@@ -6,7 +6,7 @@ import { useRouter } from '@/i18n/navigation';
 import { motion, Reorder } from 'framer-motion';
 import { Plus, GripVertical, Trash2, ArrowLeft, Share2 } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH } from '@/theme';
-import { Typography, Button, PageShell } from '@/components';
+import { Typography, Button, Loading, PageShell } from '@/components';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores';
 import { ShareModal } from '@/components/marketplace';
@@ -131,7 +131,7 @@ export default function SeriesDetailPage() {
     return (
       <PageShell intensity="light" allowDocumentScroll>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${spacing.xl}`, textAlign: 'center' }}>
-          <Typography variant="body" style={{ color: colors.text.secondary }}>Loading...</Typography>
+          <Loading variant="spinner" size="lg" />
         </div>
       </PageShell>
     );
