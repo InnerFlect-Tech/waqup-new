@@ -1,7 +1,7 @@
 # Stripe Setup — waQup Production Guide
 
 **Last updated**: 9 March 2026  
-**Stripe API version**: `2025-02-24.acacia` (pinned in `packages/web/src/lib/stripe.ts`)  
+**Stripe API version**: `2026-02-25.clover` (pinned in `packages/web/src/lib/stripe.ts`)  
 **Account**: test mode until go-live, then switch to live keys
 
 ---
@@ -13,7 +13,9 @@ waQup uses Stripe for two payment flows:
 | Flow | Type | What happens |
 |------|------|-------------|
 | Subscription plan | Recurring | Starter (€7/week), Growth (€20/month), Devotion (€60/month) — grants Qs each billing period via webhook |
-| Q credit pack | One-time | Spark (25Q / €7), Creator (60Q / €15), Flow (120Q / €28), Devotion Pack (300Q / €60) — grants Qs immediately after payment via webhook |
+| Q credit pack | One-time | Spark (70Q / €6.99), Creator (155Q / €14.99), Flow (316Q / €29.99), Devotion (668Q / €59.99) — grants Qs immediately after payment via webhook |
+
+**Credit pack amounts and prices are defined in** `packages/shared/src/constants/credit-packs.ts`. Create Stripe products/prices to match those values so Checkout and webhook stay in sync.
 
 Credits (Qs) are **never granted by the frontend**. All credit changes go through `add_credits()` Supabase RPC called from `POST /api/stripe/webhook` only.
 
@@ -108,9 +110,9 @@ Create each as a separate product with a **one-time price**.
 
 | Field | Value |
 |-------|-------|
-| Product name | Spark — 25 Qs |
-| Description | A handful of Qs to get started |
-| Price | €7.00 |
+| Product name | Spark — 70 Qs |
+| Description | Try your first affirmations, meditations, or rituals. Perfect for exploring. |
+| Price | €6.99 |
 | Price type | One-time |
 | Tax behaviour | Exclusive |
 
@@ -120,9 +122,9 @@ Add to `.env.local`: `NEXT_PUBLIC_STRIPE_SPARK_PRICE_ID=price_...`
 
 | Field | Value |
 |-------|-------|
-| Product name | Creator — 60 Qs |
-| Description | The sweet spot for regular creators |
-| Price | €15.00 |
+| Product name | Creator — 155 Qs |
+| Description | Create content regularly without running out. Most popular choice. |
+| Price | €14.99 |
 | Price type | One-time |
 | Tax behaviour | Exclusive |
 
@@ -132,9 +134,9 @@ Add to `.env.local`: `NEXT_PUBLIC_STRIPE_CREATOR_PRICE_ID=price_...`
 
 | Field | Value |
 |-------|-------|
-| Product name | Flow — 120 Qs |
-| Description | For those in full creative flow |
-| Price | €28.00 |
+| Product name | Flow — 316 Qs |
+| Description | Deep creative sessions. Build a full library without pause. |
+| Price | €29.99 |
 | Price type | One-time |
 | Tax behaviour | Exclusive |
 
@@ -144,9 +146,9 @@ Add to `.env.local`: `NEXT_PUBLIC_STRIPE_FLOW_PRICE_ID=price_...`
 
 | Field | Value |
 |-------|-------|
-| Product name | Devotion Pack — 300 Qs |
-| Description | Maximum creative power. Never runs dry. |
-| Price | €60.00 |
+| Product name | Devotion — 668 Qs |
+| Description | Maximum creative power. Never runs dry. Best per-Q value. |
+| Price | €59.99 |
 | Price type | One-time |
 | Tax behaviour | Exclusive |
 
@@ -156,7 +158,12 @@ Add to `.env.local`: `NEXT_PUBLIC_STRIPE_DEVOTION_PACK_PRICE_ID=price_...`
 
 ## Step 3 — Webhook Endpoint
 
-### 3.1 Register the production webhook
+**Quick start (2026-03-10):**
+
+- **Local:** Install [Stripe CLI](https://docs.stripe.com/stripe-cli), then from `packages/web` run `npm run stripe:webhook:listen` (or `STRIPE_API_KEY=sk_test_... stripe listen --forward-to localhost:3000/api/stripe/webhook`). Copy the printed `whsec_...` into `STRIPE_WEBHOOK_SECRET` in `packages/web/.env.local`. The same secret is reused across restarts. Keep the CLI running in a separate terminal while testing payments.
+- **Production:** Set `NEXT_PUBLIC_APP_URL` to your live URL (e.g. `https://waqup.app`) in `.env.local` or Vercel, then from `packages/web` run `npm run stripe:webhook:create`. Add the printed secret to Vercel as `STRIPE_WEBHOOK_SECRET`. Alternatively, register the endpoint manually in Dashboard (3.1 below).
+
+### 3.1 Register the production webhook (manual)
 
 **Dashboard → Developers → Webhooks → + Add endpoint**
 
@@ -186,21 +193,18 @@ After saving:
 
 ### 3.2 Local development webhook
 
-Install the Stripe CLI:
-```bash
-brew install stripe/stripe-cli/stripe
-stripe login
-```
+Install the [Stripe CLI](https://docs.stripe.com/stripe-cli) (`brew install stripe/stripe-cli/stripe` on macOS, or [download the binary](https://github.com/stripe/stripe-cli/releases) on Linux/WSL), then `stripe login`.
 
-In a separate terminal while running `npm run dev:web`:
+From `packages/web`, in a separate terminal from your dev server:
+```bash
+npm run stripe:webhook:listen
+```
+Or run the CLI directly:
 ```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
 
-The CLI prints a `whsec_...` key. Add it to `.env.local`:
-```
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
+The CLI prints a `whsec_...` key. Add it to `packages/web/.env.local` as `STRIPE_WEBHOOK_SECRET=whsec_...`.
 
 ### 3.3 How the webhook works
 

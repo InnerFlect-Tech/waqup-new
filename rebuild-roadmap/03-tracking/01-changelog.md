@@ -66,6 +66,19 @@
 
 ---
 
+## Stripe webhook automation and env validation (2026-03-10)
+
+### Webhook setup and documentation
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - **Scripts**: `packages/web/scripts/create-stripe-webhook.mjs` — creates production webhook endpoint via Stripe API and prints signing secret; npm scripts `stripe:webhook:listen` and `stripe:webhook:create` in packages/web.
+  - **Docs**: `docs/04-reference/13-stripe-setup.md` — API version set to `2026-02-25.clover`; credit pack section updated to current amounts/prices (70/155/316/668 Qs, €6.99–€59.99); Step 3 quick start for local (Stripe CLI + npm run) and production (create script); Linux/WSL CLI install note.
+  - **Validation**: `docs/04-reference/14-stripe-env-validation.md` — new doc validating required env vars (webhook, Supabase admin, Stripe price IDs) against codebase with file/line references.
+- **Updated**: 2026-03-10
+
+---
+
 ## Final Master Audit (2026-03-10)
 
 ### Summary
