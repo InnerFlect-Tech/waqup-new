@@ -9,6 +9,7 @@ import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { useAuthStore } from '@/stores';
 import { useCreditBalance } from '@/hooks';
+import { Analytics } from '@waqup/shared/utils';
 import { supabase } from '@/lib/supabase';
 import { Link } from '@/i18n/navigation';
 import { LogOut, ChevronRight, Edit2, Check, X } from 'lucide-react';
@@ -364,7 +365,9 @@ export default function ProfilePage() {
             fullWidth
             style={{ borderColor: colors.error, color: colors.error }}
             onClick={async () => {
+              const userId = useAuthStore.getState().user?.id;
               await useAuthStore.getState().logout();
+              Analytics.logoutCompleted(userId);
               router.push('/');
             }}
           >

@@ -10,6 +10,7 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { Link } from '@/i18n/navigation';
 import { CREDIT_PACKS, getPackSavings, PRACTICE_IS_FREE_ONE_LINER, type CreditPackId } from '@waqup/shared/constants';
+import { Analytics } from '@waqup/shared/utils';
 
 function PackCard({
   pack,
@@ -178,6 +179,8 @@ export default function BuyQsPage() {
       const { url } = await res.json();
       if (!url) throw new Error('No checkout URL returned');
 
+      const pack = CREDIT_PACKS.find((p) => p.id === packId);
+      Analytics.paymentStarted('credits', pack?.price ?? 0, 'USD');
       window.location.href = url;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');

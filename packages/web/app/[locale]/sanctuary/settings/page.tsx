@@ -9,6 +9,7 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { clearCreateInitSeen, useAvatarColors, useSubscription } from '@/hooks';
 import { getPlanById } from '@waqup/shared/constants';
+import { Analytics } from '@waqup/shared/utils';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { Check } from 'lucide-react';
@@ -414,7 +415,9 @@ export default function SettingsPage() {
             fullWidth
             style={{ borderColor: colors.error, color: colors.error }}
             onClick={async () => {
+              const userId = useAuthStore.getState().user?.id;
               await useAuthStore.getState().logout();
+              Analytics.logoutCompleted(userId);
               router.push('/');
             }}
           >

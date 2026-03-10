@@ -104,29 +104,21 @@ export default async function LocaleLayout({ children, params }: Props) {
             __html: `(function(){var t=${JSON.stringify(themeInitData)};var p=new URLSearchParams(window.location.search);var u=p.get("theme");var s=typeof localStorage!=="undefined"?localStorage.getItem("waqup-theme"):null;var n=(u&&t[u])?u:(s&&t[s])?s:"mystical-purple";var c=t[n]||t["mystical-purple"];if(!c)return;var r=document.documentElement;Object.keys(c).forEach(function(k){r.style.setProperty("--theme-"+k.replace(/([A-Z])/g,"-$1").toLowerCase().replace(/^-/,""),c[k]);});})();`,
           }}
         />
-      </head>
-      <body className={FONT_CLASS}>
         {/*
-         * GA4 Consent Mode v2 — defaults all consent to 'denied' until
-         * the user accepts via CookieConsentBanner.
+         * GA4 Consent Mode v2 — MUST run synchronously in <head> before
+         * gtag.js loads, so GA never collects data without user consent.
+         * Sets all consent types to 'denied' by default.
+         * CookieConsentBanner calls gtag('consent','update',...) on user decision.
          */}
         {GA_ID && (
-          <Script id="ga4-consent-defaults" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent', 'default', {
-                analytics_storage: 'denied',
-                ad_storage: 'denied',
-                ad_user_data: 'denied',
-                ad_personalization: 'denied',
-                wait_for_update: 500,
-              });
-              gtag('set', 'url_passthrough', true);
-              gtag('set', 'ads_data_redaction', true);
-            `}
-          </Script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});gtag('set','url_passthrough',true);gtag('set','ads_data_redaction',true);`,
+            }}
+          />
         )}
+      </head>
+      <body className={FONT_CLASS}>
         {GA_ID && process.env.NODE_ENV === 'production' && (
           <>
             <Script
