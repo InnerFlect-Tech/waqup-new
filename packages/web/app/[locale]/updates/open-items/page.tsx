@@ -15,12 +15,12 @@ import { ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const OPEN_ITEMS = [
   {
-    id: 'e2e-critical-flows',
-    title: 'E2E critical flows',
-    origin: 'test:e2e:critical',
+    id: 'e2e-access-granted',
+    title: 'E2E test user access_granted',
+    origin: 'testing',
     status: 'needs verification',
-    explanation: 'Playwright webServer may timeout. Run with dev server already up.',
-    action: 'Run `npm run dev:web`, then `npm run test:e2e:critical`. Set OVERRIDE_LOGIN_* for auth tests.',
+    explanation: 'Test user without access_granted lands on /coming-soon; protected specs fail.',
+    action: 'Run SQL: UPDATE profiles SET access_granted = true WHERE id = (SELECT id FROM auth.users WHERE email = \'YOUR_TEST_EMAIL\'); Then npm run test:e2e:critical.',
   },
   {
     id: 'ios-eas-revenuecat-env',

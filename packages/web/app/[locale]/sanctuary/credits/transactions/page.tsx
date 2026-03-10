@@ -9,23 +9,12 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { Link } from '@/i18n/navigation';
 import { createCreditsService, type CreditTransaction } from '@waqup/shared/services';
+import { formatDateRelative } from '@waqup/shared/utils';
 import { supabase } from '@/lib/supabase';
 
 const PAGE_SIZE = 20;
 
 const creditsService = createCreditsService(supabase);
-
-function formatDate(iso: string): string {
-  const date = new Date(iso);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: diffDays > 365 ? 'numeric' : undefined });
-}
 
 export default function TransactionsPage() {
   const { theme } = useTheme();
@@ -184,7 +173,7 @@ export default function TransactionsPage() {
                     {tx.description}
                   </Typography>
                   <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                    {formatDate(tx.created_at)}
+                    {formatDateRelative(tx.created_at)}
                   </Typography>
                 </div>
                 <span

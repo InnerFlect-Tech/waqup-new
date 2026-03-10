@@ -11,8 +11,11 @@ import { Play, Mic, Bot, Clock, Calendar, Plus, RefreshCw, ChevronLeft } from 'l
 import type { ContentItem, ContentItemType } from './ContentItem';
 import { getContentDetailHref } from './getContentDetailHref';
 import { getContentTypeIcon } from '@/lib/content-helpers';
-import { getContentTypeBadgeVariant } from '@waqup/shared/utils';
+import { getContentTypeBadgeVariant, formatDate } from '@waqup/shared/utils';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+
+const formatDateShort = (iso?: string | null) =>
+  formatDate(iso, { includeYear: false, fallback: '' });
 
 export interface ContentListPageProps {
   title: string;
@@ -28,11 +31,6 @@ export interface ContentListPageProps {
 }
 
 const TYPE_COLOR: Record<ContentItemType, string> = CONTENT_TYPE_COLORS;
-
-function formatDate(iso?: string) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
 
 function ContentCard({
   item,
@@ -220,8 +218,8 @@ function ContentCard({
               <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
               <span style={{ fontSize: '11px', color: colors.text.secondary }}>
                 {item.lastPlayed
-                  ? `Played ${formatDate(item.lastPlayed)}`
-                  : formatDate(item.createdAt)}
+                  ? `Played ${formatDateShort(item.lastPlayed)}`
+                  : formatDateShort(item.createdAt)}
               </span>
             </div>
           )}

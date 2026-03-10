@@ -7,6 +7,7 @@
 
 export * from './audio-helpers';
 export * from './component-helpers';
+export * from './format-date';
 export * from './feedback-context';
 export * from './content-helpers';
 export * from './credits-format';

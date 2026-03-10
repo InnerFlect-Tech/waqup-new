@@ -3,9 +3,21 @@ import { assertNoHorizontalOverflow } from '../../helpers/navigation.helper';
 
 /**
  * Mobile viewport audit — verifies critical pages render without horizontal overflow
- * at common phone widths (320, 375, 390px).
+ * at common phone widths (320, 375, 390px). Merged from mobile-layout.spec.ts.
  */
 test.describe('Mobile viewport audit', () => {
+  test('no horizontal overflow on landing at 375px', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/');
+    await assertNoHorizontalOverflow(page);
+  });
+
+  test('key CTAs visible at 375px', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/');
+    await expect(page.getByRole('link', { name: /get started|join|start|transform|waitlist/i }).first()).toBeVisible({ timeout: 10000 });
+  });
+
   test('landing page loads at 375px', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');

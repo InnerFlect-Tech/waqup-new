@@ -11,4 +11,3 @@ export * from './QCoin';
 export * from './Toast';
 export * from './AiCostNotice';
 export * from './AvatarOrb';
-export * from './SectionLabel';

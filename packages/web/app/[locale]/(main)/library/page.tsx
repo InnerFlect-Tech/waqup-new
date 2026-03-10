@@ -25,7 +25,7 @@ import {
 import { getContentDetailHref } from '@/components/content';
 import type { ContentItem } from '@waqup/shared/types';
 import { getContentTypeIcon } from '@/lib';
-import { getContentTypeBadgeVariant } from '@waqup/shared/utils';
+import { getContentTypeBadgeVariant, formatDate } from '@waqup/shared/utils';
 import { useContent } from '@/hooks';
 import { ShareModal } from '@/components/marketplace';
 import { CONTENT_TYPE_COLORS, ELEVATED_BADGE_COLOR } from '@waqup/shared/constants';
@@ -45,11 +45,6 @@ const TYPE_COLOR: Record<ContentTypeFilter, string> = {
   all: '',
   ...CONTENT_TYPE_COLORS,
 };
-
-function formatDate(iso?: string) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
 
 function TodaysPractice({
   item,
@@ -337,8 +332,8 @@ function ContentCard({
                 <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
                 <span style={{ fontSize: '11px', color: colors.text.secondary }}>
                   {item.lastPlayed
-                    ? `Played ${formatDate(item.lastPlayed)}`
-                    : formatDate(item.createdAt)}
+                    ? `Played ${formatDate(item.lastPlayed, { includeYear: false, fallback: '' })}`
+                    : formatDate(item.createdAt, { includeYear: false, fallback: '' })}
                 </span>
               </div>
             )}

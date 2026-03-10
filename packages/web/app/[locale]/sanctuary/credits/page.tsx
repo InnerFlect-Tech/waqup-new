@@ -13,7 +13,7 @@ import { useCreditBalance } from '@/hooks';
 import { createCreditsService } from '@waqup/shared/services';
 import type { CreditTransaction } from '@waqup/shared/types';
 import { supabase } from '@/lib/supabase';
-import { Analytics } from '@waqup/shared/utils';
+import { Analytics, formatDateRelative } from '@waqup/shared/utils';
 import { useAuthStore } from '@/stores';
 import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 
@@ -39,17 +39,6 @@ const EARN_METHODS = [
 ];
 
 const creditsService = createCreditsService(supabase);
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
 
 export default function CreditsPage() {
   const { theme } = useTheme();
@@ -259,7 +248,7 @@ export default function CreditsPage() {
                       {tx.description || (tx.type === 'credit' ? 'Credit' : 'Debit')}
                     </div>
                     <div style={{ fontSize: 11, color: colors.text.secondary, marginTop: 1 }}>
-                      {formatDate(tx.created_at)}
+                      {formatDateRelative(tx.created_at, { includeYearInDate: false })}
                     </div>
                   </div>
                   <span

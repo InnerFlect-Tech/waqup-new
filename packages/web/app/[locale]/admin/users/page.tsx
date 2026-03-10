@@ -7,6 +7,7 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { QCoin } from '@/components';
 import { ArrowUpRight, ArrowDownLeft, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react';
+import { formatDate, formatDateRelative } from '@waqup/shared/utils';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -40,24 +41,6 @@ interface AdminUser {
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function formatDate(dateStr: string | null) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function formatRelative(dateStr: string | null) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  return formatDate(dateStr);
-}
 
 function StatusBadge({ status }: { status: string }) {
   const colorMap: Record<string, string> = {
@@ -146,7 +129,7 @@ function UserRow({ user, index }: { user: AdminUser; index: number }) {
         </td>
         <td style={{ padding: `10px ${spacing.md}` }}>
           <span style={{ fontSize: 12, color: colors.text.secondary }}>
-            {formatRelative(user.last_sign_in_at)}
+            {formatDateRelative(user.last_sign_in_at, { compact: true })}
           </span>
         </td>
         <td style={{ padding: `10px ${spacing.sm}`, textAlign: 'center' }}>
@@ -260,7 +243,7 @@ function UserRow({ user, index }: { user: AdminUser; index: number }) {
                             {tx.description || (tx.amount >= 0 ? 'Credit' : 'Debit')}
                           </div>
                           <div style={{ fontSize: 11, color: colors.text.secondary, marginTop: 1 }}>
-                            {tx.source} · {formatRelative(tx.created_at)}
+                            {tx.source} · {formatDateRelative(tx.created_at, { compact: true })}
                           </div>
                         </div>
                         <span

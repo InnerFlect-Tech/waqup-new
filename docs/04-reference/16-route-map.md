@@ -77,14 +77,14 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 | `/home` | — | 🔒 | Redirect | Redirects to `/sanctuary` |
 | `/library` | `app/[locale]/(main)/library/page.tsx` | 🔒 | Wired | Fetches from `content_items` via `useContent()` |
 | `/create` | `app/[locale]/(main)/create/page.tsx` | 🔒 | Live | Links to 3 content-type create flows |
-| `/create/conversation` | `app/[locale]/(main)/create/conversation/page.tsx` | 🔒 | Mock | Chat UI — mock AI responses |
+| `/create/conversation` | `app/[locale]/(main)/create/conversation/page.tsx` | 🔒 | Wired | Chat UI — calls /api/conversation, saveCreationHandoff |
 | `/profile` | `app/[locale]/(main)/profile/page.tsx` | 🔒 | Live | Reads real user from auth store |
 | `/speak` | `app/[locale]/(main)/speak/page.tsx` | 🔒 | Live | Animated orb UI |
 | `/speak/test` | `app/[locale]/(main)/speak/test/page.tsx` | 🔒 | Live | Dev test harness |
 | `/create/orb` | `app/[locale]/(main)/create/orb/page.tsx` | 🔒 | Wired | Voice orb creation |
-| `/marketplace` | `app/[locale]/(main)/marketplace/page.tsx` | 🔒 | Mock | Browse marketplace |
-| `/marketplace/[id]` | `app/[locale]/(main)/marketplace/[id]/page.tsx` | 🔒 | Mock | Item detail + player |
-| `/marketplace/creator` | `app/[locale]/(main)/marketplace/creator/page.tsx` | 🔒 | Stub | Creator dashboard placeholder |
+| `/marketplace` | `app/[locale]/(main)/marketplace/page.tsx` | 🔒 | Wired | Browse marketplace (marketplace_items, content_items) |
+| `/marketplace/[id]` | `app/[locale]/(main)/marketplace/[id]/page.tsx` | 🔒 | Wired | Item detail + player |
+| `/marketplace/creator` | `app/[locale]/(main)/marketplace/creator/page.tsx` | 🔒 | Wired | Creator dashboard — published, drafts, analytics |
 
 ---
 
@@ -93,11 +93,11 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 | Route | File | Auth | Status | Notes |
 |-------|------|------|--------|-------|
 | `/sanctuary` | `app/[locale]/sanctuary/page.tsx` | 🔒 | Live | Quick actions + menu |
-| `/sanctuary/settings` | `app/[locale]/sanctuary/settings/page.tsx` | 🔒 | Stub | Placeholder |
-| `/sanctuary/progress` | `app/[locale]/sanctuary/progress/page.tsx` | 🔒 | Stub | Placeholder |
-| `/sanctuary/referral` | `app/[locale]/sanctuary/referral/page.tsx` | 🔒 | Stub | Placeholder |
-| `/sanctuary/reminders` | `app/[locale]/sanctuary/reminders/page.tsx` | 🔒 | Stub | Placeholder |
-| `/sanctuary/learn` | `app/[locale]/sanctuary/learn/page.tsx` | 🔒 | Stub | Placeholder |
+| `/sanctuary/settings` | `app/[locale]/sanctuary/settings/page.tsx` | 🔒 | Wired | Profile, theme, notifications |
+| `/sanctuary/progress` | `app/[locale]/sanctuary/progress/page.tsx` | 🔒 | Wired | Heatmap, sessions, get_progress_stats |
+| `/sanctuary/referral` | `app/[locale]/sanctuary/referral/page.tsx` | 🔒 | Stub | Referral link; backend ready |
+| `/sanctuary/reminders` | `app/[locale]/sanctuary/reminders/page.tsx` | 🔒 | Wired | user_reminders CRUD |
+| `/sanctuary/learn` | `app/[locale]/sanctuary/learn/page.tsx` | 🔒 | Stub | Learn content placeholder |
 | `/sanctuary/help` | `app/[locale]/sanctuary/help/page.tsx` | 🔒 | Stub | Help & support |
 | `/sanctuary/plan` | `app/[locale]/sanctuary/plan/page.tsx` | 🔒 | Wired | Subscription plan picker |
 | `/sanctuary/voice` | `app/[locale]/sanctuary/voice/page.tsx` | 🔒 | Wired | Voice cloning setup |
@@ -150,11 +150,11 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 
 | Route | File | Auth | Status |
 |-------|------|------|--------|
-| `/onboarding` | `app/[locale]/(onboarding)/onboarding/page.tsx` | 🔒 | Placeholder |
-| `/onboarding/profile` | `app/[locale]/(onboarding)/onboarding/profile/page.tsx` | 🔒 | Placeholder |
-| `/onboarding/preferences` | `app/[locale]/(onboarding)/onboarding/preferences/page.tsx` | 🔒 | Placeholder |
-| `/onboarding/guide` | `app/[locale]/(onboarding)/onboarding/guide/page.tsx` | 🔒 | Placeholder |
-| `/onboarding/role` | `app/[locale]/(onboarding)/onboarding/role/page.tsx` | 🔒 | Placeholder |
+| `/onboarding` | `app/[locale]/(onboarding)/onboarding/page.tsx` | 🔒 | Live | 4-step flow (profile, preferences, intention, guide) |
+| `/onboarding/profile` | `app/[locale]/(onboarding)/onboarding/profile/page.tsx` | 🔒 | Live | Name, avatar → profiles |
+| `/onboarding/preferences` | `app/[locale]/(onboarding)/onboarding/preferences/page.tsx` | 🔒 | Live | Preferences → profiles |
+| `/onboarding/guide` | `app/[locale]/(onboarding)/onboarding/guide/page.tsx` | 🔒 | Live | Completion → onboarding_completed_at |
+| `/onboarding/role` | `app/[locale]/(onboarding)/onboarding/role/page.tsx` | 🔒 | Live | Role step (web-only) |
 
 ---
 
@@ -242,9 +242,9 @@ Auth is enforced at two layers:
 | Main Tabs | Home | `Home` | Live — create entry (navigates to CreateMode) |
 | Main Tabs | Library | `Library` | Live |
 | Main Tabs | Marketplace | `Marketplace` | Live |
-| Main Tabs | Speak | `Speak` | Partial (no Oracle API) |
+| Main Tabs | Speak | `Speak` | Live — Oracle API, session-based replies |
 | Main Tabs | Profile | `Profile` | Live |
 | Main Stack | CreateMode | `CreateMode` | Live (modal — content type + mode picker) |
 | Main Stack | ContentCreate | `ContentCreate` | Live |
-| Main Stack | ContentDetail | `ContentDetail` | Partial |
+| Main Stack | ContentDetail | `ContentDetail` | Live — Edit, Edit audio (web) |
 | Main Stack | Credits, Progress, Settings, Reminders | — | Live |

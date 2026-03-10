@@ -55,6 +55,7 @@ For protected-route specs, use the **override login** flow when env is configure
    ```
 2. The setup project runs first, logs in via Test login, saves `e2e/.auth/user.json`
 3. Authenticated projects use `storageState: 'e2e/.auth/user.json'`
+4. **For sanctuary/create/credits specs**: The test user must have `access_granted: true` in `profiles`. Otherwise the user lands on `/coming-soon` and protected specs (credit badge, create hub, etc.) will fail. Run: `UPDATE profiles SET access_granted = true WHERE id = (SELECT id FROM auth.users WHERE email = 'YOUR_TEST_EMAIL');`
 
 ## CI
 
@@ -65,9 +66,20 @@ E2E runs in GitHub Actions after the build job:
 - Runs `npm run dev` via Playwright webServer (`next start` is incompatible with `output: standalone`)
 - On failure: uploads `playwright-report` and `test-results` as artifacts
 
+## Suite Structure (Consolidated)
+
+- **Public**: landing, auth-pages, marketing, protected-redirect
+- **Auth**: login-flow (override login, test button visibility), signup-flow (validation, hasAccess)
+- **Protected** (requires auth): sanctuary, create, library, speak, credits-pricing, navigation, provider-coverage, settings-profile
+- **Flows**: create-affirmation, onboarding-flow
+- **Responsive**: mobile-viewport (merged from mobile-layout)
+- **i18n**: locale-routing
+
+Run full suite: `npm run test:e2e`. Run critical subset: `npm run test:e2e:critical`.
+
 ## Adding Tests
 
-- **Layout**: `e2e/specs/public/`, `e2e/specs/auth/`, `e2e/specs/protected/`, `e2e/specs/responsive/`
+- **Layout**: `e2e/specs/public/`, `e2e/specs/auth/`, `e2e/specs/protected/`, `e2e/specs/responsive/`, `e2e/specs/flows/`, `e2e/specs/onboarding/`, `e2e/specs/i18n/`
 - **Fixtures**: `e2e/fixtures/auth.ts`, `e2e/fixtures/test-user.ts`
 - Prefer `getByRole`, `getByLabelText`, `getByText`
 - Add `data-testid` only when semantic locators are brittle (e.g. `data-testid="nav-sanctuary"`)

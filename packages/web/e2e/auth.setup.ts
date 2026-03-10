@@ -21,6 +21,6 @@ setup('authenticate via override login', async ({ page }) => {
   const testLoginBtn = page.getByTestId('test-login-button');
   await testLoginBtn.waitFor({ state: 'visible', timeout: 5000 });
   await testLoginBtn.click();
-  await page.waitForURL(/\/coming-soon/, { timeout: 10000 });
+  await page.waitForURL(/\/(sanctuary|coming-soon)(\/|$)/, { timeout: 15000 });
   await page.context().storageState({ path: authStoragePath });
 });

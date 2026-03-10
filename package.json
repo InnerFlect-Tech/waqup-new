@@ -41,6 +41,7 @@
     "prod:web": "npm run build:web && npm run start:web",
     "build:all": "npm run build:shared && npm run build:mobile && npm run build:web",
     "test": "npm run test --workspaces",
+    "test:unit": "npm run test --workspace=@waqup/shared && npm run test --workspace=packages/mobile",
     "test:all": "npm run test --workspace=@waqup/shared && npm run test --workspace=mobile && npm run test:e2e:critical",
     "test:e2e": "npm run test:e2e --workspace=packages/web",
     "test:e2e:critical": "npm run test:e2e:critical --workspace=packages/web",

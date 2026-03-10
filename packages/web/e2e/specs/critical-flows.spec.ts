@@ -8,7 +8,6 @@
  */
 import { test, expect } from '@playwright/test';
 import { skipIfNoAuth } from '../helpers/auth.helper';
-import { assertNoHorizontalOverflow } from '../helpers/navigation.helper';
 import { assertCreateHubLoaded, clickContentTypeCard } from '../helpers/content.helper';
 import { goToCreditsBuyPage } from '../helpers/credits.helper';
 
@@ -40,12 +39,6 @@ test.describe('Critical flows — public (no auth required)', () => {
   test('unauthenticated user redirected from /sanctuary', async ({ page }) => {
     await page.goto('/sanctuary', navOpts);
     await expect(page).not.toHaveURL(/\/sanctuary/);
-  });
-
-  test('no horizontal overflow on landing at 375px', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto('/', navOpts);
-    await assertNoHorizontalOverflow(page);
   });
 });
 

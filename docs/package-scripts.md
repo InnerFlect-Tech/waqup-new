@@ -73,9 +73,10 @@
 
 | Script | Surface | When to Use |
 |--------|---------|-------------|
-| `test` | all | Run tests in all workspaces |
+| `test` | all | Run tests in all workspaces (shared + mobile Jest; web echoes) |
+| `test:unit` | shared, mobile | Shared + mobile Jest only |
 | `test:all` | shared, mobile, web | Shared + mobile unit tests + E2E critical |
-| `test:e2e` | web | Full Playwright E2E suite |
+| `test:e2e` | web | Full Playwright E2E suite (single command for all critical flows) |
 | `test:e2e:critical` | web | Critical flows only (auth, sanctuary, credits, create, library) |
 | `test:e2e:desktop` | web | Desktop Chromium projects |
 | `test:e2e:mobile` | web | Mobile viewport projects (Chrome, Safari) |

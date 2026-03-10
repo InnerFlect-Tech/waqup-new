@@ -11,6 +11,7 @@ import { useTheme } from '@/theme';
 import { getContentTypeIcon } from '@/lib';
 import { ElevatedBadge, ShareModal, CreatorGate } from '@/components/marketplace';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { formatDate } from '@waqup/shared/utils';
 import { supabase } from '@/lib/supabase';
 
 type Tab = 'published' | 'drafts' | 'analytics';
@@ -48,10 +49,6 @@ interface AnalyticsSummary {
 function formatCount(n: number): string {
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
   return String(n);
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 async function fetchPublished(userId: string): Promise<PublishedItem[]> {
@@ -331,7 +328,7 @@ function CreatorDashboard() {
                           {item.isElevated && <ElevatedBadge size="sm" />}
                         </div>
                         <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>{item.title}</Typography>
-                        <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12 }}>Listed {formatDate(item.listedAt)}</Typography>
+                        <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12 }}>Listed {formatDate(item.listedAt, { locale: 'en-US' })}</Typography>
                       </div>
 
                       {/* Stats */}

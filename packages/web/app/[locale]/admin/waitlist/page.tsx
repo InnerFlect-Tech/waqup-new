@@ -19,6 +19,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { formatDate, formatDateRelative } from '@waqup/shared/utils';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -49,20 +50,6 @@ const INTENTION_LABELS: Record<string, string> = {
   curious: 'Curious',
 };
 
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function formatRelative(dateStr: string) {
-  const d = new Date(dateStr);
-  const diffMs = Date.now() - d.getTime();
-  const diffDays = Math.floor(diffMs / 86_400_000);
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return formatDate(dateStr);
-}
 
 function StatusBadge({ status }: { status: WaitlistSignup['status'] }) {
   const map: Record<string, { bg: string; color: string }> = {
@@ -687,7 +674,7 @@ function WaitlistDashboard() {
                     {signup.referral_source ?? '—'}
                   </span>
                   <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>
-                    {formatRelative(signup.created_at)}
+                    {formatDateRelative(signup.created_at, { compact: true })}
                   </span>
                   <ActionButton
                     signupId={signup.id}
