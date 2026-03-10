@@ -7,6 +7,7 @@ import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { Copy, Check, Twitter, Mail, MessageCircle, Gift, Users } from 'lucide-react';
 import { useAuthStore } from '@/stores';
 import { Analytics } from '@waqup/shared/utils';
@@ -35,11 +36,13 @@ export default function ReferralPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const { user } = useAuthStore();
+  const t = useTranslations('marketing.share');
   const [copied, setCopied] = useState(false);
 
   const email = user?.email || 'user@waqup.app';
   const referralCode = generateReferralCode(email);
   const referralUrl = `https://waqup.app/join?ref=${referralCode}`;
+  const shareText = t('referral');
 
   const handleCopy = async () => {
     try {
@@ -52,12 +55,13 @@ export default function ReferralPage() {
     }
   };
 
-  const shareText = encodeURIComponent('Transform your mind with waQup — personalized affirmations, meditations & rituals created with your own voice. Join me here:');
+  const fullShareText = `${shareText}\n${referralUrl}`;
+  const encodedShare = encodeURIComponent(fullShareText);
 
   const SHARE_LINKS = [
-    { icon: Twitter, label: 'Share on X', color: '#1d9bf0', platform: 'twitter' as const, href: `https://twitter.com/intent/tweet?text=${shareText}%20${encodeURIComponent(referralUrl)}` },
-    { icon: MessageCircle, label: 'Share on WhatsApp', color: '#25d366', platform: 'whatsapp' as const, href: `https://wa.me/?text=${shareText}%20${encodeURIComponent(referralUrl)}` },
-    { icon: Mail, label: 'Share by Email', color: '#f59e0b', platform: 'email' as const, href: `mailto:?subject=${encodeURIComponent('Join me on waQup')}&body=${shareText}%20${encodeURIComponent(referralUrl)}` },
+    { icon: Twitter, label: 'Share on X', color: '#1d9bf0', platform: 'twitter' as const, href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(referralUrl)}` },
+    { icon: MessageCircle, label: 'Share on WhatsApp', color: '#25d366', platform: 'whatsapp' as const, href: `https://wa.me/?text=${encodedShare}` },
+    { icon: Mail, label: 'Share by Email', color: '#f59e0b', platform: 'email' as const, href: `mailto:?subject=${encodeURIComponent('Join me on waQup')}&body=${encodedShare}` },
   ];
 
   return (

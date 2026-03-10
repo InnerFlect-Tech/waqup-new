@@ -40,6 +40,11 @@
     "comingSoon": "Em Breve",
     "dataDeletion": "Eliminação de Dados",
     "forTeachers": "Para Professores e Coaches",
+    "forCoaches": "Para Coaches",
+    "forCreators": "Para Criadores",
+    "forStudios": "Para Estúdios",
+    "funnels": "Funis de Vendas",
+    "launch": "Lançamento",
     "getQs": "Obter Qs"
   },
   "auth": {

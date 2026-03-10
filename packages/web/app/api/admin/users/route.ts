@@ -42,6 +42,11 @@ export async function GET(): Promise<NextResponse> {
 
     const userIds = authData.users.map((u) => u.id);
 
+    // Early return if no users — avoids invalid .in('id', []) SQL
+    if (userIds.length === 0) {
+      return NextResponse.json({ users: [] });
+    }
+
     // Fetch profiles (stripe_customer_id)
     const { data: profiles } = await supabase
       .from('profiles')

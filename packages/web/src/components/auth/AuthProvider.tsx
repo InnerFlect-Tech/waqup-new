@@ -62,13 +62,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [initializeAuth, setUser, setSession, setInitialized]);
 
+  // Strip locale prefix for route matching (pathname can be /pt/coming-soon with localePrefix: 'as-needed')
+  const pathWithoutLocale = pathname?.replace(/^\/(en|pt|es|fr|de)(?=\/|$)/, '') || '/';
+
   const isProtectedRoute =
-    pathname.startsWith('/library') ||
-    pathname.startsWith('/create') ||
-    pathname.startsWith('/profile') ||
-    pathname.startsWith('/sanctuary') ||
-    pathname.startsWith('/speak') ||
-    pathname.startsWith('/marketplace');
+    pathWithoutLocale.startsWith('/library') ||
+    pathWithoutLocale.startsWith('/create') ||
+    pathWithoutLocale.startsWith('/profile') ||
+    pathWithoutLocale.startsWith('/sanctuary') ||
+    pathWithoutLocale.startsWith('/speak') ||
+    pathWithoutLocale.startsWith('/marketplace');
 
   useEffect(() => {
     if (!isReady || !isInitialized) return;
@@ -99,16 +102,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/data-deletion',
     ];
     const isPublicRoute =
-      publicRoutes.includes(pathname) ||
-      pathname.startsWith('/showcase') ||
-      pathname.startsWith('/onboarding') ||
-      pathname.startsWith('/explanation') ||
-      pathname.startsWith('/our-story') ||
-      pathname.startsWith('/play') || // Public audio player for sharing
-      pathname.includes('/for-teachers') ||
-      pathname.includes('/for-coaches') ||
-      pathname.includes('/for-studios') ||
-      pathname.includes('/for-creators');
+      publicRoutes.includes(pathWithoutLocale) ||
+      pathWithoutLocale === '/' ||
+      pathWithoutLocale.startsWith('/showcase') ||
+      pathWithoutLocale.startsWith('/onboarding') ||
+      pathWithoutLocale.startsWith('/explanation') ||
+      pathWithoutLocale.startsWith('/our-story') ||
+      pathWithoutLocale.startsWith('/play') || // Public audio player for sharing
+      pathWithoutLocale.includes('/for-teachers') ||
+      pathWithoutLocale.includes('/for-coaches') ||
+      pathWithoutLocale.includes('/for-studios') ||
+      pathWithoutLocale.includes('/for-creators');
 
     if (isProtectedRoute && !user) {
       router.replace('/');
@@ -124,12 +128,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!isPublicRoute && !isProtectedRoute && pathname !== '/') {
+    if (!isPublicRoute && !isProtectedRoute && pathWithoutLocale !== '/') {
       if (!user) {
         router.replace('/');
       }
     }
-  }, [user, isReady, isInitialized, pathname, router, isProtectedRoute, hasAccess, isProfileLoading]);
+  }, [user, isReady, isInitialized, pathname, pathWithoutLocale, router, isProtectedRoute, hasAccess, isProfileLoading]);
 
   const showSpinner =
     !isReady ||

@@ -205,9 +205,40 @@ export function LandingCard({
         minWidth: 0,
         minHeight: 0,
         padding: compact ? spacing.lg : spacing.xl,
+        overflow: 'hidden',
       }}
     >
       {isBanner && bannerIcon}
+      {/* Text column for banner — minWidth: 0 so it can shrink on mobile */}
+      {isBanner ? (
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+          <Typography
+            variant="h3"
+            style={{
+              color: colors.text.primary,
+              fontSize: 'clamp(17px, 1.4vw, 19px)',
+              fontWeight: 500,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="body"
+            style={{
+              color: colors.text.secondary,
+              lineHeight: 1.4,
+              fontSize: 'clamp(14px, 1.1vw, 16px)',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+            }}
+          >
+            {description}
+          </Typography>
+          {children}
+        </div>
+      ) : null}
       {badge && (
         <div
           data-badge
@@ -232,40 +263,48 @@ export function LandingCard({
         </div>
       )}
       {!isHero && !isBanner && imageArea}
-      <Typography
-        variant="h3"
-        style={{
-          color: colors.text.primary,
-          marginBottom: compact && !isBanner ? spacing.xs : spacing.sm,
-          marginTop: isHero && !isHorizontal ? spacing.lg : 0,
-          fontSize: isBanner ? 'clamp(17px, 1.4vw, 19px)' : compact
-            ? 'clamp(15px, 1.3vw, 18px)'
-            : isHero
-              ? 'clamp(18px, 2vw, 24px)'
-              : 'clamp(17px, 1.5vw, 20px)',
-          fontWeight: compact ? 500 : undefined,
-          flexShrink: 0,
-        }}
-      >
-        {title}
-      </Typography>
-      <Typography
-        variant="body"
-        style={{
-          color: colors.text.secondary,
-          lineHeight: isBanner ? 1.4 : compact ? 1.55 : 1.6,
-          fontSize: isBanner ? 'clamp(14px, 1.1vw, 16px)' : compact
-            ? 'clamp(14px, 1.1vw, 15px)'
-            : isHero
-              ? 'clamp(15px, 1.3vw, 17px)'
-              : 'clamp(14px, 1.2vw, 16px)',
-          flex: children && !isBanner ? '0 0 auto' : 1,
-          flexShrink: 0,
-        }}
-      >
-        {description}
-      </Typography>
-      {children}
+      {!isBanner && (
+        <>
+          <Typography
+            variant="h3"
+            style={{
+              color: colors.text.primary,
+              marginBottom: compact ? spacing.xs : spacing.sm,
+              marginTop: isHero && !isHorizontal ? spacing.lg : 0,
+              fontSize: compact
+                ? 'clamp(15px, 1.3vw, 18px)'
+                : isHero
+                  ? 'clamp(18px, 2vw, 24px)'
+                  : 'clamp(17px, 1.5vw, 20px)',
+              fontWeight: compact ? 500 : undefined,
+              flexShrink: 0,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="body"
+            style={{
+              color: colors.text.secondary,
+              lineHeight: compact ? 1.55 : 1.6,
+              fontSize: compact
+                ? 'clamp(14px, 1.1vw, 15px)'
+                : isHero
+                  ? 'clamp(15px, 1.3vw, 17px)'
+                  : 'clamp(14px, 1.2vw, 16px)',
+              flex: children ? '0 0 auto' : 1,
+              flexShrink: 0,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+            }}
+          >
+            {description}
+          </Typography>
+          {children}
+        </>
+      )}
       </div>
   );
 

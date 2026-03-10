@@ -640,7 +640,7 @@ export default function HowItWorksPage() {
             <div style={{ width: 64, height: 64, borderRadius: 18, background: colors.gradients.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Clock size={28} color="#fff" />
             </div>
-            <div style={{ flex: 1, minWidth: 240 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <h4 style={{ fontSize: 22, fontWeight: 500, color: colors.text.primary, margin: '0 0 8px', letterSpacing: '-0.3px' }}>{tp('minuteCardTitle')}</h4>
               <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>{tp('minuteCardParagraph')}</p>
             </div>

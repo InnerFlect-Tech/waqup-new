@@ -17,6 +17,11 @@
     "privacy": "Politique de confidentialité",
     "terms": "Conditions d'utilisation",
     "forTeachers": "Pour les Enseignants et Coachs",
+    "forCoaches": "Pour les Coaches",
+    "forCreators": "Pour les Créateurs",
+    "forStudios": "Pour les Studios",
+    "funnels": "Funnels de Vente",
+    "launch": "Lancement",
     "getQs": "Obtenir des Qs"
   },
   "auth": {

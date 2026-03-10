@@ -3,35 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Typography, Button } from '@/components';
-import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA, FoundingMemberModal, PublicFooter } from '@/components';
-import { AppMockup, LandingSection, LandingCard } from '@/components/marketing';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { CONTENT_MAX_WIDTH, NAV_TOP_OFFSET } from '@/theme';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import {
-  Sparkles,
-  Mic,
-  Zap,
-  ArrowRight,
-  Check,
-  MessageCircle,
-  Headphones,
-  Clock,
-  Sun,
-  Moon,
-  Flame,
-} from 'lucide-react';
-import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { useTheme } from '@/theme';
+import { Sparkles, ArrowRight, Gift, BookOpen } from 'lucide-react';
 
 function formatWaitlistCount(count: number): string {
   if (count >= 1000) return `${(count / 1000).toFixed(1)}k+`;
   return count.toLocaleString();
 }
 
-export default function LandingPage() {
-  const t = useTranslations('marketing');
+export default function PreLaunchLandingPage() {
+  const t = useTranslations('marketing.preLaunch');
   const { theme } = useTheme();
   const colors = theme.colors;
   const [showFoundingModal, setShowFoundingModal] = useState(false);
@@ -46,18 +32,8 @@ export default function LandingPage() {
       .catch(() => {});
   }, []);
 
-  const benefits = [
-    t('landing.benefitsSection.benefit1'),
-    t('landing.benefitsSection.benefit2'),
-    t('landing.benefitsSection.benefit3'),
-    t('landing.benefitsSection.benefit4'),
-    t('landing.benefitsSection.benefit5'),
-  ];
-
   return (
     <PageShell intensity="high" bare scrollSnap allowDocumentScroll>
-
-      {/* Hero — keep existing structure */}
       <section
         className="landing-hero"
         style={{
@@ -79,7 +55,7 @@ export default function LandingPage() {
           minWidth: 0,
         }}
       >
-        {/* Background image — full viewport width (escapa do maxWidth da section) */}
+        {/* Background */}
         <div
           style={{
             position: 'absolute',
@@ -99,38 +75,16 @@ export default function LandingPage() {
             style={{ objectFit: 'cover', objectPosition: 'center center' }}
             sizes="100vw"
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.85) 0%, rgba(6,2,20,0.6) 50%, rgba(6,2,20,0.9) 100%)' }} />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(to bottom, rgba(6,2,20,0.85) 0%, rgba(6,2,20,0.6) 50%, rgba(6,2,20,0.9) 100%)',
+            }}
+          />
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            top: '40%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 'min(400px, 80vw)',
-            height: 'min(400px, 80vw)',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${colors.accent.primary}15 0%, transparent 70%)`,
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: '42%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 'min(200px, 40vw)',
-            height: 'min(200px, 40vw)',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${colors.accent.tertiary}08 0%, transparent 70%)`,
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        />
 
-        {/* Main content — vertically centered */}
         <div
           style={{
             flex: 1,
@@ -140,12 +94,13 @@ export default function LandingPage() {
             alignItems: 'center',
             justifyContent: 'center',
             width: '100%',
+            position: 'relative',
+            zIndex: 2,
           }}
         >
+          {/* Badge */}
           <div
             style={{
-              position: 'relative',
-              zIndex: 2,
               padding: `${spacing.xs} ${spacing.md}`,
               borderRadius: borderRadius.full,
               background: `${colors.accent.tertiary}20`,
@@ -154,24 +109,27 @@ export default function LandingPage() {
               marginBottom: spacing.md,
             }}
           >
-            <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              {t('landing.badge')}
+            <Typography
+              variant="smallBold"
+              style={{
+                color: colors.accent.tertiary,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}
+            >
+              {t('badge')}
             </Typography>
           </div>
 
+          {/* Brand */}
           <div
             style={{
-              position: 'relative',
-              zIndex: 2,
-              fontSize: 'clamp(32px, 8vw, 100px)',
+              fontSize: 'clamp(32px, 8vw, 72px)',
               fontWeight: 300,
               lineHeight: 1,
               marginBottom: spacing.md,
-              color: colors.text.primary,
               letterSpacing: '-2px',
-              WebkitFontSmoothing: 'antialiased',
-              MozOsxFontSmoothing: 'grayscale',
-              textRendering: 'optimizeLegibility',
+              color: colors.text.primary,
             }}
           >
             <span style={{ fontWeight: 300, color: colors.text.primary }}>wa</span>
@@ -179,114 +137,271 @@ export default function LandingPage() {
             <span style={{ fontWeight: 300, color: colors.text.primary }}>up</span>
           </div>
 
+          {/* Headline */}
           <Typography
             variant="body"
             style={{
-              position: 'relative',
-              zIndex: 2,
-              fontSize: 'clamp(20px, 2.8vw, 28px)',
+              fontSize: 'clamp(24px, 4vw, 36px)',
               color: colors.text.primary,
-              maxWidth: 480,
+              maxWidth: 520,
               margin: `0 auto ${spacing.sm} auto`,
               lineHeight: 1.25,
-              fontWeight: 300,
-              letterSpacing: '-0.01em',
+              fontWeight: 400,
             }}
           >
-            {t('landing.headline')}
+            {t('headline')}
           </Typography>
 
           <Typography
             variant="body"
             style={{
-              position: 'relative',
-              zIndex: 2,
               fontSize: 'clamp(14px, 1.8vw, 17px)',
               color: colors.text.secondary,
-              maxWidth: 440,
+              maxWidth: 480,
               margin: `0 auto ${spacing.xl} auto`,
-              lineHeight: 1.5,
+              lineHeight: 1.6,
               fontWeight: 300,
             }}
           >
-            {t('landing.subheadline')}
+            {t('subheadline')}
           </Typography>
 
-          <div style={{ width: '100%', maxWidth: 440, marginBottom: spacing.md }}>
+          {/* Waitlist CTA */}
+          <div style={{ width: '100%', maxWidth: 440, marginBottom: spacing.lg }}>
             <WaitlistCTA
               variant="inline"
-              subtext={t('landing.earlyAccess')}
+              subtext={t('earlyAccess')}
               compact
             />
           </div>
 
+          {/* Beta tester + Full form */}
           <div
             style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: spacing.sm,
+              width: '100%',
+              maxWidth: 440,
               marginBottom: spacing.lg,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: spacing.md,
-              flexWrap: 'wrap',
-              fontSize: 13,
-              color: colors.text.tertiary ?? colors.text.secondary,
-              fontWeight: 400,
             }}
           >
-            {waitlistCount !== null && waitlistCount > 0 && (
-              <span>{t('landing.waitlistCount', { count: formatWaitlistCount(waitlistCount) })}</span>
-            )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <Headphones size={12} color={colors.accent.tertiary} />
-              <span style={{ color: colors.accent.tertiary }}>{t('landing.practiceInYourVoice')}</span>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: spacing.lg,
-              fontSize: 13,
-              color: colors.text.tertiary ?? colors.text.secondary,
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setShowFoundingModal(true)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, fontSize: 'inherit' }}
-            >
-              {t('landing.foundingMembersLink')}
-            </button>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: spacing.md,
-            }}
-          >
-            <Link href="/login" style={{ textDecoration: 'none' }}>
+            <Link href="/waitlist" style={{ textDecoration: 'none' }}>
               <Button
                 variant="outline"
                 size="md"
+                fullWidth
                 style={{
                   borderColor: colors.accent.primary,
                   color: colors.accent.tertiary,
-                  padding: `${spacing.sm} ${spacing.lg}`,
-                  boxShadow: `0 0 0 1px ${colors.accent.primary}40`,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: spacing.sm,
                 }}
               >
-                {t('landing.signInButton')}
+                <Sparkles size={16} />
+                {t('ctaBetaTester')}
               </Button>
             </Link>
+            <Typography
+              variant="small"
+              style={{
+                color: colors.text.tertiary ?? colors.text.secondary,
+                textAlign: 'center',
+                lineHeight: 1.4,
+              }}
+            >
+              {t('ctaBetaDesc')}
+            </Typography>
           </div>
+
+          {waitlistCount !== null && waitlistCount > 0 && (
+            <div
+              style={{
+                marginBottom: spacing.xl,
+                fontSize: 13,
+                color: colors.text.tertiary ?? colors.text.secondary,
+              }}
+            >
+              {t('waitlistCount', { count: formatWaitlistCount(waitlistCount) })}
+            </div>
+          )}
+
+          {/* Share & earn card */}
+          <div
+            style={{
+              width: '100%',
+              maxWidth: 400,
+              marginBottom: spacing.xl,
+              padding: spacing.lg,
+              borderRadius: borderRadius.lg,
+              background: colors.glass.light,
+              backdropFilter: BLUR.lg,
+              WebkitBackdropFilter: BLUR.lg,
+              border: `1px solid ${colors.glass.border}`,
+              textAlign: 'left',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: spacing.md }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: borderRadius.md,
+                  background: `${colors.accent.primary}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Gift size={20} color={colors.accent.primary} strokeWidth={2} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Typography
+                  variant="h4"
+                  style={{
+                    color: colors.text.primary,
+                    marginBottom: spacing.xs,
+                    fontSize: 15,
+                    fontWeight: 600,
+                  }}
+                >
+                  {t('shareEarnTitle')}
+                </Typography>
+                <Typography
+                  variant="small"
+                  style={{
+                    color: colors.text.secondary,
+                    lineHeight: 1.5,
+                    fontSize: 13,
+                  }}
+                >
+                  {t('shareEarnDesc')}
+                </Typography>
+                <Link
+                  href="/join"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    marginTop: spacing.sm,
+                    fontSize: 13,
+                    color: colors.accent.tertiary,
+                    textDecoration: 'none',
+                    fontWeight: 500,
+                  }}
+                >
+                  {t('ctaWaitlist')} <ArrowRight size={12} />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* For teachers */}
+          <Link
+            href="/for-teachers"
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: spacing.md,
+              width: '100%',
+              maxWidth: 400,
+              padding: spacing.lg,
+              borderRadius: borderRadius.lg,
+              background: `${colors.accent.secondary}10`,
+              border: `1px solid ${colors.accent.secondary}30`,
+              textDecoration: 'none',
+              marginBottom: spacing.xl,
+              textAlign: 'left',
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: borderRadius.md,
+                background: `${colors.accent.secondary}25`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <BookOpen size={20} color={colors.accent.secondary} strokeWidth={2} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Typography
+                variant="h4"
+                style={{
+                  color: colors.text.primary,
+                  marginBottom: spacing.xs,
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                {t('forTeachersTitle')}
+              </Typography>
+              <Typography
+                variant="small"
+                style={{
+                  color: colors.text.secondary,
+                  lineHeight: 1.5,
+                  fontSize: 13,
+                }}
+              >
+                {t('forTeachersDesc')}
+              </Typography>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  marginTop: spacing.sm,
+                  fontSize: 13,
+                  color: colors.accent.secondary,
+                  fontWeight: 500,
+                }}
+              >
+                {t('exploreProgramme')} <ArrowRight size={12} />
+              </span>
+            </div>
+          </Link>
+
+          {/* Founding members */}
+          <button
+            type="button"
+            onClick={() => setShowFoundingModal(true)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: colors.text.tertiary ?? colors.text.secondary,
+              padding: 0,
+              fontSize: 13,
+              marginBottom: spacing.lg,
+            }}
+          >
+            {t('foundingMembersLink')}
+          </button>
+
+          {/* Sign in */}
+          <Link href="/login" style={{ textDecoration: 'none' }}>
+            <Button
+              variant="outline"
+              size="md"
+              style={{
+                borderColor: colors.glass.border,
+                color: colors.text.secondary,
+              }}
+            >
+              {t('signInButton')}
+            </Button>
+          </Link>
         </div>
 
-        {/* Footer links — anchored at bottom */}
+        {/* Footer links */}
         <div
           style={{
             position: 'absolute',
@@ -301,517 +416,38 @@ export default function LandingPage() {
             gap: spacing.md,
             fontSize: 12,
             color: colors.text.tertiary ?? colors.text.secondary,
-            opacity: 0.7,
+            opacity: 0.8,
           }}
         >
-          <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forTeachers')}</Link>
+          <Link href="/how-it-works" style={{ color: 'inherit', textDecoration: 'none' }}>
+            {t('howItWorks')}
+          </Link>
           <span style={{ opacity: 0.4 }}>·</span>
-          <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forCoaches')}</Link>
+          <Link href="/launch" style={{ color: 'inherit', textDecoration: 'none' }}>
+            {t('launchPage')}
+          </Link>
           <span style={{ opacity: 0.4 }}>·</span>
-          <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forStudios')}</Link>
+          <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none' }}>
+            {t('forTeachersTitle')}
+          </Link>
           <span style={{ opacity: 0.4 }}>·</span>
-          <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forCreators')}</Link>
+          <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none' }}>
+            {t('forCoaches')}
+          </Link>
+          <span style={{ opacity: 0.4 }}>·</span>
+          <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none' }}>
+            {t('forStudios')}
+          </Link>
+          <span style={{ opacity: 0.4 }}>·</span>
+          <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none' }}>
+            {t('forCreators')}
+          </Link>
         </div>
 
         <FoundingMemberModal
           isOpen={showFoundingModal}
           onClose={() => setShowFoundingModal(false)}
         />
-      </section>
-
-      {/* Section 1 — Core Value (hero + 2 cards, then Minutes full-width) */}
-      <LandingSection
-        title={t('landing.coreValue.title')}
-        subtitle={t('landing.coreValue.subtitle')}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: spacing.lg,
-          }}
-          className="core-value-grid"
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.9fr)',
-              gap: spacing.md,
-              alignItems: 'stretch',
-            }}
-          >
-            <div style={{ minWidth: 0, height: '100%', display: 'flex' }} className="core-value-hero-wrap">
-              <LandingCard
-                icon={Mic}
-                title={t('landing.coreValue.yourVoice.title')}
-                description={t('landing.coreValue.yourVoice.desc')}
-                imageSrc="/images/landing-your-voice.png"
-                iconSize="hero"
-                layout="horizontal"
-                highlight
-                priority
-                fillHeight
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: spacing.lg,
-                    marginTop: spacing.md,
-                    flex: 1,
-                    minHeight: 0,
-                  }}
-                >
-                  <ul
-                    style={{
-                      listStyle: 'none',
-                      margin: 0,
-                      padding: 0,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: spacing.sm,
-                    }}
-                  >
-                    <li
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: spacing.sm,
-                        fontSize: 'clamp(15px, 1.4vw, 16px)',
-                        lineHeight: 1.45,
-                        color: colors.text.secondary,
-                      }}
-                    >
-                      <span style={{ flexShrink: 0, marginTop: 2 }}>
-                        <Check size={18} color={colors.accent.primary} strokeWidth={2.5} />
-                      </span>
-                      <span>{t('landing.coreValue.yourVoice.benefit1')}</span>
-                    </li>
-                    <li
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: spacing.sm,
-                        fontSize: 'clamp(15px, 1.4vw, 16px)',
-                        lineHeight: 1.45,
-                        color: colors.text.secondary,
-                      }}
-                    >
-                      <span style={{ flexShrink: 0, marginTop: 2 }}>
-                        <Check size={18} color={colors.accent.primary} strokeWidth={2.5} />
-                      </span>
-                      <span>{t('landing.coreValue.yourVoice.benefit2')}</span>
-                    </li>
-                  </ul>
-                  <Link
-                    href="/create"
-                    style={{
-                      alignSelf: 'stretch',
-                      textAlign: 'center',
-                      textDecoration: 'none',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: spacing.sm,
-                      padding: '14px 20px',
-                      borderRadius: 14,
-                      background: colors.gradients.primary,
-                      color: colors.text.onDark ?? '#fff',
-                      fontWeight: 600,
-                      fontSize: 'clamp(14px, 1.2vw, 15px)',
-                      boxShadow: `0 4px 20px ${colors.accent.primary}50`,
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                      marginTop: 'auto',
-                      lineHeight: 1.3,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = `0 6px 24px ${colors.accent.primary}55`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = `0 4px 20px ${colors.accent.primary}50`;
-                    }}
-                  >
-                    {t('landing.coreValue.yourVoice.cta')}
-                    <ArrowRight size={18} strokeWidth={2.5} />
-                  </Link>
-                </div>
-              </LandingCard>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: spacing.md,
-                minWidth: 0,
-                minHeight: 0,
-              }}
-            >
-              <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-                <LandingCard
-                  icon={Sparkles}
-                  title={t('landing.coreValue.aiHelps.title')}
-                  description={t('landing.coreValue.aiHelps.desc')}
-                  compact
-                  fillHeight
-                />
-              </div>
-              <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
-                <LandingCard
-                  icon={Headphones}
-                  title={t('landing.coreValue.replay.title')}
-                  description={t('landing.coreValue.replay.desc')}
-                  compact
-                  fillHeight
-                />
-              </div>
-            </div>
-          </div>
-          {/* Minutes — full width banner card */}
-          <LandingCard
-            icon={Clock}
-            title={t('landing.coreValue.minutes.title')}
-            description={t('landing.coreValue.minutes.desc')}
-            badge={t('landing.coreValue.minutes.badge')}
-            featured
-            layout="banner"
-            minHeight={120}
-            className="landing-card-minutes"
-          />
-        </div>
-      </LandingSection>
-
-      {/* Section 2 — How It Works (3 steps) + Phone showcase */}
-      <LandingSection
-        title={t('landing.howItWorks.title')}
-        subtitle={t('landing.howItWorks.subtitle')}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'stretch',
-            justifyContent: 'center',
-            gap: spacing.md,
-            marginBottom: spacing.xxl,
-          }}
-        >
-          {[
-            { icon: MessageCircle, titleKey: 'landing.howItWorks.step1.title' as const, descKey: 'landing.howItWorks.step1.desc' as const },
-            { icon: Sparkles, titleKey: 'landing.howItWorks.step2.title' as const, descKey: 'landing.howItWorks.step2.desc' as const },
-            { icon: Headphones, titleKey: 'landing.howItWorks.step3.title' as const, descKey: 'landing.howItWorks.step3.desc' as const },
-          ].map(({ icon: Icon, titleKey, descKey }, i) => (
-            <React.Fragment key={titleKey}>
-              <div
-                className="how-it-works-step"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  gap: spacing.sm,
-                  flex: '1 1 180px',
-                  minWidth: 180,
-                  maxWidth: 220,
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    width: 56,
-                    height: 56,
-                    flexShrink: 0,
-                    borderRadius: borderRadius.full,
-                    background: colors.gradients.primary,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: `0 4px 20px ${colors.accent.primary}50`,
-                  }}
-                >
-                  <Icon size={24} color={colors.text.onDark} strokeWidth={2.5} />
-                </div>
-                <Typography
-                  variant="h4"
-                  style={{
-                    color: colors.text.primary,
-                    margin: 0,
-                    flexShrink: 0,
-                    fontSize: 18,
-                    fontWeight: 600,
-                    lineHeight: 1.3,
-                    width: '100%',
-                  }}
-                >
-                  {t(titleKey)}
-                </Typography>
-                <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                  <Typography
-                    variant="caption"
-                    style={{
-                      color: colors.text.secondary,
-                      lineHeight: 1.5,
-                      fontSize: 14,
-                      textAlign: 'center',
-                    }}
-                  >
-                    {t(descKey)}
-                  </Typography>
-                </div>
-              </div>
-              {i < 2 && (
-                <ArrowRight
-                  size={20}
-                  color={colors.text.tertiary}
-                  style={{ flexShrink: 0, opacity: 0.6, alignSelf: 'center' }}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <AppMockup />
-          <Link
-            href="/how-it-works"
-            style={{
-              marginTop: spacing.md,
-              fontSize: 13,
-              color: colors.accent.tertiary,
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
-            }}
-          >
-            {t('landing.fullProcess')} <ArrowRight size={12} />
-          </Link>
-        </div>
-      </LandingSection>
-
-      {/* Section 3 — Product Differentiation */}
-      <LandingSection
-        title={t('landing.differentiation.title')}
-        subtitle={t('landing.differentiation.subtitle')}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: spacing.lg,
-            maxWidth: 560,
-            margin: '0 auto',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: spacing.md,
-              padding: spacing.lg,
-              borderRadius: borderRadius.lg,
-              background: colors.glass.light,
-              backdropFilter: BLUR.xl,
-              WebkitBackdropFilter: BLUR.xl,
-              border: `1px solid ${colors.glass.border}`,
-            }}
-          >
-            <Typography variant="body" style={{ color: colors.text.tertiary, textDecoration: 'line-through' }}>
-              {t('landing.differentiation.genericVs')}
-            </Typography>
-            <span style={{ color: colors.text.tertiary, fontSize: 14 }}>→</span>
-            <Typography variant="body" style={{ color: colors.accent.tertiary, fontWeight: 500 }}>
-              {t('landing.differentiation.yourVoiceVs')}
-            </Typography>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: spacing.md,
-              padding: spacing.lg,
-              borderRadius: borderRadius.lg,
-              background: colors.glass.light,
-              backdropFilter: BLUR.xl,
-              WebkitBackdropFilter: BLUR.xl,
-              border: `1px solid ${colors.glass.border}`,
-            }}
-          >
-            <Typography variant="body" style={{ color: colors.text.tertiary, textDecoration: 'line-through' }}>
-              {t('landing.differentiation.genericAffirm')}
-            </Typography>
-            <span style={{ color: colors.text.tertiary, fontSize: 14 }}>→</span>
-            <Typography variant="body" style={{ color: colors.accent.tertiary, fontWeight: 500 }}>
-              {t('landing.differentiation.personalisedVs')}
-            </Typography>
-          </div>
-        </div>
-      </LandingSection>
-
-      {/* Section 4 — Key Product Pillars */}
-      <LandingSection
-        title={t('landing.pillars.title')}
-        subtitle={t('landing.pillars.subtitle')}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: spacing.xl,
-          }}
-        >
-          <LandingCard
-            icon={Sun}
-            title={t('landing.pillars.affirmations.title')}
-            description={t('landing.pillars.affirmations.desc')}
-            accentColor={CONTENT_TYPE_COLORS.affirmation}
-            iconVariant="solid"
-          />
-          <LandingCard
-            icon={Moon}
-            title={t('landing.pillars.meditations.title')}
-            description={t('landing.pillars.meditations.desc')}
-            accentColor={CONTENT_TYPE_COLORS.meditation}
-            iconVariant="solid"
-          />
-          <LandingCard
-            icon={Flame}
-            title={t('landing.pillars.rituals.title')}
-            description={t('landing.pillars.rituals.desc')}
-            accentColor={CONTENT_TYPE_COLORS.ritual}
-            iconVariant="solid"
-          />
-        </div>
-      </LandingSection>
-
-      {/* Section 5 — Psychological Reinforcement (benefits) */}
-      <LandingSection
-        title={t('landing.benefitsSection.title')}
-      >
-        <div
-          style={{
-            padding: spacing.xxl,
-            borderRadius: borderRadius.xl,
-            background: colors.glass.light,
-            backdropFilter: BLUR.xl,
-            WebkitBackdropFilter: BLUR.xl,
-            border: `1px solid ${colors.glass.border}`,
-            boxShadow: `0 16px 64px ${colors.accent.primary}20`,
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              gap: spacing.lg,
-              alignItems: 'center',
-            }}
-          >
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.sm,
-                  flex: '1 1 auto',
-                  minWidth: 240,
-                  maxWidth: 360,
-                }}
-              >
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: borderRadius.full,
-                    background: colors.gradients.primary,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <Check size={14} color={colors.text.onDark} strokeWidth={3} />
-                </div>
-                <Typography
-                  variant="body"
-                  style={{
-                    color: colors.text.primary,
-                    fontSize: 15,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {benefit}
-                </Typography>
-              </div>
-            ))}
-          </div>
-        </div>
-      </LandingSection>
-
-      {/* Final CTA */}
-      <section
-        className="landing-section"
-        style={{
-          scrollSnapAlign: 'start',
-          scrollSnapStop: 'always',
-          padding: `clamp(${spacing.xl}, 5vh, ${spacing.xxxl}) clamp(16px, 4vw, 48px)`,
-          textAlign: 'center',
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          width: '100%',
-          minWidth: 0,
-        }}
-      >
-        <h2
-          style={{
-            margin: 0,
-            marginBottom: spacing.md,
-            fontSize: 'clamp(36px, 5vw, 56px)',
-            fontWeight: 300,
-            lineHeight: 1.2,
-            letterSpacing: '-0.02em',
-            background: colors.gradients.primary,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          {t('landing.ctaHeadline')}
-        </h2>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md, fontSize: '18px', lineHeight: 1.5 }}>
-          {t('landing.ctaSubline1')}
-        </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, fontSize: '15px', opacity: 0.7 }}>
-          {waitlistCount !== null && waitlistCount > 0
-            ? t('landing.ctaSubline2WithCount', { count: formatWaitlistCount(waitlistCount) })
-            : t('landing.ctaSubline2Default')}
-        </Typography>
-        <Link href="/waitlist" style={{ textDecoration: 'none' }}>
-          <Button
-            variant="primary"
-            size="lg"
-            style={{
-              padding: `${spacing.lg} ${spacing.xxl}`,
-              fontSize: '18px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: spacing.md,
-            }}
-          >
-            {t('landing.ctaButton')}
-            <ArrowRight size={22} color={colors.text.onDark} />
-          </Button>
-        </Link>
-        <div style={{ marginTop: spacing.lg, fontSize: 13, color: colors.text.secondary, opacity: 0.6 }}>
-          {t('landing.creatorProgrammePrefix')} <Link href="/for-creators" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>{t('landing.creatorProgrammeLink')}</Link>
-        </div>
       </section>
 
       <section style={{ scrollSnapAlign: 'none', minHeight: 'auto' }}>

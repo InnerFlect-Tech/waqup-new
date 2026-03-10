@@ -4,11 +4,23 @@ import React from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import { ChevronDown, ArrowRight, Linkedin, Instagram, Github, Music } from 'lucide-react';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { PageShell, GlassCard, Logo } from '@/components';
 import { Typography, Button } from '@/components';
-import { CONTENT_MEDIUM, CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
+import { CONTENT_MEDIUM, CONTENT_MAX_WIDTH, PAGE_PADDING } from '@/theme';
+import { Analytics } from '@waqup/shared/utils';
+
+const FOUNDER_SOCIALS = [
+  { href: 'https://www.linkedin.com/in/indiasfernandes/', label: 'LinkedIn', icon: Linkedin, destination: 'linkedin' },
+  { href: 'https://www.instagram.com/indiasfernandes', label: 'Instagram', icon: Instagram, destination: 'instagram' },
+  { href: 'https://github.com/indiasFernandes', label: 'GitHub', icon: Github, destination: 'github' },
+] as const;
+
+const MUSIC_PROJECTS = [
+  { name: 'Nu Moksa', href: 'https://open.spotify.com/search/Nu%20Moksa', destination: 'spotify_nu_moksa' },
+  { name: 'Cronaxy', href: 'https://open.spotify.com/search/Cronaxy', destination: 'spotify_cronaxy' },
+] as const;
 
 /**
  * Our Story — Founder narrative (scroll-down story)
@@ -168,9 +180,20 @@ export default function OurStoryPage() {
               color: colors.text.secondary,
               fontSize: '18px',
               lineHeight: 1.8,
+              marginBottom: PARAGRAPH_GAP,
             }}
           >
             I discovered something different when I started writing my own scripts, recording them in my voice, and listening every day. The manual process was tedious: scripting, recording, mixing in Ableton, structuring my practice. But it worked. My subconscious actually shifted.
+          </Typography>
+          <Typography
+            variant="body"
+            style={{
+              color: colors.text.secondary,
+              fontSize: '18px',
+              lineHeight: 1.8,
+            }}
+          >
+            That path was shaped by years of working with sound — as a DJ and music producer under <span style={{ color: colors.accent.tertiary, fontWeight: 500 }}>Nu Moksa</span> and <span style={{ color: colors.accent.tertiary, fontWeight: 500 }}>Cronaxy</span>. Sound has always been my medium: mixing, mastering, understanding frequencies. It taught me how deeply audio affects the subconscious — and why your own voice, speaking your intentions, is unmatched.
           </Typography>
         </motion.section>
 
@@ -374,7 +397,7 @@ export default function OurStoryPage() {
             <div style={{ display: 'flex', gap: spacing.xl, alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <div style={{ flexShrink: 0, width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', position: 'relative' }}>
                 <Image
-                  src="/images/our-story-founder.png"
+                  src="/images/indias-fernandes-portrait.png"
                   alt="Daniel Indias Fernandes"
                   fill
                   style={{ objectFit: 'cover' }}
@@ -384,11 +407,11 @@ export default function OurStoryPage() {
                 <Typography
                   variant="body"
                   style={{
-                color: colors.text.primary,
-                fontSize: '20px',
-                lineHeight: 1.65,
-                marginBottom: spacing.xl,
-                fontWeight: 400,
+                    color: colors.text.primary,
+                    fontSize: '20px',
+                    lineHeight: 1.65,
+                    marginBottom: spacing.xl,
+                    fontWeight: 400,
                   }}
                 >
                   waQup exists because something simple changed my life, and I believe more people should have access to it.
@@ -404,7 +427,7 @@ export default function OurStoryPage() {
                 >
                   I spent years removing every barrier between that experience and anyone who needs it. The manual process I used — scripting, recording, mixing — is now a conversation, a few taps, and your voice. That&apos;s waQup.
                 </Typography>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
                   <Typography
                     variant="h3"
                     style={{
@@ -421,10 +444,60 @@ export default function OurStoryPage() {
                       color: colors.text.tertiary,
                       fontSize: '14px',
                       lineHeight: 1.5,
+                      marginBottom: spacing.sm,
                     }}
                   >
-                    Founder, waQup. I&apos;m happy to connect — you can find me online.
+                    Founder, waQup. DJ and music producer — Nu Moksa, Cronaxy.
                   </Typography>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm, alignItems: 'center' }}>
+                    {FOUNDER_SOCIALS.map(({ href, label, icon: Icon, destination }) => (
+                      <a
+                        key={destination}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => Analytics.linkClicked(destination, 'our_story', label)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          color: colors.accent.tertiary,
+                          fontSize: 14,
+                          textDecoration: 'none',
+                          transition: 'opacity 0.2s',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+                      >
+                        <Icon size={16} />
+                        {label}
+                      </a>
+                    ))}
+                    <span style={{ color: colors.glass.border, fontSize: 12 }}>·</span>
+                    {MUSIC_PROJECTS.map(({ name, href, destination }) => (
+                      <a
+                        key={destination}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => Analytics.linkClicked(destination, 'our_story', name)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          color: colors.accent.secondary,
+                          fontSize: 14,
+                          textDecoration: 'none',
+                          transition: 'opacity 0.2s',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+                      >
+                        <Music size={14} />
+                        {name}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

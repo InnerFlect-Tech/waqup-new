@@ -6,6 +6,7 @@ import { spacing, BLUR, HEADER_PADDING_X_RESPONSIVE } from '@/theme';
 import { LEGAL_CONFIG } from '@/config/legal';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { PageShareButtons } from './PageShareButtons';
 
 export function PublicFooter() {
   const { theme } = useTheme();
@@ -86,6 +87,12 @@ export function PublicFooter() {
             >
               {t('footerMailingList')}
             </Link>
+            <div style={{ marginTop: spacing.md }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.xs }}>
+                {tc('share')}
+              </div>
+              <PageShareButtons />
+            </div>
           </div>
 
           {/* Product */}

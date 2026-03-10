@@ -176,6 +176,10 @@ export const Analytics = {
   ctaClicked: (ctaId: string, page: string, userId?: string) =>
     trackEvent('cta_clicked', { cta_id: ctaId, page }, userId),
 
+  /** User clicked an external link from a page (e.g. Our Story socials, music links). */
+  linkClicked: (destination: string, page: string, label?: string, userId?: string) =>
+    trackEvent('link_clicked', { destination, page, ...(label && { link_label: label }) }, userId),
+
   /** User joined the waitlist. */
   waitlistJoined: (userId?: string) =>
     trackEvent('waitlist_joined', undefined, userId),
