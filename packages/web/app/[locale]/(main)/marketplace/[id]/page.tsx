@@ -133,7 +133,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
 
   useEffect(() => {
     if (item) Analytics.marketplaceItemViewed(item.id, user?.id);
-  }, [item?.id, user?.id]);
+  }, [item, user?.id]);
 
   const layers: AudioLayers = item
     ? {
@@ -149,8 +149,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
 
   useEffect(() => {
     if (isPlaying && item) void recordPlay(item.id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying]);
+  }, [isPlaying, item]);
 
   useEffect(() => {
     if (!analyserNode || !isPlaying) { setFreqData([]); return; }
