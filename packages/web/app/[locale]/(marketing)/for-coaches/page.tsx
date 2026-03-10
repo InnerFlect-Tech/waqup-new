@@ -15,8 +15,8 @@ import {
   Check,
   Users,
 } from 'lucide-react';
-import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
-import { Typography, Button, PageShell } from '@/components';
+import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
+import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
 const PAIN_POINTS = [
   'Clients forget insights between sessions',
@@ -92,42 +92,47 @@ export default function ForCoachesPage() {
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
-      <div
+      {/* Hero — full width, outside max-width wrapper */}
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         style={{
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          padding: `0 ${spacing.xl}`,
+          position: 'relative',
+          width: '100%',
+          minHeight: HERO_MIN_HEIGHT,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          textAlign: 'center',
+          paddingTop: '120px',
+          paddingBottom: spacing.xxl,
           marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`,
         }}
       >
-        {/* Hero */}
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/images/for-coaches-hero.png"
+            alt=""
+            fill
+            priority
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
+        </div>
+        <div
           style={{
             position: 'relative',
-            minHeight: '90dvh',
+            zIndex: 1,
+            width: '100%',
+            maxWidth: CONTENT_MAX_WIDTH,
+            margin: '0 auto',
+            padding: `0 ${HEADER_PADDING_X}`,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'center',
-            textAlign: 'center',
-            paddingTop: '120px',
-            paddingBottom: spacing.xxl,
-            overflow: 'hidden',
           }}
         >
-          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <Image
-              src="/images/for-coaches-hero.png"
-              alt=""
-              fill
-              priority
-              style={{ objectFit: 'cover', objectPosition: 'center center' }}
-            />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
-          </div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
           <div
             style={{
               display: 'inline-flex',
@@ -148,7 +153,7 @@ export default function ForCoachesPage() {
 
           <h1
             style={{
-              fontSize: 'clamp(36px, 5.5vw, 68px)',
+              fontSize: HERO_H1_FONT_SIZE,
               fontWeight: 200,
               lineHeight: 1.1,
               letterSpacing: '-0.03em',
@@ -174,7 +179,7 @@ export default function ForCoachesPage() {
           <Typography
             variant="body"
             style={{
-              fontSize: 'clamp(16px, 2vw, 20px)',
+              fontSize: HERO_BODY_FONT_SIZE,
               color: colors.text.secondary,
               maxWidth: 560,
               lineHeight: 1.6,
@@ -261,19 +266,38 @@ export default function ForCoachesPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to start · Client homework in 5 minutes · No recording equipment needed
           </Typography>
-          </div>
-        </motion.section>
+        </div>
+      </motion.section>
 
+      {/* Content — max-width wrapper */}
+      <div
+        style={{
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+          padding: `0 ${HEADER_PADDING_X}`,
+        }}
+      >
         {/* Workflow */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
-          <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
+          <h2
+            style={{
+              margin: 0,
+              marginBottom: spacing.xxl,
+              fontSize: SECTION_TITLE_FONT_SIZE,
+              fontWeight: 300,
+              lineHeight: 1.2,
+              letterSpacing: '-0.02em',
+              color: colors.text.primary,
+              textAlign: 'center',
+            }}
+          >
             A workflow that fits after every session
-          </Typography>
+          </h2>
 
           <div
             style={{
@@ -328,11 +352,22 @@ export default function ForCoachesPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
-          <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
+          <h2
+            style={{
+              margin: 0,
+              marginBottom: spacing.xxl,
+              fontSize: SECTION_TITLE_FONT_SIZE,
+              fontWeight: 300,
+              lineHeight: 1.2,
+              letterSpacing: '-0.02em',
+              color: colors.text.primary,
+              textAlign: 'center',
+            }}
+          >
             Built for the way coaches work
-          </Typography>
+          </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: spacing.xl }}>
             {BENEFITS.map((b) => {
@@ -357,7 +392,7 @@ export default function ForCoachesPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ textAlign: 'center', paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ textAlign: 'center', paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
           <div style={{ padding: spacing.xxl, borderRadius: borderRadius.xl, background: `linear-gradient(135deg, ${colors.accent.secondary}14, ${colors.accent.primary}0a)`, border: `1px solid ${colors.accent.secondary}30` }}>
             <Typography variant="h2" style={{ color: colors.text.primary, fontWeight: 200, marginBottom: spacing.md, letterSpacing: '-0.02em' }}>
@@ -375,6 +410,8 @@ export default function ForCoachesPage() {
           </div>
         </motion.section>
       </div>
+
+      <PublicFooter />
     </PageShell>
   );
 }

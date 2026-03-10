@@ -15,8 +15,8 @@ import {
   Star,
   BarChart3,
 } from 'lucide-react';
-import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X } from '@/theme';
-import { Typography, Button, PageShell } from '@/components';
+import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, SECTION_SUBTITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
+import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
 const TIERS = [
   {
@@ -118,10 +118,10 @@ export default function ForCreatorsPage() {
         style={{
           position: 'relative',
           width: '100%',
-          minHeight: '90dvh',
+          minHeight: HERO_MIN_HEIGHT,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           alignItems: 'center',
           textAlign: 'center',
           paddingTop: '120px',
@@ -174,7 +174,7 @@ export default function ForCreatorsPage() {
 
           <h1
             style={{
-              fontSize: 'clamp(36px, 5.5vw, 68px)',
+              fontSize: HERO_H1_FONT_SIZE,
               fontWeight: 200,
               lineHeight: 1.1,
               letterSpacing: '-0.03em',
@@ -199,7 +199,7 @@ export default function ForCreatorsPage() {
           <Typography
             variant="body"
             style={{
-              fontSize: 'clamp(16px, 2vw, 20px)',
+              fontSize: HERO_BODY_FONT_SIZE,
               color: colors.text.secondary,
               maxWidth: 560,
               lineHeight: 1.6,
@@ -294,19 +294,39 @@ export default function ForCreatorsPage() {
           padding: `0 ${HEADER_PADDING_X}`,
         }}
       >
-        {/* Earnings tiers */}
+        {/* Earnings tiers — spacing matches LandingSection (LANDING_SECTION_PADDING_Y, typography tokens) */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
-          <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.md, fontWeight: 200, letterSpacing: '-0.02em' }}>
-            Grow with your audience
-          </Typography>
-          <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xxl, maxWidth: 520, margin: `0 auto ${spacing.xxl}`, lineHeight: 1.6 }}>
-            As your content reaches more people, your earning tier rises automatically. No applications, no waiting periods.
-          </Typography>
+          <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
+            <h2
+              style={{
+                margin: 0,
+                marginBottom: spacing.sm,
+                fontSize: SECTION_TITLE_FONT_SIZE,
+                fontWeight: 300,
+                lineHeight: 1.2,
+                letterSpacing: '-0.02em',
+                color: colors.text.primary,
+              }}
+            >
+              Grow with your audience
+            </h2>
+            <p
+              style={{
+                margin: '0 auto',
+                fontSize: SECTION_SUBTITLE_FONT_SIZE,
+                lineHeight: 1.5,
+                color: colors.text.secondary,
+                maxWidth: 560,
+              }}
+            >
+              As your content reaches more people, your earning tier rises automatically. No applications, no waiting periods.
+            </p>
+          </div>
 
           <div
             style={{
@@ -399,11 +419,22 @@ export default function ForCreatorsPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
-          <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
-            Built for how creators think
-          </Typography>
+          <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: SECTION_TITLE_FONT_SIZE,
+                fontWeight: 300,
+                lineHeight: 1.2,
+                letterSpacing: '-0.02em',
+                color: colors.text.primary,
+              }}
+            >
+              Built for how creators think
+            </h2>
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: spacing.xl }}>
             {BENEFITS.map((b) => {
@@ -428,7 +459,7 @@ export default function ForCreatorsPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ textAlign: 'center', paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ textAlign: 'center', paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
           <div
             style={{
@@ -462,6 +493,8 @@ export default function ForCreatorsPage() {
           </div>
         </motion.section>
       </div>
+
+      <PublicFooter />
     </PageShell>
   );
 }

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTheme } from '@/theme';
-import { CONTENT_MAX_WIDTH, LANDING_SECTION_PADDING_Y, spacing } from '@/theme';
+import { CONTENT_MAX_WIDTH, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, SECTION_SUBTITLE_FONT_SIZE, spacing } from '@/theme';
 
 export interface LandingSectionProps {
   children: React.ReactNode;
@@ -53,7 +53,7 @@ export function LandingSection({
               style={{
                 margin: 0,
                 marginBottom: subtitle ? spacing.sm : 0,
-                fontSize: 'clamp(24px, 4vw, 32px)',
+                fontSize: SECTION_TITLE_FONT_SIZE,
                 fontWeight: 300,
                 lineHeight: 1.2,
                 letterSpacing: '-0.02em',
@@ -66,12 +66,11 @@ export function LandingSection({
           {subtitle && (
             <p
               style={{
-                margin: 0,
-                fontSize: 'clamp(15px, 1.8vw, 17px)',
+                margin: centered ? '0 auto' : 0,
+                fontSize: SECTION_SUBTITLE_FONT_SIZE,
                 lineHeight: 1.5,
                 color: colors.text.secondary,
                 maxWidth: 560,
-                ...(centered && { margin: '0 auto' }),
               }}
             >
               {subtitle}

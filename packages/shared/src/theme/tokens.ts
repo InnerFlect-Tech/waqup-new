@@ -81,4 +81,19 @@ export const layout = {
   /** Landing page section vertical padding — min (mobile), max (desktop); use with clamp(..., 10vh, ...) */
   landingSectionPaddingYMin: 60,
   landingSectionPaddingYMax: 140,
+  /** Section title (h2) — min/max for clamp(..., 4vw, ...) */
+  sectionTitleFontSizeMin: 24,
+  sectionTitleFontSizeMax: 32,
+  /** Section subtitle — min/max for clamp(..., 1.8vw, ...) */
+  sectionSubtitleFontSizeMin: 15,
+  sectionSubtitleFontSizeMax: 17,
+  /** Hero h1 — min/max for clamp(..., 5.5vw, ...) */
+  heroH1FontSizeMin: 36,
+  heroH1FontSizeMax: 68,
+  /** Hero body/subheadline — min/max for clamp(..., 2vw, ...) */
+  heroBodyFontSizeMin: 16,
+  heroBodyFontSizeMax: 20,
+  /** Hero min height — almost full viewport for marketing pages (for-teachers, for-coaches, for-creators, for-studios) */
+  heroMinHeightVh: 90,
+  heroMinHeightCap: 800,
 } as const;

@@ -15,8 +15,8 @@ import {
   Users,
   Sparkles,
 } from 'lucide-react';
-import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
-import { Typography, Button, PageShell } from '@/components';
+import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
+import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
 const MOMENTS = [
   {
@@ -77,29 +77,24 @@ export default function ForStudiosPage() {
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
-      <div
+      {/* Hero — full width, outside max-width wrapper */}
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
         style={{
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          padding: `0 ${spacing.xl}`,
+          position: 'relative',
+          width: '100%',
+          minHeight: HERO_MIN_HEIGHT,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          textAlign: 'center',
+          paddingTop: '120px',
+          paddingBottom: spacing.xxl,
           marginTop: `calc(-1 * ${PAGE_TOP_PADDING})`,
         }}
       >
-        {/* Hero */}
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{
-            minHeight: '90dvh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center',
-            paddingTop: '120px',
-            paddingBottom: spacing.xxl,
-          }}
-        >
           <div
             style={{
               display: 'inline-flex',
@@ -120,7 +115,7 @@ export default function ForStudiosPage() {
 
           <h1
             style={{
-              fontSize: 'clamp(36px, 5.5vw, 68px)',
+              fontSize: HERO_H1_FONT_SIZE,
               fontWeight: 200,
               lineHeight: 1.1,
               letterSpacing: '-0.03em',
@@ -145,7 +140,7 @@ export default function ForStudiosPage() {
           <Typography
             variant="body"
             style={{
-              fontSize: 'clamp(16px, 2vw, 20px)',
+              fontSize: HERO_BODY_FONT_SIZE,
               color: colors.text.secondary,
               maxWidth: 560,
               lineHeight: 1.6,
@@ -184,18 +179,37 @@ export default function ForStudiosPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to start · QR bundle included · Zero paid ads needed
           </Typography>
-        </motion.section>
+      </motion.section>
 
+      {/* Content — max-width wrapper */}
+      <div
+        style={{
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+          padding: `0 ${HEADER_PADDING_X}`,
+        }}
+      >
         {/* Class moments */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
-          <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
+          <h2
+            style={{
+              margin: 0,
+              marginBottom: spacing.xxl,
+              fontSize: SECTION_TITLE_FONT_SIZE,
+              fontWeight: 300,
+              lineHeight: 1.2,
+              letterSpacing: '-0.02em',
+              color: colors.text.primary,
+              textAlign: 'center',
+            }}
+          >
             Every moment in class becomes a lasting practice
-          </Typography>
+          </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: spacing.xl }}>
             {MOMENTS.map((m) => {
@@ -225,11 +239,22 @@ export default function ForStudiosPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
-          <Typography variant="h2" style={{ color: colors.text.primary, textAlign: 'center', marginBottom: spacing.xxl, fontWeight: 200, letterSpacing: '-0.02em' }}>
+          <h2
+            style={{
+              margin: 0,
+              marginBottom: spacing.xxl,
+              fontSize: SECTION_TITLE_FONT_SIZE,
+              fontWeight: 300,
+              lineHeight: 1.2,
+              letterSpacing: '-0.02em',
+              color: colors.text.primary,
+              textAlign: 'center',
+            }}
+          >
             The QR acquisition loop
-          </Typography>
+          </h2>
 
           <div
             style={{
@@ -292,7 +317,7 @@ export default function ForStudiosPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          style={{ textAlign: 'center', paddingBottom: `calc(${spacing.xxl} + ${spacing.xxl})` }}
+          style={{ textAlign: 'center', paddingTop: LANDING_SECTION_PADDING_Y, paddingBottom: LANDING_SECTION_PADDING_Y }}
         >
           <div style={{ padding: spacing.xxl, borderRadius: borderRadius.xl, background: `linear-gradient(135deg, ${green}0a, ${colors.accent.primary}08)`, border: `1px solid ${green}25` }}>
             <Typography variant="h2" style={{ color: colors.text.primary, fontWeight: 200, marginBottom: spacing.md, letterSpacing: '-0.02em' }}>
@@ -310,6 +335,8 @@ export default function ForStudiosPage() {
           </div>
         </motion.section>
       </div>
+
+      <PublicFooter />
     </PageShell>
   );
 }

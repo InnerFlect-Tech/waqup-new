@@ -4,7 +4,7 @@ import React from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
-import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades } from '@/theme';
+import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades, LANDING_SECTION_PADDING_Y } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
 import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 import { Link } from '@/i18n/navigation';
@@ -23,10 +23,6 @@ import {
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type ThemeColors = ReturnType<typeof useTheme>['theme']['colors'];
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const SECTION_PY = '72px';
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -91,7 +87,7 @@ export default function SciencePage() {
               fontSize: 11,
             }}
           >
-            Research-Backed
+            Neuroscience
           </Typography>
         </div>
 
@@ -129,7 +125,7 @@ export default function SciencePage() {
             fontWeight: 300,
           }}
         >
-          Neuroplasticity, voice memory, and spaced repetition — the research that explains why hearing your own voice say affirmations works when reading them does not.
+          Neuroplasticity, self-voice encoding, and spaced repetition — the mechanisms that explain why hearing your own voice say affirmations works when reading or hearing a stranger does not (Rogers, Kuiper & Kirker, 1977; Lally et al., 2010).
         </p>
 
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 36 }}>
@@ -218,7 +214,7 @@ export default function SciencePage() {
         style={{
           position: 'relative',
           zIndex: 10,
-          padding: `${SECTION_PY} ${PAGE_PADDING}`,
+          padding: `${LANDING_SECTION_PADDING_Y} ${PAGE_PADDING}`,
           maxWidth: CONTENT_MAX_WIDTH,
           margin: '0 auto',
         }}
@@ -336,13 +332,13 @@ export default function SciencePage() {
               The brain changes through repeated exposure to emotionally resonant stimuli. No stimulus is more resonant to your brain than your own voice.
             </p>
             <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 40px' }}>
-              Hear yourself say &ldquo;I am confident&rdquo; daily for 21 days and your neural pathways literally change. Not metaphorically. Measurably.
+              Hear yourself say &ldquo;I am confident&rdquo; daily and your neural pathways literally change. Lally et al. (2010) found habit formation takes 18–254 days (average 66), not the often-cited 21 — consistency over intensity.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { label: '21 days', desc: 'to notice the first measurable shift' },
-                { label: '66 days', desc: 'for new patterns to become fully automatic' },
-                { label: 'Consistency', desc: 'repeated exposure is what drives change' },
+                { label: '21 days', desc: 'first noticeable shift for many' },
+                { label: '66 days', desc: 'average for patterns to become automatic (Lally et al., 2010)' },
+                { label: 'Consistency', desc: 'daily 5–10 min beats occasional long sessions' },
               ].map(({ label, desc }) => (
                 <div key={label} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <div
@@ -423,25 +419,12 @@ export default function SciencePage() {
         style={{
           position: 'relative',
           zIndex: 10,
-          padding: `${SECTION_PY} ${PAGE_PADDING}`,
+          padding: `${LANDING_SECTION_PADDING_Y} ${PAGE_PADDING}`,
           maxWidth: CONTENT_MAX_WIDTH,
           margin: '0 auto',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div
-            style={{
-              fontSize: 11,
-              color: colors.accent.tertiary,
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              fontWeight: 600,
-              marginBottom: 16,
-              paddingLeft: '0.12em',
-            }}
-          >
-            Research Pillars
-          </div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>
             Why your own voice changes everything
           </h2>
@@ -456,28 +439,28 @@ export default function SciencePage() {
               icon: Brain,
               name: 'Neuroplasticity',
               tagline: 'Brains rewire through repetition',
-              desc: 'Repeated exposure to emotionally resonant stimuli physically reshapes neural pathways. Affirmations heard in your own voice activate deeper circuits than reading or hearing a stranger.',
+              desc: 'Hebb\'s law (1949): neurons that fire together wire together. Repeated exposure to emotionally resonant stimuli physically reshapes neural pathways. Affirmations heard in your own voice activate deeper circuits than reading or hearing a stranger.',
               color: colors.accent.primary,
               gradient: `linear-gradient(160deg, ${colors.accent.primary}18, ${colors.accent.secondary}06)`,
-              science: 'Spaced repetition + personal voice = faster neural rewiring.',
+              science: 'Lally et al. (2010, Eur. J. Soc. Psychol.): 18–254 days to form habits, avg 66 days. Consistency matters more than intensity.',
             },
             {
               icon: Volume2,
               name: 'Voice Memory',
               tagline: 'Your brain trusts your voice most',
-              desc: 'Research shows the subconscious filters out external voices but responds strongly to self-voice. Hearing yourself say affirmations bypasses the critical mind and reaches the parts that shape behavior.',
+              desc: 'Rogers, Kuiper & Kirker (1977): self-referential processing encodes 30–40% more strongly. Steele\'s self-affirmation theory (1988): reflecting on values through speech reduces defensive resistance. The subconscious responds to your voice differently than to strangers.',
               color: colors.accent.secondary,
               gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
-              science: 'Self-voice activates deeper pathways than any other stimulus.',
+              science: 'Self-voice bypasses the critical mind and reaches identity-shaping circuits directly.',
             },
             {
               icon: Mic,
               name: 'Timing & Theta',
               tagline: 'Waking and sleep onset are gateways',
-              desc: 'Transitional states — right after waking, and while falling asleep — dramatically lower the critical mind\'s resistance. Theta brainwaves (4–8 Hz) dominate these states. Practice at these moments amplifies impact.',
+              desc: 'Hypnagogic (pre-sleep) and hypnopompic (post-wake) states show theta dominance (4–8 Hz) and reduced critical-mind engagement. Stickgold et al. (2000): sleep consolidates and reprocesses memories. Practice at these moments amplifies encoding.',
               color: colors.accent.tertiary,
               gradient: `linear-gradient(160deg, ${colors.accent.tertiary}18, ${colors.accent.primary}06)`,
-              science: 'Theta entrainment for deep state change.',
+              science: 'Theta-rich states lower analytical resistance — ideal for subconscious rewiring.',
             },
           ].map(({ icon: Icon, name, tagline, desc, color, gradient, science }) => (
             <div
@@ -562,7 +545,7 @@ export default function SciencePage() {
       </section>
 
       {/* ── Day & Night Science ───────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
+      <section style={{ padding: `${LANDING_SECTION_PADDING_Y} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>
@@ -587,9 +570,9 @@ export default function SciencePage() {
             }}
           >
             {[
-              { icon: Sun, label: 'Morning', sub: '6–8 AM', desc: 'Right after waking, theta waves linger. The critical mind hasn\'t fully engaged. Affirmations heard then bypass resistance and encode into subconscious patterns.', color: colors.accent.primary },
-              { icon: Moon, label: 'Night', sub: 'Before sleep', desc: 'Falling asleep is dominated by theta (4–8 Hz). Evening meditation increases theta power — helping you wind down and consolidate the day\'s learning.', color: colors.accent.secondary },
-              { icon: Clock, label: 'Consistency', sub: '5 min × 2', desc: 'Just 5 minutes morning and night. No lifestyle overhaul. Two bookends that compound over 21–66 days.', color: colors.accent.tertiary },
+              { icon: Sun, label: 'Morning', sub: '6–8 AM', desc: 'Hypnopompic state: theta lingers after waking. The critical mind hasn\'t fully engaged. Affirmations heard then bypass resistance and encode directly (Stickgold, 2000).', color: colors.accent.primary },
+              { icon: Moon, label: 'Night', sub: 'Before sleep', desc: 'Hypnagogic state: theta (4–8 Hz) dominates as you drift off. Sleep-dependent consolidation strengthens what you practice (Stickgold et al., 2000).', color: colors.accent.secondary },
+              { icon: Clock, label: 'Consistency', sub: '5 min × 2', desc: 'Lally et al. (2010): short daily practices more effective than occasional long sessions. Two 5‑minute bookends that compound over weeks.', color: colors.accent.tertiary },
             ].map(({ icon: Icon, label, sub, desc, color }) => (
               <div
                 key={label}
@@ -728,7 +711,7 @@ export default function SciencePage() {
       </section>
 
       {/* ── Final CTA ─────────────────────────────────────── */}
-      <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: `${LANDING_SECTION_PADDING_Y} ${PAGE_PADDING}`, position: 'relative', overflow: 'hidden' }}>
         <div
           style={{
             position: 'absolute',

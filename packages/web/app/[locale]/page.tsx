@@ -439,19 +439,33 @@ export default function LandingPage() {
                 </div>
               </LandingCard>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, minWidth: 0 }}>
-              <LandingCard
-                icon={Sparkles}
-                title={t('landing.coreValue.aiHelps.title')}
-                description={t('landing.coreValue.aiHelps.desc')}
-                compact
-              />
-              <LandingCard
-                icon={Headphones}
-                title={t('landing.coreValue.replay.title')}
-                description={t('landing.coreValue.replay.desc')}
-                compact
-              />
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: spacing.md,
+                minWidth: 0,
+                minHeight: 0,
+              }}
+            >
+              <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
+                <LandingCard
+                  icon={Sparkles}
+                  title={t('landing.coreValue.aiHelps.title')}
+                  description={t('landing.coreValue.aiHelps.desc')}
+                  compact
+                  fillHeight
+                />
+              </div>
+              <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
+                <LandingCard
+                  icon={Headphones}
+                  title={t('landing.coreValue.replay.title')}
+                  description={t('landing.coreValue.replay.desc')}
+                  compact
+                  fillHeight
+                />
+              </div>
             </div>
           </div>
           {/* Minutes — full width banner card */}

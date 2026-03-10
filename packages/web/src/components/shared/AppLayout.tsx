@@ -81,7 +81,6 @@ const USER_MENU_ITEMS_SECONDARY: UserMenuItem[] = [
 ];
 
 const ONBOARDING_ROUTES = [
-  '/explanation',
   '/onboarding',
   '/onboarding/profile',
   '/onboarding/preferences',
@@ -905,7 +904,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   background: pathname === '/how-it-works' ? colors.glass.border : undefined,
                 }}
               >
-                How It Works
+                {t('footerHowItWorks')}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/explanation')}
+                style={{
+                  color: pathname === '/explanation' ? colors.text.primary : colors.text.secondary,
+                  background: pathname === '/explanation' ? colors.glass.border : undefined,
+                }}
+              >
+                {t('footerTheScience')}
               </Button>
               <Button
                 variant="ghost"
@@ -916,7 +926,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   background: pathname === '/pricing' ? colors.glass.border : undefined,
                 }}
               >
-                Pricing
+                {t('footerPricing')}
               </Button>
               <LanguageSwitcher compact />
               <Button
@@ -1039,7 +1049,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   className="w-full justify-start"
                   style={{ color: pathname === '/how-it-works' ? colors.text.primary : colors.text.secondary }}
                 >
-                  How It Works
+                  {t('footerHowItWorks')}
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => { router.push('/explanation'); setIsMobileMenuOpen(false); }}
+                  className="w-full justify-start"
+                  style={{ color: pathname === '/explanation' ? colors.text.primary : colors.text.secondary }}
+                >
+                  {t('footerTheScience')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -1047,7 +1065,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   className="w-full justify-start"
                   style={{ color: pathname === '/pricing' ? colors.text.primary : colors.text.secondary }}
                 >
-                  Pricing
+                  {t('footerPricing')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -1105,8 +1123,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <main style={{ paddingTop: NAV_TOP_OFFSET, minWidth: 0 }}>
           {children}
         </main>
-        {/* Footer — hidden on landing (/); footer is inside landing page */}
-        {pathname !== '/' && <PublicFooter />}
+        {/* Footer — hidden on landing (/) and marketing pages with own footer */}
+        {pathname !== '/' &&
+          !pathname?.includes('/for-teachers') &&
+          !pathname?.includes('/for-creators') &&
+          !pathname?.includes('/for-coaches') &&
+          !pathname?.includes('/for-studios') && <PublicFooter />}
       </div>
     </div>
   );

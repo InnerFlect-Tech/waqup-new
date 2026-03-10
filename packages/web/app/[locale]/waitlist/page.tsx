@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button, Input } from '@/components';
 import { useTheme } from '@/theme';
 import { Logo, PageShell, GlassCard } from '@/components';
-import { spacing, borderRadius, PAGE_TOP_PADDING } from '@/theme';
+import { spacing, borderRadius, PAGE_TOP_PADDING, PAGE_PADDING } from '@/theme';
 import { Link } from '@/i18n/navigation';
 import {
   Sparkles,
@@ -34,27 +35,20 @@ interface Intention {
   icon: React.ElementType;
 }
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+// ── Data (ids only — labels/descriptions from i18n) ─────────────────────────────
 
-const INTENTIONS: Intention[] = [
-  { id: 'create', label: 'Create', description: 'Build personalised audio experiences', icon: Mic },
-  { id: 'practice', label: 'Practice', description: 'Establish a daily mindfulness routine', icon: RefreshCw },
-  { id: 'share', label: 'Share', description: 'Share sessions with family or a community', icon: Users },
-  { id: 'monetise', label: 'Monetise', description: 'Build a business around waQup content', icon: DollarSign },
-  { id: 'gift', label: 'Gift', description: 'Create something meaningful for a loved one', icon: Gift },
-  { id: 'research', label: 'Research', description: 'Explore AI + neuroscience tools', icon: FlaskConical },
-  { id: 'reflect', label: 'Reflect', description: 'Use for journaling and deep self-inquiry', icon: BookOpen },
-  { id: 'curious', label: 'Just Curious', description: 'See what this is about', icon: Smile },
+const INTENTION_IDS: { id: string; icon: typeof Mic }[] = [
+  { id: 'create', icon: Mic },
+  { id: 'practice', icon: RefreshCw },
+  { id: 'share', icon: Users },
+  { id: 'monetise', icon: DollarSign },
+  { id: 'gift', icon: Gift },
+  { id: 'research', icon: FlaskConical },
+  { id: 'reflect', icon: BookOpen },
+  { id: 'curious', icon: Smile },
 ];
 
-const REFERRAL_OPTIONS = [
-  'Social Media',
-  'Friend or Family',
-  'Newsletter',
-  'Podcast',
-  'Search',
-  'Other',
-];
+const REFERRAL_OPTION_KEYS = ['socialMedia', 'friendFamily', 'newsletter', 'podcast', 'search', 'other'] as const;
 
 // ── Step indicator ─────────────────────────────────────────────────────────────
 
@@ -163,8 +157,16 @@ function IntentionCard({
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function WaitlistPage() {
+  const t = useTranslations('marketing.waitlist');
   const { theme } = useTheme();
   const colors = theme.colors;
+
+  const intentions: Intention[] = INTENTION_IDS.map(({ id, icon }) => ({
+    id,
+    icon,
+    label: t(`intentions.${id}.label`),
+    description: t(`intentions.${id}.description`),
+  }));
 
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -205,11 +207,11 @@ export default function WaitlistPage() {
   const goNext = () => {
     setError('');
     if (step === 0) {
-      if (!name.trim()) { setError('Please enter your name.'); return; }
-      if (!email.trim() || !email.includes('@')) { setError('Please enter a valid email.'); return; }
+      if (!name.trim()) { setError(t('errors.nameRequired')); return; }
+      if (!email.trim() || !email.includes('@')) { setError(t('errors.emailInvalid')); return; }
     }
     if (step === 1 && selectedIntentions.length === 0) {
-      setError('Please select at least one intention.'); return;
+      setError(t('errors.intentionRequired')); return;
     }
     setDirection(1);
     setStep((s) => s + 1);
@@ -240,13 +242,13 @@ export default function WaitlistPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? 'Something went wrong. Please try again.');
+        setError(data.error ?? t('errors.generic'));
         return;
       }
       Analytics.waitlistJoined();
       setSubmitted(true);
     } catch {
-      setError('Network error. Please check your connection and try again.');
+      setError(t('errors.networkError'));
     } finally {
       setSubmitting(false);
     }
@@ -259,9 +261,10 @@ export default function WaitlistPage() {
   };
 
   return (
-    <PageShell intensity="medium" maxWidth={560} centered allowDocumentScroll>
-      <div style={{ position: 'relative', width: '100%', marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`, minHeight: '100dvh' }}>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+    <PageShell intensity="medium" maxWidth={560} centered allowDocumentScroll bare>
+      <div style={{ position: 'relative', width: '100%', minHeight: '100dvh', padding: `${PAGE_TOP_PADDING} ${PAGE_PADDING} ${spacing.xl}` }}>
+        {/* Full viewport background — fixed to avoid dark side bars */}
+        <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
           <Image
             src="/images/waitlist-bg.png"
             alt=""
@@ -270,7 +273,7 @@ export default function WaitlistPage() {
           />
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,2,20,0.75)' }} />
         </div>
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto' }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -280,7 +283,7 @@ export default function WaitlistPage() {
             variant="body"
             style={{ color: colors.text.secondary, fontSize: '16px', marginTop: spacing.sm }}
           >
-            {submitted ? 'Welcome to the family' : 'Reserve your spot'}
+            {submitted ? t('page.welcomeFamily') : t('page.reserveSpot')}
           </Typography>
         </div>
 
@@ -310,11 +313,11 @@ export default function WaitlistPage() {
                 <Sparkles size={36} color={colors.accent.primary} />
               </div>
               <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
-                You&apos;re on the list
+                {t('page.onTheList')}
               </Typography>
               <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, lineHeight: 1.6 }}>
-                We&apos;ll reach out when your access is ready.{' '}
-                {isBetaTester && 'Beta testers get first access — we\'ll be in touch soon.'}
+                {t('page.reachOut')}{' '}
+                {isBetaTester && t('page.betaFirstAccess')}
               </Typography>
               <div
                 style={{
@@ -326,7 +329,7 @@ export default function WaitlistPage() {
                 }}
               >
                 <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: 4 }}>
-                  Reserved for
+                  {t('page.reservedFor')}
                 </Typography>
                 <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 500 }}>
                   {email}
@@ -334,7 +337,7 @@ export default function WaitlistPage() {
               </div>
               <Link href="/" style={{ textDecoration: 'none' }}>
                 <Button variant="outline" fullWidth>
-                  Back to home
+                  {t('page.backToHome')}
                 </Button>
               </Link>
             </motion.div>
@@ -360,17 +363,17 @@ export default function WaitlistPage() {
                         variant="h2"
                         style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}
                       >
-                        Join the waitlist
+                        {t('page.joinTitle')}
                       </Typography>
                       <Typography
                         variant="body"
                         style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xxl, lineHeight: 1.6 }}
                       >
-                        waQup is a voice-first AI studio for creating personalised audio that rewires how you think, feel, and act.
+                        {t('page.subtitle')}
                       </Typography>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
                         <Input
-                          placeholder="Your name"
+                          placeholder={t('namePlaceholder')}
                           value={name}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                           autoComplete="name"
@@ -378,7 +381,7 @@ export default function WaitlistPage() {
                         />
                         <Input
                           type="email"
-                          placeholder="your@email.com"
+                          placeholder={t('emailPlaceholder')}
                           value={email}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                           autoComplete="email"
@@ -395,13 +398,13 @@ export default function WaitlistPage() {
                         variant="h2"
                         style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}
                       >
-                        How will you use it?
+                        {t('page.howWillYouUse')}
                       </Typography>
                       <Typography
                         variant="body"
                         style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xl, lineHeight: 1.6 }}
                       >
-                        Select everything that resonates. This helps us personalise your experience.
+                        {t('page.selectResonates')}
                       </Typography>
                       <div
                         style={{
@@ -411,7 +414,7 @@ export default function WaitlistPage() {
                           marginBottom: spacing.md,
                         }}
                       >
-                        {INTENTIONS.map((intention) => (
+                        {intentions.map((intention) => (
                           <IntentionCard
                             key={intention.id}
                             intention={intention}
@@ -426,7 +429,7 @@ export default function WaitlistPage() {
                           variant="small"
                           style={{ color: colors.accent.primary, textAlign: 'center' }}
                         >
-                          {selectedIntentions.length} selected
+                          {t('page.selectedCount', { count: selectedIntentions.length })}
                         </Typography>
                       )}
                     </div>
@@ -439,13 +442,13 @@ export default function WaitlistPage() {
                         variant="h2"
                         style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}
                       >
-                        A few more things
+                        {t('page.fewMoreThings')}
                       </Typography>
                       <Typography
                         variant="body"
                         style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xxl, lineHeight: 1.6 }}
                       >
-                        Help us understand how to serve you best.
+                        {t('page.helpUsUnderstand')}
                       </Typography>
 
                       {/* Beta tester toggle */}
@@ -487,10 +490,10 @@ export default function WaitlistPage() {
                         </div>
                         <div>
                           <div style={{ fontSize: 14, fontWeight: 500, color: colors.text.primary, marginBottom: 3 }}>
-                            I want to be a beta tester
+                            {t('page.betaTester')}
                           </div>
                           <div style={{ fontSize: 12, color: colors.text.secondary, lineHeight: 1.5 }}>
-                            Get early access before public launch. You&apos;ll receive hands-on sessions and help shape the product.
+                            {t('page.betaTesterDesc')}
                           </div>
                         </div>
                       </button>
@@ -501,7 +504,7 @@ export default function WaitlistPage() {
                           variant="small"
                           style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}
                         >
-                          How did you hear about waQup?
+                          {t('page.howDidYouHear')}
                         </Typography>
                         <button
                           type="button"
@@ -521,7 +524,7 @@ export default function WaitlistPage() {
                             outline: 'none',
                           }}
                         >
-                          <span>{referralSource || 'Select an option'}</span>
+                          <span>{referralSource || t('page.selectOption')}</span>
                           <ChevronDown
                             size={16}
                             color="rgba(255,255,255,0.4)"
@@ -543,9 +546,11 @@ export default function WaitlistPage() {
                               zIndex: 10,
                             }}
                           >
-                            {REFERRAL_OPTIONS.map((opt) => (
+                            {REFERRAL_OPTION_KEYS.map((key) => {
+                            const opt = t(`referralOptions.${key}`);
+                            return (
                               <button
-                                key={opt}
+                                key={key}
                                 type="button"
                                 onClick={() => { setReferralSource(opt); setReferralOpen(false); }}
                                 style={{
@@ -563,7 +568,8 @@ export default function WaitlistPage() {
                               >
                                 {opt}
                               </button>
-                            ))}
+                            );
+                          })}
                           </div>
                         )}
                       </div>
@@ -574,12 +580,12 @@ export default function WaitlistPage() {
                           variant="small"
                           style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}
                         >
-                          Anything else you&apos;d like us to know? <span style={{ color: 'rgba(255,255,255,0.25)' }}>(optional)</span>
+                          {t('page.anythingElse')} <span style={{ color: 'rgba(255,255,255,0.25)' }}>{t('page.optional')}</span>
                         </Typography>
                         <textarea
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
-                          placeholder="Share your vision, use case, or just say hi..."
+                          placeholder={t('page.messagePlaceholder')}
                           maxLength={1000}
                           rows={3}
                           style={{
@@ -615,7 +621,7 @@ export default function WaitlistPage() {
                         size="lg"
                         disabled={submitting}
                       >
-                        {submitting ? 'Reserving your spot…' : 'Reserve my spot'}
+                        {submitting ? t('page.reservingSpot') : t('page.reserveMySpot')}
                       </Button>
                     </form>
                   )}
@@ -658,9 +664,9 @@ export default function WaitlistPage() {
                     onClick={goNext}
                   >
                     {step === 0 ? (
-                      <>Continue <ArrowRight size={16} style={{ marginLeft: 6 }} /></>
+                      <>{t('page.continue')} <ArrowRight size={16} style={{ marginLeft: 6 }} /></>
                     ) : (
-                      <>Next <ArrowRight size={16} style={{ marginLeft: 6 }} /></>
+                      <>{t('page.next')} <ArrowRight size={16} style={{ marginLeft: 6 }} /></>
                     )}
                   </Button>
                 </div>
@@ -686,7 +692,7 @@ export default function WaitlistPage() {
                   }}
                 >
                   <ArrowLeft size={13} />
-                  Back
+                  {t('page.back')}
                 </button>
               )}
             </div>
@@ -697,9 +703,9 @@ export default function WaitlistPage() {
         {!submitted && (
           <div style={{ textAlign: 'center', marginTop: spacing.xl }}>
             <Typography variant="small" style={{ color: colors.text.tertiary }}>
-              Already have access?{' '}
+              {t('page.alreadyHaveAccess')}{' '}
               <Link href="/login" style={{ color: colors.accent.primary, textDecoration: 'none' }}>
-                Sign in
+                {t('page.signIn')}
               </Link>
             </Typography>
           </div>

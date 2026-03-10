@@ -161,6 +161,17 @@ export const BUTTON_TOKENS = {
 /** Landing section vertical padding — responsive: 60px mobile → 140px desktop */
 export const LANDING_SECTION_PADDING_Y = `clamp(${layout.landingSectionPaddingYMin}px, 10vh, ${layout.landingSectionPaddingYMax}px)`;
 
+/** Section title fontSize — matches LandingSection h2 */
+export const SECTION_TITLE_FONT_SIZE = `clamp(${layout.sectionTitleFontSizeMin}px, 4vw, ${layout.sectionTitleFontSizeMax}px)`;
+/** Section subtitle fontSize — matches LandingSection p */
+export const SECTION_SUBTITLE_FONT_SIZE = `clamp(${layout.sectionSubtitleFontSizeMin}px, 1.8vw, ${layout.sectionSubtitleFontSizeMax}px)`;
+/** Hero h1 fontSize — marketing pages (for-teachers, for-coaches, for-creators, for-studios) */
+export const HERO_H1_FONT_SIZE = `clamp(${layout.heroH1FontSizeMin}px, 5.5vw, ${layout.heroH1FontSizeMax}px)`;
+/** Hero body/subheadline fontSize */
+export const HERO_BODY_FONT_SIZE = `clamp(${layout.heroBodyFontSizeMin}px, 2vw, ${layout.heroBodyFontSizeMax}px)`;
+/** Hero min height — avoids excessive gap below CTA */
+export const HERO_MIN_HEIGHT = `min(${layout.heroMinHeightVh}dvh, ${layout.heroMinHeightCap}px)`;
+
 export const GLASS_CARD_STYLES = {
   borderRadius: borderRadius.lg,
   backdropFilter: BLUR.xl,
