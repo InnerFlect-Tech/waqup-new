@@ -318,7 +318,8 @@
     "launchPage": "En savoir plus sur waQup",
     "waitlistCount": "{count} sur la liste",
     "earlyAccess": "Accès anticipé · Sans carte · Pratique gratuite",
-    "foundingMembersLink": "Membres Fondateurs →"
+    "foundingMembersLink": "Membres Fondateurs →",
+    "home": "Accueil"
   },
   "waitlistCta": {
     "placeholder": "votre@email.com",

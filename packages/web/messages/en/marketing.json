@@ -490,7 +490,8 @@
     "launchPage": "Learn more about waQup",
     "waitlistCount": "{count} on the waitlist",
     "earlyAccess": "Early access · No card · Practice free",
-    "foundingMembersLink": "Founding Members →"
+    "foundingMembersLink": "Founding Members →",
+    "home": "Home"
   },
   "waitlistCta": {
     "placeholder": "your@email.com",
