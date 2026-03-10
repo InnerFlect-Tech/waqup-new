@@ -23,6 +23,7 @@ import {
   Check,
   ChevronDown,
 } from 'lucide-react';
+import { Analytics } from '@waqup/shared/utils';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -242,6 +243,7 @@ export default function WaitlistPage() {
         setError(data.error ?? 'Something went wrong. Please try again.');
         return;
       }
+      Analytics.waitlistJoined();
       setSubmitted(true);
     } catch {
       setError('Network error. Please check your connection and try again.');

@@ -401,7 +401,7 @@ export default function VoiceSetupPage() {
               }}
             >
               {status.status === 'ready' ? (
-                <Check size={24} color="#34d399" />
+                <Check size={24} color={colors.success} />
               ) : (
                 <Loader2 size={24} color={colors.accent.primary} className="animate-spin" />
               )}
@@ -414,8 +414,8 @@ export default function VoiceSetupPage() {
                   fontWeight: 600,
                   padding: `${spacing.xs} ${spacing.sm}`,
                   borderRadius: borderRadius.full,
-                  background: status.status === 'ready' ? '#34d39920' : `${colors.accent.primary}20`,
-                  color: status.status === 'ready' ? '#34d399' : colors.accent.primary,
+                  background: status.status === 'ready' ? `${colors.success}20` : `${colors.accent.primary}20`,
+                  color: status.status === 'ready' ? colors.success : colors.accent.primary,
                 }}
               >
                 {status.status === 'ready' ? 'Ready' : 'Processing'}

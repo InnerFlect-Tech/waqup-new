@@ -11,7 +11,7 @@ import { useTheme } from '@/theme';
 import { useAudioAnalyzer } from '@/hooks';
 
 const VoiceOrb = dynamic(
-  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrb })),
+  () => import('@/components/orb').then((mod) => ({ default: mod.VoiceOrb })),
   { ssr: false }
 );
 

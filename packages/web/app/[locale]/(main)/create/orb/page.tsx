@@ -10,7 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Mic, Square, MessageSquare, ArrowLeft } from 'lucide-react';
-import { VoiceOrb } from '@/components/audio/VoiceOrb';
+import { VoiceOrb } from '@/components/orb';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 import { getContentTypeIcon } from '@/lib';
 import {

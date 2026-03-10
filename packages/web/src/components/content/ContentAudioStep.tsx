@@ -10,12 +10,14 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { CONTENT_TYPE_META } from '@/lib/creation-steps';
+import { useAtmosphereAvailable } from '@/hooks';
 import {
   getActiveBinauralPresets,
   getActiveAtmospherePresets,
   type BinauralPreset,
   type AtmospherePreset,
 } from '@waqup/shared/constants';
+import { resolveAtmosphereUrl } from '@/utils/atmosphere';
 import type { AudioSettings } from '@waqup/shared/types';
 import { DEFAULT_AUDIO_SETTINGS } from '@waqup/shared/types';
 import { Music, Volume2, Waves, Zap, Wind, Check, ChevronLeft, Play, Square } from 'lucide-react';
@@ -222,11 +224,22 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
   const atmosphereAudioRef = useRef<HTMLAudioElement | null>(null);
   const [isPreviewing, setIsPreviewing] = useState(false);
 
+  const { available: atmosphereAvailable } = useAtmosphereAvailable();
   const binauralPresets = getActiveBinauralPresets();
   const atmospherePresets = getActiveAtmospherePresets();
 
   const selectedBinaural = binauralPresets.find((p) => p.id === settings.binauralPresetId) ?? binauralPresets[0];
   const selectedAtmosphere = atmospherePresets.find((p) => p.id === settings.atmospherePresetId) ?? atmospherePresets[0];
+
+  // When atmosphere files aren't uploaded, only show "None" and ensure selection is none
+  const effectiveAtmospherePresets = atmosphereAvailable ? atmospherePresets : atmospherePresets.filter((p) => p.id === 'none');
+  const effectiveSelectedAtmosphere = atmosphereAvailable ? selectedAtmosphere : atmospherePresets[0]; // "None"
+
+  useEffect(() => {
+    if (!atmosphereAvailable && settings.atmospherePresetId !== 'none') {
+      setSettings((prev) => ({ ...prev, atmospherePresetId: 'none' }));
+    }
+  }, [atmosphereAvailable, settings.atmospherePresetId]);
 
   const update = useCallback(<K extends keyof AudioSettings>(key: K, value: AudioSettings[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -253,8 +266,9 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
     }
 
     // Start atmosphere preview (HTMLAudioElement) if file exists
-    if (selectedAtmosphere.fileUrl) {
-      const audio = new Audio(selectedAtmosphere.fileUrl);
+    const ambientUrl = effectiveSelectedAtmosphere.fileUrl ?? (effectiveSelectedAtmosphere.id !== 'none' ? resolveAtmosphereUrl(effectiveSelectedAtmosphere.id) : null);
+    if (ambientUrl) {
+      const audio = new Audio(ambientUrl);
       audio.loop = true;
       audio.volume = (settings.volumeAmbient / 100) * 0.5;
       void audio.play().catch(() => { /* autoplay blocked — ignore */ });
@@ -269,7 +283,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
       }
       setIsPreviewing(false);
     }, PREVIEW_MS);
-  }, [isPreviewing, selectedBinaural, selectedAtmosphere, settings.volumeBinaural, settings.volumeAmbient, binauralPreview]);
+  }, [isPreviewing, selectedBinaural, effectiveSelectedAtmosphere, settings.volumeBinaural, settings.volumeAmbient, binauralPreview]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -289,7 +303,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
     router.push(nextHref);
   }, [settings, setAudioSettings, setCurrentStep, router, nextHref]);
 
-  const atmosphereHasFile = selectedAtmosphere.id !== 'none' && !!selectedAtmosphere.fileUrl;
+  const atmosphereHasFile = effectiveSelectedAtmosphere.id !== 'none' && !!effectiveSelectedAtmosphere.fileUrl;
   const binauralActive = selectedBinaural.id !== 'none';
 
   return (
@@ -365,11 +379,11 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
         />
         <VolumeSlider
           label="Atmosphere"
-          sublabel={selectedAtmosphere.id !== 'none' ? selectedAtmosphere.label : 'Select below'}
+          sublabel={effectiveSelectedAtmosphere.id !== 'none' ? effectiveSelectedAtmosphere.label : 'Select below'}
           value={settings.volumeAmbient}
           onChange={(v) => update('volumeAmbient', v)}
           color="#60a5fa"
-          disabled={selectedAtmosphere.id === 'none'}
+          disabled={effectiveSelectedAtmosphere.id === 'none'}
         />
       </motion.div>
 
@@ -423,7 +437,8 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
         </AnimatePresence>
       </motion.div>
 
-      {/* ── Atmosphere Preset Selector ──────────────────────────────────────── */}
+      {/* ── Atmosphere Preset Selector (hidden when no presets uploaded) ──────── */}
+      {atmosphereAvailable && (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -445,7 +460,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           </Typography>
         </div>
         <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', marginBottom: spacing.md }}>
-          {atmospherePresets.map((preset) => (
+          {effectiveAtmospherePresets.map((preset) => (
             <PresetCard
               key={preset.id}
               label={preset.label}
@@ -458,7 +473,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           ))}
         </div>
         <AnimatePresence>
-          {selectedAtmosphere.id !== 'none' && !atmosphereHasFile && (
+          {effectiveSelectedAtmosphere.id !== 'none' && !atmosphereHasFile && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
@@ -472,6 +487,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           )}
         </AnimatePresence>
       </motion.div>
+      )}
 
       {/* ── Fade Effects ────────────────────────────────────────────────────── */}
       <motion.div

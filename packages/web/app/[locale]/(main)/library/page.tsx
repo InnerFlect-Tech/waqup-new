@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Typography, Button, Badge, Loading } from '@/components';
+import { Typography, Button, Badge, Loading, ContentIcon } from '@/components';
 import { spacing, borderRadius, GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
@@ -34,11 +34,11 @@ import { withOpacity } from '@waqup/shared/theme';
 type ContentTypeFilter = 'all' | 'ritual' | 'affirmation' | 'meditation';
 type SortOrder = 'recent' | 'most_played';
 
-const FILTERS: { id: ContentTypeFilter; label: string; icon: typeof Music }[] = [
+const FILTERS: { id: ContentTypeFilter; label: string; icon: typeof Music; iconSrc?: string }[] = [
   { id: 'all', label: 'All', icon: LibraryIcon },
-  { id: 'affirmation', label: 'Affirmations', icon: Sparkles },
-  { id: 'meditation', label: 'Meditations', icon: Wind },
-  { id: 'ritual', label: 'Rituals', icon: Music },
+  { id: 'affirmation', label: 'Affirmations', icon: Sparkles, iconSrc: '/images/icon-affirmations.png' },
+  { id: 'meditation', label: 'Meditations', icon: Wind, iconSrc: '/images/icon-meditations.png' },
+  { id: 'ritual', label: 'Rituals', icon: Music, iconSrc: '/images/icon-rituals.png' },
 ];
 
 const TYPE_COLOR: Record<ContentTypeFilter, string> = {
@@ -571,7 +571,7 @@ export default function LibraryPage() {
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
-            {FILTERS.map(({ id, label, icon: Icon }) => {
+            {FILTERS.map(({ id, label, icon: Icon, iconSrc }) => {
               const isActive = typeFilter === id;
               const accent = TYPE_COLOR[id] || colors.accent.primary;
               const count = id !== 'all' ? allContent.filter((i) => i.type === id).length : 0;
@@ -596,11 +596,15 @@ export default function LibraryPage() {
                     gap: spacing.xs,
                   }}
                 >
-                  <Icon
-                    size={13}
-                    color={isActive ? accent : colors.text.secondary}
-                    strokeWidth={2.5}
-                  />
+                  {iconSrc ? (
+                    <ContentIcon src={iconSrc} size={20} borderRadius={6} />
+                  ) : (
+                    <Icon
+                      size={13}
+                      color={isActive ? accent : colors.text.secondary}
+                      strokeWidth={2.5}
+                    />
+                  )}
                   {label}
                   {count > 0 && (
                     <span

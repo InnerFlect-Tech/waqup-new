@@ -42,6 +42,11 @@ export default function SignupPage() {
     },
   });
 
+  // Funnel: user started signup
+  useEffect(() => {
+    Analytics.funnelSignupStarted(useAuthStore.getState().user?.id);
+  }, []);
+
   // Clear error when component mounts
   useEffect(() => {
     return () => {
@@ -54,7 +59,9 @@ export default function SignupPage() {
     const result = await signup(data.email, data.password);
 
     if (result.success) {
-      Analytics.signupCompleted('email', undefined, useAuthStore.getState().user?.id);
+      const userId = useAuthStore.getState().user?.id;
+      Analytics.signupCompleted('email', undefined, userId);
+      Analytics.funnelSignupCompleted('email', userId);
       // When Supabase email confirmation is disabled, the user is immediately
       // authenticated after signup — redirect them into the app.
       const currentUser = useAuthStore.getState().user;
@@ -273,7 +280,7 @@ export default function SignupPage() {
                       <input
                         type="checkbox"
                         checked={value}
-                        onChange={(e) => onChange(e.target.checked)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.checked)}
                         style={{
                           width: '20px',
                           height: '20px',

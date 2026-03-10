@@ -2,6 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { Target, MapPin, Heart, Sparkles, Mic, Music, Eye } from 'lucide-react';
+import { Analytics } from '@waqup/shared/utils';
+import { useAuthStore } from '@/stores';
 import { CreateFlowInitStep } from '@/components/content/CreateFlowInitStep';
 import { ContentModeSelector } from '@/components/content/ContentModeSelector';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
@@ -54,8 +56,10 @@ const TIPS = [
 
 export default function RitualCreateInitPage() {
   const { setCurrentStep } = useContentCreation();
+  const { user } = useAuthStore();
 
   useEffect(() => { setCurrentStep('init'); }, [setCurrentStep]);
+  useEffect(() => { Analytics.ritualStarted(user?.id); }, [user?.id]);
 
   const costs = CONTENT_CREDIT_COSTS.ritual;
   const maxCost = AI_MODE_COSTS.chat + costs.withAi;

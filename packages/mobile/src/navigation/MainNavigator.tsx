@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
@@ -41,6 +42,7 @@ function QBalanceBadge() {
 }
 
 function MainTabs() {
+  const { t } = useTranslation('nav');
   const { theme } = useTheme();
   const colors = theme.colors;
 
@@ -67,11 +69,11 @@ function MainTabs() {
         ),
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
-      <Tab.Screen name="Library" component={LibraryScreen} options={{ tabBarLabel: 'Library' }} />
-      <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ tabBarLabel: 'Discover' }} />
-      <Tab.Screen name="Speak" component={SpeakScreen} options={{ tabBarLabel: 'Speak' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('home') }} />
+      <Tab.Screen name="Library" component={LibraryScreen} options={{ tabBarLabel: t('library') }} />
+      <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ tabBarLabel: t('discover') }} />
+      <Tab.Screen name="Speak" component={SpeakScreen} options={{ tabBarLabel: t('speak') }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: t('profile') }} />
     </Tab.Navigator>
   );
 }

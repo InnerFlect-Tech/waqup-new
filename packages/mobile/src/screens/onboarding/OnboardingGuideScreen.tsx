@@ -59,19 +59,8 @@ export default function OnboardingGuideScreen({ navigation }: Props) {
         .eq('id', user.id);
     }
     await completeOnboarding();
-    // Navigation will switch to Main; we need to open CreateMode with contentType.
-    // We'll use a pending action stored in a ref/context that MainNavigator can read.
-    // Simpler: just complete onboarding - user lands on Main. They can tap Create from there.
-    // For "Create now" we could navigate to Main with a param to open CreateMode - but that
-    // requires passing through the navigation state. For now, complete and go to Main.
-    // The plan says "4-step flow matching web" - the guide offers create options. On web they
-    // go to /create/orb?type=affirmation. On mobile we'd need to open CreateMode. Let me
-    // add a way to do that - we can use a global "pendingCreateType" that Main checks on mount.
-    // Actually simpler: use navigation.getParent() to get root and reset to Main with a param.
-    // RootStackParamList has Main. We could have Main accept initialParams: { openCreateType?: ContentItemType }.
-    // That would require MainNavigator to handle it. For Phase C7 scope, let's just complete
-    // and go to Main - the "Create now" buttons will have the same effect as "Skip to Sanctuary"
-    // for now. We can enhance later.
+    // User lands on Main; they can tap Create from there. Create-now options could open CreateMode
+    // via Main initialParams later.
   };
 
   return (

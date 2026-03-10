@@ -1,0 +1,23 @@
+{
+  "home": "Home",
+  "library": "Library",
+  "create": "Create",
+  "speak": "Speak",
+  "marketplace": "Marketplace",
+  "discover": "Discover",
+  "profile": "Profile",
+  "sanctuary": "Sanctuary",
+  "settings": "Settings",
+  "credits": "Credits",
+  "progress": "Progress",
+  "help": "Help",
+  "logout": "Log out",
+  "login": "Log in",
+  "signup": "Sign up",
+  "admin": "Admin",
+  "voices": "Voices",
+  "plan": "Plan",
+  "referral": "Referral",
+  "reminders": "Reminders",
+  "learn": "Learn"
+}

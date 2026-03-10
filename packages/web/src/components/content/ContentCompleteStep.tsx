@@ -44,6 +44,12 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (contentType === 'ritual' && savedId) {
+      Analytics.funnelFirstRitual(savedId, user?.id);
+    }
+  }, [contentType, savedId, user?.id]);
+
   return (
     <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
       {/* Celebration */}

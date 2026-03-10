@@ -6,6 +6,7 @@ import { useTheme } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius, CONTENT_MAX_WIDTH } from '@/theme';
 import { Link } from '@/i18n/navigation';
+import { formatDate } from '@waqup/shared/utils';
 
 interface SchemaCheck {
   check_name: string;
@@ -108,7 +109,7 @@ export default function SchemaPage() {
               </GlassCard>
 
               <Typography variant="small" style={{ color: colors.text.tertiary, marginBottom: spacing.xl }}>
-                Last checked: {data.timestamp ? new Date(data.timestamp).toLocaleString() : '—'}
+                Last checked: {formatDate(data.timestamp ?? null, { fallback: '—' })}
               </Typography>
             </>
           )}

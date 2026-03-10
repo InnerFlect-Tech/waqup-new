@@ -136,6 +136,14 @@ export const Analytics = {
       item_category: 'subscription',
     }, userId),
 
+  /** Credits were spent on content creation. */
+  creditsSpent: (amount: number, contentType: string, userId?: string) =>
+    trackEvent('credits_spent', { amount, content_type: contentType }, userId),
+
+  /** User's credit balance fell below threshold (e.g. 5). */
+  creditsLow: (balance: number, threshold: number, userId?: string) =>
+    trackEvent('credits_low', { balance, threshold }, userId),
+
   // ── Referral ──────────────────────────────────────────────────────────────
 
   /** User shared their referral link. platform: 'link' | 'instagram' | etc. */
@@ -147,6 +155,36 @@ export const Analytics = {
   /** User viewed a marketplace item detail page. */
   marketplaceItemViewed: (itemId: string, userId?: string) =>
     trackEvent('view_item', { item_id: itemId, item_category: 'marketplace' }, userId),
+
+  // ── Product creation flow ──────────────────────────────────────────────────
+
+  /** User started ritual creation flow. */
+  ritualStarted: (userId?: string) =>
+    trackEvent('ritual_started', undefined, userId),
+
+  /** User recorded voice (finished recording step). */
+  voiceRecorded: (contentType: string, userId?: string) =>
+    trackEvent('voice_recorded', { content_type: contentType }, userId),
+
+  /** AI/TTS voice was generated for content. */
+  aiVoiceGenerated: (contentType: string, userId?: string) =>
+    trackEvent('ai_voice_generated', { content_type: contentType }, userId),
+
+  // ── Marketing ──────────────────────────────────────────────────────────────
+
+  /** User clicked a CTA. ctaId: e.g. 'hero-signup', 'pricing-upgrade'. */
+  ctaClicked: (ctaId: string, page: string, userId?: string) =>
+    trackEvent('cta_clicked', { cta_id: ctaId, page }, userId),
+
+  /** User joined the waitlist. */
+  waitlistJoined: (userId?: string) =>
+    trackEvent('waitlist_joined', undefined, userId),
+
+  // ── Admin ──────────────────────────────────────────────────────────────────
+
+  /** Authorized user accessed an admin page. */
+  adminPageAccessed: (page: string, userId?: string) =>
+    trackEvent('admin_page_accessed', { page }, userId),
 
   // ── Session ───────────────────────────────────────────────────────────────
 
@@ -162,4 +200,22 @@ export const Analytics = {
    */
   errorOccurred: (errorCode: string, page: string) =>
     trackEvent('app_error', { error_code: errorCode, page }),
+
+  // ── Funnel events ────────────────────────────────────────────────────────
+
+  /** User started signup flow (landed on /signup or clicked Get started). */
+  funnelSignupStarted: (userId?: string) =>
+    trackEvent('funnel_signup_started', undefined, userId),
+
+  /** User completed signup. Fire alongside sign_up for funnel visualization. */
+  funnelSignupCompleted: (method: string, userId?: string) =>
+    trackEvent('funnel_signup_completed', { method }, userId),
+
+  /** User created their first ritual. */
+  funnelFirstRitual: (contentId: string, userId?: string) =>
+    trackEvent('funnel_first_ritual', { content_id: contentId }, userId),
+
+  /** User made first paid conversion (credits or subscription). */
+  funnelPaidConversion: (type: 'credits' | 'subscription', value?: number, userId?: string) =>
+    trackEvent('funnel_paid_conversion', { conversion_type: type, ...(value != null && { value }) }, userId),
 };

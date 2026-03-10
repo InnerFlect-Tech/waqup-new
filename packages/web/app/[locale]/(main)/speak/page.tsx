@@ -12,7 +12,7 @@ import type { OrbState } from '@/components/audio';
 import { ORB_INTRO_SHORT } from '@waqup/shared/constants';
 
 const VoiceOrb = dynamic(
-  () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrb })),
+  () => import('@/components/orb').then((mod) => ({ default: mod.VoiceOrb })),
   { ssr: false }
 );
 

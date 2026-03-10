@@ -9,6 +9,7 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { Link } from '@/i18n/navigation';
 import { Copy, Check, Twitter, Mail, MessageCircle, Gift, Users } from 'lucide-react';
 import { useAuthStore } from '@/stores';
+import { Analytics } from '@waqup/shared/utils';
 
 function generateReferralCode(email: string): string {
   const base = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 6);
@@ -43,6 +44,7 @@ export default function ReferralPage() {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(referralUrl);
+      Analytics.referralShared('link', user?.id);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
@@ -53,24 +55,9 @@ export default function ReferralPage() {
   const shareText = encodeURIComponent('Transform your mind with waQup — personalized affirmations, meditations & rituals created with your own voice. Join me here:');
 
   const SHARE_LINKS = [
-    {
-      icon: Twitter,
-      label: 'Share on X',
-      color: '#1d9bf0',
-      href: `https://twitter.com/intent/tweet?text=${shareText}%20${encodeURIComponent(referralUrl)}`,
-    },
-    {
-      icon: MessageCircle,
-      label: 'Share on WhatsApp',
-      color: '#25d366',
-      href: `https://wa.me/?text=${shareText}%20${encodeURIComponent(referralUrl)}`,
-    },
-    {
-      icon: Mail,
-      label: 'Share by Email',
-      color: '#f59e0b',
-      href: `mailto:?subject=${encodeURIComponent('Join me on waQup')}&body=${shareText}%20${encodeURIComponent(referralUrl)}`,
-    },
+    { icon: Twitter, label: 'Share on X', color: '#1d9bf0', platform: 'twitter' as const, href: `https://twitter.com/intent/tweet?text=${shareText}%20${encodeURIComponent(referralUrl)}` },
+    { icon: MessageCircle, label: 'Share on WhatsApp', color: '#25d366', platform: 'whatsapp' as const, href: `https://wa.me/?text=${shareText}%20${encodeURIComponent(referralUrl)}` },
+    { icon: Mail, label: 'Share by Email', color: '#f59e0b', platform: 'email' as const, href: `mailto:?subject=${encodeURIComponent('Join me on waQup')}&body=${shareText}%20${encodeURIComponent(referralUrl)}` },
   ];
 
   return (
@@ -234,6 +221,7 @@ export default function ReferralPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: 'none' }}
+                onClick={() => Analytics.referralShared(link.platform, user?.id)}
               >
                 <motion.div
                   whileHover={{ scale: 1.015 }}

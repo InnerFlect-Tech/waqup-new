@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { OnboardingStepLayout } from '@/components';
-import { Typography, Button } from '@/components';
+import { Typography, Button, ContentIcon } from '@/components';
 import { useTheme, spacing, borderRadius, BLUR } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { supabase } from '@/lib/supabase';
@@ -13,7 +13,7 @@ import { Sparkles, ArrowRight, Play } from 'lucide-react';
 const QUICK_START_OPTIONS = [
   {
     id: 'affirmation',
-    emoji: '🦁',
+    iconSrc: '/images/icon-affirmations.png',
     label: 'Create my first affirmation',
     sub: 'Cognitive re-patterning · 1 min · 1 Q',
     href: '/create/orb?type=affirmation',
@@ -21,7 +21,7 @@ const QUICK_START_OPTIONS = [
   },
   {
     id: 'meditation',
-    emoji: '🌊',
+    iconSrc: '/images/icon-meditations.png',
     label: 'Create a short meditation',
     sub: 'State induction · 5 min · 2 Q',
     href: '/create/orb?type=meditation',
@@ -29,7 +29,7 @@ const QUICK_START_OPTIONS = [
   },
   {
     id: 'ritual',
-    emoji: '🔥',
+    iconSrc: '/images/icon-rituals.png',
     label: 'Build a daily ritual',
     sub: 'Identity encoding · 10 min · 5 Q',
     href: '/create/orb?type=ritual',
@@ -99,18 +99,16 @@ export default function OnboardingGuidePage() {
               transition: 'all 0.2s ease',
               minHeight: '44px',
             }}
-            onMouseEnter={(e) => {
+            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.currentTarget.style.background = `${item.color}20`;
               e.currentTarget.style.borderColor = `${item.color}60`;
             }}
-            onMouseLeave={(e) => {
+            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.currentTarget.style.background = `${item.color}10`;
               e.currentTarget.style.borderColor = `${item.color}30`;
             }}
           >
-            <span style={{ fontSize: '24px', lineHeight: 1, width: 36, textAlign: 'center', flexShrink: 0 }}>
-              {item.emoji}
-            </span>
+            <ContentIcon src={item.iconSrc} size={40} borderRadius={10} style={{ flexShrink: 0 }} />
             <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
               <Typography
                 variant="body"

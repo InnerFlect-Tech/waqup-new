@@ -6,6 +6,7 @@ import { useTheme } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { spacing, borderRadius } from '@/theme';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { formatDate } from '@waqup/shared/utils';
 import { Link } from '@/i18n/navigation';
 
 interface ContentStats {
@@ -133,7 +134,7 @@ export default function ContentOverviewPage() {
               </GlassCard>
 
               <Typography variant="small" style={{ color: colors.text.tertiary }}>
-                Last updated: {data?.timestamp ? new Date(data.timestamp).toLocaleString() : '—'}
+                Last updated: {formatDate(data?.timestamp ?? null, { fallback: '—' })}
               </Typography>
             </>
           )}

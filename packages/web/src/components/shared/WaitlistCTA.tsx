@@ -8,6 +8,8 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR, CARD_PADDING_AUTH, BUTTON_TOKENS } from '@/theme';
 import { ArrowRight, Sparkles, Check } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { usePathname } from 'next/navigation';
+import { Analytics } from '@waqup/shared/utils';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -32,6 +34,8 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
   const tc = useTranslations('common');
   const { theme } = useTheme();
   const colors = theme.colors;
+  const pathname = usePathname();
+  const page = pathname?.replace(/^\/(en|pt|es|fr|de)/, '') || '/';
 
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -54,11 +58,13 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
         body: JSON.stringify({ name: trimmed.split('@')[0], email: trimmed, intentions: [] }),
       });
       if (res.ok) {
+        Analytics.waitlistJoined();
         setDone(true);
       } else {
         const data = await res.json();
         // If already signed up, treat as success
         if (res.status === 409 || data?.error?.toLowerCase().includes('already')) {
+          Analytics.waitlistJoined();
           setDone(true);
         } else {
           setError(data?.error ?? t('waitlistCta.errorGeneric'));
@@ -182,7 +188,11 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
           style={{ color: colors.text.tertiary, marginTop: spacing.lg, display: 'block' }}
         >
           {tc('or')}{' '}
-          <Link href="/waitlist" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>
+          <Link
+            href="/waitlist"
+            style={{ color: colors.accent.tertiary, textDecoration: 'none' }}
+            onClick={() => Analytics.ctaClicked('waitlist-full-form', page)}
+          >
             {t('waitlistCta.fillFullForm')}
           </Link>{' '}
           {t('waitlistCta.fillFormSuffix')}

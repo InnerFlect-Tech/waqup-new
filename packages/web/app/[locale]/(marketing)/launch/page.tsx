@@ -29,6 +29,7 @@ import {
   X,
   Infinity as InfinityIcon,
 } from 'lucide-react';
+import { ContentIcon } from '@/components';
 
 // ─── Phone Mockup ─────────────────────────────────────────────────────────────
 
@@ -43,14 +44,12 @@ function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
       </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 9 }}>
         {[
-          { icon: Sun, label: 'Affirmations', sub: 'Rewire your beliefs', color: CONTENT_TYPE_COLORS.affirmation },
-          { icon: Moon, label: 'Meditations', sub: 'Induce calm states', color: CONTENT_TYPE_COLORS.meditation },
-          { icon: Flame, label: 'Rituals', sub: 'Encode identity', color: CONTENT_TYPE_COLORS.ritual },
-        ].map(({ icon: Icon, label, sub, color }) => (
+          { iconSrc: '/images/icon-affirmations.png', label: 'Affirmations', sub: 'Rewire your beliefs', color: CONTENT_TYPE_COLORS.affirmation },
+          { iconSrc: '/images/icon-meditations.png', label: 'Meditations', sub: 'Induce calm states', color: CONTENT_TYPE_COLORS.meditation },
+          { iconSrc: '/images/icon-rituals.png', label: 'Rituals', sub: 'Encode identity', color: CONTENT_TYPE_COLORS.ritual },
+        ].map(({ iconSrc, label, sub, color }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 13, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <div style={{ width: 34, height: 34, borderRadius: 9, background: `${color}20`, border: `1px solid ${color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Icon size={16} color={color} />
-            </div>
+            <ContentIcon src={iconSrc} size={34} borderRadius={9} style={{ background: `${color}20`, border: `1px solid ${color}40`, flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 500, color: '#fff', lineHeight: 1 }}>{label}</div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{sub}</div>

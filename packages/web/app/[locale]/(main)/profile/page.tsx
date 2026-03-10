@@ -9,7 +9,7 @@ import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { useAuthStore } from '@/stores';
 import { useCreditBalance } from '@/hooks';
-import { Analytics } from '@waqup/shared/utils';
+import { Analytics, formatDate } from '@waqup/shared/utils';
 import { supabase } from '@/lib/supabase';
 import { Link } from '@/i18n/navigation';
 import { LogOut, ChevronRight, Edit2, Check, X } from 'lucide-react';
@@ -49,7 +49,7 @@ export default function ProfilePage() {
   const bio = (authUser?.user_metadata?.bio as string | undefined) ?? '';
   const initials = getInitials(displayName);
   const memberSince = authUser?.created_at
-    ? new Date(authUser.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    ? formatDate(authUser.created_at, { monthYearOnly: true, locale: 'en-US' })
     : 'Recently';
 
   const fetchContentCount = useCallback(async () => {
@@ -142,8 +142,8 @@ export default function ProfilePage() {
                   <input
                     autoFocus
                     value={nameValue}
-                    onChange={(e) => setNameValue(e.target.value)}
-                    onKeyDown={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNameValue(e.target.value)}
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                       if (e.key === 'Enter') saveName();
                       if (e.key === 'Escape') { setEditingName(false); setNameValue(displayName); }
                     }}

@@ -9,6 +9,12 @@ export interface FormatDateOptions {
   locale?: string;
   /** Fallback when iso is null/undefined. Default: '—' */
   fallback?: string;
+  /** Month only (e.g. "Jan"). Default: false */
+  monthOnly?: boolean;
+  /** Weekday + short date (e.g. "Mon, Jan 15"). Default: false */
+  weekdayShort?: boolean;
+  /** Month and year only (e.g. "March 2025"). Default: false */
+  monthYearOnly?: boolean;
 }
 
 /**
@@ -19,8 +25,21 @@ export function formatDate(
   opts: FormatDateOptions = {}
 ): string {
   if (iso == null || iso === '') return opts.fallback ?? '—';
-  const { includeYear = true, locale = 'en-GB' } = opts;
+  const { includeYear = true, locale = 'en-GB', monthOnly = false, weekdayShort = false, monthYearOnly = false } = opts;
   const d = new Date(iso);
+  if (monthOnly) {
+    return d.toLocaleDateString(locale, { month: 'short' });
+  }
+  if (monthYearOnly) {
+    return d.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+  }
+  if (weekdayShort) {
+    return d.toLocaleDateString(locale, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
   return d.toLocaleDateString(locale, {
     day: includeYear ? '2-digit' : 'numeric',
     month: 'short',

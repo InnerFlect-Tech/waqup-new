@@ -13,8 +13,9 @@ import type { ContentItemType, AudioLayers, AudioVolumes, AudioSettings } from '
 import { PLAYBACK_SPEEDS } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS, getBinauralPreset, getAtmospherePreset } from '@waqup/shared/constants';
 import { supabase } from '@/lib/supabase';
-import { formatTime } from '@waqup/shared/utils';
+import { formatTime, Analytics } from '@waqup/shared/utils';
 import { resolveAtmosphereUrl } from '@/utils/atmosphere';
+import { useAuthStore } from '@/stores';
 
 export interface AudioPageProps {
   id: string;
@@ -81,6 +82,7 @@ export function AudioPage({
 }: AudioPageProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const { user } = useAuthStore();
   const accent = TYPE_ACCENT[contentType];
 
   // Resolve atmosphere URL from Supabase Storage when layers.ambientUrl is not set.
@@ -151,6 +153,20 @@ export function AudioPage({
 
   const isPlaying = state === 'playing';
   const progress = position.durationMs > 0 ? position.positionMs / position.durationMs : 0;
+
+  // ── Analytics: content played / completed ─────────────────────────────────
+  const playedRef = useRef(false);
+  useEffect(() => {
+    if (state === 'playing' && !playedRef.current) {
+      playedRef.current = true;
+      Analytics.contentPlayed(id, contentType, user?.id);
+    }
+    if (state === 'ended') {
+      const durationSeconds = Math.round(position.durationMs / 1000);
+      Analytics.contentCompleted(id, contentType, durationSeconds, user?.id);
+    }
+    if (state === 'paused' || state === 'idle') playedRef.current = false;
+  }, [state, id, contentType, user?.id, position.durationMs]);
 
   // ── Frequency data for waveform visualization ───────────────────────────
   const [freqData, setFreqData] = useState<number[]>([]);

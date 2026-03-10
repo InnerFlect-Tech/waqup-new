@@ -15,9 +15,10 @@ import { getProgressStats } from '@/lib/api-client';
 import { Analytics } from '@waqup/shared/utils';
 import { Library, Flame, ChevronRight, Bell, BookOpen } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { ELEVATED_BADGE_COLOR_SECONDARY, getContentTypeColor } from '@waqup/shared/constants';
 
-const STREAK_COLOR = '#f97316';
-const LIBRARY_COLOR = '#a78bfa';
+const STREAK_COLOR = ELEVATED_BADGE_COLOR_SECONDARY;
+const LIBRARY_COLOR = getContentTypeColor('affirmation');
 
 export default function SanctuaryHomePage() {
   const { theme } = useTheme();
@@ -53,6 +54,7 @@ export default function SanctuaryHomePage() {
     if (!user?.id) return;
     const planId = searchParams.get('plan') ?? 'unknown';
     Analytics.subscriptionStarted(planId, 0, 'USD', user.id);
+    Analytics.funnelPaidConversion('subscription', 0, user.id);
   // searchParams is stable; user?.id is the only value that may arrive late
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
@@ -214,7 +216,7 @@ export default function SanctuaryHomePage() {
                       border:      'none',
                       padding:     0,
                       cursor:      'pointer',
-                      color:       'rgba(252,165,165,0.85)',
+                      color:       colors.error,
                       fontSize:    12,
                       fontWeight:  600,
                       letterSpacing: '0.02em',

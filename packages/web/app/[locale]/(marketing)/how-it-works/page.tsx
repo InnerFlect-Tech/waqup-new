@@ -9,6 +9,7 @@ import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from 
 import { QS_EXPLANATION, PRACTICE_IS_FREE_ONE_LINER, VOICE_CLONING_COPY, CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
+import { ContentIcon } from '@/components';
 import {
   Mic,
   Sparkles,
@@ -39,6 +40,12 @@ type ThemeColors = ReturnType<typeof useTheme>['theme']['colors'];
 
 // ─── Phone Mockup (same as launch page) ──────────────────────────────────────
 
+const SANCTUARY_ITEMS = [
+  { iconSrc: '/images/icon-affirmations.png', label: 'Affirmations', sub: 'Rewire your beliefs', color: CONTENT_TYPE_COLORS.affirmation },
+  { iconSrc: '/images/icon-meditations.png', label: 'Meditations', sub: 'Induce calm states', color: CONTENT_TYPE_COLORS.meditation },
+  { iconSrc: '/images/icon-rituals.png', label: 'Rituals', sub: 'Encode identity', color: CONTENT_TYPE_COLORS.ritual },
+];
+
 function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
   return (
     <div style={{ height: '100%', background: '#060606', padding: '18px 16px', display: 'flex', flexDirection: 'column' }}>
@@ -47,15 +54,9 @@ function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
         <div style={{ fontSize: 16, fontWeight: 300, color: '#fff', letterSpacing: -0.5 }}>Ready to transform? ✨</div>
       </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 9 }}>
-        {[
-          { icon: Sun, label: 'Affirmations', sub: 'Rewire your beliefs', color: CONTENT_TYPE_COLORS.affirmation },
-          { icon: Moon, label: 'Meditations', sub: 'Induce calm states', color: CONTENT_TYPE_COLORS.meditation },
-          { icon: Flame, label: 'Rituals', sub: 'Encode identity', color: CONTENT_TYPE_COLORS.ritual },
-        ].map(({ icon: Icon, label, sub, color }) => (
+        {SANCTUARY_ITEMS.map(({ iconSrc, label, sub, color }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 13, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-            <div style={{ width: 34, height: 34, borderRadius: 9, background: `${color}20`, border: `1px solid ${color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Icon size={16} color={color} />
-            </div>
+            <ContentIcon src={iconSrc} size={34} borderRadius={9} style={{ background: `${color}20`, border: `1px solid ${color}40`, flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 500, color: '#fff', lineHeight: 1 }}>{label}</div>
               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>{sub}</div>
@@ -449,12 +450,27 @@ export default function HowItWorksPage() {
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16, paddingLeft: '0.12em' }}>Three Content Types</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Every depth of transformation</h2>
           <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is engineered for a specific level of inner change, from daily reprogramming to permanent identity encoding.</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.lg, marginTop: 28, flexWrap: 'wrap' }}>
+            {[
+              { src: '/images/icon-affirmations.png', label: 'Affirmations' },
+              { src: '/images/icon-meditations.png', label: 'Meditations' },
+              { src: '/images/icon-rituals.png', label: 'Rituals' },
+              { src: '/images/icon-voice.png', label: 'Your voice' },
+              { src: '/images/icon-listen.png', label: 'Listen' },
+              { src: '/images/icon-q-coin.png', label: 'Qs' },
+            ].map(({ src, label }) => (
+              <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                <ContentIcon src={src} size={56} borderRadius={14} />
+                <span style={{ fontSize: 11, color: colors.text.tertiary, fontWeight: 500 }}>{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 24 }}>
           {[
             {
-              icon: Sun,
+              iconSrc: '/images/icon-affirmations.png',
               name: 'Affirmations',
               tagline: 'Rewire your daily story',
               duration: '2–5 min',
@@ -466,7 +482,7 @@ export default function HowItWorksPage() {
               science: 'Spaced repetition + personal voice = faster neural rewiring.',
             },
             {
-              icon: Moon,
+              iconSrc: '/images/icon-meditations.png',
               name: 'Guided Meditations',
               tagline: 'Command your inner state',
               duration: '10–30 min',
@@ -478,7 +494,7 @@ export default function HowItWorksPage() {
               science: 'Theta brainwave entrainment for deep state change.',
             },
             {
-              icon: Flame,
+              iconSrc: '/images/icon-rituals.png',
               name: 'Rituals',
               tagline: 'Encode your new identity',
               duration: '20–60 min',
@@ -489,7 +505,7 @@ export default function HowItWorksPage() {
               outcome: 'Become someone new.',
               science: 'Somatic + cognitive integration for lasting identity shift.',
             },
-          ].map(({ icon: Icon, name, tagline, duration, depth, desc, color, gradient, outcome, science }) => (
+          ].map(({ iconSrc, name, tagline, duration, depth, desc, color, gradient, outcome, science }) => (
             <div key={name} style={{ borderRadius: borderRadius.xl, background: gradient, backdropFilter: BLUR.xl, WebkitBackdropFilter: BLUR.xl, border: `1px solid ${color}22`, overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.boxShadow = `0 40px 100px ${color}30`; e.currentTarget.style.borderColor = `${color}45`; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.borderColor = `${color}22`; }}
@@ -497,8 +513,10 @@ export default function HowItWorksPage() {
               {/* Card top */}
               <div style={{ padding: '48px 40px 36px', position: 'relative', borderBottom: `1px solid ${color}12` }}>
                 <div style={{ position: 'absolute', top: -20, right: -20, width: 140, height: 140, borderRadius: '50%', background: `radial-gradient(circle, ${color}15, transparent 70%)`, pointerEvents: 'none' }} />
-                <div style={{ width: 72, height: 72, borderRadius: 20, background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 28, boxShadow: `0 0 40px ${color}20` }}>
-                  <Icon size={34} color={color} />
+                <div style={{ marginBottom: 28, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                  <div style={{ background: `${color}18`, border: `1px solid ${color}30`, borderRadius: 20, padding: 4, boxShadow: `0 0 40px ${color}20` }}>
+                    <ContentIcon src={iconSrc} size={64} borderRadius={16} />
+                  </div>
                 </div>
                 <h3 style={{ fontSize: 26, fontWeight: 400, color: colors.text.primary, margin: '0 0 6px', letterSpacing: '-0.5px' }}>{name}</h3>
                 <p style={{ fontSize: 14, color, fontWeight: 500, margin: 0, letterSpacing: '0.02em' }}>{tagline}</p>

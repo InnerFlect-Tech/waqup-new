@@ -7,6 +7,10 @@ config({ path: path.join(__dirname, '.env.local') });
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000';
 const isCI = !!process.env.CI;
+// Local only: set PLAYWRIGHT_REUSE_SERVER=false to force a fresh dev server (avoids port conflicts)
+const reuseServer = process.env.PLAYWRIGHT_REUSE_SERVER !== undefined
+  ? process.env.PLAYWRIGHT_REUSE_SERVER === 'true'
+  : !isCI;
 const authStoragePath = path.join(__dirname, 'e2e/.auth/user.json');
 
 export default defineConfig({
@@ -58,7 +62,7 @@ export default defineConfig({
     // Use dev server: 'next start' is incompatible with output: standalone
     command: 'npm run dev',
     url: baseURL,
-    reuseExistingServer: !isCI,
+    reuseExistingServer: reuseServer,
     // iCloud paths can slow cold starts; 90s covers dev server boot locally
     timeout: 90_000,
   },

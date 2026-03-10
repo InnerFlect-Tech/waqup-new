@@ -9,8 +9,11 @@ import type { ContentItem } from '@waqup/shared/types';
 import type { AudioLayers } from '@waqup/shared/types';
 import { Typography } from '@/components';
 import { PageShell, PageContent } from '@/components';
+import { useTheme } from '@/theme';
 
 export default function MeditationEditAudioPage() {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const params = useParams();
   const id = params.id as string;
   const [content, setContent] = useState<ContentItem | null>(null);
@@ -36,7 +39,7 @@ export default function MeditationEditAudioPage() {
     return (
       <PageShell intensity="medium">
         <PageContent width="narrow">
-          <Typography variant="body" style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center', paddingTop: 80 }}>
+          <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', paddingTop: 80 }}>
             Loading…
           </Typography>
         </PageContent>
@@ -48,7 +51,7 @@ export default function MeditationEditAudioPage() {
     return (
       <PageShell intensity="medium">
         <PageContent width="narrow">
-          <Typography variant="body" style={{ color: '#ef4444', textAlign: 'center', paddingTop: 80 }}>
+          <Typography variant="body" style={{ color: colors.error, textAlign: 'center', paddingTop: 80 }}>
             {error ?? 'Content not found'}
           </Typography>
         </PageContent>

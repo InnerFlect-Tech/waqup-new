@@ -25,6 +25,12 @@ Use these prompts with **ChatGPT** (DALL·E 3) to generate images for the public
 | 15 | for-creators-growth | ✅ | Glowing upward graph — success, scaling |
 | 16 | for-studios-qr | ✅ | QR code moment — phone scanning in studio, yoga mat, candle |
 | 17 | get-qs-hero | ✅ | Serene rhythm in purple light — woman, headphones, cosmic glow |
+| 18 | icon-affirmations | ✅ | Sunrise — used in how-it-works content types |
+| 19 | icon-meditations | ✅ | Glowing moon — used in how-it-works content types |
+| 20 | icon-rituals | ✅ | Candle — used in how-it-works content types |
+| 21 | icon-voice | ✅ | Microphone — used in how-it-works content types strip |
+| 22 | icon-listen | ✅ | Headphones — used in how-it-works content types strip |
+| 23 | icon-q-coin | ✅ | Q coin — used in how-it-works content types strip |
 
 ---
 
@@ -321,6 +327,15 @@ When you provide this image for download, suggest the filename: get-qs-hero.png
 ## 10. Icons (1024×1024 — scale down for web)
 
 Icons are 1024×1024. Use at 48px, 64px, 128px etc. in the app.
+
+**Icon processing:** ChatGPT-generated icons often include a rounded-square frame/border. Run `npm run icons:crop` to:
+- Crop ~12% from edges
+- Trim dark border (Sharp `trim` with dark purple background)
+- Make dark pixels transparent
+- Sharpen for crisp display
+- Output 512×512 PNG with `compressionLevel: 0` for best quality
+
+Use the `ContentIcon` component (`@/components`). If icons are already processed, run `TRANSPARENCY_ONLY=1 npm run icons:crop` to re-apply transparency only.
 
 ### 10.1 Affirmations icon
 

@@ -64,13 +64,15 @@ export default function CreditsPage() {
 
   // Fire analytics event when Stripe redirects back after a successful credit purchase.
   // Stripe appends ?checkout=success&pack=<packId>&credits=<amount> to the success_url.
+  // Wait for user to load so user_id is included for attribution.
   useEffect(() => {
     if (searchParams.get('checkout') !== 'success') return;
+    if (!user?.id) return;
     const packId = searchParams.get('pack') ?? 'unknown';
     const credits = Number(searchParams.get('credits') ?? 0);
-    Analytics.creditsPurchased(packId, credits, 'USD', user?.id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    Analytics.creditsPurchased(packId, credits, 'USD', user.id);
+    Analytics.funnelPaidConversion('credits', credits, user.id);
+  }, [searchParams, user?.id]);
 
   return (
     <PageShell intensity="medium">

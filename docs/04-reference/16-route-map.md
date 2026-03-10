@@ -7,6 +7,16 @@
 
 ---
 
+## When Adding Routes
+
+1. **Create the page** under `app/[locale]/` in the appropriate route group (auth, main, marketing, sanctuary, etc.).
+2. **Add to route map**: Update this file (`docs/04-reference/16-route-map.md`) with the new row in the correct table.
+3. **Add to routes.ts**: Add a `RouteEntry` in `packages/web/src/lib/routes.ts` so the route appears in `/pages` and `/sitemap-view`.
+4. **Auth guard**: If protected, ensure the path prefix is listed in `proxy.ts` protected prefixes.
+5. **i18n**: Add any new page titles or labels to `packages/web/messages/[locale]/` if needed.
+
+---
+
 ## Locale-Aware Routing
 
 All user-facing routes live under `app/[locale]/` with `next-intl` (locales: en, pt, es, fr, de). Default locale is `en`.

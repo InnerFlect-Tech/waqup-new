@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/theme';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { AppLayout } from '@/components';
 import { ToastProvider } from '@/components/ui/Toast';
-import { CookieConsentBanner } from '@/components/analytics';
+import { CookieConsentBanner, SessionTracker } from '@/components/analytics';
 
 /**
  * Single client boundary for all app providers.
@@ -23,6 +23,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
           <ToastProvider>
             <AppLayout>{children}</AppLayout>
             <CookieConsentBanner />
+            <SessionTracker />
           </ToastProvider>
         </AuthProvider>
       </ThemeProvider>

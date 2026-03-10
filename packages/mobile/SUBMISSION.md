@@ -1,5 +1,15 @@
 # App Store Submission — Required Steps
 
+## Pre-Submission Checklist
+
+- [ ] `eas.json` submit.production.ios: Replace `REPLACE_WITH_*` with real Apple ID, ASC App ID, Team ID
+- [ ] `packages/mobile/.env`: Set `EXPO_PUBLIC_REVENUECAT_IOS_KEY` (from RevenueCat Dashboard)
+- [ ] App Store Connect: App metadata, screenshots, privacy policy URL
+- [ ] TestFlight: Upload build, add internal testers, run smoke tests
+- [ ] RevenueCat: Products/offerings configured; webhook pointed at backend for Q grants
+
+---
+
 Before running `eas submit --platform ios --profile production`, update `eas.json` with real credentials:
 
 ## iOS Credentials (eas.json)

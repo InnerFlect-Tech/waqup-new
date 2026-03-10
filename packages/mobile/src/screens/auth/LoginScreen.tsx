@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
@@ -16,6 +17,7 @@ import { signInWithGoogle } from '@/services/googleAuth';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation, route }: Props) {
+  const { t } = useTranslation(['auth', 'common']);
   const { theme } = useTheme();
   const colors = theme.colors;
   const { login, isLoading, error, setError } = useAuthStore();
@@ -87,7 +89,7 @@ export default function LoginScreen({ navigation, route }: Props) {
                 {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
               </Typography>
               <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
-                Sign in to continue
+                {t('login.subtitle')}
               </Typography>
             </View>
 
@@ -113,8 +115,8 @@ export default function LoginScreen({ navigation, route }: Props) {
                 name="email"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
-                    label="Email"
-                    placeholder="Enter your email"
+                    label={t('fields.email')}
+                    placeholder={t('login.emailPlaceholder')}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
@@ -133,8 +135,8 @@ export default function LoginScreen({ navigation, route }: Props) {
                 name="password"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
-                    label="Password"
-                    placeholder="Enter your password"
+                    label={t('fields.password')}
+                    placeholder={t('login.passwordPlaceholder')}
                     secureTextEntry
                     autoCapitalize="none"
                     autoComplete="password"
@@ -156,7 +158,7 @@ export default function LoginScreen({ navigation, route }: Props) {
                 onPress={handleSubmit(onSubmit)}
                 style={styles.loginButton}
               >
-                Sign In
+                {t('login.submit')}
               </Button>
 
               <TouchableOpacity
@@ -164,7 +166,7 @@ export default function LoginScreen({ navigation, route }: Props) {
                 style={styles.forgotPasswordLink}
               >
                 <Typography variant="body" style={{ color: colors.accent.tertiary }}>
-                  Forgot Password?
+                  {t('login.forgotPassword')}
                 </Typography>
               </TouchableOpacity>
 
@@ -172,7 +174,7 @@ export default function LoginScreen({ navigation, route }: Props) {
               <View style={styles.dividerRow}>
                 <View style={[styles.dividerLine, { backgroundColor: colors.glass.border }]} />
                 <Typography variant="small" style={[styles.dividerText, { color: colors.text.secondary }]}>
-                  or
+                  {t('common:or')}
                 </Typography>
                 <View style={[styles.dividerLine, { backgroundColor: colors.glass.border }]} />
               </View>
@@ -204,7 +206,7 @@ export default function LoginScreen({ navigation, route }: Props) {
                   G
                 </Typography>
                 <Typography variant="bodyBold" style={{ color: colors.text.primary, marginLeft: spacing.sm }}>
-                  {googleLoading ? 'Connecting...' : 'Continue with Google'}
+                  {googleLoading ? t('login.connectingToGoogle') : t('login.continueWithGoogle')}
                 </Typography>
               </TouchableOpacity>
             </Card>
@@ -212,11 +214,11 @@ export default function LoginScreen({ navigation, route }: Props) {
             {/* Sign Up Link */}
             <View style={styles.signupContainer}>
               <Typography variant="body" style={{ color: colors.text.secondary }}>
-                Don't have an account?{' '}
+                {t('login.noAccount')}{' '}
               </Typography>
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <Typography variant="bodyBold" style={{ color: colors.accent.tertiary }}>
-                  Sign Up
+                  {t('login.signupLink')}
                 </Typography>
               </TouchableOpacity>
             </View>

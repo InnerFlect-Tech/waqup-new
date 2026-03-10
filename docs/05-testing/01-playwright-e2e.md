@@ -25,6 +25,14 @@
 - Node.js 24+
 - `npm run test:e2e:install` — installs Playwright browsers (Chromium, etc.)
 
+## Local Server Reuse
+
+By default, Playwright reuses an existing dev server when running locally. To force a fresh server (e.g. to avoid port conflicts when dev is already running), set `PLAYWRIGHT_REUSE_SERVER=false`:
+
+```bash
+PLAYWRIGHT_REUSE_SERVER=false npm run test:e2e
+```
+
 ## Running Tests
 
 | Script | Command |
@@ -55,7 +63,7 @@ For protected-route specs, use the **override login** flow when env is configure
    ```
 2. The setup project runs first, logs in via Test login, saves `e2e/.auth/user.json`
 3. Authenticated projects use `storageState: 'e2e/.auth/user.json'`
-4. **For sanctuary/create/credits specs**: The test user must have `access_granted: true` in `profiles`. Otherwise the user lands on `/coming-soon` and protected specs (credit badge, create hub, etc.) will fail. Run: `UPDATE profiles SET access_granted = true WHERE id = (SELECT id FROM auth.users WHERE email = 'YOUR_TEST_EMAIL');`
+4. **For sanctuary/create/credits specs**: The test user must have `access_granted: true` in `profiles`. Otherwise the user lands on `/coming-soon` and protected specs (credit badge, create hub, etc.) will fail. Run `supabase/scripts/ensure-e2e-user.sql` in Supabase SQL Editor (or manually: `UPDATE profiles SET access_granted = true WHERE id = (SELECT id FROM auth.users WHERE email = 'YOUR_TEST_EMAIL');`).
 
 ## CI
 
@@ -65,6 +73,8 @@ E2E runs in GitHub Actions after the build job:
 - Installs Chromium
 - Runs `npm run dev` via Playwright webServer (`next start` is incompatible with `output: standalone`)
 - On failure: uploads `playwright-report` and `test-results` as artifacts
+
+**Authenticated specs**: CI currently runs **public-only** E2E (`desktop-chromium` only) because the build uses placeholder Supabase and no test user exists. Full E2E (including protected routes) runs locally with real Supabase and `supabase/scripts/ensure-e2e-user.sql`. To run authenticated specs in CI: (a) add Supabase secrets to the workflow, (b) run the E2E user seed before tests, (c) include `desktop-chromium-authenticated` in the playwright test command.
 
 ## Suite Structure (Consolidated)
 

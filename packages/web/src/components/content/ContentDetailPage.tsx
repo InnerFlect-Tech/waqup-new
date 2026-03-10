@@ -8,6 +8,8 @@ import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
 import { Play, Pause, Edit, Trash2, Share2, ChevronDown, ChevronUp, Mic } from 'lucide-react';
+import { formatDate, Analytics } from '@waqup/shared/utils';
+import { useAuthStore } from '@/stores';
 import type { ContentItemType } from './ContentItem';
 
 export interface ContentDetailPageProps {
@@ -43,6 +45,7 @@ export function ContentDetailPage({
 }: ContentDetailPageProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const { user } = useAuthStore();
   const [isPlaying, setIsPlaying] = useState(false);
   const [scriptExpanded, setScriptExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -68,9 +71,16 @@ export function ContentDetailPage({
   useEffect(() => {
     const el = audioRef.current;
     if (!el || !hasAudio) return;
-    const onPlay = () => setIsPlaying(true);
+    const onPlay = () => {
+      setIsPlaying(true);
+      Analytics.contentPlayed(id, contentType, user?.id);
+    };
     const onPause = () => setIsPlaying(false);
-    const onEnded = () => setIsPlaying(false);
+    const onEnded = () => {
+      setIsPlaying(false);
+      const durationSeconds = el.duration ? Math.round(el.duration) : 0;
+      Analytics.contentCompleted(id, contentType, durationSeconds, user?.id);
+    };
     el.addEventListener('play', onPlay);
     el.addEventListener('pause', onPause);
     el.addEventListener('ended', onEnded);
@@ -79,7 +89,7 @@ export function ContentDetailPage({
       el.removeEventListener('pause', onPause);
       el.removeEventListener('ended', onEnded);
     };
-  }, [hasAudio]);
+  }, [hasAudio, id, contentType, user?.id]);
 
   const handleDelete = () => {
     if (showDeleteConfirm) {
@@ -94,7 +104,7 @@ export function ContentDetailPage({
   const handleShare = () => {
     const url = typeof window !== 'undefined' ? window.location.href : '';
     navigator.clipboard?.writeText(url).then(() => {
-      // Could add a toast here
+      Analytics.contentShared(id, 'link', user?.id);
     });
   };
 
@@ -163,7 +173,7 @@ export function ContentDetailPage({
           )}
           {lastPlayed && (
             <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary }}>
-              Last played: {new Date(lastPlayed).toLocaleDateString()}
+              Last played: {formatDate(lastPlayed)}
             </Typography>
           )}
         </div>

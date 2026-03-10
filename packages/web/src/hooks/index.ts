@@ -1,3 +1,4 @@
+export * from './useAtmosphereAvailable';
 export * from './useAudioAnalyzer';
 export * from './useBinauralEngine';
 export * from './useContent';

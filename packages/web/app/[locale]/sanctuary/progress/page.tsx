@@ -11,7 +11,8 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import type { ProgressStats, ProgressHeatmap, RecentSession, ReflectionEntry, ReflectionMessage } from '@waqup/shared/types';
 import { LEVEL_TAGLINES, LEVEL_COLORS, xpProgressPercent } from '@waqup/shared/types';
 import { getProgressStats, reflectionChat, saveReflection, generateWeeklySynthesis } from '@/lib/api-client';
-import { getContentTypeColor } from '@waqup/shared/constants';
+import { getContentTypeColor, ELEVATED_BADGE_COLOR, ELEVATED_BADGE_COLOR_SECONDARY } from '@waqup/shared/constants';
+import { formatDate, formatDateRelative } from '@waqup/shared/utils';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -38,21 +39,21 @@ const DEPTH_INFO = {
     label: 'Affirmations',
     icon: Star,
     depth: 'Cognitive re-patterning',
-    color: '#c084fc',
+    color: getContentTypeColor('affirmation'),
     nudge: 'Repetition rewires your default thoughts.',
   },
   meditation: {
     label: 'Meditations',
     icon: Moon,
     depth: 'State induction',
-    color: '#60a5fa',
+    color: getContentTypeColor('meditation'),
     nudge: 'Alpha states open the door to deep suggestion.',
   },
   ritual: {
     label: 'Rituals',
     icon: Brain,
     depth: 'Identity encoding',
-    color: '#f59e0b',
+    color: getContentTypeColor('ritual'),
     nudge: 'Rituals encode identity at the deepest level.',
   },
 };
@@ -120,7 +121,7 @@ function SkeletonBlock({ w, h }: { w: string; h: string }) {
       style={{
         width: w,
         height: h,
-        borderRadius: '8px',
+        borderRadius: borderRadius.sm,
         background: 'rgba(255,255,255,0.06)',
         animation: 'pulse 1.8s ease-in-out infinite',
       }}
@@ -291,17 +292,6 @@ export default function ProgressPage() {
     return `${base}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
   }
 
-  function formatRelativeTime(iso: string): string {
-    const diff = Date.now() - new Date(iso).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}m ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
-    const days = Math.floor(hrs / 24);
-    if (days < 7) return `${days}d ago`;
-    return new Date(iso).toLocaleDateString('en', { month: 'short', day: 'numeric' });
-  }
-
   function formatDuration(seconds: number): string {
     if (seconds < 60) return `${seconds}s`;
     return `${Math.round(seconds / 60)}m`;
@@ -450,12 +440,12 @@ export default function ProgressPage() {
                   fontSize: 32,
                   animation: 'flamePulse 2.2s ease-in-out infinite',
                   display: 'block',
-                  filter: 'drop-shadow(0 0 8px #f9731688)',
+                  filter: `drop-shadow(0 0 8px ${ELEVATED_BADGE_COLOR_SECONDARY}88)`,
                 }}
               >
                 🔥
               </span>
-              <Typography variant="h3" style={{ color: '#f97316', margin: 0, fontWeight: 700 }}>
+              <Typography variant="h3" style={{ color: ELEVATED_BADGE_COLOR_SECONDARY, margin: 0, fontWeight: 700 }}>
                 {data.stats?.streak}
               </Typography>
               <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 10 }}>
@@ -475,10 +465,10 @@ export default function ProgressPage() {
           }}
         >
           {[
-            { label: 'Day Streak', icon: Flame, color: '#f97316', value: data.stats?.streak ?? null },
-            { label: 'Sessions', icon: Zap, color: '#c084fc', value: data.stats?.totalSessions ?? null },
-            { label: 'Minutes', icon: Clock, color: '#60a5fa', value: data.stats?.minutesPracticed ?? null },
-            { label: 'Created', icon: BookOpen, color: '#34d399', value: data.stats?.contentCreated ?? null },
+            { label: 'Day Streak', icon: Flame, color: ELEVATED_BADGE_COLOR_SECONDARY, value: data.stats?.streak ?? null },
+            { label: 'Sessions', icon: Zap, color: getContentTypeColor('affirmation'), value: data.stats?.totalSessions ?? null },
+            { label: 'Minutes', icon: Clock, color: getContentTypeColor('meditation'), value: data.stats?.minutesPracticed ?? null },
+            { label: 'Created', icon: BookOpen, color: getContentTypeColor('ritual'), value: data.stats?.contentCreated ?? null },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -542,7 +532,7 @@ export default function ProgressPage() {
                 <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
                   {thisWeekSessions()} session{thisWeekSessions() !== 1 ? 's' : ''} this week
                   {(data.stats?.streak ?? 0) > 0 && (
-                    <span style={{ marginLeft: 8, color: '#f97316' }}>
+                    <span style={{ marginLeft: 8, color: ELEVATED_BADGE_COLOR_SECONDARY }}>
                       · {data.stats?.streak}-day streak 🔥
                     </span>
                   )}
@@ -607,7 +597,7 @@ export default function ProgressPage() {
                     {data.heatmap.weeks.map((week, wi) => (
                       <div key={wi} style={{ width: 16, fontSize: 9, color: colors.text.secondary, textAlign: 'center', opacity: 0.55, lineHeight: 1.2 }}>
                         {wi % 4 === 0
-                          ? new Date(data.heatmap!.weeks[wi][0].date).toLocaleDateString('en', { month: 'short' })
+                          ? formatDate(data.heatmap!.weeks[wi][0].date, { monthOnly: true, locale: 'en' })
                           : ''}
                       </div>
                     ))}
@@ -619,7 +609,7 @@ export default function ProgressPage() {
                         {week.map((day, di) => (
                           <div
                             key={di}
-                            title={`${new Date(day.date).toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric' })}: ${day.count} session${day.count !== 1 ? 's' : ''}${day.dominantType ? ` · mostly ${day.dominantType}` : ''}`}
+                            title={`${formatDate(day.date, { weekdayShort: true, locale: 'en' })}: ${day.count} session${day.count !== 1 ? 's' : ''}${day.dominantType ? ` · mostly ${day.dominantType}` : ''}`}
                             style={{
                               width: 16,
                               height: 16,
@@ -728,7 +718,7 @@ export default function ProgressPage() {
                           {formatDuration(session.durationSeconds)}
                         </Typography>
                         <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 11, opacity: 0.6 }}>
-                          {formatRelativeTime(session.playedAt)}
+                          {formatDateRelative(session.playedAt, { compact: true })}
                         </Typography>
                       </div>
                     </motion.div>
@@ -1083,12 +1073,12 @@ export default function ProgressPage() {
                       marginTop: spacing.lg,
                       padding: spacing.md,
                       borderRadius: borderRadius.lg,
-                      background: `#10b98115`,
-                      border: `1px solid #10b98130`,
+                      background: `${colors.success}15`,
+                      border: `1px solid ${colors.success}30`,
                       textAlign: 'center',
                     }}
                   >
-                    <Typography variant="small" style={{ color: '#10b981', margin: 0, fontWeight: 600 }}>
+                    <Typography variant="small" style={{ color: colors.success, margin: 0, fontWeight: 600 }}>
                       ✓ Reflection saved to your journey
                     </Typography>
                   </motion.div>
@@ -1176,7 +1166,7 @@ export default function ProgressPage() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <Typography variant="small" style={{ color: '#10b981', margin: 0 }}>
+                  <Typography variant="small" style={{ color: colors.success, margin: 0 }}>
                     ✓ Note saved
                   </Typography>
                 </motion.div>
@@ -1250,9 +1240,7 @@ export default function ProgressPage() {
                               variant="small"
                               style={{ color: colors.text.secondary, margin: 0, fontSize: 10, marginBottom: 4 }}
                             >
-                              {new Date(r.createdAt).toLocaleDateString('en', {
-                                weekday: 'short', month: 'short', day: 'numeric',
-                              })}
+                              {formatDate(r.createdAt, { weekdayShort: true, locale: 'en' })}
                             </Typography>
                             <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontSize: 13 }}>
                               {(r.notes ?? '').slice(0, 160)}

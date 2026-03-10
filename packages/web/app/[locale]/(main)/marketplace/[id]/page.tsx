@@ -15,6 +15,8 @@ import { useWebAudioPlayer } from '@/hooks';
 import type { AudioLayers } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 import { supabase } from '@/lib/supabase';
+import { Analytics } from '@waqup/shared/utils';
+import { useAuthStore } from '@/stores';
 
 interface DetailItem {
   id: string;
@@ -115,6 +117,7 @@ async function addToSanctuary(contentItemId: string) {
 export default function MarketplaceDetailPage({ params }: { params: { id: string } }) {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const { user } = useAuthStore();
   const [item, setItem] = useState<DetailItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
@@ -127,6 +130,10 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
       setIsLoading(false);
     });
   }, [params.id]);
+
+  useEffect(() => {
+    if (item) Analytics.marketplaceItemViewed(item.id, user?.id);
+  }, [item?.id, user?.id]);
 
   const layers: AudioLayers = item
     ? {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Linking } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
@@ -15,6 +16,7 @@ import type { SignupFormData } from '@waqup/shared/schemas';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
 export default function SignupScreen({ navigation }: Props) {
+  const { t } = useTranslation('auth');
   const { theme } = useTheme();
   const colors = theme.colors;
   const { signup, isLoading, error, setError, resendVerificationEmail } = useAuthStore();
@@ -77,10 +79,10 @@ export default function SignupScreen({ navigation }: Props) {
             <View style={styles.container}>
               <Card variant="elevated" style={styles.card}>
                 <Typography variant="h2" style={[styles.successTitle, { color: colors.text.primary }]}>
-                  Check Your Email
+                  {t('signupSuccess.title')}
                 </Typography>
                 <Typography variant="body" style={[styles.successMessage, { color: colors.text.secondary }]}>
-                  We've sent a verification email to {userEmail}. Please check your inbox and click the verification link to activate your account.
+                  {t('signupSuccess.message', { email: userEmail })}
                 </Typography>
                 <Button
                   variant="primary"
@@ -89,14 +91,14 @@ export default function SignupScreen({ navigation }: Props) {
                   onPress={handleResendVerification}
                   style={styles.resendButton}
                 >
-                  Resend Verification Email
+                  {t('signupSuccess.resendButton')}
                 </Button>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('Login')}
                   style={styles.backToLogin}
                 >
                   <Typography variant="body" style={{ color: colors.accent.tertiary }}>
-                    Back to Login
+                    {t('signupSuccess.backToLogin')}
                   </Typography>
                 </TouchableOpacity>
               </Card>
@@ -135,7 +137,7 @@ export default function SignupScreen({ navigation }: Props) {
                 {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
               </Typography>
               <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
-                Create your account
+                {t('signup.subtitle')}
               </Typography>
             </View>
 
@@ -154,8 +156,8 @@ export default function SignupScreen({ navigation }: Props) {
                 name="email"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
-                    label="Email"
-                    placeholder="Enter your email"
+                    label={t('fields.email')}
+                    placeholder={t('signup.emailPlaceholder')}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoComplete="email"
@@ -174,8 +176,8 @@ export default function SignupScreen({ navigation }: Props) {
                 name="password"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
-                    label="Password"
-                    placeholder="Create a password"
+                    label={t('fields.password')}
+                    placeholder={t('signup.passwordPlaceholder')}
                     secureTextEntry
                     autoCapitalize="none"
                     autoComplete="password-new"
@@ -195,8 +197,8 @@ export default function SignupScreen({ navigation }: Props) {
                 name="confirmPassword"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
-                    label="Confirm Password"
-                    placeholder="Confirm your password"
+                    label={t('fields.confirmPassword')}
+                    placeholder={t('signup.confirmPlaceholder')}
                     secureTextEntry
                     autoCapitalize="none"
                     autoComplete="password-new"
@@ -235,7 +237,7 @@ export default function SignupScreen({ navigation }: Props) {
                       )}
                     </View>
                     <Text style={[styles.termsText, { color: colors.text.secondary }]}>
-                      {'I accept the '}
+                      {t('signup.termsPrefix')}
                       <Text
                         style={{ color: colors.accent.tertiary, textDecorationLine: 'underline' }}
                         onPress={(e) => {
@@ -243,7 +245,7 @@ export default function SignupScreen({ navigation }: Props) {
                           void Linking.openURL('https://waqup.app/terms');
                         }}
                       >
-                        Terms of Service
+                        {t('signup.termsLink')}
                       </Text>
                       {' and '}
                       <Text
@@ -253,7 +255,7 @@ export default function SignupScreen({ navigation }: Props) {
                           void Linking.openURL('https://waqup.app/privacy');
                         }}
                       >
-                        Privacy Policy
+                        {t('signup.privacyLink')}
                       </Text>
                     </Text>
                   </TouchableOpacity>
@@ -273,16 +275,16 @@ export default function SignupScreen({ navigation }: Props) {
                 onPress={handleSubmit(onSubmit)}
                 style={styles.signupButton}
               >
-                Create Account
+                {t('signup.submit')}
               </Button>
 
               <View style={styles.loginContainer}>
                 <Typography variant="body" style={{ color: colors.text.secondary }}>
-                  Already have an account?{' '}
+                  {t('signup.alreadyHaveAccount')}{' '}
                 </Typography>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                   <Typography variant="bodyBold" style={{ color: colors.accent.tertiary }}>
-                    Sign In
+                    {t('signup.loginLink')}
                   </Typography>
                 </TouchableOpacity>
               </View>
