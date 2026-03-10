@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { HEADER_PADDING_X, MAX_WIDTH_7XL, spacing, borderRadius, BLUR } from '@/theme';
 import { DEFAULT_BRAND_COLORS } from '@waqup/shared/theme';
 
@@ -119,7 +120,7 @@ export function CookieConsentBanner() {
           }}
         >
           We use cookies to understand how you use waQup and to improve your experience. Your data is never sold.{' '}
-          <a
+          <Link
             href="/privacy"
             style={{
               color: DEFAULT_BRAND_COLORS.accent,
@@ -128,7 +129,7 @@ export function CookieConsentBanner() {
             }}
           >
             Privacy Policy
-          </a>
+          </Link>
         </p>
 
         <div style={{ display: 'flex', gap: spacing.sm, flexShrink: 0 }}>

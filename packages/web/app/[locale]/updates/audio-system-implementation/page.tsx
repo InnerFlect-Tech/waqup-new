@@ -157,7 +157,7 @@ export default function AudioSystemImplementationPage() {
               of 1 hour, so content stays playable.
             </li>
             <li>
-              <strong>FFmpeg normalize route runtime</strong> — Added <code>export const runtime = 'nodejs'</code> and{' '}
+              <strong>FFmpeg normalize route runtime</strong> — Added <code>export const runtime = &apos;nodejs&apos;</code> and{' '}
               <code>maxDuration = 60</code> to <code>/api/audio/normalize</code> so it runs correctly on Vercel.
             </li>
             <li>

@@ -69,6 +69,16 @@ export default function UpdatesIndexPage() {
                 href={`/updates/${doc.slug}`}
                 style={{ textDecoration: 'none' }}
               >
+                <div
+                  onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = `0 8px 24px ${colors.accent.primary}20`;
+                  }}
+                  onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
                 <GlassCard
                   variant="content"
                   style={{
@@ -78,14 +88,6 @@ export default function UpdatesIndexPage() {
                     flexDirection: 'column',
                     gap: spacing.sm,
                     transition: 'transform 0.2s, box-shadow 0.2s',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = `0 8px 24px ${colors.accent.primary}20`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
@@ -107,6 +109,7 @@ export default function UpdatesIndexPage() {
                     {doc.description}
                   </Typography>
                 </GlassCard>
+                </div>
               </Link>
             );
           })}

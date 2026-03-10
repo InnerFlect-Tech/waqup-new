@@ -63,7 +63,6 @@ function TodaysPractice({
 
   const typeColor = TYPE_COLOR[item.type as ContentTypeFilter] ?? colors.accent.primary;
   const detailHref = getContentDetailHref(item.type, item.id);
-  const TypeIcon = getContentTypeIcon(item.type);
 
   return (
     <div style={{ marginBottom: spacing.xl }}>
@@ -102,7 +101,7 @@ function TodaysPractice({
               flexShrink: 0,
             }}
           >
-            <TypeIcon size={24} color={typeColor} strokeWidth={2} />
+            {React.createElement(getContentTypeIcon(item.type), { size: 24, color: typeColor, strokeWidth: 2 })}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <Typography variant="h3" style={{ color: colors.text.primary, fontWeight: 500, marginBottom: 2 }}>

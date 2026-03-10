@@ -87,10 +87,8 @@ test.describe('Affirmation creation flow (authenticated)', () => {
   test('orb creation page shows browser error (not alert) when speech is unsupported', async ({ page }) => {
     // Disable SpeechRecognition in the browser context
     await page.addInitScript(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).SpeechRecognition = undefined;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).webkitSpeechRecognition = undefined;
+      (window as Record<string, unknown>).SpeechRecognition = undefined;
+      (window as Record<string, unknown>).webkitSpeechRecognition = undefined;
     });
 
     await page.goto('/create/orb?type=affirmation', { waitUntil: 'networkidle', timeout: 15000 });

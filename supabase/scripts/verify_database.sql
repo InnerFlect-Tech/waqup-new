@@ -49,6 +49,25 @@ select 'oracle_sessions table', case when exists (select 1 from information_sche
 insert into _verify (check_name, status, detail)
 select 'feedback table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'feedback') then 'PASS' else 'FAIL' end, 'User feedback from Help page';
 
+-- ─── 1b. Optional / supporting tables (WARN if missing) ──────────────────────
+insert into _verify (check_name, status, detail)
+select 'user_reminders table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'user_reminders') then 'PASS' else 'WARN' end, 'Reminders scheduling';
+
+insert into _verify (check_name, status, detail)
+select 'investor_inquiries table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'investor_inquiries') then 'PASS' else 'WARN' end, 'Investor contact form';
+
+insert into _verify (check_name, status, detail)
+select 'practice_sessions table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'practice_sessions') then 'PASS' else 'WARN' end, 'Progress tracking';
+
+insert into _verify (check_name, status, detail)
+select 'reflection_entries table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'reflection_entries') then 'PASS' else 'WARN' end, 'Progress reflections';
+
+insert into _verify (check_name, status, detail)
+select 'content_series table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'content_series') then 'PASS' else 'WARN' end, 'Content series (Phase 14+)';
+
+insert into _verify (check_name, status, detail)
+select 'content_series_items table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'content_series_items') then 'PASS' else 'WARN' end, 'Content series items';
+
 -- ─── 2. profiles: role and access_granted columns (required for superadmin) ───
 insert into _verify (check_name, status, detail)
 select 'profiles.role column',

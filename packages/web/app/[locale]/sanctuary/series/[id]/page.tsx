@@ -98,7 +98,7 @@ export default function SeriesDetailPage() {
       .insert({ series_id: series.id, content_item_id: contentId, order_index: nextOrder })
       .select('id, content_item_id, order_index, content_items(id, title, type, duration)')
       .single();
-    if (data) setItems((prev) => [...prev, data as SeriesItem]);
+    if (data) setItems((prev) => [...prev, data as unknown as SeriesItem]);
     setAddingId(null);
   };
 
@@ -129,7 +129,7 @@ export default function SeriesDetailPage() {
 
   if (loading || !series) {
     return (
-      <PageShell intensity="low" allowDocumentScroll>
+      <PageShell intensity="light" allowDocumentScroll>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${spacing.xl}`, textAlign: 'center' }}>
           <Typography variant="body" style={{ color: colors.text.secondary }}>Loading...</Typography>
         </div>
@@ -138,7 +138,7 @@ export default function SeriesDetailPage() {
   }
 
   return (
-    <PageShell intensity="low" allowDocumentScroll>
+    <PageShell intensity="light" allowDocumentScroll>
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${spacing.xl}` }}>
         <Link href="/sanctuary/series" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.xs, color: colors.text.secondary, fontSize: 13, marginBottom: spacing.xl }}>
           <ArrowLeft size={14} />

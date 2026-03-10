@@ -564,7 +564,7 @@ export default function IOSReleasePage() {
                   <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 600 }}>Create the RevenueCat Webhook API Route</Typography>
                 </div>
                 <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 1.7, marginBottom: spacing.sm }}>
-                  This endpoint doesn't exist yet. Create it at <code style={{ color: colors.accent.tertiary }}>packages/web/app/api/webhooks/revenuecat/route.ts</code>. It should:
+                  This endpoint doesn&apos;t exist yet. Create it at <code style={{ color: colors.accent.tertiary }}>packages/web/app/api/webhooks/revenuecat/route.ts</code>. It should:
                 </Typography>
                 <CodeBlock lang="typescript" code={`// Minimal structure for the RevenueCat webhook handler
 // POST /api/webhooks/revenuecat

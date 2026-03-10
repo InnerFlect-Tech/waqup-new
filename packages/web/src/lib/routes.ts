@@ -14,7 +14,7 @@ export interface RouteEntry {
 
 export const APP_ROUTES: RouteEntry[] = [
   // ── Landing & Marketing ────────────────────────────────────────────────────
-  { path: '/', section: 'Landing', description: 'Homepage (redirects to /launch)', status: 'exists' },
+  { path: '/', section: 'Landing', description: 'Landing page (default locale)', status: 'exists' },
   { path: '/launch', section: 'Landing', description: 'Primary marketing landing page', status: 'exists' },
   { path: '/how-it-works', section: 'Marketing', description: 'How it works (step-by-step)', status: 'exists' },
   { path: '/pricing', section: 'Marketing', description: 'Pricing & plans', status: 'exists' },

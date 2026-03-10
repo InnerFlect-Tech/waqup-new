@@ -136,7 +136,7 @@ export default function BetaReadinessImplementationPage() {
               <strong>Run required Supabase migrations</strong> — See &quot;Database Migration&quot; below.
             </li>
             <li>
-              <strong>Promote superadmins</strong> — Use <Link href="/admin/users" style={{ color: colors.accent.primary }}>/admin/users</Link> or the SQL script in <code>supabase/scripts/repair_superadmin_daniel.sql</code> to set <code>profiles.role = 'superadmin'</code> for admin accounts.
+              <strong>Promote superadmins</strong> — Use <Link href="/admin/users" style={{ color: colors.accent.primary }}>/admin/users</Link> or the SQL script in <code>supabase/scripts/repair_superadmin_daniel.sql</code> to set <code>profiles.role = &apos;superadmin&apos;</code> for admin accounts.
             </li>
             <li>
               <strong>E2E tests in CI</strong> — CI already sets <code>OVERRIDE_LOGIN_EMAIL</code>, <code>OVERRIDE_LOGIN_PASSWORD</code>, and <code>NEXT_PUBLIC_ENABLE_TEST_LOGIN</code>. No action needed.
@@ -176,7 +176,7 @@ alter table public.profiles
             <li>To apply manually: run each migration file from <code>supabase/migrations/</code> in order if they are not yet applied.</li>
           </ol>
           <Typography variant="body" style={{ color: colors.text.secondary }}>
-            <strong>Verify:</strong> Run <code>SELECT column_name FROM information_schema.columns WHERE table_name = 'profiles';</code> — you should see <code>role</code>, <code>access_granted</code>, <code>is_beta_tester</code>.
+            <strong>Verify:</strong> Run <code>SELECT column_name FROM information_schema.columns WHERE table_name = &apos;profiles&apos;;</code> — you should see <code>role</code>, <code>access_granted</code>, <code>is_beta_tester</code>.
           </Typography>
         </Section>
 

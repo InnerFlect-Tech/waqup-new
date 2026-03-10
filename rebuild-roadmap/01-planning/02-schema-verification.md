@@ -18,7 +18,14 @@ To confirm your Supabase database matches the expected schema:
 2. Copy the contents of `supabase/scripts/verify_database.sql`
 3. Paste and **Run**
 
-### 2. Interpret results
+### 2. Run via npm (after linking)
+
+```bash
+npm run supabase:push    # Apply migrations to remote
+npm run supabase:migrate # Same via run_migrations.sh wrapper
+```
+
+### 3. Interpret results
 
 | Status | Meaning |
 |--------|---------|
@@ -31,7 +38,7 @@ All **FAIL** items must be resolved. Common fixes:
 - **Missing tables/columns** → Run `supabase db push` or apply migrations manually
 - **profiles.role / access_granted missing** → See `supabase/migrations/20260310000002_add_role_to_profiles.sql` and `20260310000004_add_access_granted_to_profiles.sql` (or use the combined SQL from the superadmin promotion instructions)
 
-### 3. Sync migrations (recommended)
+### 4. Sync migrations (recommended)
 
 If the verification shows failures, sync your database with the migrations:
 

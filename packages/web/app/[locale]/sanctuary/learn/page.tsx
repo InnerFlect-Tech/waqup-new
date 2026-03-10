@@ -6,7 +6,6 @@ import { Typography } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
-import { spacing as sp } from '@waqup/shared/theme';
 import { Link } from '@/i18n/navigation';
 import { Brain, Zap, Mic, Eye, Moon, Music, Target, ChevronDown } from 'lucide-react';
 
@@ -196,7 +195,7 @@ export default function LearnPage() {
                       <div
                         style={{
                           padding: `0 ${spacing.xl} ${spacing.xl}`,
-                          paddingLeft: `${sp.xl + 48 + sp.md}px`,
+                          paddingLeft: `calc(${spacing.xl} + 48px + ${spacing.md})`,
                           display: 'flex',
                           flexDirection: 'column',
                           gap: spacing.md,

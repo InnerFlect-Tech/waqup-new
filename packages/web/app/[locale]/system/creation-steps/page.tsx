@@ -340,7 +340,7 @@ export default function CreationStepsPage() {
             Both modes call <code>saveCreationHandoff(type, script, intent)</code> which writes to <code>sessionStorage[&apos;waqup_creation_[type]&apos;]</code> before navigating.
             <br />
             <strong style={{ color: colors.text.primary }}>Voice config:</strong>{' '}
-            Both modes read ElevenLabs voice from <code>localStorage[&apos;elevenlabs-config&apos;].contentEngine / contentVoiceId</code>. Configure at <a href="/admin/oracle" style={{ color: colors.accent.primary }}>Admin → Oracle</a>.
+            Both modes read ElevenLabs voice from <code>localStorage[&apos;elevenlabs-config&apos;].contentEngine / contentVoiceId</code>. Configure at <Link href="/admin/oracle" style={{ color: colors.accent.primary }}>Admin → Oracle</Link>.
           </div>
           {CONTENT_TYPES.map((type) => {
             const meta = CONTENT_TYPE_META[type];

@@ -83,7 +83,7 @@ export default function SeriesPage() {
   };
 
   return (
-    <PageShell intensity="low" allowDocumentScroll>
+    <PageShell intensity="light" allowDocumentScroll>
       <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${spacing.xl}` }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: spacing.xxl, flexWrap: 'wrap', gap: spacing.md }}>
           <div>

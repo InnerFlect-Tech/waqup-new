@@ -110,7 +110,7 @@ alter table public.profiles
           </Typography>
           <ol style={{ color: colors.text.secondary, marginLeft: spacing.lg, marginBottom: spacing.md }}>
             <li>Open Supabase Dashboard → SQL Editor.</li>
-            <li>Run the migration if it hasn't been applied yet (check <code>profiles</code> columns for <code>is_beta_tester</code>).</li>
+            <li>Run the migration if it hasn&apos;t been applied yet (check <code>profiles</code> columns for <code>is_beta_tester</code>).</li>
             <li>If using Supabase CLI: <code>supabase db push</code> or run the migration file manually.</li>
           </ol>
         </Section>
@@ -328,8 +328,8 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...`}
           <ul style={{ color: colors.text.secondary, marginLeft: spacing.lg }}>
             <li><strong>Domain & DNS</strong> — Point <code>waqup.io</code> to Vercel. Add custom domain in Vercel Project Settings → Domains.</li>
             <li><strong>Supabase Auth</strong> — In Supabase Dashboard → Authentication → URL Configuration: set Site URL to <code>https://waqup.io</code>. Add <code>https://waqup.io/auth/callback</code> to Redirect URLs.</li>
-            <li><strong>Supabase Email</strong> — Decide: enable "Confirm email" (users must click link) or disable (instant access). Auth → Providers → Email → Confirm email.</li>
-            <li><strong>Google OAuth</strong> — If using "Sign in with Google": Supabase Auth → Providers → Google. Add redirect URI in Google Cloud Console: <code>https://&lt;project-ref&gt;.supabase.co/auth/v1/callback</code>.</li>
+            <li><strong>Supabase Email</strong> — Decide: enable {'"'}Confirm email{'"'} (users must click link) or disable (instant access). Auth → Providers → Email → Confirm email.</li>
+            <li><strong>Google OAuth</strong> — If using &quot;Sign in with Google&quot;: Supabase Auth → Providers → Google. Add redirect URI in Google Cloud Console: <code>https://&lt;project-ref&gt;.supabase.co/auth/v1/callback</code>.</li>
             <li><strong>Stripe products</strong> — Create Founding Member subscription in Stripe Dashboard. Copy price ID to <code>NEXT_PUBLIC_STRIPE_DEVOTION_PRICE_ID</code>. Set up webhook for <code>checkout.session.completed</code>.</li>
             <li><strong>Vercel env vars</strong> — Add all vars above in Vercel → Project Settings → Environment Variables. Use Production + Preview as needed.</li>
             <li><strong>Meta / Facebook Ads</strong> — If running paid campaigns: create Meta App, add <code>META_APP_SECRET</code>, <code>META_WEBHOOK_VERIFY_TOKEN</code>. Configure Pixel if tracking conversions.</li>
@@ -359,9 +359,9 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...`}
         <Section title="Suggestions to Improve" colors={colors}>
           <ul style={{ color: colors.text.secondary, marginLeft: spacing.lg }}>
             <li><strong>Auto-set <code>is_beta_tester</code> from <code>?ref=beta</code></strong> — When user signs up via <code>/join?ref=beta</code>, persist <code>ref</code> and set <code>is_beta_tester = true</code> automatically in a signup webhook or profile trigger.</li>
-            <li><strong>Admin UI to promote users</strong> — Add a "Promote to beta" button in <Link href="/admin/users" style={{ color: colors.accent.primary }}>/admin/users</Link> that sets <code>is_beta_tester = true</code> via an API route.</li>
+            <li><strong>Admin UI to promote users</strong> — Add a &quot;Promote to beta&quot; button in <Link href="/admin/users" style={{ color: colors.accent.primary }}>/admin/users</Link> that sets <code>is_beta_tester = true</code> via an API route.</li>
             <li><strong>Waitlist → beta pipeline</strong> — When approving from <Link href="/admin/waitlist" style={{ color: colors.accent.primary }}>/admin/waitlist</Link>, optionally create account and set <code>is_beta_tester</code> in one action.</li>
-            <li><strong>Dedicated beta landing page</strong> — <code>/beta</code> with "100 spots" copy, countdown, and CTA to /join. Keeps messaging focused.</li>
+            <li><strong>Dedicated beta landing page</strong> — <code>/beta</code> with &quot;100 spots&quot; copy, countdown, and CTA to /join. Keeps messaging focused.</li>
             <li><strong>UTM tracking</strong> — Append <code>?utm_source=instagram&amp;utm_campaign=beta</code> to links and store in waitlist/signup for attribution.</li>
             <li><strong>Email sequence</strong> — After waitlist signup, send a 3-email sequence before inviting to create an account.</li>
           </ul>
@@ -370,18 +370,18 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-...`}
         {/* ── Quick Links ─────────────────────────────────────────────────────── */}
         <Section title="Quick Links" colors={colors}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm }}>
-            <a href="/join" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
+            <Link href="/join" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
               <Link2 size={16} /> /join
-            </a>
-            <a href="/waitlist" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
+            </Link>
+            <Link href="/waitlist" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
               <Link2 size={16} /> /waitlist
-            </a>
-            <a href="/admin/users" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
+            </Link>
+            <Link href="/admin/users" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
               <Database size={16} /> Admin Users
-            </a>
-            <a href="/admin/waitlist" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
+            </Link>
+            <Link href="/admin/waitlist" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: colors.accent.primary, fontSize: 14 }}>
               <Database size={16} /> Admin Waitlist
-            </a>
+            </Link>
           </div>
         </Section>
       </div>
