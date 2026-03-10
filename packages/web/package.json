@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
+    "warmup:dev": "node scripts/warmup-dev.mjs",
     "build": "next build --webpack",
     "test": "echo 'Web: use test:e2e or test:e2e:critical'",
     "start": "next start",

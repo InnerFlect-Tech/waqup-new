@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Auth pages (public)', () => {
   test('login page renders form elements', async ({ page }) => {
     await page.goto('/login', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     await expect(page.getByTestId('login-email-input')).toBeVisible({ timeout: 8000 });
     await expect(page.getByTestId('login-password-input')).toBeVisible({ timeout: 8000 });
     await expect(page.getByTestId('login-submit-button')).toBeVisible({ timeout: 8000 });

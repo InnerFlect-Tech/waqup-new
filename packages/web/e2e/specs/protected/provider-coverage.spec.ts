@@ -33,7 +33,7 @@ test.describe('Provider coverage (authenticated)', () => {
     });
 
     await page.goto('/sanctuary', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     expect(
       consoleErrors,
@@ -52,7 +52,7 @@ test.describe('Provider coverage (authenticated)', () => {
     });
 
     await page.goto('/speak', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"], canvas')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"], canvas').first()).toBeVisible({ timeout: 10000 });
 
     expect(
       consoleErrors,
@@ -71,7 +71,7 @@ test.describe('Provider coverage (authenticated)', () => {
     });
 
     await page.goto('/sanctuary/credits', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     expect(
       consoleErrors,
@@ -90,7 +90,7 @@ test.describe('Provider coverage (authenticated)', () => {
     });
 
     await page.goto('/sanctuary/series', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     expect(
       consoleErrors,

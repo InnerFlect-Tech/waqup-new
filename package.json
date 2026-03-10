@@ -28,6 +28,7 @@
     "dev:local": "supabase start && npm run dev:web",
     "dev:mobile": "npm run start --workspace=packages/mobile",
     "dev:web": "npm run dev --workspace=packages/web",
+    "warmup:dev": "npm run warmup:dev --workspace=packages/web",
     "dev:web:clean": "rm -rf packages/web/.next 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:3002 2>/dev/null|xargs kill -9) || true; npm run dev:web",
     "dev:all": "npm run dev:mobile & npm run dev:web",
     "dev:all:clean": "rm -rf packages/web/.next 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:3002 2>/dev/null|xargs kill -9) || true; (lsof -ti:8081 2>/dev/null|xargs kill -9) || true; npm run dev:all",

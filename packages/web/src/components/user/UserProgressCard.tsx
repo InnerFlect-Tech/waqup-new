@@ -2,46 +2,53 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Zap, Clock, Star, Lock } from 'lucide-react';
+import { Flame, Zap, Clock, Star, Sparkles, Compass, Crown } from 'lucide-react';
 import { Typography, Card, Badge } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import type { ProgressStats, PracticeLevel } from '@waqup/shared/types';
 import {
+  LEVEL_COLORS,
   LEVEL_TAGLINES,
   LEVEL_THRESHOLDS,
   xpProgressPercent,
+  xpToNextLevel,
 } from '@waqup/shared/types';
 import { createProgressService } from '@waqup/shared/services';
 import { supabase } from '@/lib/supabase';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const LEVEL_COLORS: Record<PracticeLevel, string> = {
-  seeker: '#60a5fa',
-  practitioner: '#a78bfa',
-  alchemist: '#f59e0b',
-  master: '#10b981',
-};
-
 const LEVEL_GLOWS: Record<PracticeLevel, string> = {
   seeker: '#60a5fa33',
+  initiate: '#a78bfa33',
+  explorer: '#34d39933',
   practitioner: '#a78bfa33',
+  adept: '#f59e0b33',
   alchemist: '#f59e0b33',
+  sage: '#8b5cf633',
   master: '#10b98133',
 };
 
 const LEVEL_ICONS: Record<PracticeLevel, React.ReactNode> = {
   seeker: <Star size={14} />,
+  initiate: <Sparkles size={14} />,
+  explorer: <Compass size={14} />,
   practitioner: <Zap size={14} />,
+  adept: <Zap size={14} />,
   alchemist: <Flame size={14} />,
+  sage: <Crown size={14} />,
   master: <Flame size={14} />,
 };
 
 const NEXT_LEVEL_LABELS: Record<PracticeLevel, string | null> = {
-  seeker: 'Practitioner',
-  practitioner: 'Alchemist',
-  alchemist: 'Master',
+  seeker: 'Initiate',
+  initiate: 'Explorer',
+  explorer: 'Practitioner',
+  practitioner: 'Adept',
+  adept: 'Alchemist',
+  alchemist: 'Sage',
+  sage: 'Master',
   master: null,
 };
 
@@ -95,7 +102,7 @@ export function UserProgressCard({
     meditationXp: 0,
     ritualXp: 0,
     level: 'seeker',
-    xpToNext: LEVEL_THRESHOLDS.practitioner,
+    xpToNext: xpToNextLevel(0),
   };
 
   const level = safeStats.level;

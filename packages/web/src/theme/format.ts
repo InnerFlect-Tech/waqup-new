@@ -36,6 +36,78 @@ export const BLUR = {
   xl: `blur(${blurTokens.xl}px)`,
 } as const;
 
+/**
+ * Unified frosted glass for hero overlay cards (testimonial, voice cloning).
+ * SSOT: Voice cloning overlay. Solid tint + blur + saturate — no two-squares artifact.
+ * Mask softens edges so the card dissolves into the background.
+ */
+export const FROSTED_GLASS_HERO = {
+  background: 'rgba(6,2,20,0.42)',
+  backdropFilter: `blur(${blurTokens.xl}px) saturate(140%)`,
+  WebkitBackdropFilter: `blur(${blurTokens.xl}px) saturate(140%)`,
+  /** Radial mask — center opaque, edges fade to transparent; card soft-gradients into image */
+  maskImage: 'radial-gradient(ellipse 95% 85% at center, black 35%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0.5) 75%, transparent 100%)',
+  WebkitMaskImage: 'radial-gradient(ellipse 95% 85% at center, black 35%, rgba(0,0,0,0.9) 55%, rgba(0,0,0,0.5) 75%, transparent 100%)',
+} as const;
+
+/** Soft radial overlay for hero images — dissolves into image, center stays bright. */
+export const DISSOLVING_OVERLAY = {
+  position: 'absolute' as const,
+  inset: 0,
+  pointerEvents: 'none' as const,
+  background: 'radial-gradient(ellipse 130% 130% at 50% 50%, transparent 35%, rgba(6,2,20,0.08) 55%, rgba(6,2,20,0.2) 75%, rgba(6,2,20,0.45) 100%)',
+};
+
+/** Edge fades — soft gradient only at edges, no solid bar. Dissolve into page background. */
+export const imageEdgeFades = (bgColor: string) => ({
+  top: {
+    position: 'absolute' as const,
+    top: -60,
+    left: -30,
+    right: -30,
+    height: 140,
+    pointerEvents: 'none' as const,
+    background: `linear-gradient(to bottom, ${bgColor} 0%, transparent 22%)`,
+  },
+  bottom: {
+    position: 'absolute' as const,
+    bottom: -60,
+    left: -30,
+    right: -30,
+    height: 140,
+    pointerEvents: 'none' as const,
+    background: `linear-gradient(to top, ${bgColor} 0%, transparent 22%)`,
+  },
+  left: {
+    position: 'absolute' as const,
+    top: -30,
+    bottom: -30,
+    left: -30,
+    width: 90,
+    pointerEvents: 'none' as const,
+    background: `linear-gradient(to right, ${bgColor} 0%, transparent 25%)`,
+  },
+  right: {
+    position: 'absolute' as const,
+    top: -30,
+    bottom: -30,
+    right: -30,
+    width: 90,
+    pointerEvents: 'none' as const,
+    background: `linear-gradient(to left, ${bgColor} 0%, transparent 25%)`,
+  },
+});
+
+/** Typography for hero overlay cards (quote, voice cloning) — squary, cool letters, no italic */
+export const HERO_OVERLAY_QUOTE = {
+  fontSize: 'clamp(22px, 3vw, 42px)',
+  fontWeight: 400,
+  letterSpacing: '-1px',
+  lineHeight: 1.35,
+  color: '#fff',
+  textShadow: '0 2px 24px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.3)',
+} as const;
+
 /** Layout design tokens (CSS values). Primary content max-width; contentMaxWidth (1400) reserved for wide layouts. */
 export const CONTENT_MAX_WIDTH = px(layout.maxWidth7xl);
 export const AUTH_CARD_MAX_WIDTH = px(layout.authCardMaxWidth);
@@ -56,6 +128,8 @@ export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
  * Same value for left and right so logo and nav buttons align symmetrically.
  */
 export const HEADER_PADDING_X = px(layout.headerPaddingX);
+/** Responsive header padding — clamp for mobile; matches CookieConsentBanner pattern at 640px. */
+export const HEADER_PADDING_X_RESPONSIVE = `clamp(${spacing.md}, 5vw, ${px(layout.headerPaddingX)})`;
 /** Speak page bottom UI height — SSOT for orb centering area. Responsive: shrinks on small viewports to avoid trapping content. */
 export const SPEAK_BOTTOM_UI_HEIGHT = `min(${px(layout.speakBottomUiHeight)}, 35vh)`;
 export const PAGE_PADDING = spacing.xl;
@@ -91,6 +165,9 @@ export const BUTTON_TOKENS = {
     lg: px(buttonTokens.minHeight.lg),
   },
 } as const;
+
+/** Landing section vertical padding — responsive: 60px mobile → 140px desktop */
+export const LANDING_SECTION_PADDING_Y = `clamp(${layout.landingSectionPaddingYMin}px, 10vh, ${layout.landingSectionPaddingYMax}px)`;
 
 export const GLASS_CARD_STYLES = {
   borderRadius: borderRadius.lg,

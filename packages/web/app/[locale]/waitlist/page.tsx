@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button, Input } from '@/components';
 import { useTheme } from '@/theme';
@@ -257,7 +258,17 @@ export default function WaitlistPage() {
 
   return (
     <PageShell intensity="medium" maxWidth={560} centered allowDocumentScroll>
-      <div style={{ width: '100%', marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})` }}>
+      <div style={{ position: 'relative', width: '100%', marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`, minHeight: '100dvh' }}>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/images/waitlist-bg.png"
+            alt=""
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(6,2,20,0.75)' }} />
+        </div>
+        <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: spacing.xxxl }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -691,6 +702,7 @@ export default function WaitlistPage() {
             </Typography>
           </div>
         )}
+        </div>
       </div>
     </PageShell>
   );

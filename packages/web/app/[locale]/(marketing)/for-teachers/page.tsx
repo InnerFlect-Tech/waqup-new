@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -106,6 +107,7 @@ export default function ForTeachersPage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
+            position: 'relative',
             minHeight: '90dvh',
             display: 'flex',
             flexDirection: 'column',
@@ -114,8 +116,20 @@ export default function ForTeachersPage() {
             textAlign: 'center',
             paddingTop: '120px',
             paddingBottom: spacing.xxl,
+            overflow: 'hidden',
           }}
         >
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            <Image
+              src="/images/for-teachers-hero.png"
+              alt=""
+              fill
+              priority
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.9) 0%, rgba(6,2,20,0.75) 50%, rgba(6,2,20,0.9) 100%)' }} />
+          </div>
+          <div style={{ position: 'relative', zIndex: 1 }}>
           {/* Role badge */}
           <div
             style={{
@@ -216,6 +230,7 @@ export default function ForTeachersPage() {
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to join · Teacher Starter Kit included · No credit card
           </Typography>
+          </div>
         </motion.section>
 
         {/* How it works */}

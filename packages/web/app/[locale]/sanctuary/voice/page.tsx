@@ -10,6 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { Mic, Upload, Play, Check, Loader2, AlertCircle, Plus } from 'lucide-react';
 import { getVoiceStatus, createVoice, uploadVoiceSamples, previewVoice } from '@/lib/api-client';
 import type { VoiceStatus } from '@/lib/api-client';
+import { VoiceGate } from '@/components/voice';
 
 const PREVIEW_TEXT =
   'Hello, this is a preview of your cloned voice. Your personalized affirmations and meditations will sound like this.';
@@ -141,6 +142,7 @@ export default function VoiceSetupPage() {
   }, [previewUrl]);
 
   return (
+    <VoiceGate>
     <PageShell intensity="medium">
       <PageContent width="narrow">
         <AnimatePresence>
@@ -513,5 +515,6 @@ export default function VoiceSetupPage() {
         )}
       </PageContent>
     </PageShell>
+    </VoiceGate>
   );
 }

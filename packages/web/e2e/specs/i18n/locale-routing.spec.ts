@@ -22,7 +22,7 @@ const LOCALES = ['pt', 'es', 'fr', 'de'] as const;
 test.describe('Default locale — English', () => {
   test('landing page loads on / with lang=en', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     const lang = await page.locator('html').getAttribute('lang');
     expect(lang).toBe('en');
   });
@@ -36,7 +36,7 @@ test.describe('Default locale — English', () => {
 
   test('login page loads without /en/ prefix', async ({ page }) => {
     await page.goto('/login');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     expect(page.url()).not.toContain('/en/');
   });
 });
@@ -49,21 +49,21 @@ for (const locale of LOCALES) {
   test.describe(`Locale: ${locale}`, () => {
     test(`landing page /${locale}/ loads with lang=${locale}`, async ({ page }) => {
       await page.goto(`/${locale}/`);
-      await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
       const lang = await page.locator('html').getAttribute('lang');
       expect(lang).toBe(locale);
     });
 
     test(`login page /${locale}/login loads without crash`, async ({ page }) => {
       await page.goto(`/${locale}/login`);
-      await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
       // Should not show a raw error boundary
       await expect(page.locator('text=Application error')).not.toBeVisible();
     });
 
     test(`pricing page /${locale}/pricing loads without crash`, async ({ page }) => {
       await page.goto(`/${locale}/pricing`);
-      await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
       await expect(page.locator('text=Application error')).not.toBeVisible();
     });
   });
@@ -76,7 +76,7 @@ for (const locale of LOCALES) {
 test.describe('Language switcher', () => {
   test('switcher button is visible in the header on landing page', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     // The compact switcher button contains the locale abbreviation (EN)
     const switcher = page.locator('button[aria-label="Switch language"]').first();
     await expect(switcher).toBeVisible({ timeout: 10_000 });
@@ -84,7 +84,7 @@ test.describe('Language switcher', () => {
 
   test('switcher opens a dropdown with all 5 languages', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     const switcher = page.locator('button[aria-label="Switch language"]').first();
     await switcher.click();
     // Dropdown should list all 5 language options
@@ -97,7 +97,7 @@ test.describe('Language switcher', () => {
 
   test('switching to Português (PT) navigates to /pt/', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     const switcher = page.locator('button[aria-label="Switch language"]').first();
     await switcher.click();
     await page.locator('[role="listbox"] button', { hasText: 'Português (PT)' }).click();
@@ -108,7 +108,7 @@ test.describe('Language switcher', () => {
 
   test('switching language preserves the current pathname', async ({ page }) => {
     await page.goto('/pricing');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     const switcher = page.locator('button[aria-label="Switch language"]').first();
     await switcher.click();
     await page.locator('[role="listbox"] button', { hasText: 'Español' }).click();
@@ -132,7 +132,7 @@ test.describe('Language switcher', () => {
 test.describe('i18n content sanity', () => {
   test('Portuguese login page title is not "Sign in" (checks translation loaded)', async ({ page }) => {
     await page.goto('/pt/login');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     // The page title (browser tab) should not be the raw English fallback key
     const title = await page.title();
     expect(title).not.toBe('');
@@ -142,7 +142,7 @@ test.describe('i18n content sanity', () => {
 
   test('Zod validation error on login shows translated message for pt locale', async ({ page }) => {
     await page.goto('/pt/login');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     // Submit empty form to trigger validation
     await page.locator('button[type="submit"]').click();
     // Error should appear — it must NOT be the raw English message

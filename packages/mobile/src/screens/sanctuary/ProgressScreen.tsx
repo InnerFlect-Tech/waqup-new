@@ -9,6 +9,7 @@ import { Typography, Card } from '@/components';
 import { supabase } from '@/services/supabase';
 import { createProgressService } from '@waqup/shared/services';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { LEVEL_COLORS } from '@waqup/shared/types';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Progress'>;
 
@@ -23,7 +24,7 @@ async function fetchProgress() {
     return null;
   }
 
-  const { totalSessions, minutesPracticed, streak } = statsResult.data;
+  const { totalSessions, minutesPracticed, streak, level, totalXp } = statsResult.data;
   const recentItems = (sessionsResult.data ?? []).map((s) => ({
     id: s.playedAt,
     type: s.contentType,
@@ -34,6 +35,8 @@ async function fetchProgress() {
     totalSessions,
     totalMinutes: minutesPracticed,
     streak,
+    level,
+    totalXp,
     recentItems,
   };
 }
@@ -70,6 +73,21 @@ export default function ProgressScreen({ navigation }: Props) {
           </Typography>
         ) : (
           <>
+            {/* Level badge */}
+            {data?.level && data?.totalXp != null && (
+              <View style={[styles.levelCard, { backgroundColor: `${LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary}18`, borderColor: `${LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary}40` }]}>
+                <Typography variant="small" style={{ color: colors.text.secondary, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 2 }}>
+                  Level
+                </Typography>
+                <Typography variant="h2" style={{ color: LEVEL_COLORS[data.level as keyof typeof LEVEL_COLORS] ?? colors.accent.primary, fontWeight: '700', textTransform: 'capitalize' }}>
+                  {data.level}
+                </Typography>
+                <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 2 }}>
+                  {data.totalXp} XP
+                </Typography>
+              </View>
+            )}
+
             {/* Stats grid */}
             <View style={styles.statsGrid}>
               {stats.map((stat) => (
@@ -130,6 +148,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.xl,
+  },
+  levelCard: {
+    padding: spacing.lg,
+    borderRadius: borderRadius.xl,
+    borderWidth: 1,
+    marginBottom: spacing.lg,
   },
   statsGrid: {
     flexDirection: 'row',

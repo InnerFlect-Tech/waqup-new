@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { useAuthStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
@@ -16,12 +16,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isReady, setIsReady] = useState(false);
+  const mountedRef = useRef(true);
 
   // Fetch profile-level access from DB (role + access_granted).
   // Only fires when user changes; returns immediately (isLoading=false) when no user.
   const { hasAccess, isLoading: isProfileLoading } = useSuperAdmin();
 
   useEffect(() => {
+    mountedRef.current = true;
     if (typeof window === 'undefined') return;
 
     const overrideRaw = localStorage.getItem(OVERRIDE_STORAGE_KEY);
@@ -49,10 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error('[AuthProvider] initializeAuth failed:', err);
       })
       .finally(() => {
-        setIsReady(true);
+        if (mountedRef.current) setIsReady(true);
       });
 
     return () => {
+      mountedRef.current = false;
       if (unsubscribe) {
         unsubscribe();
       }

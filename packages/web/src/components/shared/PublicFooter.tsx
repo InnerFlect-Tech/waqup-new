@@ -35,7 +35,6 @@ export function PublicFooter() {
   return (
     <footer
       style={{
-        borderTop: `1px solid ${colors.glass.border}`,
         background: 'rgba(0,0,0,0.4)',
         backdropFilter: BLUR.lg,
         WebkitBackdropFilter: BLUR.lg,

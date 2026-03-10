@@ -18,38 +18,76 @@
 
 ---
 
-## Level Unlocks (Current Spec)
+## Level Unlocks (Spec)
 
-| Level | XP | Unlocks |
-|-------|-----|---------|
+| Level | XP | New unlocks at this level |
+|-------|-----|---------------------------|
 | **Seeker** | 0 | Affirmations, Meditations, Rituals (create + play), Library, Speak/Orb, Marketplace discovery, Progress, Credits, Settings |
-| **Practitioner** | 150 | + Creator Dashboard |
-| **Alchemist** | 500 | + Voice cloning (IVC), + Advanced audio (waves, presets) |
-| **Master** | 1000 | + Creator verification, + Early access to new features |
+| **Initiate** | 25 | + Voice cloning (IVC) — *a few tryouts and it’s yours* (~5 affirmations or 2–3 meditations) |
+| **Explorer** | 50 | + Export audio, + Reflection AI summaries (post-session insights) |
+| **Practitioner** | 100 | + Creator Dashboard (publish to marketplace) |
+| **Adept** | 200 | + Advanced audio (wave presets, custom waves) |
+| **Alchemist** | 400 | + Custom ambience / soundscapes |
+| **Sage** | 600 | + Creator analytics dashboard, + Featured in discovery |
+| **Master** | 1000 | + Creator verification badge, + Early access to new features |
+
+---
+
+## XP Math (Quick reference)
+
+| Content type | XP per session |
+|--------------|----------------|
+| Affirmation | 5 |
+| Meditation | 10 |
+| Ritual | 15 |
+
+**“A few tryouts”** ≈ 25 XP: 5 affirmations, or 2–3 meditations, or 2 rituals — voice cloning unlocks quickly.
 
 ---
 
 ## Implemented vs Pending
 
-| Feature | Gated | Status |
-|--------|-------|--------|
-| Creator Dashboard | Practitioner (150 XP) | ✅ Implemented (`CreatorGate`) |
-| IVC / Voice cloning | Alchemist (500 XP) | ⏳ Pending |
-| Advanced audio (waves, presets) | Alchemist (500 XP) | ⏳ Pending |
+| Feature | Level | Status |
+|---------|-------|--------|
+| Voice cloning (IVC) | Initiate (25 XP) | ✅ Implemented (`VoiceGate`) |
+| Creator Dashboard | Practitioner (100 XP) | ✅ Implemented (`CreatorGate`) |
+| Export audio | Explorer (50 XP) | ✅ Hook `useExportAudioGate` ready — wire to Export button when implemented |
+| Reflection AI summaries | Explorer (50 XP) | ⏳ Pending |
+| Advanced audio (waves, presets) | Adept (200 XP) | ⏳ Pending |
+| Custom ambience / soundscapes | Alchemist (400 XP) | ⏳ Pending |
+| Creator analytics, Featured | Sage (600 XP) | ⏳ Pending |
 | Creator verification | Master (1000 XP) | ⏳ Pending |
 
 ---
 
 ## XP Thresholds
 
-| Level | XP required |
-|-------|-------------|
-| Seeker | 0 |
-| Practitioner | 150 |
-| Alchemist | 500 |
-| Master | 1000 |
+| Level | XP required | ~Sessions to reach |
+|-------|-------------|--------------------|
+| Seeker | 0 | — |
+| Initiate | 25 | ~5 affirmations or 2–3 meditations |
+| Explorer | 50 | ~10 affirmations or 5 meditations |
+| Practitioner | 100 | ~20 affirmations or 10 meditations |
+| Adept | 200 | ~40 affirmations or 20 meditations |
+| Alchemist | 400 | ~80 affirmations or 40 meditations |
+| Sage | 600 | ~120 affirmations or 60 meditations |
+| Master | 1000 | ~200 affirmations or 100 meditations |
 
-**XP per session** (by content type): Affirmation 5, Meditation 10, Ritual 15.
+---
+
+## Code Migration — Done (2026-03-10)
+
+Implemented:
+
+1. **`packages/shared/src/types/progress.ts`**: 8 levels, `LEVEL_THRESHOLDS`, `LEVEL_COLORS`, `UNLOCK_THRESHOLDS`, `xpToLevel`, `xpToNextLevel`, `xpProgressPercent`.
+2. **`CreatorGate.tsx`**: Threshold 100 XP (Practitioner) via `UNLOCK_THRESHOLDS.creator`.
+3. **`UserProgressCard.tsx`**: 8 levels with colors, icons, taglines.
+4. **`VoiceGate.tsx`**: New gate for `/sanctuary/voice` at 25 XP (Initiate).
+5. **`useExportAudioGate.ts`**: Hook for Export audio at 50 XP (Explorer).
+6. **`AppLayout.tsx`**: Level + XP in avatar dropdown account card.
+7. **`supabase/migrations/20260326000001_level_unlock_function.sql`**: `get_user_practice_level()` for future server-side gating.
+
+**Future gates**: Reflection AI (50), Advanced audio (200), Custom ambience (400), Creator analytics (600), Creator verification (1000).
 
 ---
 

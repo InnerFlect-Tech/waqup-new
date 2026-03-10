@@ -17,24 +17,24 @@ const navOpts = { waitUntil: 'domcontentloaded' as const, timeout: 15000 };
 test.describe('Critical flows — public (no auth required)', () => {
   test('landing loads with CTA', async ({ page }) => {
     await page.goto('/', navOpts);
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
     const cta = page.locator('a[href*="join"], a[href*="waitlist"], a[href*="signup"], a[href*="get-qs"]').first();
     await expect(cta).toBeVisible({ timeout: 10000 });
   });
 
   test('pricing page loads', async ({ page }) => {
     await page.goto('/pricing', navOpts);
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
   });
 
   test('login page loads', async ({ page }) => {
     await page.goto('/login', navOpts);
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('signup page loads', async ({ page }) => {
     await page.goto('/signup', navOpts);
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('unauthenticated user redirected from /sanctuary', async ({ page }) => {
@@ -64,7 +64,7 @@ test.describe('Critical flows — authenticated (requires override login env)', 
 
   test('sanctuary loads with credit badge', async ({ page }) => {
     await page.goto('/sanctuary', navOpts);
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
     await expect(page.getByTestId('credit-balance-display')).toBeVisible({ timeout: 10000 });
   });
 
@@ -86,6 +86,6 @@ test.describe('Critical flows — authenticated (requires override login env)', 
 
   test('library loads', async ({ page }) => {
     await page.goto('/library', navOpts);
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
   });
 });

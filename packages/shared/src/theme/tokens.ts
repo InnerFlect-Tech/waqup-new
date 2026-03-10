@@ -78,4 +78,7 @@ export const layout = {
   headerPaddingX: 96,
   /** Speak page bottom UI panel height — SSOT for orb centering area */
   speakBottomUiHeight: 220,
+  /** Landing page section vertical padding — min (mobile), max (desktop); use with clamp(..., 10vh, ...) */
+  landingSectionPaddingYMin: 60,
+  landingSectionPaddingYMax: 140,
 } as const;

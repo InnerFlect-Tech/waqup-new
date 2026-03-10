@@ -8,7 +8,7 @@ test.describe('Speak / Oracle (authenticated)', () => {
 
   test('speak page loads with voice orb', async ({ page }) => {
     await page.goto('/speak', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"], canvas, [data-testid="voice-orb"]')).toBeVisible({
+    await expect(page.locator('main, [role="main"], canvas, [data-testid="voice-orb"]').first()).toBeVisible({
       timeout: 10000,
     });
   });
@@ -68,7 +68,7 @@ test.describe('Speak / Oracle (authenticated)', () => {
   test('speak page has no horizontal overflow at 375px', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto('/speak', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     const overflow = await page.evaluate(() =>
       document.documentElement.scrollWidth > document.documentElement.clientWidth
     );

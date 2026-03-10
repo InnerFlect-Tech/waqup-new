@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
-import { spacing, borderRadius, BLUR } from '@/theme';
-import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
+import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, DISSOLVING_OVERLAY, imageEdgeFades, HERO_OVERLAY_QUOTE } from '@/theme';
+import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
 import { QS_EXPLANATION, PRACTICE_IS_FREE_ONE_LINER, VOICE_CLONING_COPY } from '@waqup/shared/constants';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
@@ -30,6 +30,7 @@ import {
   Headphones,
   RefreshCw,
   Sunrise,
+  Brain,
 } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -244,7 +245,7 @@ export default function HowItWorksPage() {
     <PageShell intensity="high" bare allowDocumentScroll>
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="hiw-hero" style={{ padding: `0 ${PAGE_PADDING}`, marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`, maxWidth: CONTENT_MAX_WIDTH, marginLeft: 'auto', marginRight: 'auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: `calc(${spacing.xxxl} + ${spacing.md})`, boxSizing: 'border-box' }}>
+      <section className="hiw-hero" style={{ padding: `${spacing.xxl} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, marginLeft: 'auto', marginRight: 'auto', minHeight: 'calc(100dvh - 64px)', display: 'flex', alignItems: 'center', gap: `calc(${spacing.xxxl} + ${spacing.md})`, boxSizing: 'border-box' }}>
         <div className="hiw-hero-copy" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: borderRadius.full, background: `${colors.accent.tertiary}15`, border: `1px solid ${colors.accent.tertiary}30`, marginBottom: 32 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: colors.success, animation: 'wqPulse 2s ease-in-out infinite' }} />
@@ -294,7 +295,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Step divider ─────────────────────────────────── */}
-      <div style={{ borderTop: `1px solid ${colors.glass.border}`, borderBottom: `1px solid ${colors.glass.border}`, background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)' }}>
         <div className="hiw-step-divider" style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
           {[
             { n: '01', label: 'Share your goals', icon: MessageCircle },
@@ -363,7 +364,7 @@ export default function HowItWorksPage() {
                       fill
                       style={{ objectFit: 'cover', objectPosition: 'center top' }}
                     />
-                    <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, rgba(6,2,20,0.05), rgba(6,2,20,0.3)), linear-gradient(to top, rgba(6,2,20,0.5) 0%, transparent 60%)` }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(6,2,20,0.05), rgba(6,2,20,0.3)), linear-gradient(to top, rgba(6,2,20,0.5) 0%, transparent 60%)' }} />
                     {/* Number + tags overlay */}
                     <div style={{ position: 'absolute', bottom: 32, left: 36, right: 36, display: 'flex', flexDirection: 'column', gap: 16 }}>
                       <div style={{ fontSize: 72, fontWeight: 300, letterSpacing: '-3px', color: 'rgba(255,255,255,0.18)', lineHeight: 1 }}>{n}</div>
@@ -397,7 +398,7 @@ export default function HowItWorksPage() {
                       fill
                       style={{ objectFit: 'cover', objectPosition: 'center top' }}
                     />
-                    <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to left, rgba(6,2,20,0.05), rgba(6,2,20,0.3)), linear-gradient(to top, rgba(6,2,20,0.5) 0%, transparent 60%)` }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to left, rgba(6,2,20,0.05), rgba(6,2,20,0.3)), linear-gradient(to top, rgba(6,2,20,0.5) 0%, transparent 60%)' }} />
                     {/* Number + tags overlay */}
                     <div style={{ position: 'absolute', bottom: 32, left: 36, right: 36, display: 'flex', flexDirection: 'column', gap: 16 }}>
                       <div style={{ fontSize: 72, fontWeight: 300, letterSpacing: '-3px', color: 'rgba(255,255,255,0.18)', lineHeight: 1 }}>{n}</div>
@@ -426,19 +427,14 @@ export default function HowItWorksPage() {
             style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
           />
         </div>
-        {/* Smooth top fade — gradual blend into page, no hard black bar */}
-        <div style={{ position: 'absolute', top: -80, left: -40, right: -40, height: 'calc(50% + 80px)', background: 'linear-gradient(to bottom, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.6) 20%, rgba(6,2,20,0.2) 45%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Smooth bottom fade — gradual blend into page */}
-        <div style={{ position: 'absolute', bottom: -80, left: -40, right: -40, height: 'calc(50% + 80px)', background: 'linear-gradient(to top, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.6) 20%, rgba(6,2,20,0.2) 45%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Gentle side fades */}
-        <div style={{ position: 'absolute', top: -40, bottom: -40, left: -60, width: 120, background: 'linear-gradient(to right, rgba(6,2,20,0.7) 0%, transparent 100%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: -40, bottom: -40, right: -60, width: 120, background: 'linear-gradient(to left, rgba(6,2,20,0.7) 0%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Soft vignette for depth (no harsh edges) */}
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 90% 70% at center, transparent 40%, rgba(0,0,0,0.25) 80%, rgba(0,0,0,0.5) 100%)', pointerEvents: 'none' }} />
-        {/* Text overlay — semi-transparent backdrop for readability */}
+        <div style={{ ...DISSOLVING_OVERLAY }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).top }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).bottom }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).left }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).right }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: `0 ${PAGE_PADDING}`, textAlign: 'center', pointerEvents: 'none' }}>
-          <div style={{ padding: '48px 56px', maxWidth: 820, background: 'linear-gradient(135deg, rgba(0,0,0,0.45), rgba(6,2,20,0.35))', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, borderRadius: 24, border: '1px solid rgba(255,255,255,0.06)' }}>
-            <blockquote style={{ fontSize: 'clamp(22px, 3vw, 42px)', fontWeight: 300, letterSpacing: '-0.8px', color: '#fff', lineHeight: 1.35, margin: '0 0 24px', fontStyle: 'italic', textShadow: '0 2px 24px rgba(0,0,0,0.5), 0 0 1px rgba(0,0,0,0.3)' }}>
+          <div style={{ padding: '48px 56px', maxWidth: 820, ...FROSTED_GLASS_HERO, borderRadius: 24 }}>
+            <blockquote style={{ margin: '0 0 24px', ...HERO_OVERLAY_QUOTE }}>
               &ldquo;The first app that actually made me feel like I was talking to myself.&rdquo;
             </blockquote>
             <p style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.75)', margin: 0, letterSpacing: '0.1em', textTransform: 'uppercase', textShadow: '0 1px 12px rgba(0,0,0,0.4)' }}>
@@ -451,7 +447,7 @@ export default function HowItWorksPage() {
       {/* ── Content Types Deep Dive ───────────────────────── */}
       <section style={{ position: 'relative', zIndex: 10, padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Three Content Types</div>
+          <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16, paddingLeft: '0.12em' }}>Three Content Types</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Every depth of transformation</h2>
           <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is engineered for a specific level of inner change, from daily reprogramming to permanent identity encoding.</p>
         </div>
@@ -526,45 +522,63 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* ── A Day in Practice ─────────────────────────────── */}
+      {/* ── Day & Night Practice ─────────────────────────── */}
       <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}06, transparent)` }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Daily Practice</div>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>A morning that changes everything</h2>
-            <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 520, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Five minutes. Your voice. A completely different trajectory for your day.</p>
+            <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Day and night. A practice that changes everything.</h2>
+            <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>After waking up. Before sleep. Your voice bookends the day — with theta-wave calm at night.</p>
           </div>
 
-          <div className="hiw-timeline" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, position: 'relative' }}>
-            {/* connecting line */}
-            <div className="hiw-timeline-line" style={{ position: 'absolute', top: 52, left: '12.5%', right: '12.5%', height: 1, background: `linear-gradient(to right, ${colors.accent.primary}40, ${colors.accent.secondary}40, ${colors.accent.tertiary}40, ${colors.accent.primary}40)`, zIndex: 0 }} />
-
+          <div className="hiw-timeline" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 0, position: 'relative' }}>
+            <div className="hiw-timeline-line" style={{ position: 'absolute', top: 44, left: '8.33%', right: '8.33%', height: 1, background: `linear-gradient(to right, ${colors.accent.primary}40, ${colors.accent.secondary}40, ${colors.accent.tertiary}40, ${colors.accent.secondary}40, ${colors.accent.primary}40, ${colors.accent.secondary}40)`, zIndex: 0 }} />
             {[
-              { icon: Sunrise, time: '6:00 AM', label: 'Wake up', sub: 'Open waQup', color: colors.accent.primary },
-              { icon: Headphones, time: '6:03 AM', label: 'Press play', sub: 'Your affirmation starts', color: colors.accent.secondary },
-              { icon: Mic, time: '6:08 AM', label: 'You listen', sub: 'Your voice. Your words.', color: colors.accent.tertiary },
-              { icon: RefreshCw, time: '6:10 AM', label: 'Shift happens', sub: 'Repeat daily', color: colors.accent.primary },
-            ].map(({ icon: Icon, time, label, sub, color }, i) => (
-              <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '0 12px', position: 'relative', zIndex: 1 }}>
-                <div style={{ width: 72, height: 72, borderRadius: '50%', background: `${color}15`, border: `2px solid ${color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 0 6px ${color}08, 0 0 30px ${color}20` }}>
-                  <Icon size={28} color={color} />
+              { icon: Sunrise, time: '6:00 AM', label: 'Wake up', sub: 'Open waQup', color: colors.accent.primary, isListen: false },
+              { icon: Headphones, time: '6:05 AM', label: 'You listen', sub: 'Your affirmation', color: colors.accent.secondary, isListen: true },
+              { icon: RefreshCw, time: '6:10 AM', label: 'Shift happens', sub: 'Set your day', color: colors.accent.tertiary, isListen: false },
+              { icon: Moon, time: '9:30 PM', label: 'Wind down', sub: 'Open waQup', color: colors.accent.secondary, isListen: false },
+              { icon: Brain, time: '9:40 PM', label: 'You listen', sub: 'Theta waves, 4–8 Hz', color: colors.accent.primary, isListen: true },
+              { icon: RefreshCw, time: '9:50 PM', label: 'Sleep well', sub: 'Restorative rest', color: colors.accent.secondary, isListen: false },
+            ].map(({ icon: Icon, time, label, sub, color, isListen }, i) => (
+              <div key={`${time}-${label}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '0 8px', position: 'relative', zIndex: 1 }}>
+                <div
+                  style={{
+                    width: isListen ? 88 : 72,
+                    height: isListen ? 88 : 72,
+                    borderRadius: '50%',
+                    background: isListen ? `${color}25` : `${color}15`,
+                    border: isListen ? `2px solid ${color}` : `2px solid ${color}35`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: isListen ? `0 0 0 8px ${color}15, 0 0 40px ${color}40, 0 0 60px ${color}20` : `0 0 0 6px ${color}08, 0 0 30px ${color}20`,
+                    transition: 'all 0.3s ease',
+                  }}
+                >
+                  <Icon size={isListen ? 32 : 28} color={color} />
                 </div>
+                {isListen && (
+                  <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', color, textTransform: 'uppercase', marginTop: -4 }}>Listen</span>
+                )}
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 11, color: colors.text.tertiary, marginBottom: 4, fontWeight: 500 }}>{time}</div>
-                  <div style={{ fontSize: 16, fontWeight: 500, color: colors.text.primary, marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: isListen ? 17 : 16, fontWeight: isListen ? 600 : 500, color: colors.text.primary, marginBottom: 4 }}>{label}</div>
                   <div style={{ fontSize: 13, color: colors.text.secondary }}>{sub}</div>
                 </div>
               </div>
             ))}
           </div>
 
+          <p style={{ textAlign: 'center', fontSize: 14, color: colors.text.tertiary, marginTop: 28, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>Theta waves (4–8 Hz) dominate sleep onset and deep relaxation. Evening meditation increases theta power — helping you wind down and sleep better.</p>
+
           <div style={{ marginTop: 72, padding: '40px 48px', borderRadius: borderRadius.xl, background: `linear-gradient(135deg, ${colors.accent.primary}10, ${colors.accent.secondary}06)`, border: `1px solid ${colors.accent.primary}20`, display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
             <div style={{ width: 64, height: 64, borderRadius: 18, background: colors.gradients.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Clock size={28} color="#fff" />
             </div>
             <div style={{ flex: 1, minWidth: 240 }}>
-              <h4 style={{ fontSize: 22, fontWeight: 500, color: colors.text.primary, margin: '0 0 8px', letterSpacing: '-0.3px' }}>Just 5 minutes. That&apos;s all it takes to start.</h4>
-              <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Affirmations fit into the minutes you already have. No new schedule. No lifestyle overhaul. Just the same morning, with one powerful addition that compounds over time.</p>
+              <h4 style={{ fontSize: 22, fontWeight: 500, color: colors.text.primary, margin: '0 0 8px', letterSpacing: '-0.3px' }}>Just 5 minutes morning and night. That&apos;s all it takes.</h4>
+              <p style={{ fontSize: 15, color: colors.text.secondary, lineHeight: 1.65, margin: 0 }}>Affirmations after waking up set your day. Meditations before sleep help theta waves (4–8 Hz) support relaxation and memory consolidation. No new schedule. No lifestyle overhaul. Just two bookends that compound over time.</p>
             </div>
             <Link href="/waitlist" style={{ textDecoration: 'none', flexShrink: 0 }}>
               <Button variant="primary" size="md" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
@@ -648,18 +662,14 @@ export default function HowItWorksPage() {
             unoptimized
           />
         </div>
-        {/* Smooth top fade — gradual blend, no hard black bar */}
-        <div style={{ position: 'absolute', top: -80, left: -40, right: -40, height: 'calc(45% + 80px)', background: 'linear-gradient(to bottom, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.5) 25%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Smooth bottom fade */}
-        <div style={{ position: 'absolute', bottom: -80, left: -40, right: -40, height: 'calc(45% + 80px)', background: 'linear-gradient(to top, rgba(6,2,20,0.98) 0%, rgba(6,2,20,0.5) 25%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Soft left gradient — gradual fade from dark to image, not a box */}
-        <div style={{ position: 'absolute', top: -40, bottom: -40, left: -60, width: 'calc(55% + 60px)', background: 'linear-gradient(to right, rgba(6,2,20,0.85) 0%, rgba(6,2,20,0.4) 25%, rgba(6,2,20,0.15) 50%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Soft right fade */}
-        <div style={{ position: 'absolute', top: -40, bottom: -40, right: -60, width: 120, background: 'linear-gradient(to left, rgba(6,2,20,0.6) 0%, transparent 100%)', pointerEvents: 'none' }} />
-        {/* Copy — glass card overlay for readability, not a harsh black box */}
+        <div style={{ ...DISSOLVING_OVERLAY }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).top }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).bottom }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).left }} />
+        <div style={{ ...imageEdgeFades(colors.background.primary).right }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}>
           <div style={{ width: '100%', maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `0 ${PAGE_PADDING}` }}>
-            <div style={{ maxWidth: 520, padding: '48px 56px', background: 'linear-gradient(135deg, rgba(0,0,0,0.5), rgba(6,2,20,0.4))', backdropFilter: BLUR.xl, WebkitBackdropFilter: BLUR.xl, borderRadius: 24, border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ maxWidth: 520, padding: '48px 56px', ...FROSTED_GLASS_HERO, borderRadius: 24 }}>
               <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 20 }}>Voice Cloning</div>
               <h3 style={{ fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 300, letterSpacing: '-1px', color: '#fff', margin: '0 0 24px', lineHeight: 1.15, textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
                 Hear yourself say it.<br />
@@ -699,7 +709,7 @@ export default function HowItWorksPage() {
                 <div style={{ display: 'flex', gap: 3 }}>
                   {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} color="#F59E0B" fill="#F59E0B" />)}
                 </div>
-                <p style={{ fontSize: 17, color: colors.text.primary, lineHeight: 1.75, margin: 0, fontStyle: 'italic', flex: 1 }}>&ldquo;{q}&rdquo;</p>
+                <p style={{ fontSize: 17, color: colors.text.primary, lineHeight: 1.75, margin: 0, flex: 1, letterSpacing: '-0.3px' }}>&ldquo;{q}&rdquo;</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                   <div style={{ width: 48, height: 48, borderRadius: '50%', background: colors.gradients.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 600, color: '#fff', flexShrink: 0 }}>{n[0]}</div>
                   <div>
@@ -808,7 +818,7 @@ export default function HowItWorksPage() {
         .hiw-hero-mockup { display: flex; justify-content: center; flex-shrink: 0; }
         .hiw-step-card { grid-template-columns: 1fr 1fr; }
         .hiw-science { grid-template-columns: 1fr 1fr; }
-        .hiw-timeline { grid-template-columns: repeat(4, 1fr); }
+        .hiw-timeline { grid-template-columns: repeat(6, 1fr); }
 
         @media (max-width: 960px) {
           .hiw-hero { flex-direction: column !important; padding-top: 60px !important; padding-bottom: 60px !important; min-height: auto !important; align-items: flex-start !important; }

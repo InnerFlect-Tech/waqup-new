@@ -67,6 +67,8 @@
   },
   "footerTagline": "Your voice. Your transformation. Scientifically designed to rewire the subconscious patterns that shape who you are.",
   "joinWaitlist": "Join Waitlist",
+  "language": "Language",
+  "closeMenu": "Close menu",
   "footerProduct": "Product",
   "footerCompany": "Company",
   "footerLegal": "Legal",
@@ -130,6 +132,44 @@
     "fullProcess": "Full process",
     "sectionTitle": "The only practice that's actually about your life",
     "sectionSubtitle": "You created it. It's in your voice. It reflects your exact intention. That's why it works.",
+    "coreValue": {
+      "title": "Built for transformation",
+      "subtitle": "Not another meditation app. A personal practice studio that works the way you do.",
+      "yourVoice": { "title": "Your voice, not generic audio", "desc": "Record once. Every practice sounds like you, speaking to yourself." },
+      "aiHelps": { "title": "AI helps you create, not replace you", "desc": "Tell the orb your intention. Review, tweak, and own every word." },
+      "replay": { "title": "Practices you actually replay", "desc": "Made for you. In your voice. Built for daily use." },
+      "minutes": { "title": "Takes minutes, not hours", "desc": "Create in under 5 minutes. Practice free forever." }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "subtitle": "Three steps. Your voice. Your transformation.",
+      "step1": { "title": "Tell the orb what you're working on", "desc": "A short conversation shapes your intention into a personalised script." },
+      "step2": { "title": "Review and record in your own voice", "desc": "Adjust the words, then record. Or use AI voice cloning. Either way, it's yours." },
+      "step3": { "title": "Replay it daily", "desc": "Listen whenever you need it. Practice is always free." }
+    },
+    "differentiation": {
+      "title": "Not another meditation app",
+      "subtitle": "The difference is your voice.",
+      "genericVs": "Generic meditation apps",
+      "yourVoiceVs": "Your own voice speaking your intentions",
+      "genericAffirm": "Generic affirmations",
+      "personalisedVs": "Personalised identity encoding"
+    },
+    "pillars": {
+      "title": "Three practices, three depths",
+      "subtitle": "Each does something different. Use what you need, when you need it.",
+      "affirmations": { "title": "Affirmations", "desc": "Short statements that rewire beliefs. Shifts self-concept — use for morning motivation, confidence, limiting beliefs." },
+      "meditations": { "title": "Meditations", "desc": "Guided journeys into calm states. Induces relaxation and focus — use for stress relief, sleep, clarity." },
+      "rituals": { "title": "Rituals", "desc": "Structured identity-encoding ceremonies. Anchors values and new identity — use for major transitions and life changes." }
+    },
+    "benefitsSection": {
+      "title": "Why waQup works",
+      "benefit1": "Hear yourself say what you most need to hear",
+      "benefit2": "Personal practices, not generic audio",
+      "benefit3": "Practice free forever — creation only uses credits",
+      "benefit4": "Works in minutes, compounds for life",
+      "benefit5": "Your voice data stays yours"
+    },
     "features": {
       "voice": {
         "title": "Your voice. Not someone else's.",

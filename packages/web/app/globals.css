@@ -112,12 +112,16 @@ a {
   .wq-hero,
   .hiw-hero { flex-direction: column !important; gap: 32px !important; padding: 0 24px !important; }
   .hiw-hero-mockup { display: none !important; }
+  .landing-hero,
+  .landing-section { padding-left: 24px !important; padding-right: 24px !important; }
 }
 
 /* Small phones (iPhone SE, etc.) — reduce padding to prevent overflow */
 @media (max-width: 375px) {
   .wq-hero,
   .hiw-hero { padding: 0 16px !important; gap: 24px !important; }
+  .landing-hero,
+  .landing-section { padding-left: 16px !important; padding-right: 16px !important; }
   .pricing-content { padding-left: 16px !important; padding-right: 16px !important; }
   .footer-inner { padding-left: 16px !important; padding-right: 16px !important; }
 }

@@ -88,6 +88,7 @@ docs/
 - **[06 First Commits vs Now](./04-reference/06-first-commits-vs-now.md)** - Doc coherence: first commits vs now, what's fixed
 - **[09 Current vs Final Solution](./04-reference/09-current-vs-final-solution.md)** - Implementation status: Web vs Mobile, gaps, roadmap alignment
 - **[12 Local Development](./04-reference/12-local-development.md)** - Full local Supabase setup, env config, Stripe testing, troubleshooting
+- **[13 Responsive Design](./04-reference/13-responsive-design.md)** - Breakpoints, padding rules, responsive checklist for web and mobile
 - **[17 Spacing Usage Guide](./04-reference/17-spacing-usage-guide.md)** - Spacing tokens, semantic rules, audit checklist
 
 ### 🔗 Core Product Docs (`01-core/`)

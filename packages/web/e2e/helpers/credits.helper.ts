@@ -20,7 +20,7 @@ export async function getCreditBalance(page: Page): Promise<number | null> {
  */
 export async function goToCreditsBuyPage(page: Page): Promise<void> {
   await page.goto('/sanctuary/credits/buy', { waitUntil: 'networkidle', timeout: 15000 });
-  await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+  await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 }
 
 /**

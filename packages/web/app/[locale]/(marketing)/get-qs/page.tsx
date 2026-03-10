@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
@@ -211,6 +212,66 @@ export default function GetQsPage() {
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
+      {/* Hero with background image */}
+      <div
+        style={{
+          position: 'relative',
+          minHeight: 'min(45dvh, 380px)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/images/get-qs-hero.png"
+            alt=""
+            fill
+            priority
+            style={{ objectFit: 'cover', objectPosition: 'center center' }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.88) 0%, rgba(6,2,20,0.72) 100%)' }} />
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: `${spacing.xxl} ${spacing.xl}` }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: spacing.md }}>
+            <QCoin size="lg" />
+          </div>
+          <Typography
+            variant="h1"
+            style={{
+              fontSize: 'clamp(28px, 4vw, 50px)',
+              fontWeight: 200,
+              color: colors.text.primary,
+              marginBottom: spacing.md,
+              letterSpacing: '-0.03em',
+              lineHeight: 1.1,
+            }}
+          >
+            {t('getQs.qPacksTitle')}
+          </Typography>
+          <Typography
+            variant="body"
+            style={{
+              fontSize: 'clamp(15px, 1.8vw, 18px)',
+              color: colors.text.secondary,
+              maxWidth: 520,
+              margin: '0 auto',
+              lineHeight: 1.65,
+            }}
+          >
+            {t('getQs.qPacksBody')}
+            <br />
+            <span style={{ color: colors.text.tertiary ?? colors.text.secondary }}>{tc('practiceIsFreeOneLiner')}</span>
+          </Typography>
+        </motion.div>
+      </div>
+
       <div
         style={{
           padding: `${spacing.xxl} ${spacing.xl} ${spacing.xxl}`,
@@ -248,50 +309,13 @@ export default function GetQsPage() {
           </motion.div>
         )}
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{ textAlign: 'center', marginBottom: spacing.xxl }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: spacing.md }}>
-            <QCoin size="lg" />
-          </div>
-          <Typography
-            variant="h1"
-            style={{
-              fontSize: 'clamp(28px, 4vw, 50px)',
-              fontWeight: 200,
-              color: colors.text.primary,
-              marginBottom: spacing.md,
-              letterSpacing: '-0.03em',
-              lineHeight: 1.1,
-            }}
-          >
-            {t('getQs.qPacksTitle')}
-          </Typography>
-          <Typography
-            variant="body"
-            style={{
-              fontSize: 'clamp(15px, 1.8vw, 18px)',
-              color: colors.text.secondary,
-              maxWidth: 520,
-              margin: '0 auto',
-              lineHeight: 1.65,
-            }}
-          >
-            {t('getQs.qPacksBody')}
-            <br />
-            <span style={{ color: colors.text.tertiary ?? colors.text.secondary }}>{tc('practiceIsFreeOneLiner')}</span>
-          </Typography>
-        </motion.div>
-
         {/* Pack grid */}
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: spacing.lg,
+            marginTop: spacing.md,
             marginBottom: spacing.xxl,
           }}
         >
@@ -338,8 +362,6 @@ export default function GetQsPage() {
             gap: spacing.xl,
             marginBottom: spacing.xxl,
             padding: `${spacing.lg} 0`,
-            borderTop: `1px solid ${colors.glass.border}`,
-            borderBottom: `1px solid ${colors.glass.border}`,
           }}
         >
           {trustPoints.map((point) => (

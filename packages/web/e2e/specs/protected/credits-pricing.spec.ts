@@ -9,7 +9,7 @@ test.describe('Credits & Pricing (authenticated)', () => {
 
   test('credits overview page loads', async ({ page }) => {
     await page.goto('/sanctuary/credits', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('credits buy page loads with pack cards', async ({ page }) => {
@@ -73,12 +73,12 @@ test.describe('Credits & Pricing (authenticated)', () => {
 
   test('credits transactions page loads', async ({ page }) => {
     await page.goto('/sanctuary/credits/transactions', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('pricing page loads', async ({ page }) => {
     await page.goto('/pricing', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('credits buy page has no horizontal overflow at 375px', async ({ page }) => {

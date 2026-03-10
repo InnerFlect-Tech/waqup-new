@@ -311,7 +311,7 @@ export default function LaunchPage() {
       </section>
 
       {/* ── Stats ────────────────────────────────────────── */}
-      <div style={{ borderTop: `1px solid ${colors.glass.border}`, borderBottom: `1px solid ${colors.glass.border}`, background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)' }}>
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
           {[
             { n: instagramFollowers ?? '10,000+', l: 'Minds in transformation' },
@@ -418,7 +418,7 @@ export default function LaunchPage() {
       {/* ── Content Types ─────────────────────────────────── */}
       <section style={{ padding: `${SECTION_PY} ${PAGE_PADDING}`, maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
-          <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>Three Content Types</div>
+          <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16, paddingLeft: '0.12em' }}>Three Content Types</div>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>Every depth of transformation</h2>
           <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>Not interchangeable. Each type is designed for a specific level of inner change, from daily reprogramming to permanent identity encoding.</p>
         </div>
@@ -595,7 +595,7 @@ export default function LaunchPage() {
                 <div style={{ display: 'flex', gap: 3 }}>
                   {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} color="#F59E0B" fill="#F59E0B" />)}
                 </div>
-                <p style={{ fontSize: 17, color: colors.text.primary, lineHeight: 1.75, margin: 0, fontStyle: 'italic', flex: 1 }}>&ldquo;{q}&rdquo;</p>
+                <p style={{ fontSize: 17, color: colors.text.primary, lineHeight: 1.75, margin: 0, flex: 1, letterSpacing: '-0.3px' }}>&ldquo;{q}&rdquo;</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                   <div style={{ width: 48, height: 48, borderRadius: '50%', background: colors.gradients.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 600, color: '#fff', flexShrink: 0 }}>{n[0]}</div>
                   <div>
@@ -615,7 +615,7 @@ export default function LaunchPage() {
         <div style={{ maxWidth: 680, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 40 }}>From the Founder</div>
           <blockquote style={{ margin: 0, padding: 0 }}>
-            <p style={{ fontSize: 'clamp(20px, 2.4vw, 26px)', fontWeight: 300, fontStyle: 'italic', color: colors.text.primary, lineHeight: 1.65, letterSpacing: '-0.3px', margin: '0 0 36px' }}>
+            <p style={{ fontSize: 'clamp(20px, 2.4vw, 26px)', fontWeight: 400, color: colors.text.primary, lineHeight: 1.65, letterSpacing: '-0.5px', margin: '0 0 36px' }}>
               &ldquo;Nothing was working. I was depressed and had tried everything. So I did my own research, sat with a friend, recorded my voice, and mixed it in Ableton. I listened every day. My life changed. I spent the next five years removing every barrier between that experience and anyone who needs it. That&apos;s waQup.&rdquo;
             </p>
             <footer style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>

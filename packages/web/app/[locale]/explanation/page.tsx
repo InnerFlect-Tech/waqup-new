@@ -194,9 +194,9 @@ export default function ExplanationPage() {
             style={{
               color: colors.text.secondary,
               fontSize: '14px',
-              fontStyle: 'italic',
               lineHeight: 1.6,
               opacity: 0.8,
+              letterSpacing: '-0.2px',
               transition: 'opacity 0.4s ease',
             }}
           >

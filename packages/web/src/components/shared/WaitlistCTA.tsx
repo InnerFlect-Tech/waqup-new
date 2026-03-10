@@ -210,7 +210,6 @@ function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: 
         background: colors.glass.light,
         backdropFilter: BLUR.xl,
         WebkitBackdropFilter: BLUR.xl,
-        border: `1px solid ${colors.glass.border}`,
         boxShadow: `0 16px 64px ${colors.accent.primary}40`,
         overflow: 'hidden',
         textAlign: 'center',

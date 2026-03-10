@@ -9,7 +9,7 @@ import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import type { ProgressStats, ProgressHeatmap, RecentSession, ReflectionEntry, ReflectionMessage } from '@waqup/shared/types';
-import { LEVEL_TAGLINES, xpProgressPercent } from '@waqup/shared/types';
+import { LEVEL_TAGLINES, LEVEL_COLORS, xpProgressPercent } from '@waqup/shared/types';
 import { getProgressStats, reflectionChat, saveReflection, generateWeeklySynthesis } from '@/lib/api-client';
 import { getContentTypeColor } from '@waqup/shared/constants';
 
@@ -32,13 +32,6 @@ const ENERGY_STATES = [
   { value: 4, emoji: '✨', label: 'Energised' },
   { value: 5, emoji: '🔥', label: 'Electric' },
 ];
-
-const LEVEL_COLORS = {
-  seeker: '#60a5fa',
-  practitioner: '#a78bfa',
-  alchemist: '#f59e0b',
-  master: '#10b981',
-};
 
 const DEPTH_INFO = {
   affirmation: {

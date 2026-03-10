@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Signup flow', () => {
   test('signup page renders all form fields', async ({ page }) => {
     await page.goto('/signup', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     await expect(page.locator('input[type="email"]')).toBeVisible({ timeout: 8000 });
     await expect(page.locator('input[type="password"]').first()).toBeVisible({ timeout: 8000 });
   });
@@ -128,6 +128,6 @@ test.describe('hasAccess gate', () => {
 
   test('/coming-soon page is accessible and renders content', async ({ page }) => {
     await page.goto('/coming-soon', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 });

@@ -690,6 +690,7 @@ export default function SpeakPage() {
         bottom: 0,
         display:        'flex',
         flexDirection:  'column',
+        justifyContent: 'flex-end',
         overflow:       'hidden',
         background:     'transparent',
       }}
@@ -793,27 +794,30 @@ export default function SpeakPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Orb area (flex: 1, centers orb in content space above bottom UI) ──
-          Uses absolute + translate for bulletproof centering (avoids scrollbar / flex quirks) */}
+      {/* ── Orb: centered in full viewport (true center of screen) ──
+          Positioned relative to entire fixed area, not just space above bottom UI */}
       <div
-        onClick={handleOrbTap}
         style={{
-          flex:        1,
-          position:    'relative',
-          width:       '100%',
-          minHeight:   0,
-          cursor:      orbState === 'speaking' ? 'pointer' : 'default',
-          zIndex:      3,
+          position:       'absolute',
+          inset:          0,
+          pointerEvents:  'none',
+          zIndex:         3,
         }}
       >
         <div
+          role="button"
+          tabIndex={0}
+          onClick={handleOrbTap}
+          onKeyDown={(e) => e.key === 'Enter' && handleOrbTap()}
           style={{
-            position:   'absolute',
-            left:       '50%',
-            top:        '50%',
-            transform:  'translate(-50%, -50%)',
-            width:      orbSize,
-            height:     orbSize,
+            position:       'absolute',
+            left:           '50%',
+            top:            '50%',
+            transform:      'translate(-50%, -50%)',
+            width:          orbSize,
+            height:         orbSize,
+            pointerEvents:  'auto',
+            cursor:         orbState === 'speaking' ? 'pointer' : 'default',
           }}
         >
           <motion.div

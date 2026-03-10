@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import { HEADER_PADDING_X, MAX_WIDTH_7XL, spacing, borderRadius, BLUR } from '@/theme';
 import { DEFAULT_BRAND_COLORS } from '@waqup/shared/theme';
@@ -8,9 +8,12 @@ import { DEFAULT_BRAND_COLORS } from '@waqup/shared/theme';
 /**
  * NOTE: This component is rendered in layout.tsx OUTSIDE <ThemeProvider>,
  * so it must NOT call useTheme(). Uses DEFAULT_BRAND_COLORS from shared (SSOT).
+ *
+ * Responsive: compact layout on small screens (reduced padding, stacked buttons).
  */
 
 const STORAGE_KEY = 'waqup_cookie_consent';
+const SMALL_SCREEN_BREAKPOINT = 640;
 
 type ConsentValue = 'granted' | 'denied';
 type ConsentDecision = 'accepted' | 'declined' | null;
@@ -54,6 +57,7 @@ function storeDecision(decision: 'accepted' | 'declined') {
  */
 export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const decision = getStoredDecision();
@@ -64,6 +68,14 @@ export function CookieConsentBanner() {
     } else {
       setVisible(true);
     }
+  }, []);
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${SMALL_SCREEN_BREAKPOINT}px)`);
+    const handler = () => setIsSmallScreen(mq.matches);
+    handler();
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
   }, []);
 
   function handleAccept() {
@@ -80,6 +92,16 @@ export function CookieConsentBanner() {
 
   if (!visible) return null;
 
+  const paddingX = isSmallScreen ? spacing.md : HEADER_PADDING_X;
+  const paddingBottom = isSmallScreen ? spacing.md : spacing.lg;
+  const innerPadding = isSmallScreen ? `${spacing.sm} ${spacing.md}` : `${spacing.md} ${spacing.xl}`;
+  const gap = isSmallScreen ? spacing.sm : spacing.lg;
+  const flexDirection = isSmallScreen ? 'column' : 'row';
+  const alignItems = isSmallScreen ? 'stretch' : 'center';
+  const fontSize = isSmallScreen ? 13 : 14;
+  const buttonPaddingX = isSmallScreen ? spacing.sm : spacing.md;
+  const acceptPaddingX = isSmallScreen ? spacing.md : spacing.lg;
+
   return (
     <div
       role="dialog"
@@ -91,7 +113,7 @@ export function CookieConsentBanner() {
         left: 0,
         right: 0,
         zIndex: 9999,
-        padding: `0 ${HEADER_PADDING_X} ${spacing.lg}`,
+        padding: `0 ${paddingX} ${paddingBottom}`,
       }}
     >
       <div
@@ -99,9 +121,10 @@ export function CookieConsentBanner() {
           maxWidth: MAX_WIDTH_7XL,
           margin: '0 auto',
           display: 'flex',
-          alignItems: 'center',
-          gap: spacing.lg,
-          padding: `${spacing.md} ${spacing.xl}`,
+          flexDirection,
+          alignItems,
+          gap,
+          padding: innerPadding,
           borderRadius: borderRadius.lg,
           background: `${DEFAULT_BRAND_COLORS.background}e6`,
           backdropFilter: BLUR.xl,
@@ -112,8 +135,8 @@ export function CookieConsentBanner() {
       >
         <p
           style={{
-            flex: 1,
-            fontSize: 14,
+            flex: isSmallScreen ? undefined : 1,
+            fontSize,
             lineHeight: 1.5,
             color: DEFAULT_BRAND_COLORS.textMuted,
             margin: 0,
@@ -136,7 +159,7 @@ export function CookieConsentBanner() {
           <button
             onClick={handleDecline}
             style={{
-              padding: `${spacing.sm} ${spacing.md}`,
+              padding: `${spacing.sm} ${buttonPaddingX}`,
               borderRadius: borderRadius.md,
               border: `1px solid ${DEFAULT_BRAND_COLORS.border}`,
               background: 'transparent',
@@ -162,7 +185,7 @@ export function CookieConsentBanner() {
           <button
             onClick={handleAccept}
             style={{
-              padding: `${spacing.sm} ${spacing.lg}`,
+              padding: `${spacing.sm} ${acceptPaddingX}`,
               borderRadius: borderRadius.md,
               border: 'none',
               background: DEFAULT_BRAND_COLORS.gradient,

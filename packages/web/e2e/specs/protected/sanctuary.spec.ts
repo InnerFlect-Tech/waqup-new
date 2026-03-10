@@ -8,7 +8,7 @@ test.describe('Sanctuary (authenticated)', () => {
 
   test('sanctuary dashboard loads and shows key sections', async ({ page }) => {
     await page.goto('/sanctuary');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
     // Welcome header should display
     await expect(page.getByText(/welcome back/i)).toBeVisible({ timeout: 10000 });
@@ -24,7 +24,7 @@ test.describe('Sanctuary (authenticated)', () => {
 
   test('create CTA is visible and links to create flow', async ({ page }) => {
     await page.goto('/sanctuary');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
     // Hero create CTA should be present
     const createLinks = page.getByRole('link', { name: /create/i });
     await expect(createLinks.first()).toBeVisible({ timeout: 10000 });
@@ -32,7 +32,7 @@ test.describe('Sanctuary (authenticated)', () => {
 
   test('library card links to library', async ({ page }) => {
     await page.goto('/sanctuary');
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
     const libraryLink = page.getByRole('link', { name: /library|practice/i }).first();
     await expect(libraryLink).toBeVisible({ timeout: 10000 });
   });

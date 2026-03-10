@@ -4,6 +4,11 @@ const withNextIntl = require('next-intl/plugin')('./i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Dev: keep more compiled pages in memory so navigation feels faster (default: 2 pages, 25s)
+  onDemandEntries: {
+    maxInactiveAge: 15 * 60 * 1000, // 15 minutes
+    pagesBufferLength: 48, // keep up to 48 pages compiled (matches warmup scope)
+  },
   async redirects() {
     return [
       { source: '/home', destination: '/sanctuary', permanent: true },
@@ -74,9 +79,17 @@ const nextConfig = {
     // Fix ChunkLoadError 404 with Turbopack + dynamic imports (Next.js 16.1)
     turbopackClientSideNestedAsyncChunking: true,
   },
-  // Disable webpack filesystem cache to avoid iCloud Drive ENOENT races
+  // Use cache in /tmp to avoid iCloud Drive ENOENT races (project in ~/Library/Mobile Documents/...)
   webpack: (config, { dev, isServer }) => {
-    config.cache = false;
+    if (dev) {
+      const os = require('os');
+      config.cache = {
+        type: 'filesystem',
+        cacheDirectory: path.join(os.tmpdir(), 'waqup-next-webpack'),
+      };
+    } else {
+      config.cache = false; // Production builds: keep disabled for iCloud safety
+    }
     return config;
   },
 };

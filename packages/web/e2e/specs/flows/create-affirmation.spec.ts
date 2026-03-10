@@ -12,7 +12,7 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
   test('affirmation create init page loads with mode selector', async ({ page }) => {
     await page.goto('/sanctuary/affirmations/create/init', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     // Should show the 3 creation modes
     await expect(page.getByText(/step-by-step/i)).toBeVisible({ timeout: 8000 });
     await expect(page.getByText(/chat with ai/i)).toBeVisible({ timeout: 8000 });
@@ -21,17 +21,17 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
   test('meditation create init page loads', async ({ page }) => {
     await page.goto('/sanctuary/meditations/create/init', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('ritual create init page loads', async ({ page }) => {
     await page.goto('/sanctuary/rituals/create/init', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('affirmation intent step loads after selecting step-by-step mode', async ({ page }) => {
     await page.goto('/sanctuary/affirmations/create/init', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     // Click step-by-step mode
     const stepByStepBtn = page.getByText(/step-by-step/i).first();
@@ -40,12 +40,12 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
     // Should navigate to intent step
     await expect(page).toHaveURL(/\/sanctuary\/affirmations\/create\/intent/, { timeout: 10000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('affirmation intent step has a text input for user intent', async ({ page }) => {
     await page.goto('/sanctuary/affirmations/create/intent', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     // Should have a text input or textarea
     const input = page.locator('input[type="text"], textarea').first();
     await expect(input).toBeVisible({ timeout: 8000 });
@@ -53,7 +53,7 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
   test('back navigation from intent step returns to init', async ({ page }) => {
     await page.goto('/sanctuary/affirmations/create/intent', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     // Should have a back button or link
     const backBtn = page.locator('[href*="/create/init"], button').filter({ hasText: /back/i }).first();
@@ -66,7 +66,7 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
   test('refresh during creation flow preserves page', async ({ page }) => {
     await page.goto('/sanctuary/affirmations/create/intent', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     await page.reload({ waitUntil: 'networkidle' });
 
@@ -77,7 +77,7 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
   test('orb creation page loads', async ({ page }) => {
     await page.goto('/create/orb', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     // Should show type selection buttons
     await expect(page.getByText(/affirmation|meditation|ritual/i).first()).toBeVisible({ timeout: 8000 });
   });
@@ -90,7 +90,7 @@ test.describe('Affirmation creation flow (authenticated)', () => {
     });
 
     await page.goto('/create/orb?type=affirmation', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 
     // Click the mic button to trigger the speech recognition check
     const micButton = page.locator('button').filter({ has: page.locator('[data-lucide="mic"]') }).first();
@@ -104,13 +104,13 @@ test.describe('Affirmation creation flow (authenticated)', () => {
 
   test('conversation create page loads', async ({ page }) => {
     await page.goto('/create/conversation', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
   test('no horizontal overflow on create init at 375px', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto('/sanctuary/affirmations/create/init', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     const overflow = await page.evaluate(() =>
       document.documentElement.scrollWidth > document.documentElement.clientWidth
     );

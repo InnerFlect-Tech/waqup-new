@@ -381,7 +381,7 @@ export default function PricingPage() {
           marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`,
         }}
       >
-        {/* Header */}
+        {/* Header — pricing-hero.png not generated yet */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -411,7 +411,7 @@ export default function PricingPage() {
             }}
           >
             Subscriptions give you a monthly rhythm of Qs to create affirmations, meditations, and
-            rituals. ${PRACTICE_IS_FREE_ONE_LINER}
+            rituals. {PRACTICE_IS_FREE_ONE_LINER}
           </Typography>
         </motion.div>
 

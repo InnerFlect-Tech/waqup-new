@@ -1,153 +1,507 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { useTheme, spacing } from '@/theme';
-import { PageShell, GlassCard, Logo } from '@/components';
+import { motion } from 'framer-motion';
+import { ChevronDown, ArrowRight } from 'lucide-react';
+import { useTheme, spacing, borderRadius } from '@/theme';
+import { PageShell, GlassCard, Logo, PublicFooter } from '@/components';
 import { Typography, Button } from '@/components';
+import { CONTENT_MEDIUM, CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING } from '@/theme';
 
 /**
- * Our Story — Founder narrative
+ * Our Story — Founder narrative (scroll-down story)
  *
  * Purpose: Trust-building, legitimacy, why waQup exists.
- * Visitor intent: "Who's behind this? Can I trust them?"
- *
- * Best practices (River, Cobloom): Lead with problem → failed solutions → insight → our approach.
- * Founder credibility connects to the customer problem.
+ * Design: Full-viewport hero, scroll-triggered reveals, narrative pacing.
+ * Tone: Authentic, human, thoughtful, visionary, grounded.
  */
+const PROSE_MAX_WIDTH = '640px';
+const SECTION_MIN_HEIGHT = 'min(70dvh, 480px)';
+const PARAGRAPH_GAP = spacing.xl;
+
+const revealVariants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
 export default function OurStoryPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
 
   return (
-    <PageShell intensity="strong" maxWidth={560} allowDocumentScroll>
+    <PageShell intensity="strong" bare allowDocumentScroll>
       <div
         style={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          paddingTop: spacing.xl,
-          paddingBottom: spacing.xxxl,
-          gap: spacing.xl,
+          maxWidth: CONTENT_MAX_WIDTH,
+          margin: '0 auto',
+          padding: '0 clamp(16px, 4vw, 32px)',
+          width: '100%',
+          minWidth: 0,
         }}
       >
-        {/* Proper Logo */}
-        <div style={{ textAlign: 'center', paddingTop: spacing.md }}>
-          <Logo size="lg" showIcon={false} href="/" />
-        </div>
-
-        {/* Hero — founder story */}
-        <GlassCard
+        {/* Hero — full viewport, scroll cue */}
+        <motion.section
+          className="our-story-hero"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            textAlign: 'center',
-            padding: `${spacing.xxxl} ${spacing.xl}`,
-            width: '100%',
-          }}
-        >
-          <Typography
-            variant="h1"
-            style={{
-              color: colors.text.primary,
-              fontSize: 'clamp(24px, 4.5vw, 32px)',
-              lineHeight: 1.25,
-              fontWeight: 700,
-              marginBottom: spacing.lg,
-            }}
-          >
-            I did this manually. It changed my life. I built waQup to share it with the world.
-          </Typography>
-          <Typography
-            variant="body"
-            style={{
-              color: colors.text.secondary,
-              fontSize: '16px',
-              lineHeight: 1.7,
-            }}
-          >
-            Most tools give you someone else&apos;s voice telling you what to believe. I found that speaking my own words — in my own voice — to myself was what actually rewired my subconscious. It wasn&apos;t easy. I had to write scripts, record them, structure my practice. But it worked. waQup is that process, made simple for everyone.
-          </Typography>
-        </GlassCard>
-
-        {/* Who I am */}
-        <GlassCard
-          style={{
+            position: 'relative',
+            minHeight: '100dvh',
             display: 'flex',
             flexDirection: 'column',
-            gap: spacing.md,
-            padding: `${spacing.xl} ${spacing.xl}`,
-            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            paddingTop: spacing.xxl,
+            paddingBottom: spacing.xxl,
+            minWidth: 0,
+          }}
+        >
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            <Image
+              src="/images/our-story-hero.png"
+              alt=""
+              fill
+              priority
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.88) 0%, rgba(6,2,20,0.7) 50%, rgba(6,2,20,0.92) 100%)' }} />
+          </div>
+          <div style={{ position: 'relative', zIndex: 1, marginBottom: spacing.xxl }}>
+            <Logo size="lg" showIcon={false} href="/" />
+          </div>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: spacing.xs,
+                padding: '6px 16px',
+                borderRadius: borderRadius.full,
+                background: `${colors.accent.tertiary}15`,
+                border: `1px solid ${colors.accent.tertiary}30`,
+                marginBottom: spacing.xl,
+              }}
+            >
+              <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: 11 }}>
+                Our Story
+              </Typography>
+            </div>
+            <h1
+              style={{
+              fontSize: 'clamp(36px, 5vw, 56px)',
+              fontWeight: 300,
+              lineHeight: 1.15,
+              letterSpacing: '-1px',
+              color: colors.text.primary,
+              margin: '0 0 28px',
+              maxWidth: 520,
+              }}
+            >
+              This started as something{' '}
+              <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                I needed myself.
+              </span>
+            </h1>
+            <p
+              style={{
+                fontSize: 'clamp(17px, 1.8vw, 19px)',
+                color: colors.text.secondary,
+                lineHeight: 1.7,
+                maxWidth: 480,
+                margin: '0 0 48px',
+                fontWeight: 300,
+              }}
+            >
+              A scroll-down story about why waQup exists.
+            </p>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.xs }}
+            >
+              <Typography variant="caption" style={{ color: colors.text.tertiary, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                Scroll to read
+              </Typography>
+              <ChevronDown size={20} color={colors.text.tertiary} strokeWidth={2} />
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Section 1 — Personal Origin */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2, margin: '0px 0px -80px 0px' }}
+          variants={revealVariants}
+          style={{
+            minHeight: SECTION_MIN_HEIGHT,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: `${spacing.xxxl} 0`,
+            maxWidth: PROSE_MAX_WIDTH,
+            margin: '0 auto',
           }}
         >
           <Typography
-            variant="h3"
+            variant="body"
             style={{
-              color: colors.text.primary,
-              fontWeight: 700,
-              fontSize: '16px',
-              marginBottom: spacing.xs,
+              color: colors.text.secondary,
+              fontSize: '18px',
+              lineHeight: 1.8,
+              marginBottom: PARAGRAPH_GAP,
             }}
           >
-            Daniel Indias Fernandes
+            Most affirmation and meditation tools gave me someone else&apos;s voice telling me what to believe. It never landed. The words felt distant — like advice from a stranger, not truth from within.
           </Typography>
           <Typography
             variant="body"
             style={{
               color: colors.text.secondary,
-              fontSize: '15px',
-              lineHeight: 1.65,
+              fontSize: '18px',
+              lineHeight: 1.8,
             }}
           >
-            Founder of waQup. I built this because the practice that changed my life shouldn&apos;t require manual setup, scripting, and guesswork. waQup guides you through creating affirmations, meditations, and rituals in your voice — so you can focus on the practice, not the process.
+            I discovered something different when I started writing my own scripts, recording them in my voice, and listening every day. The manual process was tedious: scripting, recording, mixing in Ableton, structuring my practice. But it worked. My subconscious actually shifted.
           </Typography>
-          <Typography
-            variant="body"
-            style={{
-              color: colors.text.tertiary,
-              fontSize: '14px',
-              lineHeight: 1.5,
-              fontStyle: 'italic',
-            }}
-          >
-            You can find me online — I&apos;m happy to connect.
-          </Typography>
-        </GlassCard>
+        </motion.section>
 
-        {/* CTA */}
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: spacing.md, alignItems: 'center' }}>
-          <Link href="/how-it-works" style={{ width: '100%', textDecoration: 'none' }}>
-            <Button
-              variant="primary"
-              size="lg"
+        {/* Section 2 — The Realization */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2, margin: '0px 0px -80px 0px' }}
+          variants={revealVariants}
+          style={{
+            position: 'relative',
+            minHeight: SECTION_MIN_HEIGHT,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: `${spacing.xxxl} 0`,
+            margin: `0 calc(-1 * ${PAGE_PADDING})`,
+            paddingLeft: PAGE_PADDING,
+            paddingRight: PAGE_PADDING,
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            <Image
+              src="/images/our-story-insight.png"
+              alt=""
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+            />
+            <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to bottom, rgba(6,2,20,0.92) 0%, rgba(6,2,20,0.82) 50%, rgba(6,2,20,0.92) 100%)` }} />
+          </div>
+          <div style={{ maxWidth: PROSE_MAX_WIDTH, margin: '0 auto', width: '100%', position: 'relative', zIndex: 1 }}>
+            <div
               style={{
-                width: '100%',
-                minHeight: '56px',
-                fontSize: '17px',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
+                fontSize: 11,
+                color: colors.accent.tertiary,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                fontWeight: 600,
+                marginBottom: spacing.lg,
               }}
             >
-              See how it works →
-            </Button>
-          </Link>
-          <Link href="/waitlist" style={{ textDecoration: 'none' }}>
+              The insight
+            </div>
+            <Typography
+              variant="body"
+              style={{
+                color: colors.text.primary,
+                fontSize: 'clamp(22px, 2.8vw, 28px)',
+                lineHeight: 1.35,
+                fontWeight: 500,
+                marginBottom: spacing.xl,
+                letterSpacing: '-0.3px',
+              }}
+            >
+              Transformation happens when you speak your own intentions.
+            </Typography>
             <Typography
               variant="body"
               style={{
                 color: colors.text.secondary,
-                fontSize: '14px',
-                opacity: 0.8,
-                cursor: 'pointer',
-                padding: `${spacing.sm} 0`,
-                minHeight: '44px',
-                display: 'flex',
-                alignItems: 'center',
+                fontSize: '18px',
+                lineHeight: 1.8,
+                marginBottom: PARAGRAPH_GAP,
               }}
             >
-              Join the waitlist
+              Most tools tell you what to believe. waQup lets you encode your own beliefs — in your own voice, with your own words.
             </Typography>
-          </Link>
-        </div>
+            <Typography
+              variant="body"
+              style={{
+                color: colors.text.secondary,
+                fontSize: '18px',
+                lineHeight: 1.8,
+              }}
+            >
+              Personal transformation requires personal language. The real power is hearing your own voice reinforcing your identity.
+            </Typography>
+          </div>
+        </motion.section>
+
+        {/* Section 3 — Why waQup Exists */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2, margin: '0px 0px -80px 0px' }}
+          variants={revealVariants}
+          style={{
+            minHeight: SECTION_MIN_HEIGHT,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: `${spacing.xxxl} 0`,
+            maxWidth: PROSE_MAX_WIDTH,
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              color: colors.accent.tertiary,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+              fontWeight: 600,
+              marginBottom: spacing.lg,
+            }}
+          >
+            Why waQup exists
+          </div>
+          <Typography
+            variant="body"
+            style={{
+              color: colors.text.secondary,
+              fontSize: '18px',
+              lineHeight: 1.8,
+              marginBottom: PARAGRAPH_GAP,
+            }}
+          >
+            waQup exists to simplify that process. Instead of scripting, recording, and organizing manually, the system guides you. You focus on clarity of intention — what you want to become, what you want to strengthen — and waQup handles the rest.
+          </Typography>
+          <Typography
+            variant="body"
+            style={{
+              color: colors.text.secondary,
+              fontSize: '18px',
+              lineHeight: 1.8,
+            }}
+          >
+            Your voice. Simplicity. Accessibility. What used to require dedication and technical setup is now available to anyone willing to do the inner work.
+          </Typography>
+        </motion.section>
+
+        {/* Section 4 — What waQup Represents */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2, margin: '0px 0px -80px 0px' }}
+          variants={revealVariants}
+          style={{
+            minHeight: SECTION_MIN_HEIGHT,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: `${spacing.xxxl} 0`,
+            background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}04, transparent)`,
+            margin: `0 calc(-1 * ${PAGE_PADDING})`,
+            paddingLeft: PAGE_PADDING,
+            paddingRight: PAGE_PADDING,
+          }}
+        >
+          <div style={{ maxWidth: PROSE_MAX_WIDTH, margin: '0 auto', width: '100%' }}>
+            <div
+              style={{
+                fontSize: 11,
+                color: colors.accent.tertiary,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                fontWeight: 600,
+                marginBottom: spacing.lg,
+              }}
+            >
+              What waQup represents
+            </div>
+            <Typography
+              variant="body"
+              style={{
+                color: colors.text.secondary,
+                fontSize: '18px',
+                lineHeight: 1.8,
+                marginBottom: PARAGRAPH_GAP,
+              }}
+            >
+              waQup is more than an app. It&apos;s a philosophy: tools should help people express themselves, not tell them what to think. Technology should empower inner clarity, not add noise. Identity can be shaped intentionally — and the most powerful tool for that is your own voice.
+            </Typography>
+            <Typography
+              variant="body"
+              style={{
+                color: colors.text.secondary,
+                fontSize: '18px',
+                lineHeight: 1.8,
+              }}
+            >
+              I believe in building tools that empower people rather than control them. No manipulation. No pressure. Just access to something that actually works.
+            </Typography>
+          </div>
+        </motion.section>
+
+        {/* Section 5 — Founder Message (Glass Card) */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2, margin: '0px 0px -80px 0px' }}
+          variants={revealVariants}
+          style={{
+            padding: `${spacing.xxxl} 0`,
+            maxWidth: PROSE_MAX_WIDTH,
+            margin: '0 auto',
+          }}
+        >
+          <GlassCard style={{ padding: `${spacing.xxl} ${spacing.xl}`, overflow: 'hidden' }}>
+            <div style={{ display: 'flex', gap: spacing.xl, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <div style={{ flexShrink: 0, width: 120, height: 120, borderRadius: '50%', overflow: 'hidden', position: 'relative' }}>
+                <Image
+                  src="/images/our-story-founder.png"
+                  alt="Daniel Indias Fernandes"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Typography
+                  variant="body"
+                  style={{
+                color: colors.text.primary,
+                fontSize: '20px',
+                lineHeight: 1.65,
+                marginBottom: spacing.xl,
+                fontWeight: 400,
+                  }}
+                >
+                  waQup exists because something simple changed my life, and I believe more people should have access to it.
+                </Typography>
+                <Typography
+                  variant="body"
+                  style={{
+                    color: colors.text.secondary,
+                    fontSize: '17px',
+                    lineHeight: 1.75,
+                    marginBottom: spacing.xl,
+                  }}
+                >
+                  I spent years removing every barrier between that experience and anyone who needs it. The manual process I used — scripting, recording, mixing — is now a conversation, a few taps, and your voice. That&apos;s waQup.
+                </Typography>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                  <Typography
+                    variant="h3"
+                    style={{
+                      color: colors.text.primary,
+                      fontWeight: 600,
+                      fontSize: '16px',
+                    }}
+                  >
+                    Daniel Indias Fernandes
+                  </Typography>
+                  <Typography
+                    variant="body"
+                    style={{
+                      color: colors.text.tertiary,
+                      fontSize: '14px',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Founder, waQup. I&apos;m happy to connect — you can find me online.
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        </motion.section>
+
+        {/* Final CTA Band */}
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          style={{
+            padding: `${spacing.xxl} 0`,
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              maxWidth: CONTENT_MEDIUM,
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: spacing.lg,
+              alignItems: 'center',
+            }}
+          >
+            <Typography
+              variant="h2"
+              style={{
+                color: colors.text.primary,
+                fontSize: 'clamp(22px, 2.5vw, 26px)',
+                fontWeight: 400,
+                letterSpacing: '-0.3px',
+              }}
+            >
+              Ready to hear yourself?
+            </Typography>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: '100%', maxWidth: 360 }}>
+              <Link href="/how-it-works" style={{ textDecoration: 'none', width: '100%' }}>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  style={{
+                    width: '100%',
+                    minHeight: '56px',
+                    fontSize: '17px',
+                    fontWeight: 700,
+                    letterSpacing: '0.02em',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: spacing.sm,
+                  }}
+                >
+                  See how it works <ArrowRight size={18} color={colors.text.onDark} strokeWidth={2} />
+                </Button>
+              </Link>
+              <Link href="/waitlist" style={{ textDecoration: 'none' }}>
+                <Typography
+                  variant="body"
+                  style={{
+                    color: colors.text.secondary,
+                    fontSize: '15px',
+                    opacity: 0.9,
+                    cursor: 'pointer',
+                    padding: spacing.sm,
+                  }}
+                >
+                  Join the waitlist
+                </Typography>
+              </Link>
+            </div>
+          </div>
+        </motion.section>
+
+        <PublicFooter />
       </div>
     </PageShell>
   );

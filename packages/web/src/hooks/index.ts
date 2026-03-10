@@ -2,6 +2,7 @@ export * from './useAudioAnalyzer';
 export * from './useBinauralEngine';
 export * from './useContent';
 export * from './useCreateInitGate';
+export * from './useExportAudioGate';
 export * from './useCreditBalance';
 export * from './useFoundingMembersRemaining';
 export * from './useReminders';

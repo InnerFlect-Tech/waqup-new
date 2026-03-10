@@ -18,7 +18,7 @@ import { UserProgressCard } from '@/components/user';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import type { ProgressStats } from '@waqup/shared/types';
-import { LEVEL_THRESHOLDS } from '@waqup/shared/types';
+import { UNLOCK_THRESHOLDS } from '@waqup/shared/types';
 import { createProgressService } from '@waqup/shared/services';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 import { supabase } from '@/lib/supabase';
@@ -63,7 +63,7 @@ export interface CreatorGateProps {
 
 /**
  * Wraps the Creator Marketplace page. If the user has not reached
- * Practitioner level (150 XP) it renders a locked overlay with a
+ * Practitioner level (100 XP) it renders a locked overlay with a
  * blurred/greyed-out preview of the children content and a
  * proposal submission form.
  */
@@ -86,7 +86,7 @@ export function CreatorGate({ children, stats: externalStats }: CreatorGateProps
   const xpUnlocked =
     !loading &&
     stats !== null &&
-    stats.totalXp >= LEVEL_THRESHOLDS.practitioner;
+    stats.totalXp >= UNLOCK_THRESHOLDS.creator;
 
   const viewAsCreatorBypass = viewAsRole === 'creator' && actualIsSuperAdmin;
   const isUnlocked = xpUnlocked || viewAsCreatorBypass;
@@ -120,8 +120,8 @@ function LockedState({
   const [error, setError] = useState<string | null>(null);
 
   const xpNeeded = stats
-    ? Math.max(0, LEVEL_THRESHOLDS.practitioner - stats.totalXp)
-    : LEVEL_THRESHOLDS.practitioner;
+    ? Math.max(0, UNLOCK_THRESHOLDS.creator - stats.totalXp)
+    : UNLOCK_THRESHOLDS.creator;
 
   const toggleContentType = (id: string) => {
     setFormData((prev) => ({

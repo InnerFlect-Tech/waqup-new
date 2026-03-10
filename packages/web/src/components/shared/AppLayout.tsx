@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Home,
   Library,
@@ -29,10 +29,14 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher } from '@/components';
-import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
+import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X_RESPONSIVE, BLUR } from '@/theme';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
 import type { ViewAsRole } from '@/stores';
+import { createProgressService } from '@waqup/shared/services';
+import { xpToLevel, LEVEL_COLORS } from '@waqup/shared/types';
+import type { ProgressStats } from '@waqup/shared/types';
+import { supabase } from '@/lib/supabase';
 
 interface NavItem {
   name: string;
@@ -145,6 +149,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [profileProgressStats, setProfileProgressStats] = useState<ProgressStats | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const navItems: NavItem[] = [
@@ -164,6 +169,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     setIsMobileMenuOpen(false);
     setShowProfileMenu(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!showProfileMenu) return;
+    const progressService = createProgressService(supabase);
+    progressService.getProgressStats().then(({ data }) => setProfileProgressStats(data));
+  }, [showProfileMenu]);
 
   // Reset scroll on route change — Next.js scrolls window only; custom scroll containers need manual reset
   useEffect(() => {
@@ -219,8 +230,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
             paddingTop: `max(${spacing.sm}, env(safe-area-inset-top, 0px))`,
-            paddingLeft: HEADER_PADDING_X,
-            paddingRight: HEADER_PADDING_X,
+            paddingLeft: HEADER_PADDING_X_RESPONSIVE,
+            paddingRight: HEADER_PADDING_X_RESPONSIVE,
             ...(isScrolled
               ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
@@ -306,20 +317,23 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                   {showProfileMenu && (
                     <div
-                      className="absolute right-0 rounded-xl shadow-2xl"
+                      className="absolute right-0 shadow-2xl"
                       style={{
                         width: actualIsSuperAdmin ? 380 : 288,
                         maxHeight: 'min(85vh, 560px)',
                         marginTop: spacing.sm,
+                        borderRadius: borderRadius.xl,
                         background: 'rgba(15,5,35,0.88)',
                         backdropFilter: BLUR.xl,
                         WebkitBackdropFilter: BLUR.xl,
-                        border: '1px solid rgba(168,85,247,0.20)',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.08)',
+                        border: `1px solid ${colors.glass.border}`,
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
                         overflowY: 'auto',
                         overflowX: 'hidden',
                         display: 'flex',
                         flexDirection: 'column',
+                        isolation: 'isolate',
+                        transform: 'translateZ(0)',
                       }}
                     >
                       {/* Account card */}
@@ -349,25 +363,51 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                           >
                             {user?.email}
                           </p>
-                          <button
-                            type="button"
-                            className="inline-flex items-center rounded-full border-0 cursor-pointer"
-                            style={{
-                              padding: `${spacing.xs} ${spacing.sm}`,
-                              gap: spacing.xs,
-                              background: 'rgba(147,51,234,0.20)',
-                              border: '1px solid rgba(168,85,247,0.30)',
-                              fontSize: '0.75rem',
-                              color: colors.text.secondary,
-                            }}
-                            onClick={() => {
-                              router.push('/sanctuary/credits');
-                              setShowProfileMenu(false);
-                            }}
-                          >
-                            <QCoin size="sm" showAmount={creditsBalance} />
-                            <span style={{ marginLeft: spacing.xs }}>Qs</span>
-                          </button>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs, alignItems: 'center' }}>
+                            <button
+                              type="button"
+                              className="inline-flex items-center rounded-full border-0 cursor-pointer"
+                              style={{
+                                padding: `${spacing.xs} ${spacing.sm}`,
+                                gap: spacing.xs,
+                                background: 'rgba(147,51,234,0.20)',
+                                border: '1px solid rgba(168,85,247,0.30)',
+                                fontSize: '0.75rem',
+                                color: colors.text.secondary,
+                              }}
+                              onClick={() => {
+                                router.push('/sanctuary/credits');
+                                setShowProfileMenu(false);
+                              }}
+                            >
+                              <QCoin size="sm" showAmount={creditsBalance} />
+                              <span style={{ marginLeft: spacing.xs }}>Qs</span>
+                            </button>
+                            {profileProgressStats && (
+                              <Link
+                                href="/sanctuary/progress"
+                                onClick={() => setShowProfileMenu(false)}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 4,
+                                  padding: `${spacing.xs} ${spacing.sm}`,
+                                  borderRadius: 9999,
+                                  border: `1px solid ${LEVEL_COLORS[xpToLevel(profileProgressStats.totalXp)]}40`,
+                                  background: `${LEVEL_COLORS[xpToLevel(profileProgressStats.totalXp)]}18`,
+                                  fontSize: '0.75rem',
+                                  fontWeight: 600,
+                                  color: LEVEL_COLORS[xpToLevel(profileProgressStats.totalXp)],
+                                  textDecoration: 'none',
+                                  textTransform: 'capitalize',
+                                }}
+                              >
+                                {xpToLevel(profileProgressStats.totalXp)}
+                                <span style={{ color: colors.text.secondary, fontWeight: 500 }}> · </span>
+                                <span style={{ color: colors.text.secondary, fontWeight: 500 }}>{profileProgressStats.totalXp} XP</span>
+                              </Link>
+                            )}
+                          </div>
                         </div>
                       </div>
 
@@ -565,7 +605,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         >
           <div
             style={{
-              padding: `${spacing.sm} ${HEADER_PADDING_X} ${spacing.md}`,
+              padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE} ${spacing.md}`,
               display: 'flex',
               flexDirection: 'column',
               gap: spacing.sm,
@@ -750,8 +790,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
               <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
 
-              <div style={{ paddingLeft: spacing.lg, paddingRight: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.sm }}>
-                <LanguageSwitcher compact={false} />
+              <div style={{ padding: spacing.lg }}>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}>
+                  {t('language')}
+                </p>
+                <LanguageSwitcher compact />
               </div>
 
               <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
@@ -798,8 +841,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
             paddingTop: `max(${spacing.sm}, env(safe-area-inset-top, 0px))`,
-            paddingLeft: HEADER_PADDING_X,
-            paddingRight: HEADER_PADDING_X,
+            paddingLeft: HEADER_PADDING_X_RESPONSIVE,
+            paddingRight: HEADER_PADDING_X_RESPONSIVE,
             ...(isScrolled
               ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
               : { background: 'transparent' }),
@@ -878,52 +921,139 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <motion.div
-          initial={false}
-          animate={{
-            height: isMobileMenuOpen ? 'auto' : 0,
-            opacity: isMobileMenuOpen ? 1 : 0,
-          }}
-          className="md:hidden overflow-hidden"
-          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg }}
-        >
-          <div style={{ padding: `${spacing.sm} ${HEADER_PADDING_X} ${spacing.md}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/how-it-works')}
-              className="w-full justify-start"
-              style={{ color: colors.text.secondary }}
+        {/* Mobile menu: slide-in drawer from right */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+          <div
+            className="md:hidden fixed inset-0 z-40"
+            style={{ pointerEvents: 'auto' }}
+            aria-hidden="false"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              key="drawer-backdrop"
+              transition={{ duration: 0.2 }}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(0,0,0,0.5)',
+                backdropFilter: BLUR.sm,
+                WebkitBackdropFilter: BLUR.sm,
+              }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <motion.div
+              key="drawer-panel"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: 'min(320px, 88vw)',
+                maxWidth: 320,
+                background: 'rgba(15,5,35,0.96)',
+                backdropFilter: BLUR.xl,
+                WebkitBackdropFilter: BLUR.xl,
+                borderLeft: `1px solid ${colors.glass.border}`,
+                boxShadow: '-8px 0 32px rgba(0,0,0,0.4)',
+                display: 'flex',
+                flexDirection: 'column',
+                overflowY: 'auto',
+              }}
+              onClick={(e) => e.stopPropagation()}
             >
-              How It Works
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/pricing')}
-              className="w-full justify-start"
-              style={{ color: colors.text.secondary }}
-            >
-              Pricing
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/login')}
-              className="w-full justify-start"
-              style={{ color: colors.text.secondary }}
-            >
-              Sign In
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => router.push('/waitlist')}
-              className="w-full justify-start"
-            >
-              {t('joinWaitlist')}
-            </Button>
-            <div style={{ paddingTop: spacing.xs }}>
-              <LanguageSwitcher compact={false} />
-            </div>
+              {/* Drawer header */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: `${spacing.md} ${spacing.xl}`,
+                  minHeight: NAV_HEIGHT,
+                  flexShrink: 0,
+                  borderBottom: `1px solid ${colors.glass.border}`,
+                }}
+              >
+                <Logo size="sm" href="/" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2"
+                  aria-label={t('closeMenu')}
+                >
+                  <X className="w-5 h-5" style={{ color: colors.text.primary }} />
+                </Button>
+              </div>
+              {/* Nav + CTA */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: `${spacing.lg} ${spacing.xl}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: spacing.xs,
+                }}
+              >
+                <Button
+                  variant="ghost"
+                  onClick={() => { router.push('/how-it-works'); setIsMobileMenuOpen(false); }}
+                  className="w-full justify-start"
+                  style={{ color: pathname === '/how-it-works' ? colors.text.primary : colors.text.secondary }}
+                >
+                  How It Works
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => { router.push('/pricing'); setIsMobileMenuOpen(false); }}
+                  className="w-full justify-start"
+                  style={{ color: pathname === '/pricing' ? colors.text.primary : colors.text.secondary }}
+                >
+                  Pricing
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => { router.push('/login'); setIsMobileMenuOpen(false); }}
+                  className="w-full justify-start"
+                  style={{ color: colors.text.secondary }}
+                >
+                  Sign In
+                </Button>
+                <div style={{ marginTop: spacing.md }}>
+                  <Button
+                    variant="primary"
+                    onClick={() => { router.push('/waitlist'); setIsMobileMenuOpen(false); }}
+                    className="w-full justify-center"
+                  >
+                    {t('joinWaitlist')}
+                  </Button>
+                </div>
+                <div style={{ marginTop: spacing.lg, paddingTop: spacing.lg, borderTop: `1px solid ${colors.glass.border}` }}>
+                  <p
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: '0.06em',
+                      textTransform: 'uppercase',
+                      color: colors.text.tertiary,
+                      marginBottom: spacing.sm,
+                    }}
+                  >
+                    {t('language')}
+                  </p>
+                  <LanguageSwitcher compact />
+                </div>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+          )}
+        </AnimatePresence>
       </motion.nav>
       {/* Single scroll container: main + footer scroll together, one scrollbar */}
       <div

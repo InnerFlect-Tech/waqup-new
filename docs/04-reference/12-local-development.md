@@ -92,7 +92,23 @@ http://localhost:3000/auth/callback
 npm run dev:web
 ```
 
-Open http://localhost:3000. Google OAuth and email/password login will now work from localhost.
+Open http://localhost:3000 (or the **Network URL** from terminal output if localhost fails). Google OAuth and email/password login will now work from localhost.
+
+### 5. (Optional) Precompile routes for faster navigation
+
+Next.js compiles routes on first request. To compile key pages in parallel **while dev is running**, in a second terminal:
+
+```bash
+npm run warmup:dev
+```
+
+Or with the Network URL (if using that instead of localhost):
+
+```bash
+BASE_URL=http://192.168.110.223:3000 npm run warmup:dev
+```
+
+This triggers requests to `/`, `/sanctuary`, `/login`, `/library`, etc. in parallel so they are compiled and kept in memory (`onDemandEntries` config keeps up to 12 pages).
 
 ---
 
@@ -198,6 +214,7 @@ npm run dev:web
 | `npm run supabase:diff` | Diff local schema vs linked remote |
 | `npm run dev:local` | Start Supabase then web app |
 | `npm run dev:web` | Start Next.js dev server only |
+| `npm run warmup:dev` | Precompile key routes (run in 2nd terminal while dev is up) |
 
 ---
 
@@ -325,6 +342,7 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
 | Symptom | Fix |
 |---------|-----|
+| Dev server slow / `ERR_CONNECTION_REFUSED` on chunks | 1) **Use the Network URL** from terminal output (e.g. `http://192.168.110.223:3000`) instead of localhost — Next.js 16 + Chrome on macOS can refuse connections to localhost. 2) Wait for "✓ Ready" and "Compiling..." to finish before opening the app. 3) Run `npm run warmup:dev` in a 2nd terminal to precompile routes in parallel. 4) Hard refresh (Cmd+Shift+R) if you had a stale tab open. |
 | Google OAuth lands on "another account" | Fixed — `select_account` prompt now forces account picker |
 | Google OAuth redirects to production instead of localhost | Add `http://localhost:3000/**` to Supabase dashboard redirect URLs |
 | Google OAuth error after adding redirect URL | Wait up to 5 min for Google Cloud Console changes to propagate |

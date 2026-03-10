@@ -39,6 +39,8 @@
   },
   "footerTagline": "A sua voz. A sua transformação.",
   "joinWaitlist": "Entrar na Lista",
+  "language": "Idioma",
+  "closeMenu": "Fechar menu",
   "footerProduct": "Produto",
   "footerCompany": "Empresa",
   "footerLegal": "Legal",
@@ -92,6 +94,44 @@
     "fullProcess": "Processo completo",
     "sectionTitle": "A prática feita à sua medida",
     "sectionSubtitle": "Criou. Está na sua voz. Reflete a sua intenção.",
+    "coreValue": {
+      "title": "Feito para transformação",
+      "subtitle": "Não é outra app de meditação. Um estúdio de prática pessoal que funciona como você.",
+      "yourVoice": { "title": "A sua voz, não áudio genérico", "desc": "Grave uma vez. Cada prática soa como si, a falar consigo mesmo." },
+      "aiHelps": { "title": "A IA ajuda a criar, não substitui", "desc": "Conte ao orbe a sua intenção. Reveja, ajuste e possua cada palavra." },
+      "replay": { "title": "Práticas que realmente repetirá", "desc": "Feitas para si. Na sua voz. Pensadas para uso diário." },
+      "minutes": { "title": "Leva minutos, não horas", "desc": "Crie em menos de 5 minutos. Pratique grátis para sempre." }
+    },
+    "howItWorks": {
+      "title": "Como funciona",
+      "subtitle": "Três passos. A sua voz. A sua transformação.",
+      "step1": { "title": "Conte ao orbe em que está a trabalhar", "desc": "Uma breve conversa molda a sua intenção num guião personalizado." },
+      "step2": { "title": "Revise e grave na sua própria voz", "desc": "Ajuste as palavras e grave. Ou use clonagem de voz por IA. De qualquer forma, é seu." },
+      "step3": { "title": "Reproduza diariamente", "desc": "Ouça quando precisar. A prática é sempre grátis." }
+    },
+    "differentiation": {
+      "title": "Não é outra app de meditação",
+      "subtitle": "A diferença é a sua voz.",
+      "genericVs": "Apps de meditação genéricas",
+      "yourVoiceVs": "A sua própria voz a dizer as suas intenções",
+      "genericAffirm": "Afirmações genéricas",
+      "personalisedVs": "Codificação personalizada de identidade"
+    },
+    "pillars": {
+      "title": "Três práticas, três profundidades",
+      "subtitle": "Cada uma faz algo diferente. Use o que precisa, quando precisa.",
+      "affirmations": { "title": "Afirmações", "desc": "Declarações curtas que reprogramam crenças. Muda a autoconceção — use para motivação matinal, confiança, crenças limitantes." },
+      "meditations": { "title": "Meditações", "desc": "Jornadas guiadas para estados de calma. Induz relaxamento e foco — use para alívio de stress, sono, clareza." },
+      "rituals": { "title": "Rituais", "desc": "Cerimónias estruturadas de codificação de identidade. Ancora valores e nova identidade — use para transições importantes e mudanças de vida." }
+    },
+    "benefitsSection": {
+      "title": "Por que o waQup funciona",
+      "benefit1": "Ouça-se dizer o que mais precisa ouvir",
+      "benefit2": "Práticas personalizadas, não áudio genérico",
+      "benefit3": "Pratique grátis para sempre — a criação é que usa créditos",
+      "benefit4": "Funciona em minutos, compõe para a vida",
+      "benefit5": "Os seus dados de voz ficam sempre seus"
+    },
     "features": {
       "voice": {
         "title": "A sua voz. Não a de outra pessoa.",

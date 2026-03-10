@@ -7,7 +7,7 @@ import { expect } from '@playwright/test';
  */
 export async function navigateTo(page: Page, path: string, timeoutMs = 15000): Promise<void> {
   await page.goto(path, { waitUntil: 'networkidle', timeout: timeoutMs });
-  await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: timeoutMs });
+  await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: timeoutMs });
 }
 
 /**
@@ -15,7 +15,7 @@ export async function navigateTo(page: Page, path: string, timeoutMs = 15000): P
  */
 export async function assertPageLoaded(page: Page, urlPattern: RegExp, timeoutMs = 10000): Promise<void> {
   await expect(page).toHaveURL(urlPattern, { timeout: timeoutMs });
-  await expect(page.locator('main, [role="main"]')).toBeVisible({ timeout: timeoutMs });
+  await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: timeoutMs });
 }
 
 /**

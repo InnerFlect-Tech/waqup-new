@@ -104,6 +104,8 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   const messages = await getMessages();
   const themeInitData = getThemeInitData();
+  // Escape </script> in JSON to prevent browser from closing script tag prematurely
+  const themeJson = JSON.stringify(themeInitData).replace(/<\//g, '<\\/');
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -115,7 +117,7 @@ export default async function LocaleLayout({ children, params }: Props) {
          */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=${JSON.stringify(themeInitData)};var p=new URLSearchParams(window.location.search);var u=p.get("theme");var s=typeof localStorage!=="undefined"?localStorage.getItem("waqup-theme"):null;var n=(u&&t[u])?u:(s&&t[s])?s:"mystical-purple";var c=t[n]||t["mystical-purple"];if(!c)return;var r=document.documentElement;Object.keys(c).forEach(function(k){r.style.setProperty("--theme-"+k.replace(/([A-Z])/g,"-$1").toLowerCase().replace(/^-/,""),c[k]);});})();`,
+            __html: `(function(){var t=${themeJson};var p=new URLSearchParams(window.location.search);var u=p.get("theme");var s=typeof localStorage!=="undefined"?localStorage.getItem("waqup-theme"):null;var n=(u&&t[u])?u:(s&&t[s])?s:"mystical-purple";var c=t[n]||t["mystical-purple"];if(!c)return;var r=document.documentElement;Object.keys(c).forEach(function(k){r.style.setProperty("--theme-"+k.replace(/([A-Z])/g,"-$1").toLowerCase().replace(/^-/,""),c[k]);});})();`,
           }}
         />
         {/*
