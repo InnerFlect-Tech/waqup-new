@@ -1,5 +1,6 @@
 /**
  * Date formatting utilities shared across web and mobile.
+ * Uses Intl for locale-aware formatting.
  */
 
 export interface FormatDateOptions {
