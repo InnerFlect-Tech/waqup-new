@@ -15,6 +15,7 @@
 | [06-audio-generation-summary.md](./06-audio-generation-summary.md) | TTS (ElevenLabs), recording, Audio page spec |
 | [07-marketplace-summary.md](./07-marketplace-summary.md) | Discovery, creator, verification, viral, revenue |
 | [08-llm-conversation-summary.md](./08-llm-conversation-summary.md) | Conversation flow, state machine, prompts |
+| [10-gamification-level-unlocks.md](./10-gamification-level-unlocks.md) | Level unlocks, rituals as backbone, XP thresholds |
 
 ---
 

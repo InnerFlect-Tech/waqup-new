@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { useCreditBalance } from '@/hooks';
-import { useTheme, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT } from '@/theme';
+import { useTheme, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT, spacing, borderRadius } from '@/theme';
 import { withOpacity } from '@waqup/shared/theme';
 import type { OrbState } from '@/components/audio';
 import { ORB_INTRO_SHORT } from '@waqup/shared/constants';
@@ -446,7 +446,7 @@ export default function SpeakPage() {
       streamAbortRef.current = null;
       refetchBalance();
     }
-  }, [enqueueAudioChunk, initAudioContext, onQueueDrained, refetchBalance, speakBrowserFallback]);
+  }, [enqueueAudioChunk, initAudioContext, locale, onQueueDrained, refetchBalance, speakBrowserFallback]);
 
   // ── Mic analyser loop (for listening/hearing states) ─────────────────────
   const startMicAnalyser = useCallback(async () => {
@@ -793,30 +793,41 @@ export default function SpeakPage() {
         )}
       </AnimatePresence>
 
-      {/* ── Orb area (flex: 1, centers orb in content space above bottom UI) ── */}
+      {/* ── Orb area (flex: 1, centers orb in content space above bottom UI) ──
+          Uses absolute + translate for bulletproof centering (avoids scrollbar / flex quirks) */}
       <div
         onClick={handleOrbTap}
         style={{
           flex:        1,
-          display:     'flex',
-          alignItems:  'center',
-          justifyContent: 'center',
+          position:    'relative',
+          width:       '100%',
           minHeight:   0,
           cursor:      orbState === 'speaking' ? 'pointer' : 'default',
           zIndex:      3,
         }}
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          style={{ width: orbSize, height: orbSize }}
+        <div
+          style={{
+            position:   'absolute',
+            left:       '50%',
+            top:        '50%',
+            transform:  'translate(-50%, -50%)',
+            width:      orbSize,
+            height:     orbSize,
+          }}
         >
-          <VoiceOrb
-            orbState={isLowCredits && !inSession ? 'low_credits' : orbState}
-            frequencyDataRef={masterFreqRef as React.RefObject<Uint8Array | null>}
-          />
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <VoiceOrb
+              orbState={isLowCredits && !inSession ? 'low_credits' : orbState}
+              frequencyDataRef={masterFreqRef as React.RefObject<Uint8Array | null>}
+            />
+          </motion.div>
+        </div>
       </div>
 
       {/* ── Interim transcript (partial user speech) ── */}
@@ -1062,12 +1073,41 @@ export default function SpeakPage() {
                 </p>
                 <span style={{ color: withOpacity(c.text.onDark, 0.1) }}>·</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <label style={{ fontSize: 12, color: c.text.tertiary, cursor: 'pointer' }}>
+                  <label
+                    style={{
+                      display:       'flex',
+                      alignItems:    'center',
+                      gap:           spacing.sm,
+                      fontSize:      12,
+                      color:         c.text.tertiary,
+                      cursor:        'pointer',
+                      letterSpacing: '0.02em',
+                    }}
+                  >
                     <input
                       type="checkbox"
                       checked={autoRefill}
                       onChange={(e) => setAutoRefill(e.target.checked)}
-                      style={{ marginRight: 4, accentColor: c.accent.primary, cursor: 'pointer' }}
+                      style={{
+                        appearance:         'none',
+                        WebkitAppearance:   'none',
+                        width:              14,
+                        height:             14,
+                        minWidth:           14,
+                        minHeight:          14,
+                        margin:             0,
+                        borderRadius:       borderRadius.xs,
+                        border:             `1px solid ${withOpacity(c.text.onDark, 0.25)}`,
+                        background:         autoRefill ? c.accent.primary : withOpacity(c.text.onDark, 0.06),
+                        backgroundSize:      'contain',
+                        backgroundPosition: 'center',
+                        cursor:             'pointer',
+                        flexShrink:         0,
+                        transition:         'background 0.15s, border-color 0.15s',
+                        backgroundImage:    autoRefill
+                          ? `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M2 7l3.5 3.5L12 3'/%3E%3C/svg%3E")`
+                          : 'none',
+                      }}
                     />
                     Auto-refill
                   </label>

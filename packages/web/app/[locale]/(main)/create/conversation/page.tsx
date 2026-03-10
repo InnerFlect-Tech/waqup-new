@@ -176,7 +176,7 @@ function ConversationPageInner() {
     });
     if (!res.ok) throw new Error('API call failed');
     return res.json() as Promise<{ reply: string; shouldGenerateScript: boolean }>;
-  }, []);
+  }, [locale]);
 
   const generateScript = useCallback(async (allMessages: Message[], type: ContentItemType) => {
     setPhase('generating-script');
@@ -211,7 +211,7 @@ function ConversationPageInner() {
       });
       setPhase('gathering');
     }
-  }, []);
+  }, [locale]);
 
   const handleSend = useCallback(async () => {
     const trimmed = input.trim();

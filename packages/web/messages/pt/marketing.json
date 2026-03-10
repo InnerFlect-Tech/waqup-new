@@ -43,6 +43,7 @@
   "footerCompany": "Empresa",
   "footerLegal": "Legal",
   "footerHowItWorks": "Como Funciona",
+  "footerTheScience": "A Ciência",
   "footerPricing": "Preços",
   "footerMarketplace": "Mercado",
   "footerBuyCredits": "Comprar Créditos",
@@ -58,6 +59,9 @@
     "cta": "Entrar na Lista de Espera"
   },
   "explanation": {
+    "title": "A Ciência"
+  },
+  "ourStory": {
     "title": "A Nossa História"
   },
   "investors": {

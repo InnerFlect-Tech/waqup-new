@@ -10,11 +10,10 @@ import { PageShell, PageContent } from '@/components';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { SANCTUARY_QUICK_ACTIONS, SANCTUARY_MENU_ITEMS } from '@/lib';
 import { useAuthStore } from '@/stores';
-import { useContent, useCreditBalance } from '@/hooks';
+import { useContent } from '@/hooks';
 import { getProgressStats } from '@/lib/api-client';
 import { Analytics } from '@waqup/shared/utils';
 import { Library, Flame, ChevronRight, Bell, BookOpen } from 'lucide-react';
-import { QCoin } from '@/components';
 import { useTranslations } from 'next-intl';
 
 const STREAK_COLOR = '#f97316';
@@ -27,7 +26,6 @@ export default function SanctuaryHomePage() {
   const t = useTranslations('sanctuary.home');
   const searchParams = useSearchParams();
   const { items: libraryItems } = useContent();
-  const { balance: creditsBalance } = useCreditBalance();
 
   const [streak, setStreak] = useState<number | null>(null);
   const [streakError, setStreakError] = useState(false);
@@ -85,49 +83,19 @@ export default function SanctuaryHomePage() {
   return (
     <PageShell intensity="medium" centerVertically>
       <PageContent>
-        {/* Welcome + Qs badge */}
+        {/* Welcome — Qs badge is in header only */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           style={{ marginBottom: spacing.xl }}
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: spacing.md, flexWrap: 'wrap' }}>
-            <div>
-              <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontWeight: 300 }}>
-                {t('welcomeBack', { name: '' })}<span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{displayName}</span>
-              </Typography>
-              <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
-                {t('practiceHub')}
-              </Typography>
-            </div>
-            <Link href="/sanctuary/credits" style={{ textDecoration: 'none', flexShrink: 0 }}>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                data-testid="credit-balance-display"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: spacing.sm,
-                  padding: `${spacing.sm} ${spacing.md}`,
-                  borderRadius: borderRadius.full,
-                  background: colors.glass.light,
-                  backdropFilter: BLUR.md,
-                  WebkitBackdropFilter: BLUR.md,
-                  border: `1px solid ${colors.glass.border}`,
-                  cursor: 'pointer',
-                }}
-              >
-                <QCoin size="sm" />
-                <Typography variant="smallBold" style={{ color: colors.text.primary, margin: 0 }}>
-                  {creditsBalance ?? 0} Qs
-                </Typography>
-              </motion.div>
-            </Link>
-          </div>
+          <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary, fontWeight: 300 }}>
+            {t('welcomeBack', { name: '' })}<span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{displayName}</span>
+          </Typography>
+          <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
+            {t('practiceHub')}
+          </Typography>
         </motion.div>
 
         {/* Hero CTA — Create */}
@@ -390,9 +358,7 @@ export default function SanctuaryHomePage() {
                 border: `1px solid ${colors.glass.border}`,
               }}
             >
-              {accountItems.map((item, index) => {
-                const isQs = item.href.includes('credits');
-                return (
+              {accountItems.map((item, index) => (
                   <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
                     <motion.div
                       initial={{ opacity: 0 }}
@@ -415,17 +381,13 @@ export default function SanctuaryHomePage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, fontSize: 15 }}>
                           {item.name}
-                          {isQs && creditsBalance != null && (
-                            <span style={{ marginLeft: spacing.sm, color: colors.accent.primary, fontWeight: 600 }}>{creditsBalance}</span>
-                          )}
                         </Typography>
                         <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 12 }}>{item.description}</Typography>
                       </div>
                       <ChevronRight size={18} color={colors.text.secondary} style={{ opacity: 0.5 }} />
                     </motion.div>
                   </Link>
-                );
-              })}
+              ))}
             </div>
           </div>
         </div>

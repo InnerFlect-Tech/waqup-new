@@ -78,6 +78,7 @@ Details: [01-core/02-pipeline-affirmations.md](01-core/02-pipeline-affirmations.
 
 ## Related Docs
 
+- **Level unlocks & gamification**: [docs/01-core/10-gamification-level-unlocks.md](01-core/10-gamification-level-unlocks.md)
 - **Pipelines overview**: [docs/01-core/05-pipelines-overview.md](01-core/05-pipelines-overview.md)
 - **Audio generation**: [docs/01-core/06-audio-generation-summary.md](01-core/06-audio-generation-summary.md)
 - **Conversation system**: [docs/01-core/08-llm-conversation-summary.md](01-core/08-llm-conversation-summary.md)

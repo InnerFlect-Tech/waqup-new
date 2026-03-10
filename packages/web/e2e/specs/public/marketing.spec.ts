@@ -6,7 +6,8 @@ const MARKETING_PAGES = [
   { path: '/launch', name: 'Launch' },
   { path: '/join', name: 'Join' },
   { path: '/waitlist', name: 'Waitlist' },
-  { path: '/explanation', name: 'Explanation' },
+  { path: '/explanation', name: 'The Science' },
+  { path: '/our-story', name: 'Our Story' },
 ];
 
 for (const { path, name } of MARKETING_PAGES) {

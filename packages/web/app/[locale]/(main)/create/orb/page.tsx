@@ -198,7 +198,7 @@ function OrbPageInner() {
       if (!res.ok) throw new Error('API error');
       return res.json() as Promise<{ reply: string; shouldGenerateScript: boolean }>;
     },
-    [],
+    [locale],
   );
 
   const generateScript = useCallback(
@@ -225,7 +225,7 @@ function OrbPageInner() {
         setPhase('gathering');
       }
     },
-    [addTranscriptLine, speakText],
+    [addTranscriptLine, locale, speakText],
   );
 
   const advanceStep = useCallback((type: ContentItemType) => {

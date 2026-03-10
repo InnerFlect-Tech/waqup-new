@@ -168,7 +168,7 @@ export function ContentReviewStep({
       setSaveState('error');
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong saving your content. Please try again.');
     }
-  }, [contentType, completeHref, intent, script, voiceId, voiceType, ownVoiceUrl, audioSettings, router, setCurrentStep]);
+  }, [contentType, completeHref, intent, locale, script, voiceId, voiceType, ownVoiceUrl, audioSettings, router, setCurrentStep]);
 
   return (
     <div style={{ maxWidth: '48rem', margin: '0 auto' }}>

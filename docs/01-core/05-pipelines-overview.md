@@ -61,6 +61,7 @@ Edit-audio routes (`/sanctuary/{affirmations|meditations|rituals}/[id]/edit-audi
 ## See also
 
 - [06-audio-generation-summary.md](./06-audio-generation-summary.md) — Audio page spec, TTS, recording
+- [10-gamification-level-unlocks.md](./10-gamification-level-unlocks.md) — Level unlocks, rituals as backbone
 - [08-llm-conversation-summary.md](./08-llm-conversation-summary.md) — Conversational flow
 - [04-pages-comparison.md](../04-reference/04-pages-comparison.md) — What exists vs missing
 - See `08-llm-conversation-summary.md`

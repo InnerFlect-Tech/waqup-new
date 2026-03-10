@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter, usePathname } from '@/i18n/navigation';
+import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
   Home,
@@ -145,6 +145,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
@@ -160,10 +161,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-     
     setIsMobileMenuOpen(false);
     setShowProfileMenu(false);
-     
+  }, [pathname]);
+
+  // Reset scroll on route change — Next.js scrolls window only; custom scroll containers need manual reset
+  useEffect(() => {
+    const reset = () => {
+      scrollContainerRef.current?.scrollTo(0, 0);
+      window.scrollTo(0, 0);
+    };
+    reset();
+    // Run again after paint to override focus-triggered scroll
+    const rafId = requestAnimationFrame(() => requestAnimationFrame(reset));
+    return () => cancelAnimationFrame(rafId);
   }, [pathname]);
 
   const isOnboardingRoute =
@@ -262,31 +273,35 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </div>
                 <LanguageSwitcher compact />
 
-                <div className="relative">
+                <div className="relative" style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                  <Link
+                    href="/sanctuary/credits"
+                    data-testid="credit-balance-display"
+                    className="rounded-full shrink-0 inline-flex"
+                    style={{
+                      padding: '2px 7px 2px 4px',
+                      background: 'rgba(147,51,234,0.15)',
+                      border: '1px solid rgba(168,85,247,0.25)',
+                      flexShrink: 0,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 3,
+                      textDecoration: 'none',
+                      color: 'inherit',
+                    }}
+                  >
+                    <QCoin size="sm" />
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#C084FC', lineHeight: 1 }}>
+                      {creditsBalance}
+                    </span>
+                  </Link>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}
+                    style={{ display: 'flex', alignItems: 'center' }}
                   >
                     <AvatarOrb colors={avatarColors} size="sm" />
-                    <span
-                      className="rounded-full shrink-0"
-                      style={{
-                        padding: '2px 7px 2px 4px',
-                        background: 'rgba(147,51,234,0.15)',
-                        border: '1px solid rgba(168,85,247,0.25)',
-                        flexShrink: 0,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 3,
-                      }}
-                    >
-                      <QCoin size="sm" />
-                      <span style={{ fontSize: 11, fontWeight: 600, color: '#C084FC', lineHeight: 1 }}>
-                        {creditsBalance}
-                      </span>
-                    </span>
                   </Button>
 
                   {showProfileMenu && (
@@ -912,6 +927,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       </motion.nav>
       {/* Single scroll container: main + footer scroll together, one scrollbar */}
       <div
+        ref={scrollContainerRef}
         style={{
           flex: 1,
           minHeight: 0,

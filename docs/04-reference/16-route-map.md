@@ -33,6 +33,8 @@ All user-facing routes live under `app/[locale]/` with `next-intl` (locales: en,
 | `/how-it-works` | `app/[locale]/(marketing)/how-it-works/page.tsx` | ✅ | Live | Journey steps, benefits, early-access CTA |
 | `/pricing` | `app/[locale]/(marketing)/pricing/page.tsx` | ✅ | Live | Real Stripe checkout for Founding Member plan |
 | `/terms` | `app/[locale]/terms/page.tsx` | ✅ | Stub | Terms of Service placeholder |
+| `/explanation` | `app/[locale]/explanation/page.tsx` | ✅ | Live | The Science — why voice + affirmations work |
+| `/our-story` | `app/[locale]/(marketing)/our-story/page.tsx` | ✅ | Live | Our Story — founder narrative |
 | `/privacy` | `app/[locale]/privacy/page.tsx` | ✅ | Live | Privacy Policy (full content) |
 
 ---

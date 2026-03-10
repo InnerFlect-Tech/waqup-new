@@ -68,6 +68,20 @@ export default function ExplanationPage() {
           <Logo size="lg" showIcon={false} href="/" />
         </div>
 
+        {/* Section label */}
+        <Typography
+          variant="body"
+          style={{
+            color: colors.text.tertiary,
+            fontSize: '12px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.12em',
+          }}
+        >
+          The Science
+        </Typography>
+
         {/* Hero */}
         <GlassCard
           style={{
