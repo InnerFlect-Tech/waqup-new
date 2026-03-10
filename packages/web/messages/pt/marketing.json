@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "headline": "Sua voz. Sua prática. Sua transformação.",
+    "subheadline": "waQup cria afirmações, meditações e rituais personalizados na sua própria voz — cientificamente projetados para reprogramar seu subconsciente.",
+    "cta": "Entrar na Lista de Espera",
+    "secondaryCta": "Veja como funciona",
+    "earlyAccess": "Acesso antecipado · Sem cartão · Pratique grátis"
+  },
+  "howItWorks": {
+    "title": "Como Funciona",
+    "subtitle": "Criado para transformação pela voz"
+  },
+  "waitlist": {
+    "title": "Entrar na Lista de Espera",
+    "subtitle": "Seja um dos primeiros a transformar sua mente com voz.",
+    "emailPlaceholder": "seu@email.com",
+    "namePlaceholder": "Seu nome",
+    "cta": "Entrar na Lista",
+    "joining": "Entrando…",
+    "success": "Você está na lista! Entraremos em contato em breve.",
+    "errors": {
+      "nameRequired": "Por favor, insira seu nome.",
+      "emailInvalid": "Por favor, insira um email válido.",
+      "intentionRequired": "Por favor, selecione pelo menos uma intenção.",
+      "networkError": "Erro de rede. Verifique sua conexão e tente novamente."
+    }
+  },
+  "joinFounders": {
+    "title": "Membros Fundadores",
+    "subtitle": "Vagas limitadas para quem quer moldar o futuro do waQup.",
+    "cta": "Garantir minha vaga",
+    "emailPlaceholder": "seu@email.com",
+    "joining": "Garantindo…",
+    "success": "Você garantiu sua vaga!",
+    "errors": {
+      "emailRequired": "Por favor, insira seu email.",
+      "claimFailed": "Falha ao garantir sua vaga. Por favor, tente novamente."
+    }
+  },
+  "footerTagline": "Sua voz. Sua transformação. Cientificamente projetado para reprogramar os padrões subconscientes que moldam quem você é.",
+  "joinWaitlist": "Entrar na Lista",
+  "footerProduct": "Produto",
+  "footerCompany": "Empresa",
+  "footerLegal": "Legal",
+  "footerHowItWorks": "Como Funciona",
+  "footerPricing": "Preços",
+  "footerMarketplace": "Mercado",
+  "footerBuyCredits": "Comprar Créditos",
+  "footerOurStory": "Nossa História",
+  "footerInvestors": "Investidores",
+  "footerFoundingMembers": "Membros Fundadores",
+  "footerPrivacyPolicy": "Política de Privacidade",
+  "footerTerms": "Termos de Serviço",
+  "footerPaymentNote": "Praticar é sempre gratuito. Pagamento: cartões (Stripe) · Bitcoin em breve",
+  "comingSoon": {
+    "title": "Em Breve",
+    "subtitle": "Estamos trabalhando em algo especial. Fique atento.",
+    "cta": "Entrar na Lista de Espera"
+  },
+  "explanation": {
+    "title": "Nossa História"
+  },
+  "investors": {
+    "title": "Investidores",
+    "contactCta": "Entre em contato"
+  },
+  "forTeachers": {
+    "title": "Para Professores e Coaches",
+    "subtitle": "Dê aos seus clientes práticas de voz personalizadas."
+  }
+}

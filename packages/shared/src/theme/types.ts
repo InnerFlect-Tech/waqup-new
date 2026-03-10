@@ -26,5 +26,7 @@ export interface Theme {
     border: { light: string; medium: string; dark: string };
     gradients: { primary: string; primaryHover: string; secondary: string; background: string; mystical: string };
     mystical: { glow: string; blur: string; orb: string };
+    /** Modal/dialog backdrop overlay */
+    overlay: string;
   };
 }

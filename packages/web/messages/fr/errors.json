@@ -1,0 +1,17 @@
+{
+  "generic": "Une erreur s'est produite. Veuillez réessayer.",
+  "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+  "unauthorized": "Vous devez être connecté pour accéder à cette page.",
+  "forbidden": "Vous n'avez pas la permission d'accéder à cette page.",
+  "notFound": "Page introuvable.",
+  "serverError": "Erreur serveur. Veuillez réessayer plus tard.",
+  "insufficientCredits": "Vous avez besoin de {cost} Qs mais vous en avez {balance}. Obtenez plus de Qs pour continuer.",
+  "creditServiceError": "Erreur du service de crédits. Veuillez réessayer.",
+  "sessionExpired": "Session expirée. Veuillez démarrer une nouvelle session.",
+  "pages": {
+    "title": "Une erreur s'est produite",
+    "description": "Une erreur inattendue s'est produite. Essayez de rafraîchir la page.",
+    "refresh": "Rafraîchir",
+    "home": "Retour à l'accueil"
+  }
+}

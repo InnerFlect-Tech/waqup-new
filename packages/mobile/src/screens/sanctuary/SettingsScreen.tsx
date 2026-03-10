@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, TextInput, Switch, Alert } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Switch,
+  Alert,
+} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
@@ -13,13 +21,14 @@ type Props = NativeStackScreenProps<MainStackParamList, 'Settings'>;
 export default function SettingsScreen({ navigation }: Props) {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   const [displayName, setDisplayName] = useState(
     user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? user?.email?.split('@')[0] ?? ''
   );
   const [notifPractice, setNotifPractice] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -30,6 +39,86 @@ export default function SettingsScreen({ navigation }: Props) {
       Alert.alert('Error', 'Could not save settings. Please try again.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'This will permanently delete your account and all your data — affirmations, meditations, rituals, progress, voice, and credits. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete My Account',
+          style: 'destructive',
+          onPress: confirmDeleteAccount,
+        },
+      ]
+    );
+  };
+
+  const confirmDeleteAccount = () => {
+    // Second confirmation to prevent accidental deletion
+    Alert.alert(
+      'Are you sure?',
+      'All your data will be deleted within 30 days. You will be signed out immediately.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Yes, Delete Everything',
+          style: 'destructive',
+          onPress: () => void executeDeleteAccount(),
+        },
+      ]
+    );
+  };
+
+  const executeDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      // Call the account deletion endpoint on the web server.
+      // The server handles: deleting from auth.users (cascades to all user data),
+      // revoking ElevenLabs voice, and anonymizing Stripe customer data.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        Alert.alert('Error', 'You must be signed in to delete your account.');
+        return;
+      }
+
+      const apiBase = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+      const res = await fetch(`${apiBase}/api/account/delete`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (res.ok || res.status === 204) {
+        // Sign out locally — the navigator will redirect to Auth
+        await logout();
+        Alert.alert(
+          'Account Deleted',
+          'Your account has been scheduled for deletion. All data will be removed within 30 days.'
+        );
+      } else if (res.status === 404) {
+        // Endpoint not deployed yet — fall back to local sign-out with email instruction
+        await logout();
+        Alert.alert(
+          'Deletion Requested',
+          'Your account deletion has been requested. Please email legal@waqup.com to confirm. You have been signed out.'
+        );
+      } else {
+        const body = (await res.json()) as { error?: string };
+        Alert.alert('Error', body.error ?? 'Could not delete your account. Please email legal@waqup.com.');
+      }
+    } catch {
+      Alert.alert(
+        'Error',
+        'Could not connect to delete your account. Please email legal@waqup.com to request deletion.'
+      );
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -46,8 +135,8 @@ export default function SettingsScreen({ navigation }: Props) {
         </View>
 
         {/* Profile */}
-        <Typography variant="captionBold" style={{ color: colors.text.secondary, marginBottom: spacing.sm, textTransform: 'uppercase', fontSize: 11, letterSpacing: 1 }}>
-          Profile
+        <Typography variant="captionBold" style={styles.sectionLabel}>
+          PROFILE
         </Typography>
         <Card variant="default" style={[styles.section, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
           <View style={styles.field}>
@@ -73,8 +162,8 @@ export default function SettingsScreen({ navigation }: Props) {
         </Card>
 
         {/* Notifications */}
-        <Typography variant="captionBold" style={{ color: colors.text.secondary, marginBottom: spacing.sm, marginTop: spacing.xl, textTransform: 'uppercase', fontSize: 11, letterSpacing: 1 }}>
-          Notifications
+        <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xl }]}>
+          NOTIFICATIONS
         </Typography>
         <Card variant="default" style={[styles.section, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
           <View style={styles.row}>
@@ -95,12 +184,34 @@ export default function SettingsScreen({ navigation }: Props) {
           variant="primary"
           size="lg"
           fullWidth
-          onPress={handleSave}
+          onPress={() => void handleSave()}
           disabled={isSaving}
           style={{ marginTop: spacing.xl }}
         >
           {isSaving ? 'Saving…' : 'Save Changes'}
         </Button>
+
+        {/* Data & Privacy — Apple requires in-app account deletion */}
+        <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xxl }]}>
+          DATA &amp; PRIVACY
+        </Typography>
+        <Card variant="default" style={[styles.section, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+          <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 18, marginBottom: spacing.md }}>
+            You can permanently delete your account and all associated data — including your affirmations, meditations, rituals, voice profile, and credits. This action cannot be undone.
+          </Typography>
+          <Button
+            variant="outline"
+            size="md"
+            fullWidth
+            onPress={handleDeleteAccount}
+            disabled={isDeleting}
+            style={{ borderColor: colors.error }}
+          >
+            <Typography variant="body" style={{ color: colors.error }}>
+              {isDeleting ? 'Deleting…' : 'Delete My Account'}
+            </Typography>
+          </Button>
+        </Card>
 
         <Typography variant="small" style={{ color: colors.text.secondary, textAlign: 'center', marginTop: spacing.xl }}>
           waQup v1.0.0 · Data processed securely
@@ -117,6 +228,13 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.xl,
+  },
+  sectionLabel: {
+    color: 'rgba(255,255,255,0.45)',
+    marginBottom: spacing.sm,
+    fontSize: 11,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   section: {
     borderRadius: borderRadius.xl,

@@ -100,10 +100,21 @@ export function PrivacyContent() {
           </p>
           <p>
             <strong>Voice and audio data:</strong> When you record or clone your
-            voice, we process this data through our voice providers (e.g.
-            ElevenLabs) to create personalized audio. Voice recordings used for
-            cloning are stored securely and used only to provide the service you
-            requested.
+            voice, we transmit the recording to ElevenLabs (our third-party voice
+            provider) to create a personalised voice model. ElevenLabs stores
+            your voice data on their servers to provide the cloning service. Your
+            voice model is linked to your account and deleted from ElevenLabs
+            when you delete your account. We do not use your voice data for any
+            purpose other than generating your personalised audio content.
+          </p>
+          <p>
+            <strong>AI conversation data:</strong> When you use our Guided Chat,
+            AI Agent, or Speak features, your messages and the AI responses are
+            stored in our database. This conversation history is used to generate
+            your personalised content scripts. Conversations are processed by
+            OpenAI (GPT-4o, GPT-4o-mini) on their servers; OpenAI does not use
+            your data to train their models under our API agreement. Your
+            conversation history is deleted when you delete your account.
           </p>
           <p>
             <strong>Technical data:</strong> IP address, device type, browser,
@@ -174,7 +185,7 @@ export function PrivacyContent() {
           </p>
         </LegalSection>
 
-        <LegalSection title="7. Your Rights">
+        <LegalSection title="7. Your Rights (including Data Deletion)">
           <p>You have the right to:</p>
           <ul style={{ marginTop: 8, paddingLeft: 20 }}>
             <li>

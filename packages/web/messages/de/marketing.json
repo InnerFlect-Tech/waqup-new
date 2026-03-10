@@ -1,0 +1,23 @@
+{
+  "hero": {
+    "headline": "Deine Stimme. Deine Praxis. Deine Transformation.",
+    "cta": "Zur Warteliste anmelden",
+    "secondaryCta": "So funktioniert es",
+    "earlyAccess": "Frühzeitiger Zugang · Keine Karte · Kostenlos üben"
+  },
+  "footerTagline": "Deine Stimme. Deine Transformation. Wissenschaftlich entwickelt, um die unbewussten Muster zu verändern, die dich definieren.",
+  "joinWaitlist": "Anmelden",
+  "footerProduct": "Produkt",
+  "footerCompany": "Unternehmen",
+  "footerLegal": "Rechtliches",
+  "footerHowItWorks": "So funktioniert es",
+  "footerPricing": "Preise",
+  "footerMarketplace": "Marktplatz",
+  "footerBuyCredits": "Credits kaufen",
+  "footerOurStory": "Unsere Geschichte",
+  "footerInvestors": "Investoren",
+  "footerFoundingMembers": "Gründungsmitglieder",
+  "footerPrivacyPolicy": "Datenschutzerklärung",
+  "footerTerms": "Nutzungsbedingungen",
+  "footerPaymentNote": "Üben ist immer kostenlos. Zahlung: Karten (Stripe) · Bitcoin bald verfügbar"
+}

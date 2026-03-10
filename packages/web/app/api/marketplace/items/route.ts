@@ -30,6 +30,10 @@ export async function GET(req: NextRequest) {
     const limit = Math.min(Number(searchParams.get('limit') ?? '20'), 50);
     const offset = Number(searchParams.get('offset') ?? '0');
 
+    const contentItemsSelect = type
+      ? 'content_items!inner(id, type, title, description, duration, voice_url, ambient_url, binaural_url, audio_url, status)'
+      : 'content_items(id, type, title, description, duration, voice_url, ambient_url, binaural_url, audio_url, status)';
+
     let query = supabase
       .from('marketplace_items')
       .select(`
@@ -38,23 +42,14 @@ export async function GET(req: NextRequest) {
         creator_id,
         is_elevated,
         is_listed,
+        is_unlisted,
         play_count,
         share_count,
         listed_at,
-        content_items (
-          id,
-          type,
-          title,
-          description,
-          duration,
-          voice_url,
-          ambient_url,
-          binaural_url,
-          audio_url,
-          status
-        )
+        ${contentItemsSelect}
       `)
-      .eq('is_listed', true);
+      .eq('is_listed', true)
+      .eq('is_unlisted', false);  // unlisted items are only accessible via direct link
 
     if (elevated) {
       query = query.eq('is_elevated', true);
@@ -99,7 +94,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { contentItemId } = (await req.json()) as { contentItemId: string };
+    const { contentItemId, isUnlisted } = (await req.json()) as { contentItemId: string; isUnlisted?: boolean };
 
     if (!contentItemId) {
       return NextResponse.json({ error: 'contentItemId is required' }, { status: 400 });
@@ -117,13 +112,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Content item not found or not owned by user' }, { status: 404 });
     }
 
-    // Upsert marketplace listing
+    // Upsert marketplace listing — is_unlisted=true means link-only (not in public feed)
     const { data, error } = await supabase
       .from('marketplace_items')
       .upsert({
         content_item_id: contentItemId,
         creator_id: user.id,
         is_listed: true,
+        is_unlisted: isUnlisted ?? false,
       }, { onConflict: 'content_item_id' })
       .select()
       .single();

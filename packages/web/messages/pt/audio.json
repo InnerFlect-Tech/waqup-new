@@ -1,0 +1,65 @@
+{
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "stop": "Stop",
+    "rewind": "Rewind 10s",
+    "forward": "Forward 10s",
+    "speed": "Speed",
+    "volume": "Volume",
+    "loop": "Loop",
+    "download": "Download",
+    "share": "Share",
+    "playCount": "{count, plural, one {# play} other {# plays}}",
+    "duration": "{minutes}:{seconds}",
+    "loading": "Loading audio…",
+    "error": "Audio failed to load. Please try again."
+  },
+  "recording": {
+    "start": "Start Recording",
+    "stop": "Stop Recording",
+    "playback": "Play back",
+    "reRecord": "Re-record",
+    "saved": "Recording saved · {duration}",
+    "permissionDenied": "Microphone access is required. Please allow access in your browser settings and try again.",
+    "readScript": "Read your script aloud in a calm, intentional voice."
+  },
+  "generation": {
+    "generating": "Generating your audio…",
+    "generatingHint": "This may take a few seconds.",
+    "generated": "Your audio is ready.",
+    "failed": "Audio generation failed. Please try again.",
+    "insufficientCredits": "Rendering audio with your voice costs {cost} Qs but you have {balance}. Get more Qs to continue.",
+    "renderCost": "Render — {cost} Qs"
+  },
+  "speak": {
+    "title": "Speak",
+    "subtitle": "Your real-time conversation partner.",
+    "startSession": "Start session",
+    "endSession": "End session",
+    "sessionActive": "Session active",
+    "speak": "Speak",
+    "listening": "Listening…",
+    "thinking": "Thinking…",
+    "error": "Something went wrong. Please try again.",
+    "sessionFailed": "Failed to start session. Please try again."
+  },
+  "atmosphere": {
+    "title": "Background atmosphere",
+    "none": "None",
+    "nature": "Nature",
+    "rain": "Rain",
+    "ocean": "Ocean",
+    "fire": "Fire",
+    "space": "Space"
+  },
+  "binaural": {
+    "title": "Binaural beats",
+    "none": "None",
+    "alpha": "Alpha (8–12 Hz)",
+    "theta": "Theta (4–8 Hz)",
+    "delta": "Delta (1–4 Hz)",
+    "gamma": "Gamma (30–100 Hz)",
+    "beta": "Beta (12–30 Hz)"
+  }
+}

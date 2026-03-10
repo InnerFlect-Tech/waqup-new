@@ -5,7 +5,7 @@ import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { spacing } from '@/theme';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 interface PlaceholderPageProps {
   title: string;

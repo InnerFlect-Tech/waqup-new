@@ -32,39 +32,29 @@ a {
   text-decoration: none;
 }
 
-/* Focus styles for accessibility — purple ring matching brand accent */
+/* Focus styles for accessibility — uses theme accent (SSOT) */
 :focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.6);
+  box-shadow: 0 0 0 2px var(--theme-accent-focus, rgba(147, 51, 234, 0.6));
   outline-offset: 2px;
 }
 
-/* Selection styles */
+/* Selection styles — uses theme accent (SSOT) */
 ::selection {
-  background: rgba(168, 85, 247, 0.2);
+  background: var(--theme-accent-selection, rgba(168, 85, 247, 0.2));
   color: inherit;
 }
 
-/* Utility: glass morphism surface */
+/* Utility: glass morphism surface — uses theme vars; blur matches BLUR.md (10px) */
 .glass {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--theme-glass-light, rgba(255, 255, 255, 0.05));
+  /* Uses BLUR.md token (10px) - see @/theme */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--theme-glass-border, rgba(255, 255, 255, 0.1));
 }
 
-/* Keyframe definitions */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Animation utilities */
+/* Animation utilities — keyframes from animations.css */
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out;
 }
@@ -92,9 +82,9 @@ a {
   background: var(--theme-text-tertiary, rgba(255, 255, 255, 0.25));
 }
 
-/* Gradient text utility — matches @waqup-app .gradient-text */
+/* Gradient text utility — uses theme gradient (SSOT) */
 .gradient-text {
-  background: linear-gradient(to right, #c084fc, #a78bfa, #818cf8);
+  background: var(--theme-gradient-primary, linear-gradient(to right, #c084fc, #a78bfa, #818cf8));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -122,4 +112,12 @@ a {
   .wq-hero,
   .hiw-hero { flex-direction: column !important; gap: 32px !important; padding: 0 24px !important; }
   .hiw-hero-mockup { display: none !important; }
+}
+
+/* Small phones (iPhone SE, etc.) — reduce padding to prevent overflow */
+@media (max-width: 375px) {
+  .wq-hero,
+  .hiw-hero { padding: 0 16px !important; gap: 24px !important; }
+  .pricing-content { padding-left: 16px !important; padding-right: 16px !important; }
+  .footer-inner { padding-left: 16px !important; padding-right: 16px !important; }
 }

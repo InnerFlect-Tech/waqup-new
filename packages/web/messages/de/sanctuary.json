@@ -1,0 +1,151 @@
+{
+  "home": {
+    "welcomeBack": "Welcome back, {name}",
+    "practiceHub": "Your practice hub",
+    "streakDays": "{count} {count, plural, one {day} other {days}}",
+    "streak": "streak",
+    "practices": "{count} {count, plural, one {practice} other {practices}}",
+    "inYourLibrary": "in your library",
+    "viewProgress": "View progress →",
+    "openLibrary": "Open library →",
+    "practiceSection": "Practice",
+    "accountSection": "Account"
+  },
+  "menu": {
+    "home": "Sanctuary Home",
+    "affirmations": "Affirmations",
+    "meditations": "Meditations",
+    "rituals": "Rituals",
+    "library": "Library",
+    "progress": "Progress",
+    "credits": "Credits",
+    "plan": "Plan",
+    "voices": "Voices",
+    "reminders": "Reminders",
+    "referral": "Referral",
+    "settings": "Settings",
+    "help": "Help",
+    "learn": "Learn"
+  },
+  "progress": {
+    "title": "Progress",
+    "totalSessions": "Total sessions",
+    "currentStreak": "Current streak",
+    "longestStreak": "Longest streak",
+    "totalMinutes": "Total minutes",
+    "thisWeek": "This week",
+    "thisMonth": "This month",
+    "allTime": "All time",
+    "empty": "Start practicing to see your progress here.",
+    "days": "{count} days"
+  },
+  "library": {
+    "title": "Library",
+    "empty": "Your library is empty. Create your first practice.",
+    "createFirst": "Create your first practice",
+    "filter": {
+      "all": "All",
+      "affirmations": "Affirmations",
+      "meditations": "Meditations",
+      "rituals": "Rituals"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "mostPlayed": "Most played"
+    }
+  },
+  "affirmations": {
+    "title": "Affirmations",
+    "empty": "No affirmations yet. Create your first one.",
+    "createCta": "Create affirmation"
+  },
+  "meditations": {
+    "title": "Meditations",
+    "empty": "No meditations yet. Create your first one.",
+    "createCta": "Create meditation"
+  },
+  "rituals": {
+    "title": "Rituals",
+    "empty": "No rituals yet. Create your first one.",
+    "createCta": "Create ritual"
+  },
+  "credits": {
+    "title": "Credits",
+    "balance": "Your balance",
+    "qs": "Qs",
+    "getMore": "Get more Qs",
+    "history": "Transaction history",
+    "empty": "No transactions yet."
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "displayName": "Display name",
+    "email": "Email",
+    "password": "Password",
+    "changePassword": "Change password",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": "Theme",
+    "privacy": "Privacy",
+    "deleteAccount": "Delete account",
+    "deleteAccountConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
+    "logout": "Log out",
+    "saved": "Settings saved.",
+    "errorSaving": "Error saving settings. Please try again."
+  },
+  "voices": {
+    "title": "Voice Library",
+    "addVoice": "Add voice",
+    "empty": "No voices saved yet. Add a voice to use in your practices.",
+    "voiceName": "Voice name",
+    "voiceNameRequired": "Voice name is required",
+    "uploadSample": "Upload audio sample",
+    "uploadSampleHint": "Upload at least one audio sample to create your voice",
+    "uploadSampleRequired": "Upload at least one audio sample to create your voice",
+    "creating": "Creating voice…",
+    "delete": "Delete voice",
+    "deleteConfirm": "Delete this voice? This cannot be undone."
+  },
+  "plan": {
+    "title": "Your Plan",
+    "currentPlan": "Current plan",
+    "upgrade": "Upgrade",
+    "manage": "Manage subscription",
+    "cancel": "Cancel subscription",
+    "cancelConfirm": "Are you sure you want to cancel your subscription?"
+  },
+  "help": {
+    "title": "Help & Support",
+    "faq": "Frequently asked questions",
+    "contact": "Contact support",
+    "contactEmail": "Email us at {email}",
+    "documentation": "Documentation"
+  },
+  "reminders": {
+    "title": "Practice Reminders",
+    "add": "Add reminder",
+    "empty": "No reminders set. Add one to stay consistent.",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "time": "Time",
+    "days": "Days",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "referral": {
+    "title": "Refer a Friend",
+    "description": "Share waQup and earn free credits when your friends sign up.",
+    "yourCode": "Your referral code",
+    "copy": "Copy code",
+    "copied": "Copied!",
+    "share": "Share",
+    "earned": "Credits earned",
+    "referrals": "Successful referrals"
+  },
+  "learn": {
+    "title": "Learn",
+    "empty": "Content coming soon."
+  }
+}

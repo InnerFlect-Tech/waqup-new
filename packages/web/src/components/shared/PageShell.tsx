@@ -9,7 +9,7 @@ export interface PageShellProps {
   children: React.ReactNode;
   /** AnimatedBackground intensity */
   intensity?: 'light' | 'medium' | 'strong' | 'high';
-  /** Max width of content container (default: 1400px; use 480px for auth) */
+  /** Max width of content container (default: 1280px from maxWidth7xl; use 480px for auth) */
   maxWidth?: string | number;
   /** Center content vertically (for auth pages) */
   centered?: boolean;
@@ -17,6 +17,12 @@ export interface PageShellProps {
   bare?: boolean;
   /** Plain dark background with no animated orbs — used on auth pages */
   plain?: boolean;
+  /** Enable scroll snapping — each full-height child snaps into view */
+  scrollSnap?: boolean;
+  /** Center content vertically when shorter than viewport (dashboard-style pages) */
+  centerVertically?: boolean;
+  /** Let document/layout scroll instead of creating a fixed viewport scroll — use for pages with shared footer so content + footer scroll together */
+  allowDocumentScroll?: boolean;
 }
 
 export const PageShell: React.FC<PageShellProps> = ({
@@ -26,6 +32,9 @@ export const PageShell: React.FC<PageShellProps> = ({
   centered = false,
   bare = false,
   plain = false,
+  scrollSnap = false,
+  centerVertically = false,
+  allowDocumentScroll = false,
 }) => {
   const { theme } = useTheme();
   const colors = theme.colors;
@@ -49,6 +58,11 @@ export const PageShell: React.FC<PageShellProps> = ({
       alignItems: 'center',
       justifyContent: 'center',
     }),
+    ...(centerVertically && !centered && {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    }),
   };
 
   const innerStyle: React.CSSProperties = bare
@@ -61,16 +75,33 @@ export const PageShell: React.FC<PageShellProps> = ({
         zIndex: 1,
       };
 
-  return (
-    <div
-      style={{
+  const scrollContainerStyle: React.CSSProperties = allowDocumentScroll
+    ? {
+        minHeight: '100vh',
+        width: '100%',
+        maxWidth: '100%',
+        minWidth: 0,
+        position: 'relative',
+        overflowX: 'hidden',
+      }
+    : {
         minHeight: '100vh',
         height: '100vh',
+        width: '100%',
+        maxWidth: '100%',
+        minWidth: 0,
         position: 'relative',
         overflowX: 'hidden',
         overflowY: 'auto',
-      }}
-    >
+        ...(scrollSnap && {
+          scrollSnapType: 'y mandatory',
+          scrollBehavior: 'smooth',
+          WebkitOverflowScrolling: 'touch',
+        }),
+      };
+
+  return (
+    <div style={scrollContainerStyle}>
       {!plain && <AnimatedBackground intensity={intensity} color="primary" />}
       <div
         style={{

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 
 const INIT_SEEN_KEY = 'waqup_create_init_seen';
 const FORCE_SHOW_KEY = 'waqup_force_show_init';

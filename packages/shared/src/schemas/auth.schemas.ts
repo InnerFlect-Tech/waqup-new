@@ -5,63 +5,67 @@ import { z } from 'zod';
  * Using Zod for consistent validation
  */
 
+/**
+ * Validation error messages use translation keys from auth.validation.*
+ * Forms should call t(error.message) to render the translated string.
+ */
 export const loginSchema = z.object({
   email: z
     .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+    .min(1, 'validation.emailRequired')
+    .email('validation.emailInvalid'),
   password: z
     .string()
-    .min(1, 'Password is required')
-    .min(6, 'Password must be at least 6 characters'),
+    .min(1, 'validation.passwordRequired')
+    .min(6, 'validation.passwordMinLength'),
 });
 
 export const signupSchema = z
   .object({
     email: z
       .string()
-      .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
+      .min(1, 'validation.emailRequired')
+      .email('validation.emailInvalid'),
     password: z
       .string()
-      .min(1, 'Password is required')
-      .min(6, 'Password must be at least 6 characters')
+      .min(1, 'validation.passwordRequired')
+      .min(6, 'validation.passwordMinLength')
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+        'validation.passwordComplexity'
       ),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    confirmPassword: z.string().min(1, 'validation.confirmPasswordRequired'),
     acceptTerms: z.boolean().refine((val) => val === true, {
-      message: 'You must accept the terms of service',
+      message: 'validation.acceptTermsRequired',
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'validation.passwordsMustMatch',
     path: ['confirmPassword'],
   });
 
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+    .min(1, 'validation.emailRequired')
+    .email('validation.emailInvalid'),
 });
 
 export const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(1, 'Password is required')
-      .min(6, 'Password must be at least 6 characters')
+      .min(1, 'validation.passwordRequired')
+      .min(6, 'validation.passwordMinLength')
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+        'validation.passwordComplexity'
       ),
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
-    token: z.string().min(1, 'Reset token is required'),
+    confirmPassword: z.string().min(1, 'validation.confirmPasswordRequired'),
+    token: z.string().min(1, 'validation.resetTokenRequired'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'validation.passwordsMustMatch',
     path: ['confirmPassword'],
   });
 

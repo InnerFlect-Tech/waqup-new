@@ -48,7 +48,7 @@
 | Pages (what exists / missing) | `docs/04-reference/04-pages-comparison.md` |
 | Current vs final | `docs/04-reference/09-current-vs-final-solution.md` |
 | Design system | `docs/04-reference/07-design-system-cross-platform.md` |
-| Spacing tokens, rules | `docs/04-reference/13-spacing-usage-guide.md` |
+| Spacing tokens, rules | `docs/04-reference/17-spacing-usage-guide.md` |
 
 ---
 

@@ -1,7 +1,6 @@
 /**
  * CSS Animations for Web Components
- * 
- * Centralized animation definitions for consistent animations across the web app.
+ * Single source of truth for keyframes. Utilities (.animate-fade-in, .animate-slide-up) in globals.css.
  */
 
 @keyframes spin {
@@ -44,11 +43,29 @@
 
 @keyframes slideUp {
   from {
-    transform: translateY(10px);
+    transform: translateY(20px);
     opacity: 0;
   }
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes wqProgressFill {
+  0% {
+    width: 30%;
+  }
+  100% {
+    width: 88%;
+  }
+}
+
+@keyframes wqSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

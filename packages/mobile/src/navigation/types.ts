@@ -8,6 +8,7 @@ import type { ContentItemType } from '@waqup/shared/types';
 export type { ContentItemType };
 
 export type RootStackParamList = {
+  Setup: undefined;
   Auth: undefined;
   Main: undefined;
   Showcase: undefined;
@@ -24,7 +25,9 @@ export type AuthStackParamList = {
 export type MainTabParamList = {
   Home: undefined;
   Library: undefined;
+  Marketplace: undefined;
   Speak: undefined;
+  Profile: undefined;
 };
 
 export type MainStackParamList = {

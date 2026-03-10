@@ -124,11 +124,33 @@ export async function getVoice(voiceId: string): Promise<{
 }
 
 /** Generate TTS audio for preview or content. */
-export async function textToSpeech(voiceId: string, text: string, modelId?: string): Promise<ArrayBuffer> {
-  const payload = JSON.stringify({ text, model_id: modelId ?? AI_MODELS.TTS_STANDARD });
+/** Locale → BCP-47 language code for ElevenLabs multilingual models */
+const LOCALE_TO_LANGUAGE_CODE: Record<string, string> = {
+  en: 'en',
+  pt: 'pt',
+  es: 'es',
+  fr: 'fr',
+  de: 'de',
+};
+
+export async function textToSpeech(
+  voiceId: string,
+  text: string,
+  modelId?: string,
+  locale?: string,
+): Promise<ArrayBuffer> {
+  const languageCode = locale ? LOCALE_TO_LANGUAGE_CODE[locale] : undefined;
+  const body: Record<string, unknown> = {
+    text,
+    model_id: modelId ?? AI_MODELS.TTS_STANDARD,
+  };
+  // Only pass language_code for multilingual models and non-default locales
+  if (languageCode && languageCode !== 'en') {
+    body.language_code = languageCode;
+  }
   const res = await elevenLabsFetch(`/text-to-speech/${voiceId}`, {
     method: 'POST',
-    body: payload,
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     const err = await res.text();

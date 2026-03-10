@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR, CONTENT_READABLE } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { getContentDetailHref } from './getContentDetailHref';
@@ -76,7 +76,7 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
           {contentType === 'meditation' && 'Your meditation is ready'}
           {contentType === 'ritual' && 'Your ritual is ready'}
         </Typography>
-        <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: 400, margin: '0 auto' }}>
+        <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: CONTENT_READABLE, margin: '0 auto' }}>
           The practice is complete. Now the real work begins — daily repetition.
         </Typography>
       </motion.div>
@@ -91,8 +91,8 @@ export function ContentCompleteStep({ savedId }: ContentCompleteStepProps) {
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${colors.glass.border}`,
             marginBottom: spacing.xl,
             textAlign: 'left',

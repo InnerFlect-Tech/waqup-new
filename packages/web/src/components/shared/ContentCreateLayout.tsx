@@ -4,16 +4,19 @@ import React from 'react';
 import { ContentCreationProvider, useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { PageShell } from '@/components';
 import { CreateProgressBar } from './CreateProgressBar';
-import { spacing } from '@/theme';
+import { spacing, PAGE_PADDING, HEADER_PADDING_X } from '@/theme';
 import type { ContentItemType } from '@waqup/shared/types';
+
+/** Aligns with PageShell responsive horizontal padding; same as main app pages */
+const HORIZONTAL_PADDING = `clamp(${PAGE_PADDING}, 5vw, ${HEADER_PADDING_X})`;
 
 const LAYOUT_STYLE: React.CSSProperties = {
   minHeight: '100vh',
   width: '100%',
   paddingTop: spacing.lg,
   paddingBottom: spacing.xl,
-  paddingLeft: spacing.md,
-  paddingRight: spacing.md,
+  paddingLeft: HORIZONTAL_PADDING,
+  paddingRight: HORIZONTAL_PADDING,
   display: 'flex',
   flexDirection: 'column',
 };

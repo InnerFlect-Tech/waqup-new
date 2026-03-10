@@ -6,7 +6,8 @@ import { X, Star, Shield, Zap, ArrowRight } from 'lucide-react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
-import Link from 'next/link';
+import { useFoundingMembersRemaining } from '@/hooks';
+import { Link } from '@/i18n/navigation';
 
 interface FoundingMemberModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface FoundingMemberModalProps {
 export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const { remaining, loading: remainingLoading } = useFoundingMembersRemaining();
 
   if (!isOpen) return null;
 
@@ -103,8 +105,14 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
                 fontSize: 15,
               }}
             >
-              Lock in lifetime pricing, get 500 Qs on activation, and join the first 500 members building waQup
-              alongside us.
+              Founding members get 50 credits free, 1 month free, and lock in lifetime pricing at €6.99/month.
+              {remainingLoading ? (
+                ' Loading spots...'
+              ) : remaining !== null ? (
+                <> {remaining} spots remaining.</>
+              ) : (
+                ' Limited spots.'
+              )}
             </Typography>
 
             {/* Perks preview */}
@@ -118,8 +126,8 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
             >
               {[
                 { icon: Star, text: 'Permanent Founding Member badge', color: colors.accent.tertiary },
-                { icon: Shield, text: 'Price locked forever', color: colors.accent.primary },
-                { icon: Zap, text: '3 months free · 500 Qs on activation', color: colors.accent.secondary },
+                { icon: Shield, text: 'Lifetime €6.99/month, locked forever', color: colors.accent.primary },
+                { icon: Zap, text: '50 credits free · 1 month free', color: colors.accent.secondary },
               ].map(({ icon: Icon, text, color }) => (
                 <div
                   key={text}

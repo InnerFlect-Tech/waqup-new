@@ -36,7 +36,7 @@ export const BLUR = {
   xl: `blur(${blurTokens.xl}px)`,
 } as const;
 
-/** Layout design tokens (CSS values). CONTENT_MAX_WIDTH = maxWidth7xl (1280px) for main content. */
+/** Layout design tokens (CSS values). Primary content max-width; contentMaxWidth (1400) reserved for wide layouts. */
 export const CONTENT_MAX_WIDTH = px(layout.maxWidth7xl);
 export const AUTH_CARD_MAX_WIDTH = px(layout.authCardMaxWidth);
 export const CONTENT_NARROW = px(layout.contentNarrow);
@@ -46,6 +46,7 @@ export const NAV_HEIGHT = px(layout.navHeight);
 export const NAV_TOP_OFFSET = `calc(${NAV_HEIGHT} + max(${spacing.sm}, env(safe-area-inset-top, 0px)))`;
 export const GRID_CARD_MIN = px(layout.gridCardMin);
 export const SEARCH_INPUT_MAX_WIDTH = px(layout.searchInputMaxWidth);
+export const CONTENT_READABLE = px(layout.contentReadable);
 export const PAGE_TOP_PADDING = px(layout.pageTopPadding);
 /** Vertical padding (top + bottom) for full-height layouts - use in calc(100dvh - PAGE_VERTICAL_PADDING_PX) */
 export const PAGE_VERTICAL_PADDING_PX = layout.pageTopPadding + 32;
@@ -55,8 +56,8 @@ export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
  * Same value for left and right so logo and nav buttons align symmetrically.
  */
 export const HEADER_PADDING_X = px(layout.headerPaddingX);
-/** Speak page bottom UI height — SSOT for orb centering area */
-export const SPEAK_BOTTOM_UI_HEIGHT = px(layout.speakBottomUiHeight);
+/** Speak page bottom UI height — SSOT for orb centering area. Responsive: shrinks on small viewports to avoid trapping content. */
+export const SPEAK_BOTTOM_UI_HEIGHT = `min(${px(layout.speakBottomUiHeight)}, 35vh)`;
 export const PAGE_PADDING = spacing.xl;
 /** Standard glass card padding - use for most cards */
 export const CARD_PADDING = spacing.lg;

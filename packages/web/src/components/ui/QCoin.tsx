@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useId } from 'react';
+import { useTheme } from '@/theme';
 
 export interface QCoinProps {
   size?: 'sm' | 'md' | 'lg';
@@ -26,6 +27,8 @@ export const QCoin: React.FC<QCoinProps> = ({
   className = '',
   style,
 }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const id = useId().replace(/:/g, '-');
   const px = SIZE_MAP[size];
   const fontSize = FONT_MAP[size];
@@ -44,7 +47,7 @@ export const QCoin: React.FC<QCoinProps> = ({
         {/* Outer glow — soft purple halo */}
         <filter id={`qcoin-halo-${id}`} x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="2.5" in="SourceGraphic" result="blur" />
-          <feFlood floodColor="#9333EA" floodOpacity="0.55" result="color" />
+          <feFlood floodColor={colors.accent.primary} floodOpacity="0.55" result="color" />
           <feComposite in="color" in2="blur" operator="in" result="glow" />
           <feMerge>
             <feMergeNode in="glow" />
@@ -54,10 +57,10 @@ export const QCoin: React.FC<QCoinProps> = ({
 
         {/* Main orb gradient — purple core, dark edge */}
         <radialGradient id={`qcoin-face-${id}`} cx="38%" cy="32%" r="68%">
-          <stop offset="0%" stopColor="#C084FC" />
-          <stop offset="35%" stopColor="#A855F7" />
-          <stop offset="70%" stopColor="#7E22CE" />
-          <stop offset="100%" stopColor="#4C1D95" />
+          <stop offset="0%" stopColor={colors.accent.tertiary} />
+          <stop offset="35%" stopColor={colors.accent.primary} />
+          <stop offset="70%" stopColor={colors.accent.secondary} />
+          <stop offset="100%" stopColor={colors.accent.secondary} />
         </radialGradient>
 
         {/* Inner shine — top-left white-violet sweep */}
@@ -69,8 +72,8 @@ export const QCoin: React.FC<QCoinProps> = ({
 
         {/* Rim gradient — deep purple ring */}
         <linearGradient id={`qcoin-rim-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6B21A8" />
-          <stop offset="100%" stopColor="#3B0764" />
+          <stop offset="0%" stopColor={colors.accent.primary} />
+          <stop offset="100%" stopColor={colors.accent.secondary} />
         </linearGradient>
       </defs>
 
@@ -118,7 +121,7 @@ export const QCoin: React.FC<QCoinProps> = ({
           style={{
             fontSize: AMOUNT_FONT_MAP[size],
             fontWeight: 700,
-            color: '#A855F7',
+            color: colors.accent.primary,
             lineHeight: 1,
             letterSpacing: '-0.01em',
           }}

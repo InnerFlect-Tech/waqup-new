@@ -2,7 +2,7 @@
 
 **Purpose**: Comprehensive audit of spacing inconsistencies across the application. Use this to fix wrong spacing and align with design tokens.
 
-**Reference**: [13-spacing-usage-guide.md](./13-spacing-usage-guide.md) for token definitions.
+**Reference**: [17-spacing-usage-guide.md](./17-spacing-usage-guide.md) for token definitions.
 
 ---
 

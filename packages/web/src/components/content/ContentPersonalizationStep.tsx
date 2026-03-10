@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation, type PersonalizationData } from '@/lib/contexts/ContentCreationContext';
 import { Check, ChevronLeft } from 'lucide-react';
@@ -135,8 +135,8 @@ export function ContentPersonalizationStep({ backHref, nextHref }: ContentPerson
           style={{
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${name.length > 0 ? colors.accent.primary + '50' : colors.glass.border}`,
             padding: `${spacing.sm} ${spacing.lg}`,
             transition: 'border-color 0.2s',
@@ -173,8 +173,8 @@ export function ContentPersonalizationStep({ backHref, nextHref }: ContentPerson
           style={{
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${whyThisMatters.length > 0 ? colors.accent.primary + '50' : colors.glass.border}`,
             padding: spacing.lg,
             transition: 'border-color 0.2s',

@@ -54,7 +54,7 @@ export function AiCostNotice({
   const colors = theme.colors;
 
   const isGate = Boolean(onConfirm);
-  const accentColor = cost === 0 ? '#60a5fa' : '#A855F7';
+  const accentColor = cost === 0 ? colors.info : colors.accent.primary;
 
   return (
     <motion.div

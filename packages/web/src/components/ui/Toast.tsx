@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useTheme } from '@/theme';
+import { useTheme, BLUR } from '@/theme';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -124,7 +124,7 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string)
         border: `1px solid ${s.border}`,
         borderLeft: `3px solid ${s.color}`,
         borderRadius: '0.75rem',
-        backdropFilter: 'blur(20px)',
+        backdropFilter: BLUR.xl,
         minWidth: '280px',
         maxWidth: '400px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.4)',

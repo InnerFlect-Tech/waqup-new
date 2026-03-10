@@ -61,7 +61,7 @@ export const PLANS: Plan[] = [
     billingCycle: 'month',
     creditsPerPeriod: 99,
     description:
-      'Devotion is not a plan. It is a statement. Built for practitioners who show up every day with intention — and expect depth, precision, and priority in return.',
+      'For daily practitioners who want maximum creative freedom. More Qs, priority processing, and dedicated support.',
     features: [
       '99 Qs per month',
       'Priority AI processing',

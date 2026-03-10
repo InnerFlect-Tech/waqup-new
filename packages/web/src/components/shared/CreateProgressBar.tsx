@@ -3,14 +3,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
-import type { CreationStep } from '@/lib/contexts/ContentCreationContext';
+import { spacing, borderRadius, BLUR } from '@/theme';
+import type { ConversationStep } from '@waqup/shared/types';
 
 export interface ProgressStep {
   key: string;
   label: string;
-  /** All CreationStep values that map to this high-level step */
-  maps: CreationStep[];
+  /** All ConversationStep values that map to this high-level step */
+  maps: ConversationStep[];
 }
 
 const DEFAULT_STEPS: ProgressStep[] = [
@@ -21,13 +21,13 @@ const DEFAULT_STEPS: ProgressStep[] = [
   { key: 'done', label: 'Done', maps: ['complete'] },
 ];
 
-function resolveIndex(step: CreationStep, steps: ProgressStep[]): number {
+function resolveIndex(step: ConversationStep, steps: ProgressStep[]): number {
   const idx = steps.findIndex((s) => s.maps.includes(step));
   return idx === -1 ? 0 : idx;
 }
 
 interface CreateProgressBarProps {
-  currentStep: CreationStep;
+  currentStep: ConversationStep;
   steps?: ProgressStep[];
 }
 
@@ -45,8 +45,8 @@ export function CreateProgressBar({ currentStep, steps = DEFAULT_STEPS }: Create
         padding: `${spacing.md} ${spacing.lg}`,
         borderRadius: borderRadius.xl,
         background: colors.glass.light,
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        backdropFilter: BLUR.lg,
+        WebkitBackdropFilter: BLUR.lg,
         border: `1px solid ${colors.glass.border}`,
       }}
     >

@@ -6,7 +6,7 @@ import { Button, Input, Typography } from '@/components/ui';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR, CARD_PADDING_AUTH, BUTTON_TOKENS } from '@/theme';
 import { ArrowRight, Sparkles, Check } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -18,13 +18,15 @@ interface WaitlistCTAProps {
   headline?: string;
   /** Sub-text override */
   subtext?: string;
+  /** Hide "Or fill out the full form..." — use for minimal hero layouts */
+  compact?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
 
 // ── Inline variant ────────────────────────────────────────────────────────────
 
-function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: string; style?: React.CSSProperties }) {
+function InlineCTA({ headline, subtext, compact, style }: { headline?: string; subtext?: string; compact?: boolean; style?: React.CSSProperties }) {
   const { theme } = useTheme();
   const colors = theme.colors;
 
@@ -171,7 +173,7 @@ function InlineCTA({ headline, subtext, style }: { headline?: string; subtext?: 
         </Typography>
       )}
 
-      {!done && (
+      {!done && !compact && (
         <Typography
           variant="small"
           style={{ color: colors.text.tertiary, marginTop: spacing.lg, display: 'block' }}
@@ -246,10 +248,11 @@ export function WaitlistCTA({
   variant = 'inline',
   headline,
   subtext,
+  compact,
   style,
 }: WaitlistCTAProps) {
   if (variant === 'banner') {
     return <BannerCTA headline={headline} subtext={subtext} style={style} />;
   }
-  return <InlineCTA headline={headline} subtext={subtext} style={style} />;
+  return <InlineCTA headline={headline} subtext={subtext} compact={compact} style={style} />;
 }

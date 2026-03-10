@@ -7,6 +7,8 @@ import { spawn } from 'child_process';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 /**
  * POST /api/audio/normalize

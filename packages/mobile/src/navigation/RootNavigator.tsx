@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
 import ShowcaseScreen from '@/screens/ShowcaseScreen';
 import HealthScreen from '@/screens/HealthScreen';
+import SetupScreen from '@/screens/SetupScreen';
 import { useAuthStore } from '@/stores';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -16,6 +17,7 @@ const linking = {
   prefixes: ['waqup://', 'https://waqup.app', 'https://www.waqup.app'],
   config: {
     screens: {
+      Setup: 'onboarding',
       Showcase: 'showcase',
       Health: 'health',
       Auth: {
@@ -27,9 +29,6 @@ const linking = {
         },
       },
       Main: 'main',
-      // auth/callback is handled by expo-web-browser's openAuthSessionAsync —
-      // it intercepts the redirect and returns the URL directly, so we do NOT
-      // need a screen for it here.
     },
   },
 };
@@ -62,11 +61,13 @@ export default function RootNavigator() {
   const isAuthenticated = !!user;
 
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking as LinkingOptions<RootStackParamList>}>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName={isAuthenticated ? 'Main' : 'Auth'}
+        initialRouteName={isAuthenticated ? 'Main' : 'Setup'}
       >
+        {/* Onboarding — shown to unauthenticated users before Auth screens */}
+        <Stack.Screen name="Setup" component={SetupScreen} />
         {isAuthenticated ? (
           <Stack.Screen name="Main" component={MainNavigator} />
         ) : (

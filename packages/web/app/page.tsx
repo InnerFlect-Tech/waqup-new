@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell, WaitlistCTA, FoundingMemberModal } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { PageShell, WaitlistCTA, FoundingMemberModal, PublicFooter } from '@/components';
+import { AppMockup } from '@/components/marketing';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_NARROW, CONTENT_MEDIUM, PAGE_TOP_PADDING } from '@/theme';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import {
   Sparkles,
   Brain,
@@ -16,14 +17,39 @@ import {
   Heart,
   ArrowRight,
   Check,
+  MessageCircle,
+  Headphones,
 } from 'lucide-react';
+import { PRACTICE_IS_FREE_ONE_LINER, VOICE_CLONING_COPY } from '@waqup/shared/constants';
+
+function formatWaitlistCount(count: number): string {
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}k+`;
+  return count.toLocaleString();
+}
 
 export default function LandingPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const [showFoundingModal, setShowFoundingModal] = useState(false);
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('/api/waitlist/count')
+      .then((res) => res.json())
+      .then((data) => {
+        if (typeof data?.count === 'number') setWaitlistCount(data.count);
+      })
+      .catch(() => {});
+  }, []);
 
   const features = [
+    {
+      icon: Music,
+      title: 'Your voice, not a generic AI',
+      description: VOICE_CLONING_COPY,
+      color: colors.accent.tertiary,
+      highlight: true,
+    },
     {
       icon: Brain,
       title: 'Neuroplasticity-Based',
@@ -31,21 +57,15 @@ export default function LandingPage() {
       color: colors.accent.primary,
     },
     {
-      icon: Music,
-      title: 'Voice Cloning',
-      description: 'Create personalized affirmations and rituals with your own voice or choose from our library',
+      icon: Zap,
+      title: 'Practice is Free — Always',
+      description: PRACTICE_IS_FREE_ONE_LINER,
       color: colors.accent.secondary,
     },
     {
       icon: Sparkles,
       title: 'AI-Powered Creation',
       description: 'Conversational AI guides you through creating transformative content tailored to your goals',
-      color: colors.accent.tertiary,
-    },
-    {
-      icon: Shield,
-      title: 'Privacy First',
-      description: 'Your voice data is encrypted and stored securely. You own your transformation journey',
       color: colors.accent.primary,
     },
     {
@@ -55,9 +75,9 @@ export default function LandingPage() {
       color: colors.accent.secondary,
     },
     {
-      icon: Zap,
-      title: 'Practice is Free',
-      description: 'Unlimited replay of your content. Qs only used for creation, never for practice',
+      icon: Shield,
+      title: 'Privacy First',
+      description: 'Your voice data is encrypted and stored securely. You own your transformation journey',
       color: colors.accent.tertiary,
     },
   ];
@@ -72,18 +92,21 @@ export default function LandingPage() {
   ];
 
   return (
-    <PageShell intensity="high" bare>
+    <PageShell intensity="high" bare scrollSnap allowDocumentScroll>
 
-      {/* Hero Section */}
+      {/* Step 1: Hero */}
         <section
           style={{
+            position: 'relative',
+            minHeight: '100dvh',
+            scrollSnapAlign: 'start',
+            scrollSnapStop: 'always',
             padding: `0 ${spacing.xl}`,
             marginTop: `calc(-1 * ${PAGE_TOP_PADDING} - ${spacing.lg})`,
             marginLeft: 'auto',
             marginRight: 'auto',
             textAlign: 'center',
             maxWidth: CONTENT_MAX_WIDTH,
-            minHeight: 'calc(100dvh - 64px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -91,9 +114,41 @@ export default function LandingPage() {
             boxSizing: 'border-box',
           }}
         >
+          {/* Decorative orb — visual accent */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '40%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 'min(400px, 80vw)',
+              height: 'min(400px, 80vw)',
+              borderRadius: '50%',
+              background: `radial-gradient(circle, ${colors.accent.primary}15 0%, transparent 70%)`,
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '42%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 'min(200px, 40vw)',
+              height: 'min(200px, 40vw)',
+              borderRadius: '50%',
+              background: `radial-gradient(circle, ${colors.accent.tertiary}08 0%, transparent 70%)`,
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
+
           {/* AI POWERED Badge */}
           <div
             style={{
+              position: 'relative',
+              zIndex: 1,
               padding: `${spacing.xs} ${spacing.md}`,
               borderRadius: borderRadius.full,
               background: `${colors.accent.tertiary}20`,
@@ -107,9 +162,11 @@ export default function LandingPage() {
             </Typography>
           </div>
 
-          {/* Large Logo - Text Only, Very Thin Font Weight */}
+          {/* Large Logo — Text Only */}
           <div
             style={{
+              position: 'relative',
+              zIndex: 1,
               fontSize: 'clamp(52px, 10vw, 100px)',
               fontWeight: 300,
               lineHeight: 1,
@@ -126,53 +183,118 @@ export default function LandingPage() {
             <span style={{ fontWeight: 300, color: colors.text.primary }}>up</span>
           </div>
 
-          {/* Tagline */}
+          {/* Slogan */}
           <Typography
             variant="body"
             style={{
-              fontSize: 'clamp(15px, 2vw, 20px)',
+              position: 'relative',
+              zIndex: 1,
+              fontSize: 'clamp(18px, 2.5vw, 24px)',
               color: colors.text.secondary,
-              maxWidth: CONTENT_NARROW,
-              margin: `0 auto ${spacing.xl} auto`,
-              lineHeight: 1.4,
+              maxWidth: 420,
+              margin: `0 auto ${spacing.md} auto`,
+              lineHeight: 1.3,
               fontWeight: 300,
               letterSpacing: '0.01em',
             }}
           >
-            Transform Your Mind with Voice and Sacred Frequencies
+            Your voice. Your practice. Your transformation.
           </Typography>
 
-          {/* Waitlist CTA — primary */}
-          <div style={{ width: '100%', maxWidth: CONTENT_MEDIUM, marginBottom: spacing.lg }}>
+          {/* Voice identity proof point */}
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing.sm,
+              padding: `${spacing.sm} ${spacing.lg}`,
+              borderRadius: borderRadius.full,
+              background: `${colors.accent.tertiary}12`,
+              border: `1px solid ${colors.accent.tertiary}30`,
+              marginBottom: spacing.xl,
+            }}
+          >
+            <Headphones size={14} color={colors.accent.tertiary} />
+            <span style={{ fontSize: 13, color: colors.accent.tertiary, fontWeight: 500 }}>
+              Practice in your own voice — not someone else&apos;s
+            </span>
+          </div>
+
+          {/* Waitlist CTA — minimal, no extra copy */}
+          <div style={{ width: '100%', maxWidth: 440, marginBottom: spacing.md }}>
             <WaitlistCTA
-              variant="banner"
-              headline="Join the waitlist. Be first to transform."
-              subtext="Get early access when waQup launches. No credit card required. Practice is always free."
+              variant="inline"
+              subtext="Early access · No card · Practice free"
+              compact
             />
           </div>
 
-          {/* Secondary links */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.md }}>
+          {/* One-line social proof */}
+          <div
+            style={{
+              marginBottom: spacing.lg,
+              fontSize: 13,
+              color: colors.text.tertiary ?? colors.text.secondary,
+              fontWeight: 400,
+            }}
+          >
+            {waitlistCount !== null && waitlistCount > 0
+              ? `${formatWaitlistCount(waitlistCount)} on the waitlist`
+              : 'Be first.'}
+          </div>
+
+          {/* Secondary links — subtle, de-emphasized */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.lg,
+              fontSize: 13,
+              color: colors.text.tertiary ?? colors.text.secondary,
+            }}
+          >
+            <Link href="/waitlist" style={{ color: 'inherit', textDecoration: 'none' }}>
+              Full form →
+            </Link>
             <button
               type="button"
               onClick={() => setShowFoundingModal(true)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: colors.text.tertiary ?? colors.text.secondary,
-                fontSize: 14,
-                textDecoration: 'none',
-                padding: spacing.xs,
-              }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, fontSize: 'inherit' }}
             >
               Founding Members →
             </button>
             <Link href="/login" style={{ textDecoration: 'none' }}>
-              <Button variant="ghost" size="md" style={{ color: colors.text.primary }}>
+              <Button variant="ghost" size="sm" style={{ color: colors.text.primary, fontSize: 13 }}>
                 Member Login
               </Button>
             </Link>
+          </div>
+
+          {/* Promoter / creator links */}
+          <div
+            style={{
+              marginTop: spacing.xl,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.md,
+              fontSize: 12,
+              color: colors.text.tertiary ?? colors.text.secondary,
+              opacity: 0.7,
+            }}
+          >
+            <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none' }}>For teachers</Link>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none' }}>For coaches</Link>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none' }}>For studios</Link>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none' }}>For creators</Link>
           </div>
 
           <FoundingMemberModal
@@ -181,9 +303,90 @@ export default function LandingPage() {
           />
         </section>
 
-        {/* Features Section */}
+        {/* Step 2: See how it works */}
         <section
           style={{
+            minHeight: '100dvh',
+            scrollSnapAlign: 'start',
+            scrollSnapStop: 'always',
+            padding: `clamp(${spacing.xxxl}, 10vh, 120px) ${spacing.xl}`,
+            maxWidth: CONTENT_MAX_WIDTH,
+            margin: '0 auto',
+          }}
+        >
+          <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
+            <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+              See how it works
+            </Typography>
+          </div>
+
+          {/* Visual flow: 1 — 2 — 3 */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.md,
+              marginBottom: spacing.xxl,
+            }}
+          >
+            {[
+              { icon: MessageCircle, label: 'Share' },
+              { icon: Sparkles, label: 'Create' },
+              { icon: Headphones, label: 'Listen' },
+            ].map(({ icon: Icon, label }, i) => (
+              <React.Fragment key={label}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.xs }}>
+                  <div
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: borderRadius.full,
+                      background: colors.gradients.primary,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: `0 4px 20px ${colors.accent.primary}50`,
+                    }}
+                  >
+                    <Icon size={24} color={colors.text.onDark} strokeWidth={2.5} />
+                  </div>
+                  <Typography variant="small" style={{ color: colors.text.secondary }}>{label}</Typography>
+                </div>
+                {i < 2 && (
+                  <ArrowRight size={20} color={colors.text.tertiary} style={{ flexShrink: 0, opacity: 0.6 }} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Mockup — hero visual */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <AppMockup />
+            <Link
+              href="/how-it-works"
+              style={{
+                marginTop: spacing.md,
+                fontSize: 13,
+                color: colors.accent.tertiary,
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              Full process <ArrowRight size={12} />
+            </Link>
+          </div>
+        </section>
+
+        {/* Step 3: Features */}
+        <section
+          style={{
+            minHeight: '100dvh',
+            scrollSnapAlign: 'start',
+            scrollSnapStop: 'always',
             padding: `${spacing.xxl} ${spacing.xl}`,
             maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
@@ -191,7 +394,7 @@ export default function LandingPage() {
         >
           <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
             <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
-              Powerful Features for Transformation
+              Built for voice-first transformation
             </Typography>
             <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: CONTENT_MEDIUM, margin: '0 auto' }}>
               Everything you need to transform your subconscious mind through voice-first experiences
@@ -208,17 +411,24 @@ export default function LandingPage() {
           >
             {features.map((feature, index) => {
               const IconComponent = feature.icon;
+              const isHighlight = 'highlight' in feature && feature.highlight;
               return (
                 <div
                   key={index}
                   style={{
                     padding: spacing.xl,
                     borderRadius: borderRadius.lg,
-                    background: colors.glass.light,
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: `1px solid ${colors.glass.border}`,
-                    boxShadow: `0 8px 32px ${colors.accent.primary}40`,
+                    background: isHighlight
+                      ? `linear-gradient(135deg, ${colors.accent.tertiary}15, ${colors.accent.primary}08)`
+                      : colors.glass.light,
+                    backdropFilter: BLUR.xl,
+                    WebkitBackdropFilter: BLUR.xl,
+                    border: isHighlight
+                      ? `1px solid ${colors.accent.tertiary}40`
+                      : `1px solid ${colors.glass.border}`,
+                    boxShadow: isHighlight
+                      ? `0 8px 40px ${colors.accent.tertiary}30`
+                      : `0 8px 32px ${colors.accent.primary}40`,
                     transition: 'all 0.3s ease',
                     cursor: 'pointer',
                     display: 'flex',
@@ -273,9 +483,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Benefits Section */}
+        {/* Step 4: Benefits */}
         <section
           style={{
+            minHeight: '100dvh',
+            scrollSnapAlign: 'start',
+            scrollSnapStop: 'always',
             padding: `${spacing.xxl} ${spacing.xl}`,
             maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
@@ -286,8 +499,8 @@ export default function LandingPage() {
               padding: spacing.xxl,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: BLUR.xl,
+              WebkitBackdropFilter: BLUR.xl,
               border: `1px solid ${colors.glass.border}`,
               boxShadow: `0 16px 64px ${colors.accent.primary}40`,
             }}
@@ -318,27 +531,42 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* Step 5: CTA */}
         <section
           style={{
+            minHeight: '100dvh',
+            scrollSnapAlign: 'start',
+            scrollSnapStop: 'always',
             padding: `clamp(${spacing.xxxl}, 12vh, 160px) ${spacing.xxl}`,
             textAlign: 'center',
             maxWidth: CONTENT_MAX_WIDTH,
             margin: '0 auto',
           }}
         >
-          <Typography
-            variant="h2"
+          <h2
             style={{
-              color: colors.text.primary,
+              margin: 0,
               marginBottom: spacing.md,
               fontSize: 'clamp(36px, 5vw, 56px)',
+              fontWeight: 300,
+              lineHeight: 1.2,
+              letterSpacing: '-0.02em',
+              background: colors.gradients.primary,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
-            Ready to Transform Your Mind?
+            Stop listening. Start creating.
+          </h2>
+          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.sm, fontSize: '18px', maxWidth: 520, margin: `0 auto ${spacing.sm}` }}>
+            Calm and Headspace sell someone else&apos;s voice.
+            waQup gives you yours.
           </Typography>
-          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, fontSize: '20px' }}>
-            Join thousands on the waitlist transforming their subconscious mind through voice
+          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, fontSize: '15px', opacity: 0.6 }}>
+            {waitlistCount !== null && waitlistCount > 0
+              ? `${formatWaitlistCount(waitlistCount)} already on the waitlist. Practice is free.`
+              : 'Join the waitlist. Practice is always free.'}
           </Typography>
           <Link href="/waitlist" style={{ textDecoration: 'none' }}>
             <Button
@@ -356,6 +584,16 @@ export default function LandingPage() {
               <ArrowRight size={24} color={colors.text.onDark} />
             </Button>
           </Link>
+        </section>
+
+        {/* Step 6: Footer — natural continuation, no snap (flows after CTA) */}
+        <section
+          style={{
+            scrollSnapAlign: 'none',
+            minHeight: 'auto',
+          }}
+        >
+          <PublicFooter />
         </section>
 
       {/* Pulse Animation */}

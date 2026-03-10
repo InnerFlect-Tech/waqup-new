@@ -1,0 +1,17 @@
+{
+  "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+  "networkError": "Error de red. Verifica tu conexión e inténtalo de nuevo.",
+  "unauthorized": "Necesitas iniciar sesión para acceder a esta página.",
+  "forbidden": "No tienes permiso para acceder a esta página.",
+  "notFound": "Página no encontrada.",
+  "serverError": "Error del servidor. Por favor, inténtalo de nuevo más tarde.",
+  "insufficientCredits": "Necesitas {cost} Qs pero tienes {balance}. Obtén más Qs para continuar.",
+  "creditServiceError": "Error en el servicio de créditos. Por favor, inténtalo de nuevo.",
+  "sessionExpired": "Sesión expirada. Por favor, inicia una nueva sesión.",
+  "pages": {
+    "title": "Algo salió mal",
+    "description": "Ocurrió un error inesperado. Intenta actualizar la página.",
+    "refresh": "Actualizar página",
+    "home": "Volver al inicio"
+  }
+}

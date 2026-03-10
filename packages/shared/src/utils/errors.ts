@@ -55,7 +55,7 @@ export function mapToAppError(error: unknown): AppError {
       return { code: 'NOT_FOUND', message: 'The requested resource was not found.' };
     }
     if (msg.includes('insufficient credits') || msg.includes('not enough credits')) {
-      return { code: 'INSUFFICIENT_CREDITS', message: 'You don\'t have enough credits for this action.' };
+      return { code: 'INSUFFICIENT_CREDITS', message: 'You don\'t have enough Qs for this action.' };
     }
     if (msg.includes('rate limit') || msg.includes('too many requests')) {
       return { code: 'RATE_LIMITED', message: 'Too many requests. Please wait a moment and try again.' };

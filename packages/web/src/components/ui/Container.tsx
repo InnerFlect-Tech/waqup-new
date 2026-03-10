@@ -1,6 +1,5 @@
 'use client';
 
-// TODO: wire up or remove — zero consumers found in the app
 import React from 'react';
 import { spacing } from '@/theme';
 import { useTheme } from '@/theme';

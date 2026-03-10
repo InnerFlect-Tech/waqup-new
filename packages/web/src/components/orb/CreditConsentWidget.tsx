@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Check, X } from 'lucide-react';
 import { QCoin } from '@/components/ui/QCoin';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import type { CreditAction } from '@waqup/shared/types';
 
 export interface CreditConsentWidgetProps {
@@ -47,8 +47,8 @@ export function CreditConsentWidget({
         borderRadius: `${borderRadius.xl} ${borderRadius.xl} ${borderRadius.xl} ${spacing.xs}`,
         background: colors.glass.light,
         border: `1px solid ${colors.mystical?.glow ?? colors.glass.border}`,
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        backdropFilter: BLUR.lg,
+        WebkitBackdropFilter: BLUR.lg,
         overflow: 'hidden',
       }}
     >
@@ -64,7 +64,7 @@ export function CreditConsentWidget({
       >
         <Sparkles size={14} color={colors.accent.primary} strokeWidth={2} />
         <span style={{ fontSize: 13, color: colors.text.secondary, fontWeight: 500 }}>
-          The Orb wants to
+          Spend {totalCostQs} Qs to:
         </span>
       </div>
 

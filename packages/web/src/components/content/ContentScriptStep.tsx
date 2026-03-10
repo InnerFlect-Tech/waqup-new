@@ -2,11 +2,11 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button, AiCostNotice } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { Sparkles, RefreshCw, Edit3, Check, ChevronLeft } from 'lucide-react';
@@ -121,8 +121,8 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
               padding: spacing.xl,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: BLUR.xl,
+              WebkitBackdropFilter: BLUR.xl,
               border: `1px solid ${colors.glass.border}`,
               textAlign: 'center',
               marginBottom: spacing.xl,
@@ -143,10 +143,10 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
               <Sparkles size={24} color={colors.accent.primary} />
             </div>
             <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
-              Generate your script
+              Create your draft
             </Typography>
             <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, fontSize: 14 }}>
-              AI will craft a personalised script based on your intent.
+              We&apos;ll craft a draft from your intention — review and make it completely yours.
             </Typography>
             <AiCostNotice
               cost={SCRIPT_COST}
@@ -156,7 +156,7 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
             />
             <Button variant="primary" size="lg" onClick={generate}>
               <Sparkles size={16} style={{ marginRight: spacing.xs }} />
-              Generate Script — {SCRIPT_COST} Qs
+              Create Draft — {SCRIPT_COST} Qs
             </Button>
           </motion.div>
         )}
@@ -172,8 +172,8 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
               padding: spacing.xl,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: BLUR.xl,
+              WebkitBackdropFilter: BLUR.xl,
               border: `1px solid ${colors.glass.border}`,
               minHeight: 200,
               marginBottom: spacing.xl,
@@ -207,8 +207,8 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
                 padding: spacing.xl,
                 borderRadius: borderRadius.xl,
                 background: colors.glass.light,
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
+                backdropFilter: BLUR.xl,
+                WebkitBackdropFilter: BLUR.xl,
                 border: `1px solid ${colors.accent.primary + '40'}`,
                 minHeight: 200,
               }}
@@ -319,8 +319,8 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
               padding: spacing.xl,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: BLUR.xl,
+              WebkitBackdropFilter: BLUR.xl,
               border: `1px solid ${colors.glass.border}`,
               textAlign: 'center',
               marginBottom: spacing.xl,

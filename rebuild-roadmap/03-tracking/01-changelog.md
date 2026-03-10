@@ -6,6 +6,93 @@
 
 ---
 
+## Marketplace Fully Functional + ChunkLoadError Fix (2026-03-10)
+
+### ChunkLoadError
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**: Moved GA4 consent Script from `beforeInteractive` to `afterInteractive` in layout to avoid blocking initial chunk load. Added ChunkLoadError recovery in global error boundary — auto-reload once on chunk timeout using sessionStorage.
+- **Updated**: 2026-03-10
+
+### Marketplace schema and API
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - Migration `20260317000001_sanctuary_saves.sql`: Created `sanctuary_saves` table (user_id, content_item_id, unique constraint) with RLS for "Add to Sanctuary".
+  - Migration `20260317000002_marketplace_items_unique_content.sql`: Added unique index on `marketplace_items.content_item_id` for publish upsert.
+  - Marketplace GET API: Use `content_items!inner` when filtering by type for correct inner-join semantics.
+  - verify_database.sql: Added sanctuary_saves check.
+- **Updated**: 2026-03-10
+
+---
+
+## Repository Organization Audit Implementation (2026-03-10)
+
+### Safe refactor across monorepo
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - **Phase A**: Removed `getCreditCostLegacy` dead export; moved `shared/src/database/*.sql` to `supabase/scripts/reference/`; removed outdated Container.tsx TODO.
+  - **Phase B**: Consolidated content type colors — mobile ProgressScreen, LibraryScreen; web marketplace [id], creator, CreatorGate, admin/content; creation-steps.ts now use `CONTENT_TYPE_COLORS` from shared. Fixed ritual color bug on mobile (#f59e0b → #34d399).
+  - **Phase C**: Migrated deprecated `ContentType` and `CreationStep` → `ContentItemType` and `ConversationStep` from `@waqup/shared/types` across all web usages; removed deprecated exports from ContentCreationContext.
+  - **Phase D**: Added `hooks` and `theme` exports to `packages/shared/src/index.ts`; renamed root package `waqup-app` → `waqup`.
+  - **Phase E**: Mobile ProgressScreen refactored to use `createProgressService` instead of raw Supabase queries.
+- **Verification**: `npm run type-check` ✅, `npm run build:web` ✅, `npm run build:mobile` ✅.
+- **Updated**: 2026-03-10
+
+---
+
+## Full Mobile Design and UX Audit (2026-03-10)
+
+### Mobile Web (responsive) and Native Mobile (Expo)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - **Audit docs**: Created `docs/audits/mobile-ui-audit-report.md`, `docs/audits/mobile-page-issues.md`, `docs/audits/mobile-fix-log.md` with device matrix, safe area status, overflow report.
+  - **Phone mockups** (how-it-works, launch): Responsive sizing — `width: min(270px, 85vw)`, `aspectRatio: 1/2` so mockups scale on small viewports.
+  - **Speak page**: `SPEAK_BOTTOM_UI_HEIGHT` changed to `min(220px, 35vh)` for small viewports.
+  - **Create/Conversation**: `height: 100vh` → `minHeight: 100dvh`; `paddingBottom` uses `env(safe-area-inset-bottom)`.
+  - **375px breakpoint**: Added in globals.css for hero, pricing, footer padding on smallest phones.
+  - **SafeAreaProvider**: Added to mobile App.tsx root so `useSafeAreaInsets()` works correctly.
+  - **Touch targets**: `iconOnlySize` in shared tokens bumped 40 → 44px per Apple HIG / Android guidelines.
+  - **Input error/helper**: Mobile Input now uses `variant="caption"` (14px) instead of `small` (12px) for better readability.
+- **Updated**: 2026-03-10
+
+---
+
+## Full Production Audit Implementation (2026-03-09)
+
+### Security and correctness
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-09
+- **Notes**:
+  - **Middleware**: Created `packages/web/middleware.ts` that re-exports `proxy` from `proxy.ts` as Next.js default middleware — server-side route protection now active.
+  - **Admin API**: Replaced `x-admin-pass` / `NEXT_PUBLIC_ORACLE_ADMIN_PASS` with session-based auth. `GET /api/admin/users` and `GET /api/waitlist` now require `profile.role === 'superadmin'` via Supabase session.
+  - **Marketplace proposals**: Fixed `profile?.is_admin` → `profile?.role === 'admin' || profile?.role === 'superadmin'` in `GET /api/marketplace/proposals`.
+  - **Profiles RLS**: Migration `20260313000001_tighten_profiles_insert_rls.sql` drops permissive "Service role can insert profiles" policy; users may only insert their own profile.
+  - **Zod validation**: Added request body validation to `/api/ai/render`, `/api/ai/tts`, `/api/conversation`, `/api/generate-script`, `/api/orb/chat`.
+- **Updated**: 2026-03-09
+
+### Consolidation and cleanup
+- **Notes**:
+  - **useCreditBalance**: Moved to `packages/shared/src/hooks/useCreditBalance.ts` factory; web and mobile use `createUseCreditBalance(supabase, channelName)`.
+  - **Content type icons**: Removed duplicate `CONTENT_TYPE_ICONS` from creation-steps; all usage now via `getContentTypeIcon` from content-helpers.
+  - **Dead code**: Removed `mockContent.ts`, `test-imports.ts` (web + mobile), unused `IconButton` component.
+  - **routes.ts**: Onboarding steps (profile, preferences, guide) set to `exists`; affirmations/record set to `exists` with note "Placeholder".
+  - **Design system**: Replaced hardcoded blur in VoiceCard, VoiceLibrary, CreateFlowInitStep with `BLUR.*` tokens.
+- **Updated**: 2026-03-09
+
+### Documentation
+- **Notes**:
+  - **Roadmap Step 9.2**: Updated OpenAI TTS → ElevenLabs TTS.
+  - **waqup-app references**: Replaced with "waqup-new" / "this repo" in phase 01, multi-platform strategy, design system.
+  - **Schema verification**: Updated credit_transactions status to "Exists".
+- **Updated**: 2026-03-09
+
+---
+
 ## Web Stripe Integration Completion (2026-03-09)
 
 ### Stripe Customer Portal and Subscriptions hook
@@ -629,7 +716,7 @@ When re-running a step:
 
 ---
 
-**Last Updated**: 2026-02-16
+**Last Updated**: 2026-03-09
 
 ---
 
@@ -637,8 +724,11 @@ When re-running a step:
 
 - **Phases 1–3**: ✅ Complete (Mobile + Web)
 - **Phase 2**: Design System ✅ Complete – theme consolidated to `@waqup/shared`
-- **Phase 4–5 (Web)**: ✅ Complete – Sanctuary, content CRUD, speak, marketplace (create flows = forms, to change to conversational)
-- **Phase 4–5 (Mobile)**: ⏳ Pending – needs Sanctuary, content list/detail, creation flows
+- **Phase 4–5 (Web)**: ✅ Complete – Sanctuary, content CRUD, speak, marketplace
+- **Phase 8 (Web)**: ✅ Complete – ElevenLabs TTS, /api/ai/render, Voice Orb, audio bucket
+- **Phase 10 (Web)**: ✅ Complete – Stripe checkout, portal, credits, subscriptions
+- **Phase 4–5 (Mobile)**: ⏳ Partial – Sanctuary sub-pages (Credits, Progress, Settings, Reminders), ContentCreateScreen, SpeakScreen, Library
+- **Next**: Web — conversational create flows; Mobile — Stripe checkout, full onboarding, marketplace
 
 **Phase 2 steps** (2.1, 2.2, 2.3, 2.4) completed with:
 - Complete theme system matching old app design

@@ -1,4 +1,5 @@
 export * from './AnimatedBackground';
+export * from './BaseModal';
 export * from './CreateProgressBar';
 export * from './ThemeSelector';
 export * from './Logo';
@@ -11,3 +12,5 @@ export * from './GlassCard';
 export * from './SuperAdminGate';
 export * from './WaitlistCTA';
 export * from './FoundingMemberModal';
+export * from './PublicFooter';
+export * from './LanguageSwitcher';

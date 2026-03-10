@@ -24,7 +24,6 @@ function makeQueryClient() {
 
 export function getQueryClient() {
   if (typeof window === 'undefined') {
-    // Server: always make a new client
     return makeQueryClient();
   }
   if (!browserQueryClient) {

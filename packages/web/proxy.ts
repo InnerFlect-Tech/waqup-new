@@ -1,116 +1,85 @@
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr';
+import createIntlMiddleware from 'next-intl/middleware';
+import { NextResponse, type NextRequest } from 'next/server';
+import { routing } from './i18n/routing';
 
-// Paths that require a valid Supabase session.
-// Superadmin-only paths are included here so that unauthenticated users are
-// redirected to /login before the page's SuperAdminGate component runs.
+// Routes that require an authenticated Supabase session.
+// Matches AuthProvider.tsx protected route list.
 const PROTECTED_PREFIXES = [
   '/library',
   '/create',
   '/profile',
+  '/sanctuary',
   '/speak',
   '/marketplace',
-  '/sanctuary',
-  '/onboarding',
-  '/admin',
-  '/system',
-  '/health',
-  '/showcase',
-  '/pages',
-  '/sitemap-view',
-]
+];
 
-const PUBLIC_PREFIXES = [
-  '/login',
-  '/signup',
-  '/forgot-password',
-  '/reset-password',
-  '/confirm-email',
-  '/auth',
-  '/how-it-works',
-  '/pricing',
-  '/funnels',
-  '/investors',
-  '/terms',
-  '/privacy',
-  '/_next',
-  '/favicon',
-  '/api',
-]
+const intlMiddleware = createIntlMiddleware(routing);
 
-function isProtected(pathname: string): boolean {
-  return PROTECTED_PREFIXES.some(
+export default async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  const isProtected = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
-  )
-}
+  );
 
-function isPublic(pathname: string): boolean {
-  if (pathname === '/') return true
-  return PUBLIC_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
-  )
-}
+  if (isProtected) {
+    // Build a mutable response so Supabase can refresh and set auth cookies.
+    const supabaseResponse = NextResponse.next({ request });
 
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://placeholder.supabase.co',
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? 'placeholder-anon-key',
+      {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookiesToSet) => {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
 
-  // Pass through public routes and anything not in the protected list
-  if (isPublic(pathname) || !isProtected(pathname)) {
-    return NextResponse.next()
+    // getUser() validates the JWT against the Supabase server — safer than
+    // getSession() which only decodes the local token without network verification.
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      // No valid Supabase session — redirect to the landing page.
+      // The override login used for E2E testing stores its user in localStorage,
+      // which proxy cannot read. Override sessions fall through to the
+      // client-side AuthProvider redirect (acceptable: it's test-only).
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = '/';
+      redirectUrl.search = '';
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // User is authenticated — let next-intl handle locale routing.
+    // Forward any refreshed auth cookies from supabaseResponse into the
+    // intl response so the client receives them.
+    const intlResponse = intlMiddleware(request);
+    supabaseResponse.cookies.getAll().forEach(({ name, value }) => {
+      intlResponse.cookies.set(name, value);
+    });
+    return intlResponse;
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  // If Supabase is not configured (local dev without .env), pass through —
-  // AuthProvider will handle client-side redirects
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.next()
-  }
-
-  const response = NextResponse.next({
-    request: { headers: request.headers },
-  })
-
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value
-      },
-      set(name: string, value: string, options: Record<string, unknown>) {
-        response.cookies.set({ name, value, ...(options as object) })
-      },
-      remove(name: string, options: Record<string, unknown>) {
-        response.cookies.set({ name, value: '', ...(options as object) })
-      },
-    },
-  })
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('next', pathname)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  return response
+  return intlMiddleware(request);
 }
 
 export const config = {
+  // Match all request paths EXCEPT:
+  // - /api/* (API routes stay locale-free and auth-check-free)
+  // - /_next/* (Next.js internal routes)
+  // - /.*\..* (files with extensions: images, fonts, manifests, etc.)
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico, robots.txt, sitemap.xml
-     * - image files
-     */
-    '/((?!_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico)).*)',
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+    // Always run proxy for root
+    '/',
   ],
-}
+};

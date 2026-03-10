@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Switch, Alert } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Switch,
+  Alert,
+  Platform,
+} from 'react-native';
+import * as Notifications from 'expo-notifications';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
@@ -8,8 +17,64 @@ import { Typography, Card, Button } from '@/components';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Reminders'>;
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const TIMES = ['06:00', '07:00', '08:00', '09:00', '12:00', '18:00', '20:00', '21:00'];
+
+// Weekday index mapping (0 = Sunday in JS, 1 = Monday, etc.)
+const DAY_TO_WEEKDAY: Record<string, number> = {
+  Sun: 1, Mon: 2, Tue: 3, Wed: 4, Thu: 5, Fri: 6, Sat: 7,
+};
+
+async function requestNotificationPermission(): Promise<boolean> {
+  if (Platform.OS === 'web') return false;
+
+  const { status: existing } = await Notifications.getPermissionsAsync();
+  if (existing === 'granted') return true;
+
+  const { status } = await Notifications.requestPermissionsAsync();
+  return status === 'granted';
+}
+
+async function scheduleReminders(
+  time: string,
+  days: string[],
+): Promise<void> {
+  // Cancel all existing waQup reminder notifications
+  await Notifications.cancelAllScheduledNotificationsAsync();
+
+  const [hourStr, minuteStr] = time.split(':');
+  const hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+
+  for (const day of days) {
+    const weekday = DAY_TO_WEEKDAY[day];
+    if (!weekday) continue;
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'waQup — Time to practice 🧘',
+        body: 'Your daily practice is waiting. A few minutes can shift your whole day.',
+        sound: true,
+        data: { type: 'practice_reminder' },
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+        weekday,
+        hour,
+        minute,
+      },
+    });
+  }
+}
 
 export default function RemindersScreen({ navigation }: Props) {
   const { theme } = useTheme();
@@ -18,6 +83,7 @@ export default function RemindersScreen({ navigation }: Props) {
   const [enabled, setEnabled] = useState(false);
   const [selectedTime, setSelectedTime] = useState('07:00');
   const [selectedDays, setSelectedDays] = useState<string[]>(['Mon', 'Tue', 'Wed', 'Thu', 'Fri']);
+  const [isSaving, setIsSaving] = useState(false);
 
   const toggleDay = (day: string) => {
     setSelectedDays(prev =>
@@ -25,13 +91,42 @@ export default function RemindersScreen({ navigation }: Props) {
     );
   };
 
-  const handleSave = () => {
-    Alert.alert(
-      'Reminders Set',
-      enabled
-        ? `You'll be reminded at ${selectedTime} on ${selectedDays.join(', ')}.`
-        : 'Reminders disabled.',
-    );
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      if (!enabled) {
+        await Notifications.cancelAllScheduledNotificationsAsync();
+        Alert.alert('Reminders Disabled', 'All practice reminders have been turned off.');
+        return;
+      }
+
+      if (selectedDays.length === 0) {
+        Alert.alert('No Days Selected', 'Please select at least one day for your reminders.');
+        return;
+      }
+
+      const granted = await requestNotificationPermission();
+      if (!granted) {
+        Alert.alert(
+          'Notifications Blocked',
+          'waQup needs notification permission to send practice reminders. Enable it in Settings → Notifications → waQup.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      await scheduleReminders(selectedTime, selectedDays);
+
+      Alert.alert(
+        'Reminders Set ✓',
+        `You'll be reminded at ${selectedTime} on ${selectedDays.join(', ')}.`,
+      );
+    } catch (err) {
+      console.error('[RemindersScreen] schedule error:', err);
+      Alert.alert('Error', 'Could not save reminders. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -70,8 +165,8 @@ export default function RemindersScreen({ navigation }: Props) {
         {enabled && (
           <>
             {/* Time picker */}
-            <Typography variant="captionBold" style={{ color: colors.text.secondary, marginTop: spacing.xl, marginBottom: spacing.sm, textTransform: 'uppercase', fontSize: 11, letterSpacing: 1 }}>
-              Reminder Time
+            <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xl }]}>
+              REMINDER TIME
             </Typography>
             <View style={styles.timeGrid}>
               {TIMES.map((t) => (
@@ -95,8 +190,8 @@ export default function RemindersScreen({ navigation }: Props) {
             </View>
 
             {/* Day picker */}
-            <Typography variant="captionBold" style={{ color: colors.text.secondary, marginTop: spacing.xl, marginBottom: spacing.sm, textTransform: 'uppercase', fontSize: 11, letterSpacing: 1 }}>
-              Days
+            <Typography variant="captionBold" style={[styles.sectionLabel, { marginTop: spacing.xl }]}>
+              DAYS
             </Typography>
             <View style={styles.dayRow}>
               {DAYS.map((d) => (
@@ -121,8 +216,15 @@ export default function RemindersScreen({ navigation }: Props) {
           </>
         )}
 
-        <Button variant="primary" size="lg" fullWidth onPress={handleSave} style={{ marginTop: spacing.xl }}>
-          {enabled ? 'Save Reminders' : 'Done'}
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          onPress={() => void handleSave()}
+          disabled={isSaving}
+          style={{ marginTop: spacing.xl }}
+        >
+          {isSaving ? 'Saving…' : enabled ? 'Save Reminders' : 'Done'}
         </Button>
       </ScrollView>
     </Screen>
@@ -136,6 +238,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: spacing.xl,
+  },
+  sectionLabel: {
+    color: 'rgba(255,255,255,0.45)',
+    marginBottom: spacing.sm,
+    fontSize: 11,
+    letterSpacing: 1,
   },
   section: {
     borderRadius: borderRadius.xl,

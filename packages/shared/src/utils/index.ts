@@ -5,7 +5,9 @@
  * Platforms import from here: import { formatDate, validateEmail } from '@waqup/shared/utils'
  */
 
+export * from './audio-helpers';
 export * from './component-helpers';
+export * from './feedback-context';
 export * from './content-helpers';
 export * from './credits-format';
 export * from './errors';

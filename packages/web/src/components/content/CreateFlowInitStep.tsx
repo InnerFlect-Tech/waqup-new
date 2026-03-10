@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link } from '@/i18n/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Typography, Button, QCoin } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import type { LucideIcon } from 'lucide-react';
 
 export interface CreateFlowStep {
@@ -90,8 +90,8 @@ export function CreateFlowInitStep({
             padding: spacing.lg,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${colors.glass.border}`,
           }}
         >

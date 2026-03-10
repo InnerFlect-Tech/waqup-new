@@ -1,9 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { sendOrbMessage } from '@waqup/shared/services';
 import { calcOrbCost } from '@waqup/shared/constants';
 import type { OrbChatRequest, OrbChatResponse, OrbAddonKey } from '@waqup/shared/types';
 import type { SupabaseClient } from '@supabase/supabase-js';
+
+const orbAddonKeySchema = z.enum(['base_llm', 'user_context', 'collective_wisdom']);
+const conversationStepSchema = z.enum([
+  'init', 'intent', 'context', 'personalization', 'script', 'voice', 'audio', 'review', 'complete',
+]);
+
+/** Language instructions for Orb AI responses */
+const LANGUAGE_INSTRUCTION: Record<string, string> = {
+  en: '',
+  pt: 'Responda sempre em Português. ',
+  es: 'Responde siempre en español. ',
+  fr: 'Réponds toujours en français. ',
+  de: 'Antworte immer auf Deutsch. ',
+};
+
+const orbChatRequestSchema = z.object({
+  messages: z.array(z.object({ role: z.enum(['user', 'assistant', 'system']), content: z.string() })).min(1),
+  contentType: z.enum(['affirmation', 'meditation', 'ritual']).nullable(),
+  step: conversationStepSchema,
+  activeAddons: z.array(orbAddonKeySchema),
+  locale: z.string().optional().default('en'),
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -39,12 +62,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = (await request.json()) as OrbChatRequest;
-    const { messages, contentType, step, activeAddons } = body;
-
-    if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json({ error: 'messages array required' }, { status: 400 });
+    const parsed = orbChatRequestSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: parsed.error.flatten() },
+        { status: 400 },
+      );
     }
+    const body = parsed.data;
+    const { messages, contentType, step, activeAddons, locale } = body;
+    const langInstruction = LANGUAGE_INSTRUCTION[locale] ?? '';
+    // Prepend language instruction to the first user message if set
+    const localizedMessages = langInstruction && messages.length > 0
+      ? messages.map((m, i) => (i === 0 && m.role === 'user' ? { ...m, content: m.content } : m))
+      : messages;
+    // Inject language instruction as a system prefix
+    const systemPrefix = langInstruction
+      ? [{ role: 'system' as const, content: langInstruction.trim() }]
+      : [];
+    const messagesWithLang = [...systemPrefix, ...localizedMessages];
 
     // ─── Atomic credit deduction (before calling OpenAI) ─────────────────────
     const totalCost = calcOrbCost(activeAddons);
@@ -88,7 +124,7 @@ export async function POST(request: NextRequest) {
 
     // ─── Call OpenAI ──────────────────────────────────────────────────────────
     const { reply } = await sendOrbMessage({
-      messages,
+      messages: messagesWithLang,
       contentType,
       step,
       activeAddons,

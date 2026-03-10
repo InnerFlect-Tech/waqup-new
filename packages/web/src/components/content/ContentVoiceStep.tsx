@@ -2,14 +2,14 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { Mic, Sparkles, Square, Play, Pause, Trash2, BookAudio, Check, ChevronLeft, Loader2 } from 'lucide-react';
+import { Mic, Sparkles, Square, Play, Pause, Trash2, BookAudio, Check, ChevronLeft, Loader2, AlertCircle } from 'lucide-react';
 import type { UserVoice } from '@waqup/shared/types';
 import { RELATIONSHIP_META } from '@waqup/shared/types';
 import { getVoices } from '@/lib/api-client';
@@ -26,13 +26,17 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
-  const { setCurrentStep, setVoiceId, setVoiceType } = useContentCreation();
+  const { setCurrentStep, setVoiceId, setVoiceType, setOwnVoiceUrl } = useContentCreation();
 
   const [choice, setChoice] = useState<VoiceChoice>(null);
   const [recordState, setRecordState] = useState<RecordState>('idle');
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [recordingMime, setRecordingMime] = useState<string>('audio/webm');
   const [duration, setDuration] = useState(0);
+  const [uploadingRecording, setUploadingRecording] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [libraryVoices, setLibraryVoices] = useState<UserVoice[]>([]);
   const [libraryLoading, setLibraryLoading] = useState(false);
   const [selectedLibraryVoice, setSelectedLibraryVoice] = useState<UserVoice | null>(null);
@@ -46,17 +50,56 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
   const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
+
+      // Detect the best supported MIME type — Safari doesn't support audio/webm
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : MediaRecorder.isTypeSupported('audio/mp4')
+        ? 'audio/mp4'
+        : '';
+
+      const mr = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      const detectedMime = mr.mimeType || mimeType || 'audio/webm';
+      setRecordingMime(detectedMime);
+
       chunksRef.current = [];
-      mr.ondataavailable = (e) => chunksRef.current.push(e.data);
+      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+
       mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: detectedMime });
         const url = URL.createObjectURL(blob);
         setAudioBlob(blob);
         setAudioUrl(url);
         setRecordState('recorded');
-        stream.getTracks().forEach((t) => t.stop());
+        setUploadError(null);
+
+        // Upload the recording to Supabase Storage so it can be used by the render route
+        setUploadingRecording(true);
+        const formData = new FormData();
+        formData.append('file', blob, `recording.${detectedMime.includes('mp4') ? 'mp4' : 'webm'}`);
+        fetch('/api/audio/upload-recording', { method: 'POST', body: formData })
+          .then(async (res) => {
+            const data = (await res.json()) as { url?: string; error?: string };
+            if (!res.ok || !data.url) {
+              setUploadError(data.error ?? 'Upload failed — you can still continue, but playback may not work until re-recorded.');
+            } else {
+              setUploadedUrl(data.url);
+            }
+          })
+          .catch(() => {
+            setUploadError('Recording could not be uploaded. Please check your connection and try again.');
+          })
+          .finally(() => {
+            setUploadingRecording(false);
+          });
       };
+
       mr.start();
       mediaRecorderRef.current = mr;
       setRecordState('recording');
@@ -92,6 +135,8 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
     audioRef.current = null;
     setAudioBlob(null);
     setAudioUrl(null);
+    setUploadedUrl(null);
+    setUploadError(null);
     setRecordState('idle');
     setDuration(0);
   }, []);
@@ -120,12 +165,17 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
     if (choice === 'ai') {
       setVoiceType('ai');
       setVoiceId(DEFAULT_AI_VOICE_ID);
+      setOwnVoiceUrl(null);
     } else if (choice === 'record') {
       setVoiceType('own');
       setVoiceId(null);
+      // ownVoiceUrl is set asynchronously after the upload completes (see startRecording).
+      // It may already be populated by the time the user clicks Continue.
+      setOwnVoiceUrl(uploadedUrl);
     } else if (choice === 'library' && selectedLibraryVoice) {
       setVoiceType('own');
       setVoiceId(selectedLibraryVoice.elevenlabs_voice_id ?? null);
+      setOwnVoiceUrl(null);
     }
     setCurrentStep('voice');
     router.push(nextHref);
@@ -133,7 +183,8 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
 
   const canContinue =
     choice === 'ai' ||
-    (choice === 'record' && audioBlob !== null) ||
+    // Own voice: blob must be recorded AND upload must have completed (uploadedUrl set)
+    (choice === 'record' && audioBlob !== null && uploadedUrl !== null && !uploadingRecording) ||
     (choice === 'library' && selectedLibraryVoice !== null);
 
   return (
@@ -147,7 +198,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
           Choose your voice
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary }}>
-          Your own voice carries the highest neural impact — but AI voice is still powerful.
+          Your own voice is the most powerful option. A professional voice works beautifully too.
         </Typography>
       </motion.div>
 
@@ -164,8 +215,8 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
             background: choice === 'record' ? `#60a5fa18` : colors.glass.light,
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            backdropFilter: BLUR.lg,
+            WebkitBackdropFilter: BLUR.lg,
             border: `1px solid ${choice === 'record' ? '#60a5fa60' : colors.glass.border}`,
             cursor: 'pointer',
             textAlign: 'left',
@@ -206,8 +257,8 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
             background: choice === 'ai' ? `#c084fc18` : colors.glass.light,
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            backdropFilter: BLUR.lg,
+            WebkitBackdropFilter: BLUR.lg,
             border: `1px solid ${choice === 'ai' ? '#c084fc60' : colors.glass.border}`,
             cursor: 'pointer',
             textAlign: 'left',
@@ -231,7 +282,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
             <Sparkles size={22} color="#c084fc" strokeWidth={2} />
           </div>
           <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
-            AI Voice
+            Professional Voice
           </Typography>
           <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, lineHeight: 1.5 }}>
             ElevenLabs neural voice — clear, warm, and professionally produced.
@@ -248,8 +299,8 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
             background: choice === 'library' ? `#f43f5e18` : colors.glass.light,
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            backdropFilter: BLUR.lg,
+            WebkitBackdropFilter: BLUR.lg,
             border: `1px solid ${choice === 'library' ? '#f43f5e60' : colors.glass.border}`,
             cursor: 'pointer',
             textAlign: 'left',
@@ -295,8 +346,8 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
                 padding: spacing.xl,
                 borderRadius: borderRadius.xl,
                 background: colors.glass.light,
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
+                backdropFilter: BLUR.lg,
+                WebkitBackdropFilter: BLUR.lg,
                 border: `1px solid ${colors.glass.border}`,
                 display: 'flex',
                 flexDirection: 'column',
@@ -377,6 +428,35 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
                   <Typography variant="body" style={{ color: colors.text.secondary }}>
                     Recording saved · {formatDuration(duration)}
                   </Typography>
+
+                  {/* Upload status */}
+                  {uploadingRecording && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                      <Loader2 size={14} color={colors.accent.primary} className="animate-spin" />
+                      <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+                        Saving recording…
+                      </Typography>
+                    </div>
+                  )}
+                  {uploadError && !uploadingRecording && (
+                    <div style={{
+                      display: 'flex', alignItems: 'flex-start', gap: spacing.sm,
+                      padding: `${spacing.sm} ${spacing.md}`,
+                      borderRadius: 8, background: `${colors.error}12`,
+                      border: `1px solid ${colors.error}30`,
+                    }}>
+                      <AlertCircle size={14} color={colors.error} style={{ flexShrink: 0, marginTop: 2 }} />
+                      <Typography variant="small" style={{ color: colors.error, margin: 0 }}>
+                        {uploadError}
+                      </Typography>
+                    </div>
+                  )}
+                  {uploadedUrl && !uploadingRecording && !uploadError && (
+                    <Typography variant="small" style={{ color: '#4ade80', margin: 0 }}>
+                      ✓ Recording ready
+                    </Typography>
+                  )}
+
                   <div style={{ display: 'flex', gap: spacing.md }}>
                     {recordState === 'playing' ? (
                       <Button variant="ghost" size="md" onClick={pauseRecording} style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
@@ -421,7 +501,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
               }}
             >
               <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
-                We&apos;ll generate your audio using ElevenLabs&apos; neural voice. You can swap to your own recorded voice at any time from the audio studio.
+                We&apos;ll produce your audio using a professional ElevenLabs voice. You can swap to your own recorded voice anytime from the audio studio.
               </Typography>
             </div>
           </motion.div>
@@ -550,8 +630,18 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
             <ChevronLeft size={16} /> Back
           </Button>
         </Link>
-        <Button variant="primary" size="lg" disabled={!canContinue} onClick={handleContinue}>
-          Continue to Audio →
+        <Button
+          variant="primary"
+          size="lg"
+          disabled={!canContinue}
+          onClick={handleContinue}
+          style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}
+        >
+          {choice === 'record' && uploadingRecording ? (
+            <><Loader2 size={16} className="animate-spin" /> Saving…</>
+          ) : (
+            'Continue to Audio →'
+          )}
         </Button>
       </div>
     </div>

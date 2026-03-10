@@ -1,0 +1,28 @@
+{
+  "defaultDescription": "Transformiere deinen Geist durch Stimme und heilige Frequenzen",
+  "pages": {
+    "home": "waQup — Transformation durch Stimme",
+    "login": "Anmelden",
+    "signup": "Konto erstellen",
+    "sanctuary": "Heiligtum",
+    "library": "Bibliothek",
+    "create": "Erstellen",
+    "speak": "Sprechen",
+    "marketplace": "Marktplatz",
+    "settings": "Einstellungen",
+    "credits": "Credits",
+    "pricing": "Preise",
+    "howItWorks": "So funktioniert es",
+    "waitlist": "Warteliste",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen",
+    "forTeachers": "Für Lehrer und Coaches",
+    "getQs": "Qs erhalten"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Konto erstellen",
+    "forgotPassword": "Passwort vergessen",
+    "resetPassword": "Passwort zurücksetzen"
+  }
+}

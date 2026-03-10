@@ -6,3 +6,5 @@ export * from './ai-models';
 export * from './content-type-colors';
 export * from './binaural-presets';
 export * from './atmosphere-presets';
+export * from './product-copy';
+export * from './content-type-copy';

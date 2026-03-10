@@ -5,7 +5,7 @@ import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, QCoin } from '@/components';
-import { CONTENT_CREDIT_COSTS } from '@waqup/shared/constants';
+import { CONTENT_CREDIT_COSTS, PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'CreateMode'>;
 
@@ -177,7 +177,7 @@ export default function CreateModeScreen({ navigation, route }: Props) {
           ]}
         >
           <Typography variant="caption" style={{ color: colors.text.secondary, textAlign: 'center' }}>
-            Credits are deducted on creation. Replay is always free.
+            {PRACTICE_IS_FREE_ONE_LINER}
           </Typography>
         </View>
       </ScrollView>

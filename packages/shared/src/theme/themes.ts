@@ -40,7 +40,7 @@ function getOptimalTextColor(bg: string): string {
   return isDark(bg) ? '#FFFFFF' : (getContrastRatio('#000000', bg) >= 4.5 ? '#000000' : '#1A1A1A');
 }
 
-function withOpacity(color: string, opacity: number): string {
+export function withOpacity(color: string, opacity: number): string {
   const rgb = hexToRgb(color);
   return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
 }
@@ -91,7 +91,7 @@ export function generateTheme(name: string, vars: ThemeVariables): Theme {
 
   const purple900_20 = withOpacity('#581C87', 0.2);
   const gradientPrimary = `linear-gradient(to right, ${vars.primary}, ${vars.secondary})`;
-  const gradientPrimaryHover = 'linear-gradient(to right, #A855F7, #6366F1)';
+  const gradientPrimaryHover = `linear-gradient(to right, ${vars.primary}, ${vars.secondary})`;
   const gradientSecondary = `linear-gradient(to bottom right, ${vars.primary}, ${vars.secondary})`;
   const gradientBackground = baseIsDark
     ? `linear-gradient(to bottom right, ${bgPrimary}, ${purple900_20}, ${bgPrimary})`
@@ -119,6 +119,7 @@ export function generateTheme(name: string, vars: ThemeVariables): Theme {
       border: { light: withOpacity(textPrimary, 0.1), medium: withOpacity(textPrimary, 0.2), dark: withOpacity(textPrimary, 0.3) },
       gradients: { primary: gradientPrimary, primaryHover: gradientPrimaryHover, secondary: gradientSecondary, background: gradientBackground, mystical: gradientMystical },
       mystical: { glow: mysticalGlow, blur: mysticalBlur, orb: mysticalOrb },
+      overlay: baseIsDark ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.5)',
     },
   };
 }
@@ -157,6 +158,8 @@ export function getThemeInitData(): Record<string, Record<string, string>> {
           'text-tertiary': c.text.tertiary,
           'accent-primary': c.accent.primary,
           'accent-secondary': c.accent.secondary,
+          'accent-focus': withOpacity(c.accent.primary, 0.6),
+          'accent-selection': withOpacity(c.accent.primary, 0.2),
           'glass-light': c.glass.light,
           'glass-border': c.glass.border,
           'gradient-primary': c.gradients.primary,

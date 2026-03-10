@@ -130,7 +130,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
           width: '500px',
           height: '500px',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${hexToRgba('#A855F7', 0.3)}, transparent)`,
+          background: `radial-gradient(circle, ${hexToRgba(colors.accent.primary, 0.3)}, transparent)`,
           filter: 'blur(100px)',
           animation: 'float 2s ease-in-out infinite',
         }}
@@ -143,7 +143,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
           width: '600px',
           height: '600px',
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${hexToRgba('#6366F1', 0.3)}, transparent)`,
+          background: `radial-gradient(circle, ${hexToRgba(colors.accent.secondary, 0.3)}, transparent)`,
           filter: 'blur(120px)',
           animation: 'float 3s ease-in-out infinite reverse',
           animationDelay: '1s',

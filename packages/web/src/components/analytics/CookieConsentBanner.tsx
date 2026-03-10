@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { HEADER_PADDING_X, MAX_WIDTH_7XL, spacing, borderRadius } from '@/theme';
+import { HEADER_PADDING_X, MAX_WIDTH_7XL, spacing, borderRadius, BLUR } from '@/theme';
+import { DEFAULT_BRAND_COLORS } from '@waqup/shared/theme';
 
 /**
  * NOTE: This component is rendered in layout.tsx OUTSIDE <ThemeProvider>,
- * so it must NOT call useTheme(). All colours are hardcoded to the dark brand
- * palette — the banner is always dark regardless of theme.
+ * so it must NOT call useTheme(). Uses DEFAULT_BRAND_COLORS from shared (SSOT).
  */
 
 const STORAGE_KEY = 'waqup_cookie_consent';
@@ -102,11 +102,11 @@ export function CookieConsentBanner() {
           gap: spacing.lg,
           padding: `${spacing.md} ${spacing.xl}`,
           borderRadius: borderRadius.lg,
-          background: 'rgba(10, 4, 28, 0.92)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 -4px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(168,85,247,0.1)',
+          background: `${DEFAULT_BRAND_COLORS.background}e6`,
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
+          border: `1px solid ${DEFAULT_BRAND_COLORS.border}`,
+          boxShadow: `0 -4px 40px rgba(0,0,0,0.4), 0 0 0 1px ${DEFAULT_BRAND_COLORS.accent}1a`,
         }}
       >
         <p
@@ -114,7 +114,7 @@ export function CookieConsentBanner() {
             flex: 1,
             fontSize: 14,
             lineHeight: 1.5,
-            color: 'rgba(255,255,255,0.65)',
+            color: DEFAULT_BRAND_COLORS.textMuted,
             margin: 0,
           }}
         >
@@ -122,7 +122,7 @@ export function CookieConsentBanner() {
           <a
             href="/privacy"
             style={{
-              color: '#A855F7',
+              color: DEFAULT_BRAND_COLORS.accent,
               textDecoration: 'underline',
               textUnderlineOffset: 2,
             }}
@@ -137,9 +137,9 @@ export function CookieConsentBanner() {
             style={{
               padding: `${spacing.sm} ${spacing.md}`,
               borderRadius: borderRadius.md,
-              border: '1px solid rgba(255,255,255,0.12)',
+              border: `1px solid ${DEFAULT_BRAND_COLORS.border}`,
               background: 'transparent',
-              color: 'rgba(255,255,255,0.55)',
+              color: DEFAULT_BRAND_COLORS.textMuted,
               fontSize: 13,
               fontWeight: 500,
               cursor: 'pointer',
@@ -147,13 +147,13 @@ export function CookieConsentBanner() {
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLButtonElement;
-              el.style.borderColor = 'rgba(255,255,255,0.3)';
+              el.style.borderColor = DEFAULT_BRAND_COLORS.borderHover;
               el.style.color = 'rgba(255,255,255,0.85)';
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLButtonElement;
-              el.style.borderColor = 'rgba(255,255,255,0.12)';
-              el.style.color = 'rgba(255,255,255,0.55)';
+              el.style.borderColor = DEFAULT_BRAND_COLORS.border;
+              el.style.color = DEFAULT_BRAND_COLORS.textMuted;
             }}
           >
             Decline
@@ -164,8 +164,8 @@ export function CookieConsentBanner() {
               padding: `${spacing.sm} ${spacing.lg}`,
               borderRadius: borderRadius.md,
               border: 'none',
-              background: 'linear-gradient(135deg, #9333EA, #7C3AED)',
-              color: '#fff',
+              background: DEFAULT_BRAND_COLORS.gradient,
+              color: DEFAULT_BRAND_COLORS.textOnDark,
               fontSize: 13,
               fontWeight: 600,
               cursor: 'pointer',

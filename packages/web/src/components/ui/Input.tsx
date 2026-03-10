@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { Typography } from './Typography';
 
@@ -47,8 +47,8 @@ export const Input: React.FC<InputProps> = ({
     borderStyle: 'solid',
     borderColor,
     backgroundColor: colors.glass.light,
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
+    backdropFilter: BLUR.md,
+    WebkitBackdropFilter: BLUR.md,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

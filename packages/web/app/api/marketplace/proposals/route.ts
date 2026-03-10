@@ -86,14 +86,15 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Only allow users with service_role or explicit admin flag
+    // Only allow admin or superadmin roles
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_admin')
+      .select('role')
       .eq('id', user.id)
       .single();
 
-    if (!profile?.is_admin) {
+    const isAdmin = profile?.role === 'admin' || profile?.role === 'superadmin';
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

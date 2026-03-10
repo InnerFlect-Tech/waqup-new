@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useTheme } from '@/theme';
 
 export interface MermaidDiagramProps {
   chart: string;
@@ -11,6 +12,8 @@ export interface MermaidDiagramProps {
 
 export function MermaidDiagram({ chart, id: propId, style, className }: MermaidDiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const [svg, setSvg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const id = propId ?? `mermaid-${Math.random().toString(36).slice(2, 9)}`;
@@ -24,12 +27,12 @@ export function MermaidDiagram({ chart, id: propId, style, className }: MermaidD
           startOnLoad: false,
           theme: 'dark',
           themeVariables: {
-            primaryColor: '#9333EA',
-            primaryTextColor: '#fff',
-            primaryBorderColor: '#A855F7',
-            lineColor: 'rgba(255,255,255,0.5)',
-            secondaryColor: '#0f0f0f',
-            tertiaryColor: 'rgba(255,255,255,0.05)',
+            primaryColor: colors.accent.primary,
+            primaryTextColor: colors.text.primary,
+            primaryBorderColor: colors.accent.tertiary,
+            lineColor: colors.text.secondary,
+            secondaryColor: colors.background.secondary,
+            tertiaryColor: colors.glass.light,
           },
         });
         const { svg: rendered } = await mermaid.render(id, chart);
@@ -40,11 +43,11 @@ export function MermaidDiagram({ chart, id: propId, style, className }: MermaidD
     }
     render();
     return () => { cancelled = true; };
-  }, [chart, id]);
+  }, [chart, id, colors]);
 
   if (error) {
     return (
-      <div style={{ padding: 16, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', borderRadius: 8, fontSize: 13, ...style }} className={className}>
+      <div style={{ padding: 16, background: `${colors.error}1a`, border: `1px solid ${colors.error}66`, borderRadius: 8, fontSize: 13, ...style }} className={className}>
         Diagram error: {error}
       </div>
     );
@@ -53,7 +56,7 @@ export function MermaidDiagram({ chart, id: propId, style, className }: MermaidD
   if (!svg) {
     return (
       <div ref={containerRef} style={{ minHeight: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }} className={className}>
-        <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13 }}>Loading diagram…</span>
+        <span style={{ color: colors.text.secondary, fontSize: 13 }}>Loading diagram…</span>
       </div>
     );
   }

@@ -47,9 +47,10 @@ Or link your remote project first: `supabase link --project-ref <your-project-re
 
 | Table | Status | Notes |
 |-------|--------|-------|
-| **profiles** | ✅ Exists | User profile (same DB as web app) |
+| **profiles** | ✅ Exists | User profile (role, access_granted, is_beta_tester) |
 | **content_items** | ✅ Verify in DB | Unified content (affirmations, meditations, rituals). Fields: content_type, script, audio_url, etc. |
-| **credit_transactions** | ⏳ May need creation | Phase 10 – credits tracking |
+| **feedback** | ✅ Exists | User feedback from Help page (syncs to ClickUp) |
+| **credit_transactions** | ✅ Exists | Phase 10 – credits tracking (from 20260308000007_create_credit_system.sql) |
 | **conversations** | ⏳ May need creation | Phase 9 – conversational creation state (see 03-conversational-system) |
 
 ### Content types

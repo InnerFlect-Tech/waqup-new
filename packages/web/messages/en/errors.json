@@ -1,0 +1,33 @@
+{
+  "generic": "Something went wrong. Please try again.",
+  "networkError": "Network error. Please check your connection and try again.",
+  "unauthorized": "You need to be signed in to access this page.",
+  "forbidden": "You don't have permission to access this page.",
+  "notFound": "Page not found.",
+  "serverError": "Server error. Please try again later.",
+  "timeout": "Request timed out. Please try again.",
+  "insufficientCredits": "You need {cost} Qs but have {balance}. Get more Qs to continue.",
+  "creditServiceError": "Credit service error. Please try again.",
+  "sessionNotFound": "Session not found. Please start a new session.",
+  "sessionExpired": "Session expired. Please start a new session.",
+  "allRepliesUsed": "All replies used. Start a new session to continue.",
+  "audioFailed": "Audio generation failed. Please try again.",
+  "micPermissionDenied": "Microphone access is required. Please allow access in your browser settings and try again.",
+  "uploadFailed": "Upload failed. Please try again.",
+  "saveFailed": "Failed to save. Please try again.",
+  "loadFailed": "Failed to load. Please try again.",
+  "validation": {
+    "required": "This field is required.",
+    "emailInvalid": "Please enter a valid email address.",
+    "tooShort": "Must be at least {min} characters.",
+    "tooLong": "Must be no more than {max} characters.",
+    "passwordsNoMatch": "Passwords do not match.",
+    "invalidUrl": "Please enter a valid URL."
+  },
+  "pages": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try refreshing the page.",
+    "refresh": "Refresh page",
+    "home": "Back to home"
+  }
+}

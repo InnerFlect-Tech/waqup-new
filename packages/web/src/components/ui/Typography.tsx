@@ -5,7 +5,7 @@ import { useTheme } from '@/theme';
 type TextColorKey = 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'disabled' | 'onDark' | 'onLight';
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
-  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'bodyBold' | 'caption' | 'captionBold' | 'small' | 'smallBold';
+  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'bodyBold' | 'caption' | 'captionBold' | 'small' | 'smallBold' | 'label' | 'micro';
   color?: TextColorKey;
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span' | 'div';
   children: React.ReactNode;
@@ -98,4 +98,12 @@ export const Small: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
 
 export const SmallBold: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
   <Typography variant="smallBold" {...props} />
+);
+
+export const Label: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
+  <Typography variant="label" {...props} />
+);
+
+export const Micro: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
+  <Typography variant="micro" {...props} />
 );

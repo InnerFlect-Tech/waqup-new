@@ -13,6 +13,7 @@ import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography } from '@/components';
 import { useAuthStore } from '@/stores';
+import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 
 const CONTENT_TYPES = [
   {
@@ -153,7 +154,7 @@ export default function HomeScreen() {
         <View style={[styles.tipCard, { backgroundColor: colors.glass.transparent, borderColor: colors.glass.border }]}>
           <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 18 }}>
             💡 <Typography variant="smallBold" style={{ color: colors.text.primary }}>Tip:</Typography>
-            {' '}Practice is always free — credits are only used when creating new content.
+            {' '}{PRACTICE_IS_FREE_ONE_LINER}
           </Typography>
         </View>
       </ScrollView>

@@ -203,7 +203,7 @@ waQup will be available on **two platforms**, developed **simultaneously from sc
 
 **Shared Codebase** (Monorepo Structure):
 ```
-waqup-app/
+waqup-new/                  # This repository
 ├── packages/
 │   ├── shared/              # Shared code (business logic)
 │   │   ├── services/        # API services

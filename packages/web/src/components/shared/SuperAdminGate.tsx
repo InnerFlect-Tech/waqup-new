@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useSuperAdmin } from '@/hooks';
 import { useAuthStore } from '@/stores';
+import { useTheme } from '@/theme';
 import { PageShell } from './PageShell';
 
 /**
@@ -14,6 +15,8 @@ import { PageShell } from './PageShell';
  */
 export function SuperAdminGate({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const user = useAuthStore((s) => s.user);
   const authLoading = useAuthStore((s) => s.isLoading);
   const { isSuperAdmin, isLoading: roleLoading } = useSuperAdmin();
@@ -40,7 +43,7 @@ export function SuperAdminGate({ children }: { children: React.ReactNode }) {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '60vh',
-            color: 'rgba(255,255,255,0.4)',
+            color: colors.text.tertiary,
             fontSize: 14,
           }}
         >

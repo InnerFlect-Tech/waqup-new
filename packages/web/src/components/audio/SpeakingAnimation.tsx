@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useTheme, spacing } from '@/theme';
+import { useTheme, spacing, BLUR } from '@/theme';
 import type { Theme } from '@/theme';
 
 export interface SpeakingAnimationProps {
@@ -196,7 +196,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
         .minimal-orb {
           position: absolute; border-radius: 50%;
           background: ${colors.glass.light};
-          backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: ${BLUR.xl}; -webkit-backdrop-filter: ${BLUR.xl};
           border: 1px solid ${colors.glass.border};
           box-shadow: 0 4px 16px ${colors.accent.primary}15;
         }
@@ -217,7 +217,7 @@ export const SpeakingAnimation: React.FC<SpeakingAnimationProps> = ({
         .subtle-wave {
           position: absolute; width: 300px; height: 300px; border-radius: 50%;
           border: 1px solid ${colors.glass.border}; background: ${colors.glass.light}40;
-          backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: ${BLUR.md}; -webkit-backdrop-filter: ${BLUR.md};
         }
         .subtle-wave-1 { animation: subtleWave-1 6s ease-in-out infinite; }
         .subtle-wave-2 { animation: subtleWave-2 8s ease-in-out infinite 1s; }

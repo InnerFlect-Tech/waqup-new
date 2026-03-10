@@ -1,18 +1,18 @@
-import { Sparkles, Brain, Music } from 'lucide-react';
 import type React from 'react';
-import type { CreationStep, ContentType } from '@/lib/contexts/ContentCreationContext';
+import type { ConversationStep, ContentItemType } from '@waqup/shared/types';
+import { CONTENT_TYPE_COPY, CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
 export interface PipelineStep {
-  step: CreationStep;
+  step: ConversationStep;
   label: string;
   description: string;
   orbPrompt: string;
   conversationKey: string;
-  formRoute: (type: ContentType) => string;
-  applyToTypes: ContentType[];
+  formRoute: (type: ContentItemType) => string;
+  applyToTypes: ContentItemType[];
 }
 
-export interface ContentTypeMeta {
+export interface ContentItemTypeMeta {
   color: string;
   emoji: string;
   label: string;
@@ -20,27 +20,27 @@ export interface ContentTypeMeta {
   scienceTag: string;
 }
 
-export const CONTENT_TYPE_META: Record<ContentType, ContentTypeMeta> = {
+export const CONTENT_TYPE_META: Record<ContentItemType, ContentItemTypeMeta> = {
   affirmation: {
-    color: '#c084fc',
+    color: CONTENT_TYPE_COLORS.affirmation,
     emoji: '✦',
-    label: 'Affirmation',
-    description: 'Cognitive re-patterning through voice and positive language',
-    scienceTag: 'neuroplasticity',
+    label: CONTENT_TYPE_COPY.affirmation.label,
+    description: CONTENT_TYPE_COPY.affirmation.longDesc.split('. ')[0] ?? CONTENT_TYPE_COPY.affirmation.longDesc,
+    scienceTag: CONTENT_TYPE_COPY.affirmation.scienceTag,
   },
   meditation: {
-    color: '#60a5fa',
+    color: CONTENT_TYPE_COLORS.meditation,
     emoji: '◎',
-    label: 'Meditation',
-    description: 'State induction through guided visualization and relaxation',
-    scienceTag: 'relaxed-states',
+    label: CONTENT_TYPE_COPY.meditation.label,
+    description: CONTENT_TYPE_COPY.meditation.longDesc.split('. ')[0] ?? CONTENT_TYPE_COPY.meditation.longDesc,
+    scienceTag: CONTENT_TYPE_COPY.meditation.scienceTag,
   },
   ritual: {
-    color: '#34d399',
+    color: CONTENT_TYPE_COLORS.ritual,
     emoji: '⬡',
-    label: 'Ritual',
-    description: 'Identity encoding through intentional practice and voice',
-    scienceTag: 'identity-encoding',
+    label: CONTENT_TYPE_COPY.ritual.label,
+    description: CONTENT_TYPE_COPY.ritual.longDesc.split('. ')[0] ?? CONTENT_TYPE_COPY.ritual.longDesc,
+    scienceTag: CONTENT_TYPE_COPY.ritual.scienceTag,
   },
 };
 
@@ -110,39 +110,32 @@ export const ALL_PIPELINE_STEPS: PipelineStep[] = [
   },
 ];
 
-export function getStepsForType(type: ContentType): PipelineStep[] {
+export function getStepsForType(type: ContentItemType): PipelineStep[] {
   return ALL_PIPELINE_STEPS.filter((s) => s.applyToTypes.includes(type));
 }
 
-export function getStepIndex(type: ContentType, step: CreationStep): number {
+export function getStepIndex(type: ContentItemType, step: ConversationStep): number {
   const steps = getStepsForType(type);
   return steps.findIndex((s) => s.step === step);
 }
 
-export function getNextStep(type: ContentType, current: CreationStep): PipelineStep | null {
+export function getNextStep(type: ContentItemType, current: ConversationStep): PipelineStep | null {
   const steps = getStepsForType(type);
   const idx = steps.findIndex((s) => s.step === current);
   return idx !== -1 && idx < steps.length - 1 ? steps[idx + 1] : null;
 }
 
-export function getPrevStep(type: ContentType, current: CreationStep): PipelineStep | null {
+export function getPrevStep(type: ContentItemType, current: ConversationStep): PipelineStep | null {
   const steps = getStepsForType(type);
   const idx = steps.findIndex((s) => s.step === current);
   return idx > 0 ? steps[idx - 1] : null;
 }
 
-/** Lucide icon components keyed by content type — single source of truth for type icons */
-export const CONTENT_TYPE_ICONS: Record<ContentType, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
-  affirmation: Sparkles,
-  meditation: Brain,
-  ritual: Music,
-};
-
 /**
  * Save creation state to sessionStorage so the voice step can pick it up.
  * Called by both the conversation page and the orb page when script is ready.
  */
-export function saveCreationHandoff(type: ContentType, script: string, intent: string): void {
+export function saveCreationHandoff(type: ContentItemType, script: string, intent: string): void {
   if (typeof window === 'undefined') return;
   try {
     const key = `waqup_creation_${type}`;
@@ -154,7 +147,7 @@ export function saveCreationHandoff(type: ContentType, script: string, intent: s
 }
 
 /** Conversation-mode: prompts the AI should address per step, per type */
-export const CONVERSATION_STEP_PROMPTS: Record<ContentType, Array<{ step: CreationStep; question: string }>> = {
+export const CONVERSATION_STEP_PROMPTS: Record<ContentItemType, Array<{ step: ConversationStep; question: string }>> = {
   affirmation: [
     { step: 'intent', question: 'What area of your life would you like to strengthen or change?' },
     { step: 'script', question: 'Let me generate your affirmation script now.' },

@@ -1,0 +1,22 @@
+{
+  "home": "Inicio",
+  "library": "Biblioteca",
+  "create": "Crear",
+  "speak": "Hablar",
+  "marketplace": "Mercado",
+  "profile": "Perfil",
+  "sanctuary": "Santuario",
+  "settings": "Configuración",
+  "credits": "Créditos",
+  "progress": "Progreso",
+  "help": "Ayuda",
+  "logout": "Cerrar sesión",
+  "login": "Iniciar sesión",
+  "signup": "Registrarse",
+  "admin": "Admin",
+  "voices": "Voces",
+  "plan": "Plan",
+  "referral": "Referidos",
+  "reminders": "Recordatorios",
+  "learn": "Aprender"
+}

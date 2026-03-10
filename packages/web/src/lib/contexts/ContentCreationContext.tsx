@@ -1,48 +1,50 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { ContentItemType, PersonalizationData, AudioSettings } from '@waqup/shared/types';
+import type { ContentItemType, PersonalizationData, AudioSettings, ConversationStep } from '@waqup/shared/types';
 import { DEFAULT_AUDIO_SETTINGS } from '@waqup/shared/types';
 import type { CreationMode } from '@waqup/shared/constants';
-import type { ConversationStep } from '@waqup/shared/types';
-
-/** @deprecated Use ContentItemType from @waqup/shared/types */
-export type ContentType = ContentItemType;
 export type { CreationMode, PersonalizationData };
-/** @deprecated Use ConversationStep from @waqup/shared/types */
-export type CreationStep = ConversationStep;
 
 interface PersistedState {
   creationMode: CreationMode;
-  currentStep: CreationStep;
+  currentStep: ConversationStep;
   intent: string;
   context: string;
   personalization: PersonalizationData;
   script: string;
   voiceId: string | null;
   voiceType: 'own' | 'ai' | null;
+  /**
+   * Supabase Storage public URL for a user-recorded voice blob.
+   * Populated when voiceType === 'own' after the recording is uploaded.
+   * The render route uses this URL directly as voice_url (no TTS generation needed).
+   */
+  ownVoiceUrl: string | null;
   audioSettings: AudioSettings;
 }
 
 interface ContentCreationContextType {
   contentType: ContentItemType;
   creationMode: CreationMode;
-  currentStep: CreationStep;
+  currentStep: ConversationStep;
   intent: string;
   context: string;
   personalization: PersonalizationData;
   script: string;
   voiceId: string | null;
   voiceType: 'own' | 'ai' | null;
+  ownVoiceUrl: string | null;
   audioSettings: AudioSettings;
   setCreationMode: (mode: CreationMode) => void;
-  setCurrentStep: (step: CreationStep) => void;
+  setCurrentStep: (step: ConversationStep) => void;
   setIntent: (intent: string) => void;
   setContext: (context: string) => void;
   setPersonalization: (data: PersonalizationData) => void;
   setScript: (script: string) => void;
   setVoiceId: (id: string | null) => void;
   setVoiceType: (type: 'own' | 'ai' | null) => void;
+  setOwnVoiceUrl: (url: string | null) => void;
   setAudioSettings: (settings: AudioSettings) => void;
   reset: () => void;
 }
@@ -58,6 +60,7 @@ const DEFAULT_STATE: PersistedState = {
   script: '',
   voiceId: null,
   voiceType: null,
+  ownVoiceUrl: null,
   audioSettings: DEFAULT_AUDIO_SETTINGS,
 };
 
@@ -104,7 +107,7 @@ export function ContentCreationProvider({
     setState((prev) => ({ ...prev, creationMode: mode }));
   }, []);
 
-  const setCurrentStep = useCallback((step: CreationStep) => {
+  const setCurrentStep = useCallback((step: ConversationStep) => {
     setState((prev) => ({ ...prev, currentStep: step }));
   }, []);
 
@@ -132,6 +135,10 @@ export function ContentCreationProvider({
     setState((prev) => ({ ...prev, voiceType }));
   }, []);
 
+  const setOwnVoiceUrl = useCallback((ownVoiceUrl: string | null) => {
+    setState((prev) => ({ ...prev, ownVoiceUrl }));
+  }, []);
+
   const setAudioSettings = useCallback((audioSettings: AudioSettings) => {
     setState((prev) => ({ ...prev, audioSettings }));
   }, []);
@@ -153,6 +160,7 @@ export function ContentCreationProvider({
     script: state.script,
     voiceId: state.voiceId,
     voiceType: state.voiceType,
+    ownVoiceUrl: state.ownVoiceUrl,
     audioSettings: state.audioSettings,
     setCreationMode,
     setCurrentStep,
@@ -162,6 +170,7 @@ export function ContentCreationProvider({
     setScript,
     setVoiceId,
     setVoiceType,
+    setOwnVoiceUrl,
     setAudioSettings,
     reset,
   };

@@ -10,6 +10,7 @@ import { Typography, Loading } from '@/components';
 import { useAudioPlayer } from './useAudioPlayer';
 import type { AudioLayers, AudioVolumes, PlaybackSpeed } from '@waqup/shared/types';
 import { PLAYBACK_SPEEDS } from '@waqup/shared/types';
+import { formatTime } from '@waqup/shared/utils';
 
 export interface AudioPlayerProps {
   layers: AudioLayers;
@@ -19,13 +20,6 @@ export interface AudioPlayerProps {
   showSpeedControls?: boolean;
   onEnd?: () => void;
   style?: ViewStyle;
-}
-
-function formatTime(ms: number): string {
-  const s = Math.floor(ms / 1000);
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec.toString().padStart(2, '0')}`;
 }
 
 export const AudioPlayer = memo(function AudioPlayer({

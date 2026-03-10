@@ -32,6 +32,9 @@ insert into _verify (check_name, status, detail)
 select 'marketplace_shares table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'marketplace_shares') then 'PASS' else 'FAIL' end, 'public.marketplace_shares';
 
 insert into _verify (check_name, status, detail)
+select 'sanctuary_saves table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'sanctuary_saves') then 'PASS' else 'FAIL' end, 'public.sanctuary_saves';
+
+insert into _verify (check_name, status, detail)
 select 'waitlist_signups table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'waitlist_signups') then 'PASS' else 'FAIL' end, 'public.waitlist_signups';
 
 insert into _verify (check_name, status, detail)
@@ -42,6 +45,9 @@ select 'user_voices table', case when exists (select 1 from information_schema.t
 
 insert into _verify (check_name, status, detail)
 select 'oracle_sessions table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'oracle_sessions') then 'PASS' else 'FAIL' end, 'Conversation/oracle session tracking';
+
+insert into _verify (check_name, status, detail)
+select 'feedback table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'feedback') then 'PASS' else 'FAIL' end, 'User feedback from Help page';
 
 -- ─── 2. profiles: role and access_granted columns (required for superadmin) ───
 insert into _verify (check_name, status, detail)
@@ -63,6 +69,11 @@ insert into _verify (check_name, status, detail)
 select 'profiles.stripe_customer_id column',
   case when exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name = 'stripe_customer_id') then 'PASS' else 'FAIL' end,
   'Required for Stripe billing';
+
+insert into _verify (check_name, status, detail)
+select 'profiles.is_beta_tester column',
+  case when exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'profiles' and column_name = 'is_beta_tester') then 'PASS' else 'FAIL' end,
+  'Beta user flag for feedback prioritisation';
 
 -- ─── 3. content_items: expected columns ───────────────────────────────────
 insert into _verify (check_name, status, detail)

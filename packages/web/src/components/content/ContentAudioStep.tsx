@@ -2,11 +2,11 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { CONTENT_TYPE_META } from '@/lib/creation-steps';
@@ -332,8 +332,8 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           padding: spacing.xl,
           borderRadius: borderRadius.xl,
           background: colors.glass.light,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
           border: `1px solid ${colors.glass.border}`,
           marginBottom: spacing.md,
           display: 'flex',
@@ -382,8 +382,8 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           padding: spacing.xl,
           borderRadius: borderRadius.xl,
           background: colors.glass.light,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
           border: `1px solid ${colors.glass.border}`,
           marginBottom: spacing.md,
         }}
@@ -432,8 +432,8 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           padding: spacing.xl,
           borderRadius: borderRadius.xl,
           background: colors.glass.light,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
           border: `1px solid ${colors.glass.border}`,
           marginBottom: spacing.md,
         }}
@@ -482,8 +482,8 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           padding: `${spacing.md} ${spacing.xl}`,
           borderRadius: borderRadius.xl,
           background: colors.glass.light,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
           border: `1px solid ${colors.glass.border}`,
           marginBottom: spacing.xl,
           display: 'flex',

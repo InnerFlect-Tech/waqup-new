@@ -1,6 +1,6 @@
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
-import { useTheme, spacing, borderRadius } from '@/theme';
+import { useTheme } from '@/theme';
 
 export type IconName = keyof typeof LucideIcons;
 
@@ -57,42 +57,5 @@ export const Icon: React.FC<IconProps> = ({
         ...style,
       }}
     />
-  );
-};
-
-// TODO: wire up or remove — zero consumers found in the app
-export const IconButton: React.FC<IconProps & { onClick?: () => void }> = ({
-  name,
-  size = 20,
-  color,
-  onClick,
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const colors = theme.colors;
-
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        background: 'transparent',
-        border: 'none',
-        cursor: 'pointer',
-        padding: spacing.xs,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: borderRadius.sm,
-        transition: 'all 0.2s ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = colors.glass.light;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'transparent';
-      }}
-    >
-      <Icon name={name} size={size} color={color} {...props} />
-    </button>
   );
 };

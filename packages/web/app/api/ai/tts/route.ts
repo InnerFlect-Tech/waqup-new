@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
 import { textToSpeech } from '@waqup/shared/services';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
@@ -14,11 +15,12 @@ export const dynamic = 'force-dynamic';
 const COST = API_ROUTE_COSTS.aiTts;
 const MAX_TEXT_LENGTH = 5000;
 
-interface TtsRequest {
-  text: string;
-  voiceId: string;
-  modelId?: string;
-}
+const ttsRequestSchema = z.object({
+  text: z.string().min(1).max(MAX_TEXT_LENGTH),
+  voiceId: z.string().min(1),
+  modelId: z.string().optional(),
+  locale: z.string().optional().default('en'),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,18 +35,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json() as TtsRequest;
-
-    if (!body.text || !body.voiceId) {
-      return NextResponse.json({ error: 'text and voiceId are required' }, { status: 400 });
-    }
-
-    if (body.text.length > MAX_TEXT_LENGTH) {
+    const parsed = ttsRequestSchema.safeParse(await req.json());
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: `text must be ${MAX_TEXT_LENGTH} characters or fewer` },
+        { error: 'Invalid request', details: parsed.error.flatten() },
         { status: 400 },
       );
     }
+    const body = parsed.data;
 
     // ─── Atomic credit deduction (before calling ElevenLabs) ─────────────────
     const { error: deductError } = await supabase.rpc('deduct_credits', {
@@ -71,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const audioBuffer = await textToSpeech(body.voiceId, body.text, body.modelId ?? AI_MODELS.TTS_STANDARD);
+      const audioBuffer = await textToSpeech(body.voiceId, body.text, body.modelId ?? AI_MODELS.TTS_STANDARD, body.locale);
 
       return new NextResponse(audioBuffer, {
         status: 200,

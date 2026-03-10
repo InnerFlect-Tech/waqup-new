@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Loader2 } from 'lucide-react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR, CONTENT_READABLE } from '@/theme';
 import { useCreditBalance } from '@/hooks';
 import { QCoin } from '@/components/ui/QCoin';
 import { VoiceCard } from './VoiceCard';
@@ -150,8 +150,8 @@ export function VoiceLibrary() {
             padding: `${spacing.xxl} ${spacing.xl}`,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${colors.glass.border}`,
             textAlign: 'center',
             display: 'flex',
@@ -193,7 +193,7 @@ export function VoiceLibrary() {
             <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 400 }}>
               Your voice library is empty
             </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: 360, lineHeight: 1.6 }}>
+            <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: CONTENT_READABLE, lineHeight: 1.6 }}>
               Add the voices of people who matter to you — a parent, a teacher, a friend, a mentor, a partner. Hear their guidance whenever you need it.
             </Typography>
           </div>

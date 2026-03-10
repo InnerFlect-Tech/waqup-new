@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
 import { textToSpeech } from '@waqup/shared/services';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
@@ -7,47 +8,59 @@ export const dynamic = 'force-dynamic';
 
 /**
  * POST /api/ai/render
- * Validates credits, calls ElevenLabs TTS, uploads to Supabase Storage,
- * writes content_items.voice_url (three-layer arch) + audio_url (legacy compat),
- * sets status to 'ready', and returns the audioUrl.
  *
- * Deducts 1Q for TTS rendering. Only callable for content the user owns.
+ * Two modes depending on voiceType:
+ *
+ *   AI voice (voiceId provided):
+ *     Deducts credits → ElevenLabs TTS → uploads to Supabase Storage
+ *     → writes content_items.voice_url + audio_url + sets status='ready'
+ *
+ *   Own voice (ownVoiceUrl provided):
+ *     The user has already recorded and uploaded their voice in ContentVoiceStep.
+ *     No TTS generation and no credit deduction — just write the recording URL
+ *     to content_items.voice_url and mark status='ready'.
+ *
+ * Returns: { audioUrl, storagePath, creditsUsed }
  */
 
 const COST = API_ROUTE_COSTS.aiTts;
 const MAX_TEXT_LENGTH = 5000;
 
-interface RenderRequest {
-  contentId: string;
-  text: string;
-  voiceId: string;
-  modelId?: string;
-}
+const renderRequestSchema = z.object({
+  contentId: z.string().min(1),
+  text: z.string().min(1).max(MAX_TEXT_LENGTH),
+  voiceId: z.string().optional(),
+  modelId: z.string().optional(),
+  locale: z.string().optional().default('en'),
+  /**
+   * Supabase Storage URL of a user-recorded audio blob.
+   * When present, TTS generation is skipped entirely (own-voice path).
+   */
+  ownVoiceUrl: z.string().url().optional(),
+}).refine(
+  (data) => data.ownVoiceUrl ?? data.voiceId,
+  { message: 'Either voiceId or ownVoiceUrl must be provided' },
+);
 
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.ELEVENLABS_API_KEY) {
-      return NextResponse.json({ error: 'ElevenLabs API key not configured' }, { status: 503 });
-    }
-
-    // ─── Auth ────────────────────────────────────────────────────────────────
+    // ─── Auth ─────────────────────────────────────────────────────────────────
     const supabase = await createSupabaseServerClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json() as RenderRequest;
-
-    if (!body.contentId || !body.text || !body.voiceId) {
-      return NextResponse.json({ error: 'contentId, text, and voiceId are required' }, { status: 400 });
+    const parsed = renderRequestSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: parsed.error.flatten() },
+        { status: 400 },
+      );
     }
+    const body = parsed.data;
 
-    if (body.text.length > MAX_TEXT_LENGTH) {
-      return NextResponse.json({ error: `text must be ${MAX_TEXT_LENGTH} characters or fewer` }, { status: 400 });
-    }
-
-    // ─── Ownership check ─────────────────────────────────────────────────────
+    // ─── Ownership check ──────────────────────────────────────────────────────
     const { data: contentRow, error: ownerError } = await supabase
       .from('content_items')
       .select('id, user_id')
@@ -59,7 +72,36 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Content not found or access denied' }, { status: 404 });
     }
 
-    // ─── Credit deduction ────────────────────────────────────────────────────
+    // ─── Own-voice path (no TTS, no credit deduction) ─────────────────────────
+    if (body.ownVoiceUrl) {
+      await supabase
+        .from('content_items')
+        .update({
+          voice_url: body.ownVoiceUrl,
+          audio_url: body.ownVoiceUrl,
+          voice_type: 'own',
+          status: 'ready',
+        })
+        .eq('id', body.contentId)
+        .eq('user_id', user.id);
+
+      return NextResponse.json({
+        audioUrl: body.ownVoiceUrl,
+        storagePath: null,
+        creditsUsed: 0,
+      });
+    }
+
+    // ─── AI-voice path ────────────────────────────────────────────────────────
+    if (!process.env.ELEVENLABS_API_KEY) {
+      return NextResponse.json({ error: 'ElevenLabs API key not configured' }, { status: 503 });
+    }
+
+    if (!body.voiceId) {
+      return NextResponse.json({ error: 'voiceId is required for AI voice rendering' }, { status: 400 });
+    }
+
+    // ─── Credit deduction ─────────────────────────────────────────────────────
     const { error: deductError } = await supabase.rpc('deduct_credits', {
       p_user_id:     user.id,
       p_amount:      COST,
@@ -83,16 +125,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Credit service error. Please try again.' }, { status: 503 });
     }
 
-    // ─── TTS generation ──────────────────────────────────────────────────────
+    // ─── TTS generation ───────────────────────────────────────────────────────
     let audioBuffer: ArrayBuffer;
     try {
-      audioBuffer = await textToSpeech(body.voiceId, body.text, body.modelId ?? AI_MODELS.TTS_STANDARD);
+      audioBuffer = await textToSpeech(body.voiceId, body.text, body.modelId ?? AI_MODELS.TTS_STANDARD, body.locale);
     } catch (ttsErr) {
       console.error('[ai/render] ElevenLabs error:', ttsErr);
       return NextResponse.json({ error: 'TTS generation failed' }, { status: 502 });
     }
 
-    // ─── Storage upload ──────────────────────────────────────────────────────
+    // ─── Storage upload ────────────────────────────────────────────────────────
     let audioUrl: string | null = null;
     const storagePath = `${user.id}/${body.contentId}.mp3`;
 
@@ -110,10 +152,12 @@ export async function POST(req: NextRequest) {
         if (urlData?.publicUrl) {
           audioUrl = urlData.publicUrl;
         } else {
-          // Fall back to signed URL (1 hour)
+          // Fall back to a 7-day signed URL so content remains playable for a full week.
+          // The URL is persisted in content_items so it doesn't need to be re-generated
+          // on every page load. 1-hour URLs cause content to stop playing mid-session.
           const { data: signedData } = await supabase.storage
             .from('audio')
-            .createSignedUrl(storagePath, 3600);
+            .createSignedUrl(storagePath, 7 * 24 * 60 * 60);
           audioUrl = signedData?.signedUrl ?? null;
         }
       } else {

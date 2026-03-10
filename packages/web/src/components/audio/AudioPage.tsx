@@ -3,16 +3,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Typography, Button } from '@/components';
 import { SpeakingAnimation } from '@/components/audio';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Play, Pause, SkipBack, SkipForward, Waves, Headphones } from 'lucide-react';
 import { useWebAudioPlayer, useBinauralEngine } from '@/hooks';
 import type { ContentItemType, AudioLayers, AudioVolumes, AudioSettings } from '@waqup/shared/types';
 import { PLAYBACK_SPEEDS } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS, getBinauralPreset, getAtmospherePreset } from '@waqup/shared/constants';
 import { supabase } from '@/lib/supabase';
+import { formatTime } from '@waqup/shared/utils';
+import { resolveAtmosphereUrl } from '@/utils/atmosphere';
 
 export interface AudioPageProps {
   id: string;
@@ -36,11 +38,6 @@ interface LayerConfig {
   icon: string;
   colorKey?: 'accent';
   color?: string;
-}
-
-function formatTime(ms: number): string {
-  const s = Math.floor(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
 async function loadUserVolPrefs(): Promise<Partial<AudioVolumes> | null> {
@@ -86,7 +83,18 @@ export function AudioPage({
   const colors = theme.colors;
   const accent = TYPE_ACCENT[contentType];
 
-  const resolvedLayers: AudioLayers = layers ?? { voiceUrl: null };
+  // Resolve atmosphere URL from Supabase Storage when layers.ambientUrl is not set.
+  // resolveAtmosphereUrl() auto-builds the URL from NEXT_PUBLIC_SUPABASE_URL +
+  // the audioSettings.atmospherePresetId — the layer activates once files are uploaded.
+  const atmospherePresetIdForLayer = audioSettings?.atmospherePresetId ?? 'none';
+  const resolvedAmbientUrl =
+    layers?.ambientUrl ?? resolveAtmosphereUrl(atmospherePresetIdForLayer) ?? undefined;
+
+  const resolvedLayers: AudioLayers = {
+    ...(layers ?? {}),
+    voiceUrl: layers?.voiceUrl ?? null,
+    ambientUrl: resolvedAmbientUrl,
+  };
 
   const {
     state,
@@ -234,8 +242,8 @@ export function AudioPage({
             borderRadius: borderRadius.lg,
             overflow: 'hidden',
             background: colors.glass.light,
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
+            backdropFilter: BLUR.md,
+            WebkitBackdropFilter: BLUR.md,
             border: `1px solid ${colors.glass.border}`,
           }}
         >
@@ -338,8 +346,8 @@ export function AudioPage({
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            backdropFilter: BLUR.lg,
+            WebkitBackdropFilter: BLUR.lg,
             border: `1px solid ${colors.glass.border}`,
           }}
         >

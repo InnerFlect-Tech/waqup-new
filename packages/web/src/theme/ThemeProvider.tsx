@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { themes, defaultTheme, type Theme } from '@waqup/shared/theme';
+import { themes, defaultTheme, withOpacity, type Theme } from '@waqup/shared/theme';
 
 interface ThemeContextType {
   theme: Theme;
@@ -54,6 +54,8 @@ export function ThemeProvider({ children, defaultThemeName = 'mystical-purple' }
     root.style.setProperty('--theme-text-tertiary', c.text.tertiary);
     root.style.setProperty('--theme-accent-primary', c.accent.primary);
     root.style.setProperty('--theme-accent-secondary', c.accent.secondary);
+    root.style.setProperty('--theme-accent-focus', withOpacity(c.accent.primary, 0.6));
+    root.style.setProperty('--theme-accent-selection', withOpacity(c.accent.primary, 0.2));
     root.style.setProperty('--theme-glass-light', c.glass.light);
     root.style.setProperty('--theme-glass-border', c.glass.border);
     root.style.setProperty('--theme-gradient-primary', c.gradients.primary);

@@ -65,7 +65,7 @@ When placing an icon inside a Button, use the size that matches the button:
 
 ## Related Docs
 
-- Spacing guide: `docs/04-reference/13-spacing-usage-guide.md`
+- Spacing guide: `docs/04-reference/17-spacing-usage-guide.md`
 - Design system: `docs/04-reference/07-design-system-cross-platform.md`
 
 ---

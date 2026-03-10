@@ -28,7 +28,7 @@ rebuild-roadmap/
 ├── README.md                    # This file
 │
 ├── 01-planning/                 # Planning documents
-│   ├── 01-roadmap.md           # Main roadmap (13 phases)
+│   ├── 01-roadmap.md           # Main roadmap (18 phases: 0–17)
 │   └── 02-schema-verification.md # Database schema analysis
 │
 ├── 02-phases/                   # Phase analyses
@@ -46,7 +46,7 @@ rebuild-roadmap/
 ## Quick Navigation
 
 ### 📋 Planning (`01-planning/`)
-- **[01 Roadmap](./01-planning/01-roadmap.md)** - Complete rebuild roadmap (13 phases, 50+ steps)
+- **[01 Roadmap](./01-planning/01-roadmap.md)** - Complete rebuild roadmap (18 phases: 0–17, 50+ steps)
 - **[02 Schema Verification](./01-planning/02-schema-verification.md)** - Database schema analysis
 
 ### 🔍 Phase Analyses (`02-phases/`)
@@ -80,17 +80,18 @@ rebuild-roadmap/
 
 We provide automated setup scripts that handle all the installation steps for you:
 
-**Windows**:
+**Recommended (from project root)**:
+```bash
+# macOS/Linux
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
 ```powershell
-# Run from project root directory
-.\scripts\setup-windows.ps1
+# Windows
+.\scripts\install.ps1
 ```
 
-**Linux/macOS**:
-```bash
-# Run from project root directory
-./scripts/setup-linux.sh
-```
+**Alternative scripts** (also work): `scripts/setup-linux.sh`, `scripts/setup-windows.ps1`
 
 **What the scripts do**:
 - ✅ Check and verify Node.js, npm, and Git installation
@@ -178,7 +179,7 @@ npm install -g expo-cli
 ```powershell
 # 1. Clone repository
 git clone <repository-url>
-cd waqup-app/waqup-new
+cd waqup-new
 
 # 2. Install dependencies
 npm install
@@ -187,15 +188,12 @@ npm install
 copy .env.example .env
 
 # 4. Configure environment variables
-# Edit .env file with your credentials:
-#   - EXPO_PUBLIC_SUPABASE_URL
-#   - EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-#   - NEXT_PUBLIC_SUPABASE_URL
-#   - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-#   - SUPABASE_SECRET_KEY
-#   - OPENAI_API_KEY
-#   - STRIPE_PUBLISHABLE_KEY
-#   - STRIPE_SECRET_KEY
+# Edit .env file with your credentials — see .env.example for full list:
+#   - NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+#   - SUPABASE_SERVICE_ROLE_KEY (server-side only)
+#   - EXPO_PUBLIC_SUPABASE_* (for mobile)
+#   - OPENAI_API_KEY, ELEVENLABS_API_KEY
+#   - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
 ```
 
 #### Step 3: Start Development Servers
@@ -299,7 +297,7 @@ sudo gem install cocoapods
 ```bash
 # 1. Clone repository
 git clone <repository-url>
-cd waqup-app/waqup-new
+cd waqup-new
 
 # 2. Install dependencies
 npm install
@@ -308,15 +306,12 @@ npm install
 cp .env.example .env
 
 # 4. Configure environment variables
-# Edit .env file with your credentials:
-#   - EXPO_PUBLIC_SUPABASE_URL
-#   - EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-#   - NEXT_PUBLIC_SUPABASE_URL
-#   - NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-#   - SUPABASE_SECRET_KEY
-#   - OPENAI_API_KEY
-#   - STRIPE_PUBLISHABLE_KEY
-#   - STRIPE_SECRET_KEY
+# Edit .env file with your credentials — see .env.example for full list:
+#   - NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+#   - SUPABASE_SERVICE_ROLE_KEY (server-side only)
+#   - EXPO_PUBLIC_SUPABASE_* (for mobile)
+#   - OPENAI_API_KEY, ELEVENLABS_API_KEY
+#   - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
 ```
 
 #### Step 3: Start Development Servers
@@ -603,4 +598,4 @@ SUPABASE_SECRET_KEY=production_secret_key
 
 ---
 
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-03-09

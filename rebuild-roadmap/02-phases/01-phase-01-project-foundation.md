@@ -18,7 +18,7 @@
 ## Current State Analysis (NOW)
 
 ### Current Implementation
-**Location**: `../../../` (Next.js web app - parent waqup-app directory)
+**Location**: `packages/web/` (Next.js web app in this monorepo)
 
 **What Exists**:
 - ✅ Next.js 14 App Router application
@@ -38,7 +38,7 @@
 
 **Current Project Structure**:
 ```
-waqup-app/
+packages/web/               # Next.js web app (this monorepo)
 ├── app/                    # Next.js App Router
 │   ├── (auth)/            # Auth routes
 │   ├── (sanctuary)/       # Protected routes

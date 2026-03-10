@@ -1,0 +1,28 @@
+{
+  "defaultDescription": "Transformez votre esprit par la voix et les fréquences sacrées",
+  "pages": {
+    "home": "waQup — Transformation par la voix",
+    "login": "Connexion",
+    "signup": "Créer un compte",
+    "sanctuary": "Sanctuaire",
+    "library": "Bibliothèque",
+    "create": "Créer",
+    "speak": "Parler",
+    "marketplace": "Marché",
+    "settings": "Paramètres",
+    "credits": "Crédits",
+    "pricing": "Tarifs",
+    "howItWorks": "Comment ça marche",
+    "waitlist": "Liste d'attente",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "forTeachers": "Pour les Enseignants et Coachs",
+    "getQs": "Obtenir des Qs"
+  },
+  "auth": {
+    "login": "Connexion",
+    "signup": "Créer un compte",
+    "forgotPassword": "Mot de passe oublié",
+    "resetPassword": "Réinitialiser le mot de passe"
+  }
+}

@@ -78,6 +78,7 @@ security definer
 as $$
 declare
   v_balance integer;
+  v_lock_key bigint;
 begin
   if p_user_id is distinct from auth.uid() then
     raise exception 'unauthorized'
@@ -85,11 +86,13 @@ begin
             errcode = 'P0001';
   end if;
 
+  v_lock_key := hashtext(p_user_id::text)::bigint;
+  perform pg_advisory_xact_lock(v_lock_key);
+
   select coalesce(sum(amount), 0)::integer
     into v_balance
     from public.credit_transactions
-   where user_id = p_user_id
-  for update;
+   where user_id = p_user_id;
 
   if v_balance < p_amount then
     raise exception 'insufficient_credits'

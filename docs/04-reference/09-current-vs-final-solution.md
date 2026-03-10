@@ -4,7 +4,7 @@
 
 **References**: Roadmap `rebuild-roadmap/01-planning/01-roadmap.md`, Changelog `rebuild-roadmap/03-tracking/01-changelog.md`, Pages SSOT `docs/04-reference/04-pages-comparison.md`, Product docs `docs/01-core/`.
 
-**Last Updated**: 2026-02-16
+**Last Updated**: 2026-03-09
 
 ---
 
@@ -12,8 +12,8 @@
 
 | Platform | Current Phase (Effective) | Final Target | Key Gap |
 |----------|---------------------------|--------------|---------|
-| **Web** | Phases 1–5 done, partial 6–9, 14 | Full implementation per roadmap | Create flows → conversational; Phase 7 API; Phase 8–10 |
-| **Mobile** | Phases 1–3 done | Same as Web | Sanctuary, content CRUD, speak, marketplace, all creation flows |
+| **Web** | Phases 1–5, 8, 10, 14 done; partial 6–9 | Full implementation per roadmap | Create flows → conversational; Phase 7 API completeness |
+| **Mobile** | Phases 1–5 partial (Sanctuary sub-pages, ContentCreateScreen, SpeakScreen, Library) | Same as Web | Stripe checkout, full onboarding, marketplace |
 
 **Design system**: Consolidated to `@waqup/shared/theme` + platform format adapters. ✅ Aligned.
 
@@ -32,11 +32,16 @@
 - **Affirmations**: List, create (steps: init, …), `[id]`, edit, edit-audio, record ✅
 - **Meditations**: List, create (init), `[id]`, edit, edit-audio ✅
 - **Rituals**: List, create (init, goals), `[id]`, edit, edit-audio, recordings ✅
-- **Voice / orb**: `/speak`, `/create/conversation` ✅
+- **Voice / orb**: `/speak` (Voice Orb), `/create/conversation` ✅
 - **Marketplace**: `/marketplace`, `/marketplace/creator` ✅
+- **Audio**: ElevenLabs TTS, `/api/ai/render`, audio bucket, `ContentAudioStep`, playback ✅
+- **Credits**: Real-time balance, Stripe checkout (credits + subscription), Customer Portal ✅
+- **Voice setup**: `/sanctuary/voice` (IVC create, samples, preview) ✅
+- **Admin / system**: pipelines, schema, audio, conversation pages ✅
 - **Dev**: `/showcase`, `/pages`, `/sitemap-view` ✅
+- **PWA**: Manifest, service worker, shortcuts ✅
 
-**Create flows**: Multi-step forms (init, goals for rituals). **Not yet conversational** (orb/speak).
+**Create flows**: Multi-step forms (init, goals for rituals) + conversation + agent modes. **Not yet fully conversational** (orb/speak as primary entry).
 
 **Theme**: Shared (`@waqup/shared/theme`) + `packages/web/src/theme/format.ts`, `glass.ts`, `ThemeProvider`.
 
@@ -47,14 +52,19 @@
 **Implemented**:
 - **Auth**: Login, signup, forgot-password, reset-password ✅
 - **Setup**: SetupScreen (onboarding-style) ✅
-- **Main**: Home, Library, Create, Profile (basic placeholders) ✅
+- **Main**: Home, Library, Create, Profile ✅
+- **Sanctuary sub-pages**: CreditsScreen, ProgressScreen, SettingsScreen, RemindersScreen ✅
+- **Content**: ContentCreateScreen (form + conversation + agent), LibraryScreen (FlatList, search debounce) ✅
+- **Speak**: SpeakScreen (Oracle API) ✅
+- **Credits**: useCreditBalance with real-time Supabase subscription ✅
+- **Audio**: AudioRecorder (expo-av), background audio modes ✅
+- **Offline**: React Query persistor via AsyncStorage ✅
 - **Showcase**: ShowcaseScreen ✅
 
 **Not implemented**:
-- Sanctuary routes/pages
-- Content list/detail/edit/create (affirmations, meditations, rituals)
-- Edit-audio, record
-- `/speak`, conversation UI
+- Stripe checkout UI (credits displayed, no purchase flow)
+- Dedicated onboarding flow
+- Content detail/edit/edit-audio (full flows)
 - Marketplace
 
 **Theme**: Shared (`@waqup/shared/theme`) + `packages/mobile/src/theme/format.ts`, `glass.ts`, `ThemeProvider`.
@@ -73,7 +83,7 @@ From roadmap, product constitution, and pipeline docs:
 | **Design system** | Single theme source (`@waqup/shared/theme`), platform adapters |
 | **Content types** | Affirmations, Meditations, Rituals (non-interchangeable) |
 | **Creation** | **Conversational** (orb/speak), not static forms |
-| **Audio** | ElevenLabs TTS, user recording, Audio page (volumes, waves) |
+| **Audio** | ElevenLabs TTS (IVC), user recording, Audio page (volumes, waves) |
 | **Practice** | Free replay; credits for creation only |
 | **Voice-first** | Orb that speaks; conversation over forms |
 
@@ -81,13 +91,14 @@ From roadmap, product constitution, and pipeline docs:
 
 - All routes in `04-pages-comparison.md` ✅ (structure done)
 - Create flows → conversational (orb/speak entry)
-- API integration (Phase 7), Audio (Phase 8), Credits (Phase 10)
+- API integration (Phase 7) completeness; Audio (Phase 8) ✅; Credits (Phase 10) ✅
 
 ### 2.3 Mobile-Specific Final
 
 - Feature parity with Web (adapted UI)
-- Sanctuary, content CRUD, speak, marketplace
-- Native patterns (touch, background audio, PWA not applicable)
+- Sanctuary ✅; content CRUD (partial: create, library); speak ✅
+- Stripe checkout (pending); full onboarding (pending)
+- Marketplace (pending)
 
 ---
 
@@ -97,29 +108,26 @@ From roadmap, product constitution, and pipeline docs:
 
 | Gap | Current | Final | Phase |
 |-----|---------|-------|-------|
-| Create flows | Multi-step forms | Conversational (orb/speak) | 9 |
-| API / Supabase | Partial | Full content CRUD, real-time | 7 |
-| Audio | Placeholder / basic | ElevenLabs TTS, recording, Audio page | 8 |
-| Credits | UI only | Stripe, credit tracking | 10 |
+| Create flows | Multi-step forms + conversation + agent | Conversational (orb/speak as primary) | 9 |
+| API / Supabase | Substantial (CRUD, real-time credits) | Full completeness | 7 |
 | Error/loading/empty | Partial | Consistent everywhere | 6 |
 
 ### 3.2 Mobile Gaps
 
 | Gap | Current | Final | Phase |
 |-----|---------|-------|-------|
-| Sanctuary | — | Full section | 4+ |
-| Content CRUD | — | List, detail, edit, create | 4, 5 |
-| Edit-audio | — | Audio page | 8 |
-| Speak / conversation | — | Orb, conversation UI | 9 |
+| Stripe checkout | — | Credit pack purchase | 10 |
+| Full onboarding | SetupScreen only | 4-step flow like Web | 4 |
+| Content detail/edit | — | Full flows | 4, 5 |
 | Marketplace | — | Discovery, creator | 14 |
 
 ### 3.3 Cross-Cutting
 
 | Item | Status |
 |------|--------|
-| Schema (`content_items`, `conversations`, `credit_transactions`) | Verify/create per Phase |
-| Content type helpers | Duplicated → move to shared |
-| Route/menu config | Duplicated → single source |
+| Schema (`content_items`, `conversations`, `credit_transactions`) | Implemented, migrations in place |
+| Content type helpers | Shared where applicable |
+| Route/menu config | Per-platform; duplication acceptable for now |
 
 ---
 
@@ -148,22 +156,22 @@ From roadmap, product constitution, and pipeline docs:
 | 1 Foundation | ✅ | ✅ |
 | 2 Design System | ✅ | ✅ |
 | 3 Auth | ✅ | ✅ |
-| 4 Core Pages | ✅ (extended: Sanctuary, content) | ⏳ Basic (Home, Library, Create, Profile) |
-| 5 Content Types | ✅ (types, pages, flows) | ❌ |
-| 6 Error/Loading/Empty | ⏳ Partial | ❌ |
-| 7 API Integration | ⏳ Partial | ❌ |
-| 8 Audio | ⏳ Placeholder | ❌ |
-| 9 AI / Conversation | ⏳ /speak, /conversation exist; create not conversational | ❌ |
-| 10 Payments | ❌ | ❌ |
+| 4 Core Pages | ✅ (Sanctuary, content) | ✅ (Sanctuary sub-pages, ContentCreateScreen, SpeakScreen) |
+| 5 Content Types | ✅ (types, pages, flows) | ⏳ Partial (create, library) |
+| 6 Error/Loading/Empty | ⏳ Partial | ⏳ Partial |
+| 7 API Integration | ⏳ Substantial | ⏳ Substantial |
+| 8 Audio | ✅ (TTS, render, playback, Voice Orb) | ✅ (AudioRecorder, playback) |
+| 9 AI / Conversation | ⏳ /speak, /conversation exist; create not fully conversational | ⏳ SpeakScreen, ContentCreateScreen |
+| 10 Payments | ✅ (Stripe checkout, portal, credits) | ❌ (no checkout UI) |
 | 14 Marketplace | ✅ UI (discovery, creator) | ❌ |
 
 ---
 
 ## 6. Recommended Next Steps
 
-1. **Web**: Make creation flows conversational (link to orb/speak); complete Phase 7 API.
-2. **Mobile**: Implement Sanctuary, content list/detail, then creation flows (Phase 4–5).
-3. **Shared**: Content type helpers → `@waqup/shared/utils`; route config → single source.
+1. **Web**: Make creation flows conversational (orb/speak as primary entry); complete Phase 7 API.
+2. **Mobile**: Add Stripe checkout UI; implement full onboarding; complete content detail/edit flows.
+3. **Shared**: Route/menu config → single source (optional).
 
 ---
 

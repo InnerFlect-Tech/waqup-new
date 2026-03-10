@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { generateConversationReply } from '@waqup/shared/services/ai';
 import { API_ROUTE_COSTS } from '@waqup/shared/constants';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { contentTypeSchema } from '@waqup/shared/schemas';
 import type { ContentItemType } from '@waqup/shared/types';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,10 +50,25 @@ Rules:
 - Keep responses under 70 words`,
 };
 
-interface ConversationRequest {
-  type: ContentItemType;
-  messages: Array<{ role: 'user' | 'assistant'; content: string }>;
-}
+/** Language instructions prepended to system prompts for non-English locales */
+const LANGUAGE_INSTRUCTION: Record<string, string> = {
+  en: '',
+  pt: 'Responda sempre em Português. ',
+  es: 'Responde siempre en español. ',
+  fr: 'Réponds toujours en français. ',
+  de: 'Antworte immer auf Deutsch. ',
+};
+
+const conversationRequestSchema = z.object({
+  type: contentTypeSchema,
+  messages: z.array(
+    z.object({
+      role: z.enum(['user', 'assistant']),
+      content: z.string(),
+    }),
+  ).min(1),
+  locale: z.string().optional().default('en'),
+});
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,11 +84,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json() as ConversationRequest;
-
-    if (!body.type || !body.messages) {
-      return NextResponse.json({ error: 'type and messages are required' }, { status: 400 });
+    const parsed = conversationRequestSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: parsed.error.flatten() },
+        { status: 400 },
+      );
     }
+    const body = parsed.data;
 
     // ─── Atomic credit deduction (before calling OpenAI) ─────────────────────
     const { error: deductError } = await supabase.rpc('deduct_credits', {
@@ -97,7 +117,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Credit service error. Please try again.' }, { status: 503 });
     }
 
-    const systemPrompt = CONVERSATION_SYSTEM_PROMPTS[body.type];
+    const langInstruction = LANGUAGE_INSTRUCTION[body.locale] ?? '';
+    const systemPrompt = langInstruction + CONVERSATION_SYSTEM_PROMPTS[body.type];
 
     try {
       const reply = await generateConversationReply(body.messages, systemPrompt, apiKey);

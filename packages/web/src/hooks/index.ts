@@ -3,6 +3,7 @@ export * from './useBinauralEngine';
 export * from './useContent';
 export * from './useCreateInitGate';
 export * from './useCreditBalance';
+export * from './useFoundingMembersRemaining';
 export * from './useReminders';
 export * from './useWebAudioPlayer';
 export * from './useSubscription';

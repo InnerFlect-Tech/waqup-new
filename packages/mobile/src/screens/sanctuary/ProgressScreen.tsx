@@ -7,48 +7,36 @@ import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card } from '@/components';
 import { supabase } from '@/services/supabase';
+import { createProgressService } from '@waqup/shared/services';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Progress'>;
 
 async function fetchProgress() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  const progressService = createProgressService(supabase);
+  const [statsResult, sessionsResult] = await Promise.all([
+    progressService.getProgressStats(),
+    progressService.getRecentSessions(5),
+  ]);
 
-  const { data: sessions } = await supabase
-    .from('practice_sessions')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
-
-  const { data: items } = await supabase
-    .from('content_items')
-    .select('id, type, title, last_played_at')
-    .eq('user_id', user.id)
-    .not('last_played_at', 'is', null)
-    .order('last_played_at', { ascending: false })
-    .limit(5);
-
-  const totalSessions = sessions?.length ?? 0;
-  const totalMinutes = Math.round((sessions ?? []).reduce((s, r) => s + (r.duration_seconds ?? 0), 0) / 60);
-
-  // Calculate streak
-  const today = new Date().toDateString();
-  const sessionDays = new Set((sessions ?? []).map(s => new Date(s.created_at).toDateString()));
-  let streak = 0;
-  const d = new Date();
-  while (sessionDays.has(d.toDateString())) {
-    streak++;
-    d.setDate(d.getDate() - 1);
+  if (!statsResult.success || !statsResult.data) {
+    return null;
   }
 
-  return { totalSessions, totalMinutes, streak, recentItems: items ?? [] };
-}
+  const { totalSessions, minutesPracticed, streak } = statsResult.data;
+  const recentItems = (sessionsResult.data ?? []).map((s) => ({
+    id: s.playedAt,
+    type: s.contentType,
+    title: s.title ?? 'Untitled',
+  }));
 
-const TYPE_COLORS: Record<string, string> = {
-  affirmation: '#c084fc',
-  meditation: '#60a5fa',
-  ritual: '#f59e0b',
-};
+  return {
+    totalSessions,
+    totalMinutes: minutesPracticed,
+    streak,
+    recentItems,
+  };
+}
 
 export default function ProgressScreen({ navigation }: Props) {
   const { theme } = useTheme();
@@ -106,7 +94,7 @@ export default function ProgressScreen({ navigation }: Props) {
                 <View style={{ gap: spacing.sm }}>
                   {data!.recentItems.map((item) => (
                     <Card key={item.id} variant="default" style={[styles.recentCard, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
-                      <View style={[styles.typeDot, { backgroundColor: TYPE_COLORS[item.type] ?? colors.accent.primary }]} />
+                      <View style={[styles.typeDot, { backgroundColor: CONTENT_TYPE_COLORS[item.type as keyof typeof CONTENT_TYPE_COLORS] ?? colors.accent.primary }]} />
                       <View style={{ flex: 1 }}>
                         <Typography variant="captionBold" style={{ color: colors.text.primary }}>{item.title}</Typography>
                         <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 2, textTransform: 'capitalize' }}>{item.type}</Typography>

@@ -1,0 +1,17 @@
+{
+  "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+  "networkError": "Netzwerkfehler. Überprüfe deine Verbindung und versuche es erneut.",
+  "unauthorized": "Du musst angemeldet sein, um auf diese Seite zuzugreifen.",
+  "forbidden": "Du hast keine Berechtigung, auf diese Seite zuzugreifen.",
+  "notFound": "Seite nicht gefunden.",
+  "serverError": "Serverfehler. Bitte versuche es später erneut.",
+  "insufficientCredits": "Du benötigst {cost} Qs, hast aber {balance}. Hol dir mehr Qs, um fortzufahren.",
+  "creditServiceError": "Fehler im Credits-Service. Bitte versuche es erneut.",
+  "sessionExpired": "Sitzung abgelaufen. Bitte starte eine neue Sitzung.",
+  "pages": {
+    "title": "Etwas ist schiefgelaufen",
+    "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche, die Seite zu aktualisieren.",
+    "refresh": "Seite aktualisieren",
+    "home": "Zurück zur Startseite"
+  }
+}

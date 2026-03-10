@@ -49,6 +49,18 @@ const DEFAULT_VOICE_SETTINGS = {
   speed:             1.0,
 };
 
+/** ElevenLabs Rachel — calm, premade voice; used when client has no voice configured */
+const FALLBACK_ORACLE_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
+
+/** Language instructions for the Oracle (Speak) session */
+const LANGUAGE_INSTRUCTION: Record<string, string> = {
+  en: '',
+  pt: 'Responda sempre em Português do Brasil. ',
+  es: 'Responde siempre en español. ',
+  fr: 'Réponds toujours en français. ',
+  de: 'Antworte immer auf Deutsch. ',
+};
+
 interface StreamRequest {
   sessionId: string;
   messages:  Array<{ role: 'user' | 'assistant'; content: string }>;
@@ -57,6 +69,7 @@ interface StreamRequest {
   model?:           string;
   temperature?:     number;
   maxTokens?:       number;
+  locale?:          string;
   voiceSettings?: {
     stability?:        number;
     similarity_boost?: number;
@@ -100,12 +113,15 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  if (!body.sessionId || !body.messages || !body.voiceId) {
-    return new Response(sse({ type: 'error', message: 'sessionId, messages, and voiceId are required' }), {
+  if (!body.sessionId || !body.messages) {
+    return new Response(sse({ type: 'error', message: 'sessionId and messages are required' }), {
       status: 400,
       headers: { 'Content-Type': 'text/event-stream' },
     });
   }
+
+  // Use client voice if configured (admin/oracle); otherwise fallback to calm premade voice
+  const voiceId = (body.voiceId?.trim() || process.env.DEFAULT_ORACLE_VOICE_ID || FALLBACK_ORACLE_VOICE_ID);
 
   const stream  = new TransformStream<Uint8Array, Uint8Array>();
   const writer  = stream.writable.getWriter();
@@ -161,7 +177,9 @@ export async function POST(req: NextRequest) {
 
       // ─── 2. Stream OpenAI response ───────────────────────────────────────────
       const model      = body.model && ALLOWED_MODELS.has(body.model) ? body.model : DEFAULT_MODEL;
-      const systemText = body.systemPrompt?.trim() || DEFAULT_SYSTEM_PROMPT;
+      const langInstruction = LANGUAGE_INSTRUCTION[body.locale ?? 'en'] ?? '';
+      const baseSystemText = body.systemPrompt?.trim() || DEFAULT_SYSTEM_PROMPT;
+      const systemText = langInstruction ? `${langInstruction}${baseSystemText}` : baseSystemText;
 
       const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -232,7 +250,7 @@ export async function POST(req: NextRequest) {
       const ttsText   = fullText.trim().slice(0, MAX_TEXT_LENGTH);
       const vSettings = { ...DEFAULT_VOICE_SETTINGS, ...(body.voiceSettings ?? {}) };
 
-      const elUrl = `${ELEVENLABS_BASE_URL}/text-to-speech/${body.voiceId}/stream?optimize_streaming_latency=3`;
+      const elUrl = `${ELEVENLABS_BASE_URL}/text-to-speech/${voiceId}/stream?optimize_streaming_latency=3`;
 
       const elRes = await fetch(elUrl, {
         method: 'POST',

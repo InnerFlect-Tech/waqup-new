@@ -6,6 +6,7 @@ import { MainStackParamList, ContentItemType } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card } from '@/components';
+import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 
 interface ContentTypeConfig {
   type: ContentItemType;
@@ -156,7 +157,7 @@ export default function CreateScreen() {
           ]}
         >
           <Typography variant="caption" style={{ color: colors.text.secondary, textAlign: 'center' }}>
-            🎧  Unlimited replay is always free. Credits are only used for creation.
+            🎧  {PRACTICE_IS_FREE_ONE_LINER}
           </Typography>
         </View>
       </ScrollView>

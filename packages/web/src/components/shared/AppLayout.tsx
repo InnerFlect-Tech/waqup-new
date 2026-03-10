@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
   Home,
@@ -27,9 +27,8 @@ import {
   Store,
   BarChart3,
 } from 'lucide-react';
-import { Button, Logo, QCoin, AvatarOrb } from '@/components';
+import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher } from '@/components';
 import { useTheme, spacing, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X, BLUR } from '@/theme';
-import { LEGAL_CONFIG } from '@/config/legal';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
 import type { ViewAsRole } from '@/stores';
@@ -91,7 +90,7 @@ const AUTH_ROUTES = [
   '/auth/',
 ];
 
-const SUPERADMIN_ROUTE_PREFIXES = ['/admin', '/system', '/health', '/showcase', '/pages', '/sitemap-view'];
+const SUPERADMIN_ROUTE_PREFIXES = ['/admin', '/system', '/updates', '/health', '/showcase', '/pages', '/sitemap-view'];
 
 function isSuperadminRoute(pathname: string | null): boolean {
   if (!pathname) return false;
@@ -109,6 +108,7 @@ const VIEW_AS_OPTIONS: { value: ViewAsRole; label: string }[] = [
 
 const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
   { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
+  { name: 'Updates', path: '/updates', icon: <FileText className="w-4 h-4" /> },
   { name: 'Users', path: '/admin/users', icon: <Users className="w-4 h-4" /> },
   { name: 'Waitlist', path: '/admin/waitlist', icon: <ListChecks className="w-4 h-4" /> },
   { name: 'Content Overview', path: '/admin/content', icon: <BarChart3 className="w-4 h-4" /> },
@@ -228,14 +228,21 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <Logo size="md" href="/sanctuary" />
               </div>
 
-              <div className="hidden md:flex items-center flex-shrink-0" style={{ gap: spacing.xl }}>
+              <div className="hidden md:flex items-center flex-shrink-0" style={{ gap: spacing.md }}>
                 <div className="flex items-center" style={{ gap: spacing.lg }}>
-                  {navItems.map((item) => (
+                  {navItems.map((item) => {
+                    const testId =
+                      item.path === '/sanctuary' ? 'nav-sanctuary' :
+                      item.path === '/speak' ? 'nav-speak' :
+                      item.path === '/marketplace' ? 'nav-marketplace' :
+                      item.path === '/library' ? 'nav-library' : undefined;
+                    return (
                     <Button
                       key={item.path}
                       variant="ghost"
                       size="sm"
                       onClick={() => router.push(item.path)}
+                      data-testid={testId}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -248,8 +255,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {item.icon}
                     <span>{item.name}</span>
                   </Button>
-                  ))}
+                  );
+                  })}
                 </div>
+                <LanguageSwitcher compact />
+
                 <div className="relative">
                   <Button
                     variant="ghost"
@@ -279,15 +289,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                   {showProfileMenu && (
                     <div
-                      className="absolute right-0 w-72 rounded-xl shadow-2xl"
+                      className="absolute right-0 rounded-xl shadow-2xl"
                       style={{
+                        width: actualIsSuperAdmin ? 380 : 288,
+                        maxHeight: 'min(85vh, 560px)',
                         marginTop: spacing.sm,
                         background: 'rgba(15,5,35,0.88)',
-                        backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
+                        backdropFilter: BLUR.xl,
+                        WebkitBackdropFilter: BLUR.xl,
                         border: '1px solid rgba(168,85,247,0.20)',
                         boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(168,85,247,0.08)',
-                        overflow: 'hidden',
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
                       }}
                     >
                       {/* Account card */}
@@ -403,32 +418,40 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             >
                               Super Admin
                             </p>
-                            {SUPERADMIN_MENU_ITEMS.map((item) => (
-                              <button
-                                key={item.path}
-                                type="button"
-                                className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
-                                style={{
-                                  padding: `${spacing.sm} ${spacing.md}`,
-                                  gap: spacing.md,
-                                  color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
-                                  background: pathname === item.path ? 'rgba(168,85,247,0.12)' : 'transparent',
-                                }}
-                                onMouseEnter={(e) => {
-                                  if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                                }}
-                                onClick={() => {
-                                  router.push(item.path);
-                                  setShowProfileMenu(false);
-                                }}
-                              >
-                                {item.icon}
-                                {item.name}
-                              </button>
-                            ))}
+                            <div
+                              style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: 2,
+                              }}
+                            >
+                              {SUPERADMIN_MENU_ITEMS.map((item) => (
+                                <button
+                                  key={item.path}
+                                  type="button"
+                                  className="flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                                  style={{
+                                    padding: `${spacing.sm} ${spacing.md}`,
+                                    gap: spacing.md,
+                                    color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
+                                    background: pathname === item.path ? 'rgba(168,85,247,0.12)' : 'transparent',
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                                  }}
+                                  onClick={() => {
+                                    router.push(item.path);
+                                    setShowProfileMenu(false);
+                                  }}
+                                >
+                                  {item.icon}
+                                  <span className="truncate">{item.name}</span>
+                                </button>
+                              ))}
+                            </div>
                           </div>
                           <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
                           <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
@@ -523,7 +546,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           className="md:hidden overflow-hidden"
           style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg }}
         >
-          <div style={{ padding: `${spacing.sm} ${HEADER_PADDING_X} ${spacing.md}`, display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+          <div
+            style={{
+              padding: `${spacing.sm} ${HEADER_PADDING_X} ${spacing.md}`,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: spacing.sm,
+              maxHeight: 'min(80vh, 520px)',
+              overflowY: 'auto',
+            }}
+          >
               {navItems.map((item) => (
                 <Button
                   key={item.path}
@@ -693,6 +725,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
               <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
 
+              <div style={{ paddingLeft: spacing.lg, paddingRight: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.sm }}>
+                <LanguageSwitcher compact={false} />
+              </div>
+
+              <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+
               <button
                 type="button"
                 className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer"
@@ -721,10 +759,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
+        height: '100vh',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         background: colors.gradients.background,
+        overflow: 'hidden',
       }}
     >
         <motion.nav
@@ -778,6 +818,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 Pricing
               </Button>
+              <LanguageSwitcher compact />
               <Button
                 variant="ghost"
                 size="sm"
@@ -853,157 +894,32 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             >
               Join Waitlist
             </Button>
+            <div style={{ paddingTop: spacing.xs }}>
+              <LanguageSwitcher compact={false} />
+            </div>
           </div>
         </motion.div>
       </motion.nav>
-      <main style={{ flex: 1, paddingTop: NAV_TOP_OFFSET }}>
-        {children}
-      </main>
-
-      {/* ── Public Footer ──────────────────────────────────────── */}
-      <footer
+      {/* Single scroll container: main + footer scroll together, one scrollbar */}
+      <div
         style={{
-          borderTop: `1px solid ${colors.glass.border}`,
-          background: 'rgba(0,0,0,0.4)',
-          backdropFilter: BLUR.lg,
-          WebkitBackdropFilter: BLUR.lg,
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          ...(pathname === '/' && {
+            scrollSnapType: 'y proximity',
+            scrollBehavior: 'smooth',
+            WebkitOverflowScrolling: 'touch',
+          }),
         }}
       >
-        <div
-          className="footer-inner"
-          style={{
-            maxWidth: MAX_WIDTH_7XL,
-            margin: '0 auto',
-            padding: `64px ${PAGE_PADDING} ${PAGE_PADDING}`,
-          }}
-        >
-          {/* Top row: brand + columns */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1.4fr 1fr 1fr 1fr',
-              gap: 48,
-              marginBottom: 48,
-            }}
-            className="footer-grid"
-          >
-            {/* Brand */}
-            <div>
-              <div style={{ fontSize: 24, fontWeight: 300, color: colors.text.primary, letterSpacing: '-0.5px', marginBottom: 12 }}>
-                wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
-              </div>
-              <p style={{ fontSize: 14, color: colors.text.tertiary, lineHeight: 1.65, maxWidth: 260, margin: '0 0 20px' }}>
-                Your voice. Your transformation. Scientifically designed to rewire the subconscious patterns that shape who you are.
-              </p>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <a
-                  href="/waitlist"
-                  style={{
-                    display: 'inline-block',
-                    padding: '8px 18px',
-                    borderRadius: 20,
-                    background: colors.gradients.primary,
-                    color: '#fff',
-                    fontSize: 13,
-                    fontWeight: 500,
-                    textDecoration: 'none',
-                  }}
-                >
-                  Join Waitlist
-                </a>
-              </div>
-            </div>
-
-            {/* Product */}
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Product</div>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {[
-                  ['How It Works', '/how-it-works'],
-                  ['Pricing', '/pricing'],
-                  ['Marketplace', '/marketplace'],
-                  ['Buy Credits', '/get-qs'],
-                ].map(([label, href]) => (
-                  <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.secondary; }}
-                  >
-                    {label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-
-            {/* Company */}
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Company</div>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {[
-                  ['Our Story', '/explanation'],
-                  ['Investors', '/investors'],
-                  ['Founding Members', '/join'],
-                ].map(([label, href]) => (
-                  <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.secondary; }}
-                  >
-                    {label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>Legal</div>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {[
-                  ['Privacy Policy', '/privacy'],
-                  ['Terms of Service', '/terms'],
-                  ['Contact', `mailto:${LEGAL_CONFIG.supportEmail}`],
-                ].map(([label, href]) => (
-                  <a key={href} href={href} style={{ fontSize: 14, color: colors.text.secondary, textDecoration: 'none' }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.primary; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = colors.text.secondary; }}
-                  >
-                    {label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div
-            style={{
-              paddingTop: 24,
-              borderTop: `1px solid ${colors.glass.border}`,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 12,
-            }}
-          >
-            <span style={{ fontSize: 13, color: colors.text.tertiary }}>
-              © {new Date().getFullYear()} waQup · All rights reserved
-            </span>
-            <span style={{ fontSize: 13, color: colors.text.tertiary }}>
-              Practice is always free. Payment: cards (Stripe) · Bitcoin coming
-              soon
-            </span>
-          </div>
-        </div>
-
-        <style dangerouslySetInnerHTML={{ __html: `
-          @media (max-width: 768px) {
-            .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
-          }
-          @media (max-width: 480px) {
-            .footer-grid { grid-template-columns: 1fr !important; }
-          }
-        ` }} />
-      </footer>
+        <main style={{ paddingTop: NAV_TOP_OFFSET, minWidth: 0 }}>
+          {children}
+        </main>
+        {/* Footer — hidden on landing (/); footer is inside landing page */}
+        {pathname !== '/' && <PublicFooter />}
+      </div>
     </div>
   );
 }

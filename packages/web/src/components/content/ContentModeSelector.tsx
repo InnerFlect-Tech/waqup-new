@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Typography } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import type { CreationMode } from '@waqup/shared/constants';
 import { LayoutList, MessageSquare, Bot, Mic } from 'lucide-react';
@@ -14,7 +14,10 @@ import { AI_MODE_COSTS } from '@waqup/shared/constants';
 export interface ContentModeSelectorProps {
   formHref: string;
   chatHref?: string;
+  /** Explicit href for the voice/orb agent mode. Required when chatHref does not contain 'conversation'. */
   agentHref?: string;
+  /** Base path for the content type, used to build agentHref when not provided. E.g. '/create' */
+  basePath?: string;
 }
 
 const MODES: Array<{
@@ -51,13 +54,14 @@ const MODES: Array<{
   },
 ];
 
-export function ContentModeSelector({ formHref, chatHref = '/create/conversation', agentHref }: ContentModeSelectorProps) {
+export function ContentModeSelector({ formHref, chatHref = '/create/conversation', agentHref, basePath }: ContentModeSelectorProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
   const { setCreationMode } = useContentCreation();
 
-  const resolvedAgentHref = agentHref ?? chatHref.replace('conversation', 'orb');
+  // Derive agent href: prefer explicit prop, then base path + '/orb', then fall back to /create/orb
+  const resolvedAgentHref = agentHref ?? (basePath ? `${basePath}/orb` : '/create/orb');
 
   const hrefMap: Record<CreationMode, string> = {
     form: formHref,
@@ -99,8 +103,8 @@ export function ContentModeSelector({ formHref, chatHref = '/create/conversation
               padding: spacing.md,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
+              backdropFilter: BLUR.lg,
+              WebkitBackdropFilter: BLUR.lg,
               border: `1px solid ${colors.glass.border}`,
               cursor: 'pointer',
               textAlign: 'left',

@@ -107,12 +107,12 @@ export const Input: React.FC<InputProps> = ({
         )}
       </View>
       {error && (
-        <Typography variant="small" style={[styles.helperText, { color: colors.error }]}>
+        <Typography variant="caption" style={[styles.helperText, { color: colors.error }]}>
           {error}
         </Typography>
       )}
       {helperText && !error && (
-        <Typography variant="small" color="secondary" style={styles.helperText}>
+        <Typography variant="caption" color="secondary" style={styles.helperText}>
           {helperText}
         </Typography>
       )}

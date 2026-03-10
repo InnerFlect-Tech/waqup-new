@@ -2,19 +2,19 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import type { ContentType } from '@/lib/contexts/ContentCreationContext';
+import type { ContentItemType } from '@waqup/shared/types';
 import { ChevronLeft } from 'lucide-react';
 
 const MAX_CHARS = 300;
 
-const TYPE_PROMPTS: Record<ContentType, { heading: string; placeholder: string; hint: string }> = {
+const TYPE_PROMPTS: Record<ContentItemType, { heading: string; placeholder: string; hint: string }> = {
   affirmation: {
     heading: 'What do you want to change or strengthen?',
     placeholder:
@@ -81,8 +81,8 @@ export function ContentIntentStep({ backHref, nextHref, scienceInsightOverride }
           style={{
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${value.length > 0 ? colors.accent.primary + '50' : colors.glass.border}`,
             padding: spacing.lg,
             transition: 'border-color 0.2s',

@@ -22,8 +22,8 @@ const MENU_ITEMS: MenuItem[] = [
   { label: 'Account Settings', description: 'Email, password, notifications', icon: '⚙️', screen: 'Settings' },
   { label: 'Progress', description: 'Your practice journey & streaks', icon: '📈', screen: 'Progress' },
   { label: 'Reminders', description: 'Daily practice reminders', icon: '🔔', screen: 'Reminders' },
-  { label: 'Voice Settings', description: 'Your cloned ElevenLabs voice', icon: '🎙️' },
-  { label: 'Privacy & Data', description: 'Data export and deletion', icon: '🔒' },
+  { label: 'Voice Settings', description: 'Your cloned ElevenLabs voice', icon: '🎙️', screen: 'Settings' },
+  { label: 'Privacy & Data', description: 'Delete account and manage data', icon: '🔒', screen: 'Settings' },
 ];
 
 export default function ProfileScreen() {
@@ -138,7 +138,7 @@ export default function ProfileScreen() {
               activeOpacity={0.8}
               onPress={() => {
                 if (item.screen) {
-                  navigation.navigate(item.screen);
+                  (navigation.navigate as (name: keyof MainStackParamList) => void)(item.screen);
                 }
               }}
             >

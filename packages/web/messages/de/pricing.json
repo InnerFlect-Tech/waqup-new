@@ -1,0 +1,79 @@
+{
+  "title": "Pricing",
+  "subtitle": "Simple, transparent pricing. Practice is always free.",
+  "howQsWork": {
+    "heading": "How Qs work",
+    "creation": {
+      "title": "Qs power creation",
+      "body": "Every affirmation, meditation, or ritual you create costs a small number of Qs. Think of them as creative fuel."
+    },
+    "free": {
+      "title": "Practice is always free",
+      "body": "Replay your content as many times as you want. Qs are only spent on creation, never on listening."
+    },
+    "expire": {
+      "title": "Qs never expire",
+      "body": "Unused Qs carry forward indefinitely. No pressure, no waste."
+    }
+  },
+  "plans": {
+    "monthly": {
+      "name": "Monthly",
+      "ctaLabel": "Start free trial",
+      "badge": "Most popular"
+    },
+    "weekly": {
+      "name": "Weekly",
+      "ctaLabel": "Start free trial"
+    },
+    "lifetime": {
+      "name": "Lifetime",
+      "ctaLabel": "Get lifetime access",
+      "badge": "Best value"
+    }
+  },
+  "trialDisclaimer": "No charge for {days} days. Cancel anytime.",
+  "weeklyBilling": "Billed weekly. Cancel anytime.",
+  "monthlyBilling": "Billed monthly. Cancel anytime.",
+  "oneTimePurchase": "One-time payment. Yours forever.",
+  "mostPopular": "Most popular",
+  "bestValue": "Best value",
+  "forCommitted": "For committed practitioners",
+  "perMonth": "/ month",
+  "perWeek": "/ week",
+  "oneTime": "one time",
+  "includes": "Includes",
+  "features": {
+    "unlimitedPractice": "Unlimited practice",
+    "voiceCloning": "Voice cloning",
+    "aiConversations": "AI-guided creation",
+    "marketplace": "Marketplace access",
+    "prioritySupport": "Priority support"
+  },
+  "credits": {
+    "title": "Get Qs",
+    "subtitle": "Qs power your creation.",
+    "noExpiry": "Your Qs don't expire — use them at your own pace.",
+    "securePayment": "Qs are added instantly after payment. Secured by Stripe.",
+    "wantSubscription": "Want a monthly rhythm of Qs instead?",
+    "viewSubscriptions": "View subscription plans",
+    "bestValue": "Best value",
+    "popular": "Popular",
+    "buyButton": "Buy {name}",
+    "processing": "Processing…"
+  },
+  "errors": {
+    "checkoutNotConfigured": "Checkout is not yet configured for this plan. Please contact support.",
+    "checkoutFailed": "Something went wrong. Please try again."
+  },
+  "transactions": {
+    "title": "Transaction History",
+    "empty": "No transactions yet.",
+    "date": "Date",
+    "description": "Description",
+    "amount": "Amount",
+    "balance": "Balance",
+    "credit": "Credit",
+    "debit": "Debit"
+  }
+}

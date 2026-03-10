@@ -4,11 +4,11 @@ import React from 'react';
 import { useTheme, spacing, borderRadius, BLUR } from '@/theme';
 import { PageShell, GlassCard } from '@/components';
 import { Typography, Button } from '@/components';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 export interface OnboardingStepLayoutProps {
-  /** 1=intention, 2=profile, 3=preferences, 4=guide */
-  step: 1 | 2 | 3 | 4;
+  /** 1=intention, 2=profile, 3=role, 4=preferences, 5=guide */
+  step: 1 | 2 | 3 | 4 | 5;
   title: string;
   subtitle?: string;
   illustration?: React.ReactNode;
@@ -55,7 +55,7 @@ export function OnboardingStepLayout({
           gap: spacing.xl,
         }}
       >
-        {/* Progress indicator — 4 dots */}
+        {/* Progress indicator — 5 dots */}
         <div
           style={{
             display: 'flex',
@@ -63,7 +63,7 @@ export function OnboardingStepLayout({
             paddingTop: spacing.md,
           }}
         >
-          {([1, 2, 3, 4] as const).map((i) => {
+          {([1, 2, 3, 4, 5] as const).map((i) => {
             const isActive = i <= step;
             return (
               <div
@@ -143,6 +143,7 @@ export function OnboardingStepLayout({
                 variant="primary"
                 size="lg"
                 disabled={loading || primaryDisabled}
+                data-testid="onboarding-continue-button"
                 style={{
                   width: '100%',
                   minHeight: '56px',
@@ -159,6 +160,7 @@ export function OnboardingStepLayout({
               size="lg"
               disabled={loading || primaryDisabled}
               onClick={onSubmit}
+              data-testid="onboarding-continue-button"
               style={{
                 width: '100%',
                 minHeight: '56px',

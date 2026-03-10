@@ -169,7 +169,7 @@ The installation scripts use `--no-audit --no-fund` flags to prevent hanging. If
 
 ### Next Steps
 
-1. **Read**: [START_HERE.md](./START_HERE.md) for detailed setup instructions
+1. **Read**: [docs/04-reference/03-start-here.md](./docs/04-reference/03-start-here.md) for detailed setup instructions
 2. **Follow**: [rebuild-roadmap/01-planning/01-roadmap.md](./rebuild-roadmap/01-planning/01-roadmap.md) for development roadmap
 3. **Track**: [rebuild-roadmap/03-tracking/01-changelog.md](./rebuild-roadmap/03-tracking/01-changelog.md) for progress
 
@@ -217,7 +217,7 @@ waqup-new/
 ### Web design system (packages/web)
 
 - **Shared layout**: `AppHeader` (public / authenticated / simplified), `PageShell` (background + gradient + content container), `GlassCard` (auth/content variants), `ThemeSelector` (collapsible: single “Theme” button, dropdown on click to avoid overlapping page content)
-- **Design tokens**: `packages/web/src/theme/design-tokens.ts` (CONTENT_MAX_WIDTH, PAGE_PADDING, SAFE_AREA_RIGHT, spacing, glass card styles)
+- **Design tokens**: `packages/shared/src/theme/tokens.ts` (SSOT) + `packages/web/src/theme/format.ts` (CSS adapters) — CONTENT_MAX_WIDTH, PAGE_PADDING, SAFE_AREA_RIGHT, spacing, glass card styles
 - **Safe-area**: Main, marketing, and landing pages use `SAFE_AREA_RIGHT` so the fixed Theme button never overlaps content; `PlaceholderPage` includes it for sanctuary and other placeholder screens
 - **Layouts**: Auth (no header), Main/Sanctuary (authenticated header), Marketing (landing header reflects auth state), Onboarding (simplified header)
 - **Header nav**: Active state via `usePathname()`; "Home" active on `/sanctuary/*`; logo links to `/sanctuary` when authenticated, `/` when public.
@@ -246,7 +246,10 @@ npm run dev:all
 
 ## 📚 Documentation
 
-- **[START_HERE.md](./START_HERE.md)** - Getting started guide
+- **[Start Here](docs/04-reference/03-start-here.md)** - Getting started guide
+- **[Architecture](docs/00-architecture-overview.md)** - Monorepo structure, backend, data flows
+- **[Product Overview](docs/00-product-overview.md)** - What waQup is, principles
+- **[Developer Onboarding](docs/00-developer-onboarding.md)** - Full onboarding guide
 - **[docs/](./docs/)** - Complete documentation
 - **[rebuild-roadmap/](./rebuild-roadmap/)** - Development roadmap
 
@@ -255,19 +258,20 @@ npm run dev:all
 ## 🔗 Related Repositories
 
 - **This Repository**: [waqup-new](https://github.com/InnerFlect-Tech/waqup-new) - Multi-platform rebuild (Mobile + Web)
-- **Main Project**: `waqup-app/` (parent directory) - Original project
+- **waqup-app/**: Legacy monolithic app (deprecated) — do not use; active code lives in `packages/web`, `packages/mobile`, `packages/shared`
 
 ---
 
 ## ✅ Status
 
-- ✅ Project structure initialized
+- ✅ Project structure initialized (Phases 1–3 complete on both platforms)
 - ✅ Mobile + Web platforms configured
 - ✅ Shared package set up
-- ✅ Documentation complete
-- ✅ Cross-platform compatible
-- ✅ Web design consistency: AppHeader, PageShell, GlassCard, design tokens; all pages aligned
-- ⏳ Ready for Phase 1 development
+- ✅ Phases 4–5 (Web): Sanctuary, content CRUD, speak, marketplace, onboarding
+- ✅ Phase 8 (Web): ElevenLabs TTS, audio generation, Voice Orb
+- ✅ Phase 10 (Web): Stripe checkout, credits, subscriptions, Customer Portal
+- ✅ Mobile: Sanctuary sub-pages (Credits, Progress, Settings, Reminders), ContentCreateScreen, SpeakScreen, Library
+- ⏳ Next: Conversational create flows (Web); Mobile Stripe checkout, full onboarding
 
 ---
 
@@ -279,5 +283,5 @@ This project is proprietary and confidential. All rights reserved.
 
 ---
 
-**Last Updated**: February 18, 2026  
+**Last Updated**: 2026-03-09  
 **Repository**: [https://github.com/InnerFlect-Tech/waqup-new](https://github.com/InnerFlect-Tech/waqup-new)

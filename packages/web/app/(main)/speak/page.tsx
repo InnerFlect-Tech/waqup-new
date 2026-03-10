@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useCreditBalance } from '@/hooks';
 import { useTheme, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT } from '@/theme';
 import type { OrbState } from '@/components/audio';
+import { ORB_INTRO_SHORT } from '@waqup/shared/constants';
 
 const VoiceOrb = dynamic(
   () => import('@/components/audio').then((mod) => ({ default: mod.VoiceOrb })),
@@ -85,6 +86,7 @@ export default function SpeakPage() {
   const [session, setSession]         = useState<SessionInfo | null>(null);
   const [sessionLoading, setSessionLoading] = useState(false);
   const [sessionError, setSessionError]     = useState('');
+  const [oracleError, setOracleError]       = useState('');
   const [selectedQs, setSelectedQs]   = useState(1);
   const [autoRefill, setAutoRefill]   = useState(false);
 
@@ -236,13 +238,32 @@ export default function SpeakPage() {
     };
   }, [onQueueDrained]);
 
-  const enqueueAudioChunk = useCallback(async (base64: string) => {
+  // Minimum accumulated byte size before attempting to decode an MP3 buffer.
+  // MP3 frames are ~417 bytes each at 128kbps. 32 KB ensures we always have
+  // complete frames, preventing EncodingError from decodeAudioData on partial data.
+  const CHUNK_FLUSH_THRESHOLD = 32 * 1024;
+
+  const flushPendingChunks = useCallback(async (force = false) => {
     const ctx = audioCtxRef.current;
     if (!ctx) return;
 
+    const chunks = pendingChunksRef.current;
+    if (chunks.length === 0) return;
+
+    const totalBytes = chunks.reduce((sum, ab) => sum + ab.byteLength, 0);
+    if (!force && totalBytes < CHUNK_FLUSH_THRESHOLD) return;
+
+    // Concatenate all accumulated ArrayBuffers into one
+    const combined = new Uint8Array(totalBytes);
+    let offset = 0;
+    for (const ab of chunks) {
+      combined.set(new Uint8Array(ab), offset);
+      offset += ab.byteLength;
+    }
+    pendingChunksRef.current = [];
+
     try {
-      const ab     = base64ToArrayBuffer(base64);
-      const buffer = await ctx.decodeAudioData(ab);
+      const buffer = await ctx.decodeAudioData(combined.buffer);
       audioQueueRef.current.push(buffer);
 
       if (!isPlayingRef.current) {
@@ -252,10 +273,17 @@ export default function SpeakPage() {
         playNextFromQueue();
       }
     } catch {
-      // MP3 frame boundaries can sometimes cause decode errors on partial chunks.
-      // Silently drop — the next chunk will continue playback.
+      // If decode still fails on the combined buffer, discard — the next flush will recover.
     }
   }, [playNextFromQueue, startTtsAnalyserLoop]);
+
+  const enqueueAudioChunk = useCallback(async (base64: string) => {
+    if (!audioCtxRef.current) return;
+    const ab = base64ToArrayBuffer(base64);
+    pendingChunksRef.current.push(ab);
+    // Flush once we have enough data for complete MP3 frames
+    await flushPendingChunks(false);
+  }, [flushPendingChunks]);
 
   // ── Interrupt current TTS audio (user spoke mid-reply) ───────────────────
   const interruptTts = useCallback(() => {
@@ -264,6 +292,7 @@ export default function SpeakPage() {
       currentSourceRef.current = null;
     }
     audioQueueRef.current = [];
+    pendingChunksRef.current = [];
     isPlayingRef.current  = false;
     stopTtsAnalyserLoop();
     masterFreqRef.current = null;
@@ -297,6 +326,7 @@ export default function SpeakPage() {
     const s = sessionRef.current;
     if (!s) return;
 
+    setOracleError('');
     const userMsg: Message = { id: uid(), role: 'user', content: text.trim() };
     const nextMessages     = [...messagesRef.current, userMsg];
     setMessages(nextMessages);
@@ -338,10 +368,22 @@ export default function SpeakPage() {
       });
 
       if (!res.ok || !res.body) {
+        let errMsg = 'Something went wrong. Please try again.';
+        try {
+          const text = await res.text();
+          const line = text.split('\n').find((l) => l.startsWith('data: '));
+          if (line) {
+            const raw = line.slice(6).trim();
+            const ev = JSON.parse(raw) as { message?: string };
+            if (ev.message) errMsg = ev.message;
+          }
+        } catch { /* ignore parse */ }
+        setOracleError(errMsg);
         setOrbState('error');
         return;
       }
 
+      setOracleError('');
       const reader  = res.body.getReader();
       const decoder = new TextDecoder();
       let   buffer  = '';
@@ -394,8 +436,10 @@ export default function SpeakPage() {
             }
 
             case 'audio_done':
-              // Stream finished sending audio — playNextFromQueue handles the rest
-              if (!isPlayingRef.current) onQueueDrained();
+              // Force-flush any remaining accumulated chunks before queue drains
+              void flushPendingChunks(true).then(() => {
+                if (!isPlayingRef.current) onQueueDrained();
+              });
               break;
 
             case 'audio_error':
@@ -618,14 +662,21 @@ export default function SpeakPage() {
     stopTtsAnalyserLoop();
     stopMicAnalyser();
     audioQueueRef.current = [];
+    pendingChunksRef.current = [];
     isPlayingRef.current = false;
     masterFreqRef.current = null;
     window.speechSynthesis?.cancel();
     setSession(null);
+    setOracleError('');
     setStreamingText('');
     setInterimText('');
     setOrbState('idle');
   }, [stopMicAnalyser, stopTtsAnalyserLoop]);
+
+  // ── Reset scroll on mount (prevents wrong orb position when navigating back) ─
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // ── Cleanup on unmount ───────────────────────────────────────────────────
   useEffect(() => {
@@ -865,7 +916,19 @@ export default function SpeakPage() {
                   margin:        0,
                 }}
               >
-                SPEAK INTO THE SILENCE
+                SPEAK TO THE ORB
+              </p>
+              <p
+                style={{
+                  fontSize:   12,
+                  color:      'rgba(255,255,255,0.5)',
+                  margin:     '4px 0 0',
+                  maxWidth:   320,
+                  lineHeight: 1.4,
+                  textAlign:  'center',
+                }}
+              >
+                {ORB_INTRO_SHORT}
               </p>
 
               {/* Session error */}
@@ -901,7 +964,7 @@ export default function SpeakPage() {
                     letterSpacing: '0.02em',
                   }}
                 >
-                  Get Qs to Speak
+                  Get Qs
                 </Link>
               ) : (
                 <>
@@ -931,6 +994,7 @@ export default function SpeakPage() {
                   <button
                     onClick={() => void doStartSession(selectedQs)}
                     disabled={sessionLoading || !hasSupport}
+                    data-testid="speak-begin-button"
                     style={{
                       padding:      '12px 40px',
                       borderRadius: 32,
@@ -971,6 +1035,34 @@ export default function SpeakPage() {
                 gap:           12,
               }}
             >
+              {/* Oracle error (e.g. session expired, server error) */}
+              {oracleError && (
+                <p style={{ fontSize: 12, color: 'rgba(252,165,165,0.85)', margin: 0, textAlign: 'center', maxWidth: 320 }}>
+                  {oracleError}
+                </p>
+              )}
+              {/* Low credits mid-session — show upsell immediately so user isn't stranded */}
+              {isLowCredits && (
+                <Link
+                  href="/sanctuary/credits/buy"
+                  style={{
+                    display:        'flex',
+                    alignItems:     'center',
+                    gap:            8,
+                    padding:        '9px 22px',
+                    borderRadius:   32,
+                    background:     'rgba(124,58,237,0.18)',
+                    border:         '1px solid rgba(167,139,250,0.3)',
+                    color:          'rgba(216,180,254,0.9)',
+                    fontSize:       13,
+                    fontWeight:     500,
+                    textDecoration: 'none',
+                    letterSpacing:  '0.02em',
+                  }}
+                >
+                  Get Qs →
+                </Link>
+              )}
               {/* Reply dots */}
               <div style={{ display: 'flex', gap: 5 }}>
                 {Array.from({ length: Math.min(session!.repliesTotal, 15) }).map((_, i) => (

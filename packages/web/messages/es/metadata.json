@@ -1,0 +1,28 @@
+{
+  "defaultDescription": "Transforma tu mente a través de la voz y frecuencias sagradas",
+  "pages": {
+    "home": "waQup — Transformación por voz",
+    "login": "Iniciar sesión",
+    "signup": "Crear cuenta",
+    "sanctuary": "Santuario",
+    "library": "Biblioteca",
+    "create": "Crear",
+    "speak": "Hablar",
+    "marketplace": "Mercado",
+    "settings": "Configuración",
+    "credits": "Créditos",
+    "pricing": "Precios",
+    "howItWorks": "Cómo Funciona",
+    "waitlist": "Lista de Espera",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "forTeachers": "Para Profesores y Coaches",
+    "getQs": "Obtener Qs"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "signup": "Crear cuenta",
+    "forgotPassword": "Olvidé mi contraseña",
+    "resetPassword": "Restablecer contraseña"
+  }
+}

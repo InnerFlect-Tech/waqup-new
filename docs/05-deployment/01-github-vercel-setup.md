@@ -7,6 +7,7 @@ Production-level setup for waQup Web CI/CD and deployment.
 ## Overview
 
 - **CI**: Build, lint, type-check on every push/PR (main)
+- **Analytics**: Vercel Web Analytics (`@vercel/analytics`) — page views and Web Vitals. Wired in `packages/web/app/layout.tsx`. No env vars needed; works when deployed to Vercel.
 - **Deploy**: Automatic Vercel production deploy after successful build on `main`
 
 ---

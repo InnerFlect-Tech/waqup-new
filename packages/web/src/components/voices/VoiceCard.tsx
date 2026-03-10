@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Plus, Trash2, Loader2, Upload } from 'lucide-react';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import type { UserVoice } from '@waqup/shared/types';
 import { RELATIONSHIP_META } from '@waqup/shared/types';
 
@@ -126,8 +126,8 @@ export function VoiceCard({ voice, onDelete, onSamplesAdded }: VoiceCardProps) {
         padding: spacing.xl,
         borderRadius: borderRadius.xl,
         background: colors.glass.light,
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        backdropFilter: BLUR.xl,
+        WebkitBackdropFilter: BLUR.xl,
         border: `1px solid ${colors.glass.border}`,
         overflow: 'hidden',
         transition: 'box-shadow 0.3s',
@@ -325,7 +325,8 @@ export function VoiceCard({ voice, onDelete, onSamplesAdded }: VoiceCardProps) {
               inset: 0,
               borderRadius: borderRadius.xl,
               background: `rgba(0,0,0,0.85)`,
-              backdropFilter: 'blur(8px)',
+              backdropFilter: BLUR.sm,
+              WebkitBackdropFilter: BLUR.sm,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',

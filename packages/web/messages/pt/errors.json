@@ -1,0 +1,33 @@
+{
+  "generic": "Algo deu errado. Por favor, tente novamente.",
+  "networkError": "Erro de rede. Verifique sua conexão e tente novamente.",
+  "unauthorized": "Você precisa estar conectado para acessar esta página.",
+  "forbidden": "Você não tem permissão para acessar esta página.",
+  "notFound": "Página não encontrada.",
+  "serverError": "Erro no servidor. Por favor, tente novamente mais tarde.",
+  "timeout": "Tempo esgotado. Por favor, tente novamente.",
+  "insufficientCredits": "Você precisa de {cost} Qs mas tem {balance}. Obtenha mais Qs para continuar.",
+  "creditServiceError": "Erro no serviço de créditos. Por favor, tente novamente.",
+  "sessionNotFound": "Sessão não encontrada. Por favor, inicie uma nova sessão.",
+  "sessionExpired": "Sessão expirada. Por favor, inicie uma nova sessão.",
+  "allRepliesUsed": "Todas as respostas foram usadas. Inicie uma nova sessão para continuar.",
+  "audioFailed": "Falha na geração de áudio. Por favor, tente novamente.",
+  "micPermissionDenied": "Acesso ao microfone é necessário. Por favor, permita o acesso nas configurações do navegador e tente novamente.",
+  "uploadFailed": "Upload falhou. Por favor, tente novamente.",
+  "saveFailed": "Falha ao salvar. Por favor, tente novamente.",
+  "loadFailed": "Falha ao carregar. Por favor, tente novamente.",
+  "validation": {
+    "required": "Este campo é obrigatório.",
+    "emailInvalid": "Por favor, insira um endereço de email válido.",
+    "tooShort": "Deve ter pelo menos {min} caracteres.",
+    "tooLong": "Deve ter no máximo {max} caracteres.",
+    "passwordsNoMatch": "As senhas não coincidem.",
+    "invalidUrl": "Por favor, insira uma URL válida."
+  },
+  "pages": {
+    "title": "Algo deu errado",
+    "description": "Ocorreu um erro inesperado. Por favor, tente atualizar a página.",
+    "refresh": "Atualizar página",
+    "home": "Voltar ao início"
+  }
+}

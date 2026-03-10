@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
   statusBadge: {
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
-    borderRadius: borderRadius.xs ?? 4,
+    borderRadius: borderRadius.xs,
     borderWidth: 1,
   },
   statusBadgeText: {
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
   envBadge: {
     paddingHorizontal: spacing.xs,
     paddingVertical: 2,
-    borderRadius: borderRadius.xs ?? 4,
+    borderRadius: borderRadius.xs,
     borderWidth: 1,
   },
   footer: {

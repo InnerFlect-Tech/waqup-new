@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Linking } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -217,6 +217,7 @@ export default function SignupScreen({ navigation }: Props) {
                   <TouchableOpacity
                     onPress={() => onChange(!value)}
                     style={styles.checkboxContainer}
+                    activeOpacity={0.8}
                   >
                     <View
                       style={[
@@ -233,9 +234,28 @@ export default function SignupScreen({ navigation }: Props) {
                         </Typography>
                       )}
                     </View>
-                    <Typography variant="caption" style={[styles.termsText, { color: colors.text.secondary }]}>
-                      I accept the Terms of Service and Privacy Policy
-                    </Typography>
+                    <Text style={[styles.termsText, { color: colors.text.secondary }]}>
+                      {'I accept the '}
+                      <Text
+                        style={{ color: colors.accent.tertiary, textDecorationLine: 'underline' }}
+                        onPress={(e) => {
+                          e.stopPropagation?.();
+                          void Linking.openURL('https://waqup.app/terms');
+                        }}
+                      >
+                        Terms of Service
+                      </Text>
+                      {' and '}
+                      <Text
+                        style={{ color: colors.accent.tertiary, textDecorationLine: 'underline' }}
+                        onPress={(e) => {
+                          e.stopPropagation?.();
+                          void Linking.openURL('https://waqup.app/privacy');
+                        }}
+                      >
+                        Privacy Policy
+                      </Text>
+                    </Text>
                   </TouchableOpacity>
                 )}
               />

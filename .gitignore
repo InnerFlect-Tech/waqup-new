@@ -53,6 +53,9 @@ Thumbs.db
 
 # Testing
 coverage/
+packages/web/e2e/.auth/
+packages/web/test-results/
+packages/web/playwright-report/
 
 # Temporary files
 tmp/

@@ -3,10 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Typography, Button } from '@/components';
 import { SpeakingAnimation } from '@/components/audio';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Play, Pause, Edit, Trash2, Share2, ChevronDown, ChevronUp, Mic } from 'lucide-react';
 import type { ContentItemType } from './ContentItem';
 
@@ -203,8 +203,8 @@ export function ContentDetailPage({
               padding: spacing.md,
               borderRadius: borderRadius.md,
               background: colors.glass.light,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
+              backdropFilter: BLUR.md,
+              WebkitBackdropFilter: BLUR.md,
               border: `1px solid ${colors.glass.border}`,
             }}
           >

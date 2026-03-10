@@ -1,0 +1,154 @@
+{
+  "title": "Create",
+  "subtitle": "Choose what you want to create",
+  "contentTypes": {
+    "affirmation": {
+      "name": "Affirmation",
+      "tagline": "Cognitive re-patterning",
+      "description": "Rewire subconscious beliefs through personalized spoken affirmations in your own voice.",
+      "depth": "Shallow → Medium",
+      "duration": "1–3 min",
+      "scienceTag": "Neuroplasticity"
+    },
+    "meditation": {
+      "name": "Meditation",
+      "tagline": "State induction",
+      "description": "Guided visualization that drops you into deep alpha or theta states for lasting change.",
+      "depth": "Medium",
+      "duration": "5–20 min",
+      "scienceTag": "Brainwave entrainment"
+    },
+    "ritual": {
+      "name": "Ritual",
+      "tagline": "Identity encoding",
+      "description": "The deepest practice — combining affirmation, visualization, and somatic anchoring.",
+      "depth": "Deepest",
+      "duration": "10–30 min",
+      "scienceTag": "Identity-based change"
+    }
+  },
+  "modes": {
+    "conversation": "Conversation",
+    "orb": "Orb",
+    "conversationLabel": "Guided conversation",
+    "orbLabel": "Voice-first experience"
+  },
+  "steps": {
+    "intent": {
+      "heading": {
+        "affirmation": "What do you want to change or strengthen?",
+        "meditation": "What state or outcome are you seeking?",
+        "ritual": "What transformation do you intend?"
+      },
+      "placeholder": {
+        "affirmation": "e.g. I want to feel genuinely confident in social situations…",
+        "meditation": "e.g. I want to release anxiety and find calm clarity…",
+        "ritual": "e.g. I want to fully embody the identity of a successful entrepreneur…"
+      },
+      "hint": {
+        "affirmation": "Focus on a specific area — confidence, abundance, health, relationships.",
+        "meditation": "Describe a state you want to reach, not just what you want to avoid.",
+        "ritual": "Think in terms of identity — who you are becoming, not just what you want."
+      },
+      "scienceInsight": "Each time you articulate your intent clearly, you activate the prefrontal cortex — the part of the brain responsible for planning and intentional change.",
+      "characterCount": "{count}/300"
+    },
+    "context": {
+      "heading": "Add some context",
+      "placeholder": "e.g. I've always struggled with self-doubt in meetings…",
+      "hint": "The more specific you are, the more personalized your practice will be.",
+      "scienceInsight": "Context helps the AI craft language that resonates with your specific pattern — not a generic script."
+    },
+    "personalization": {
+      "heading": "Personalize your ritual",
+      "coreValues": "Core values",
+      "chooseAtLeastOne": "Choose at least one"
+    },
+    "script": {
+      "heading": "Your script",
+      "generating": "Crafting your script…",
+      "generatingSubtitle": "AI is weaving your intent into language",
+      "readyToGenerate": "Ready to generate your personalised script",
+      "readyHint": "Read through, edit freely, then record in your own voice",
+      "generateCta": "Generate your script",
+      "generateHint": "AI will craft a personalised script based on your intent.",
+      "model": "GPT-4o-mini · personalised to your intent",
+      "generateButton": "Generate Script — {cost} Qs",
+      "regenerateButton": "Regenerate — {cost} Qs",
+      "regenerateConfirm": "A new script will replace the current one",
+      "chooseVoiceCta": "Choose Voice →",
+      "scienceInsight": "The script is a starting point. Editing it in your own words strengthens the neural encoding — your brain responds more powerfully to your own authentic language.",
+      "errors": {
+        "generationFailed": "Script generation failed",
+        "noIntent": "No intent found. Please go back and fill in your intent first."
+      }
+    },
+    "voice": {
+      "heading": "Choose your voice",
+      "subtitle": "Your own voice carries the highest neural impact — but AI voice is still powerful.",
+      "tabs": {
+        "myVoice": "My Voice",
+        "aiVoice": "AI Voice",
+        "voiceLibrary": "Voice Library"
+      },
+      "myVoice": {
+        "description": "Hear your own voice — the most powerful form of identity encoding.",
+        "micPermissionError": "Microphone access is required. Please allow access in your browser settings and try again.",
+        "readScript": "Read your script aloud in a calm, intentional voice.",
+        "startRecording": "Start Recording",
+        "stopRecording": "Stop Recording",
+        "playback": "Play back",
+        "reRecord": "Re-record",
+        "recordingSaved": "Recording saved · {duration}"
+      },
+      "aiVoice": {
+        "description": "ElevenLabs neural voice — clear, warm, and professionally produced.",
+        "hint": "We'll generate your audio using ElevenLabs' neural voice."
+      },
+      "library": {
+        "description": "Use a saved voice — a parent, mentor, partner, or friend.",
+        "empty": "Your voice library is empty. Add voices in the Sanctuary.",
+        "goToLibraryCta": "Go to Voice Library →"
+      },
+      "continueCta": "Continue to Audio →",
+      "scienceInsight": "Your own voice speaking affirmations activates auditory, motor, and language processing simultaneously — creating a triple-reinforcement loop that external audio cannot replicate."
+    },
+    "audio": {
+      "heading": "Your audio",
+      "generating": "Generating your audio…",
+      "preview": "Preview",
+      "download": "Download",
+      "continueCta": "Continue →",
+      "costNote": "Rendering audio costs {cost} Qs"
+    },
+    "review": {
+      "heading": "Review your creation",
+      "title": "Title",
+      "description": "Description",
+      "saveCta": "Save to library",
+      "saving": "Saving…"
+    },
+    "complete": {
+      "heading": "Your practice is ready.",
+      "subtitle": "Saved to your library.",
+      "listenCta": "Listen now",
+      "libraryCta": "Go to library",
+      "createAnother": "Create another"
+    }
+  },
+  "conversation": {
+    "title": "Create through conversation",
+    "placeholder": "Type your message…",
+    "send": "Send",
+    "startOver": "Start over"
+  },
+  "orb": {
+    "title": "Orb",
+    "intro": "I'm your guide. Tell me what you want to create.",
+    "placeholder": "Speak or type…"
+  },
+  "errors": {
+    "insufficientCredits": "You need {cost} Qs but have {balance}. Get more Qs to continue.",
+    "creditServiceError": "Credit service error. Please try again."
+  }
+}

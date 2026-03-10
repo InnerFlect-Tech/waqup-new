@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/stripe';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
-
-const ADMIN_PASS = process.env.NEXT_PUBLIC_ORACLE_ADMIN_PASS || 'waQup-admin';
 
 const VALID_INTENTIONS = [
   'create',
@@ -69,13 +68,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
 /**
  * GET /api/waitlist
- * Admin-only. Requires X-Admin-Pass header.
+ * Admin-only. Requires valid Supabase session and profile.role === 'superadmin'.
  * Returns all signups ordered by created_at desc.
  */
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const pass = request.headers.get('x-admin-pass');
-  if (!pass || pass !== ADMIN_PASS) {
+export async function GET(): Promise<NextResponse> {
+  const serverClient = await createSupabaseServerClient();
+  const { data: { session } } = await serverClient.auth.getSession();
+
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { data: profile } = await serverClient
+    .from('profiles')
+    .select('role')
+    .eq('id', session.user.id)
+    .single();
+
+  if (!profile || profile.role !== 'superadmin') {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   let supabase;

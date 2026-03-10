@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { Typography, Button, Input } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 export interface ContentEditPageProps {
   title: string;
@@ -90,8 +90,8 @@ export function ContentEditPage({
                 borderRadius: borderRadius.md,
                 border: `1px solid ${colors.glass.border}`,
                 background: colors.glass.light,
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
+                backdropFilter: BLUR.md,
+                WebkitBackdropFilter: BLUR.md,
                 fontSize: '14px',
                 color: colors.text.primary,
                 outline: 'none',

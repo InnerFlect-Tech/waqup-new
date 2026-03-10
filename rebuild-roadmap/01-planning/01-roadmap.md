@@ -18,12 +18,12 @@
 
 ---
 
-## Current Status (2026-02-16)
+## Current Status (2026-03-09)
 
 | Platform | Phases Done | Active Phase | Next |
 |----------|-------------|--------------|------|
-| **Web** | 1, 2, 3, 4, 5 (partial), 14 (UI) | Phase 6–9 | Make create flows conversational; full API integration |
-| **Mobile** | 1, 2, 3 | Phase 4 | Sanctuary, content list/detail, creation flows |
+| **Web** | 1, 2, 3, 4, 5, 8, 10, 14 | Phase 6–7, 9 | Make create flows conversational; Phase 7 API completeness |
+| **Mobile** | 1, 2, 3, 4 (partial), 5 (partial), 8 (partial) | Phase 10, 14 | Stripe checkout UI; full onboarding; marketplace |
 
 **Full analysis**: [docs/04-reference/09-current-vs-final-solution.md](../../docs/04-reference/09-current-vs-final-solution.md)
 
@@ -727,11 +727,11 @@
 
 ---
 
-### Step 9.2: Integrate OpenAI TTS
-**Goal**: Generate audio from text using OpenAI TTS
+### Step 9.2: Integrate ElevenLabs TTS
+**Goal**: Generate audio from text using ElevenLabs Professional Voice Cloning (per tech stack)
 
 **Tasks**:
-- [ ] Set up OpenAI TTS API calls
+- [ ] Set up ElevenLabs TTS API calls
 - [ ] Create TTS generation function
 - [ ] Add voice selection (alloy, echo, fable, onyx, nova, shimmer)
 - [ ] Add SSML support for prosody control

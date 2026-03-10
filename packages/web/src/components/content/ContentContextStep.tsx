@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import type { ContentType } from '@/lib/contexts/ContentCreationContext';
+import type { ContentItemType } from '@waqup/shared/types';
 import type { ScienceTopic } from './ScienceInsight';
 import { Sun, Moon, Clock, MapPin, ChevronLeft } from 'lucide-react';
 
@@ -21,7 +21,7 @@ const TIME_OPTIONS = [
   { id: 'anytime', label: 'Anytime', icon: MapPin, color: '#34d399' },
 ];
 
-const TYPE_COPY: Record<ContentType, { heading: string; placeholder: string; scienceTopic: ScienceTopic; scienceInsight: string }> = {
+const TYPE_COPY: Record<ContentItemType, { heading: string; placeholder: string; scienceTopic: ScienceTopic; scienceInsight: string }> = {
   affirmation: {
     heading: 'When will you practice this?',
     placeholder: 'e.g. Every morning before I check my phone, while making coffee…',
@@ -122,8 +122,8 @@ export function ContentContextStep({ backHref, nextHref }: ContentContextStepPro
           style={{
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${details.length > 0 ? colors.accent.primary + '50' : colors.glass.border}`,
             padding: spacing.lg,
             transition: 'border-color 0.2s',

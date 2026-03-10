@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Typography, Button, Badge, Loading } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Play, Mic, Bot, Clock, Calendar, Plus, RefreshCw, ChevronLeft } from 'lucide-react';
 import type { ContentItem, ContentItemType } from './ContentItem';
 import { getContentDetailHref } from './getContentDetailHref';
@@ -41,7 +41,7 @@ function ContentCard({
   item: ContentItem;
   colors: ReturnType<typeof useTheme>['theme']['colors'];
 }) {
-  const typeColor = TYPE_COLOR[item.type] ?? '#9333EA';
+  const typeColor = TYPE_COLOR[item.type] ?? colors.accent.primary;
 
   return (
     <Link href={getContentDetailHref(item.type, item.id)} style={{ textDecoration: 'none' }}>
@@ -51,8 +51,8 @@ function ContentCard({
           position: 'relative',
           borderRadius: borderRadius.xl,
           background: colors.glass.light,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
           border: `1px solid ${colors.glass.border}`,
           overflow: 'hidden',
           cursor: 'pointer',
@@ -209,7 +209,7 @@ function ContentCard({
                         item.voiceType === 'ai' ? colors.accent.secondary : colors.accent.primary,
                     }}
                   >
-                    {item.voiceType === 'ai' ? 'AI voice' : 'My voice'}
+                    {item.voiceType === 'ai' ? 'Professional voice' : 'My voice'}
                   </span>
                 </div>
               </>
@@ -251,8 +251,8 @@ function ContentCard({
               height: 52,
               borderRadius: borderRadius.full,
               background: 'rgba(255,255,255,0.15)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
+              backdropFilter: BLUR.sm,
+              WebkitBackdropFilter: BLUR.sm,
               border: '1px solid rgba(255,255,255,0.3)',
               display: 'flex',
               alignItems: 'center',
@@ -284,7 +284,7 @@ export function ContentListPage({
   const colors = theme.colors;
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
-  const typeColor = TYPE_COLOR[contentType] ?? '#9333EA';
+  const typeColor = TYPE_COLOR[contentType] ?? colors.accent.primary;
 
   // Debounce search input to avoid filtering on every keystroke
   useEffect(() => {
@@ -368,8 +368,8 @@ export function ContentListPage({
               borderRadius: borderRadius.lg,
               border: `1px solid ${colors.glass.border}`,
               background: colors.glass.light,
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
+              backdropFilter: BLUR.md,
+              WebkitBackdropFilter: BLUR.md,
               fontSize: '14px',
               color: colors.text.primary,
               outline: 'none',
@@ -389,8 +389,8 @@ export function ContentListPage({
               textAlign: 'center',
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: BLUR.xl,
+              WebkitBackdropFilter: BLUR.xl,
               border: `1px solid ${colors.glass.border}`,
             }}
           >
@@ -497,8 +497,8 @@ export function ContentListPage({
                   textAlign: 'center',
                   borderRadius: borderRadius.xl,
                   background: colors.glass.light,
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
+                  backdropFilter: BLUR.xl,
+                  WebkitBackdropFilter: BLUR.xl,
                   border: `1px solid ${colors.glass.border}`,
                   marginTop: spacing.lg,
                 }}

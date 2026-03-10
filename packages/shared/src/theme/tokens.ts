@@ -4,7 +4,7 @@
  */
 
 export const spacing = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48, xxxl: 64 } as const;
-export const borderRadius = { sm: 8, md: 12, lg: 16, xl: 24, full: 9999 } as const;
+export const borderRadius = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, full: 9999 } as const;
 
 export const typography = {
   h1: { fontSize: 32, fontWeight: 300, lineHeight: 40, letterSpacing: -0.5 },
@@ -17,6 +17,10 @@ export const typography = {
   captionBold: { fontSize: 14, fontWeight: 600, lineHeight: 20, letterSpacing: 0 },
   small: { fontSize: 12, fontWeight: 400, lineHeight: 16, letterSpacing: 0 },
   smallBold: { fontSize: 12, fontWeight: 600, lineHeight: 16, letterSpacing: 0 },
+  /** Dense UIs: health, system, progress */
+  label: { fontSize: 13, fontWeight: 500, lineHeight: 18, letterSpacing: 0 },
+  /** Very dense UIs */
+  micro: { fontSize: 10, fontWeight: 500, lineHeight: 14, letterSpacing: 0 },
 } as const;
 
 /** Backdrop blur values (px) - SSOT for glass/backdrop effects */
@@ -52,16 +56,19 @@ export const buttonTokens = {
   paddingY: { sm: 8, md: 12, lg: 16 } as const,
   /** Minimum height (px) per size - touch-friendly targets (44pt for md/lg) */
   minHeight: { sm: 32, md: 44, lg: 52 } as const,
-  /** Icon-only button size (px) */
-  iconOnlySize: 40,
+  /** Icon-only button size (px) — 44pt minimum per Apple HIG / Android touch target guidelines */
+  iconOnlySize: 44,
 } as const;
 
 /** Layout constants (px) - Web uses as CSS, Mobile may scale */
 export const layout = {
+  /** Reserved for wide layouts; primary content uses maxWidth7xl (1280) */
   contentMaxWidth: 1400,
   authCardMaxWidth: 480,
   contentNarrow: 800,
   contentMedium: 600,
+  /** Max width for readable text blocks and narrow modals */
+  contentReadable: 400,
   navHeight: 64,
   gridCardMin: 300,
   searchInputMaxWidth: 400,

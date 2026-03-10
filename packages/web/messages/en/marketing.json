@@ -1,0 +1,109 @@
+{
+  "hero": {
+    "headline": "Your voice. Your practice. Your transformation.",
+    "subheadline": "waQup creates personalized affirmations, meditations, and rituals in your own voice — scientifically designed to rewire your subconscious.",
+    "cta": "Join the Waitlist",
+    "secondaryCta": "See how it works",
+    "earlyAccess": "Early access · No card · Practice free"
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "Built for voice-first transformation",
+    "steps": {
+      "tell": {
+        "title": "Tell us your intention",
+        "description": "Have a conversation with our AI guide to shape your personalized practice."
+      },
+      "create": {
+        "title": "Your voice. Your words.",
+        "description": "Record your practice in your own voice, or use our AI voice. Either way, it's yours."
+      },
+      "transform": {
+        "title": "Practice and transform",
+        "description": "Listen whenever you need it. Consistent practice rewires your subconscious over time."
+      }
+    }
+  },
+  "features": {
+    "voiceFirst": {
+      "title": "Voice-first",
+      "description": "Your own voice speaking your own words is the most powerful form of identity encoding."
+    },
+    "personalized": {
+      "title": "Fully personalized",
+      "description": "Not generic content — practices shaped to your specific intent, context, and goals."
+    },
+    "scientificallyDesigned": {
+      "title": "Scientifically designed",
+      "description": "Built on neuroplasticity research, brainwave entrainment, and identity-based change science."
+    }
+  },
+  "waitlist": {
+    "title": "Join the Waitlist",
+    "subtitle": "Be among the first to transform your mind with voice.",
+    "emailPlaceholder": "your@email.com",
+    "namePlaceholder": "Your name",
+    "cta": "Join Waitlist",
+    "joining": "Joining…",
+    "success": "You're on the list! We'll be in touch.",
+    "errors": {
+      "nameRequired": "Please enter your name.",
+      "emailInvalid": "Please enter a valid email.",
+      "intentionRequired": "Please select at least one intention.",
+      "networkError": "Network error. Please check your connection and try again."
+    }
+  },
+  "joinFounders": {
+    "title": "Founding Members",
+    "subtitle": "Limited spots for those who want to shape the future of waQup.",
+    "cta": "Claim your spot",
+    "emailPlaceholder": "your@email.com",
+    "joining": "Claiming…",
+    "success": "You've claimed your spot!",
+    "errors": {
+      "emailRequired": "Please enter your email.",
+      "claimFailed": "Failed to claim your spot. Please try again."
+    }
+  },
+  "footerTagline": "Your voice. Your transformation. Scientifically designed to rewire the subconscious patterns that shape who you are.",
+  "joinWaitlist": "Join Waitlist",
+  "footerProduct": "Product",
+  "footerCompany": "Company",
+  "footerLegal": "Legal",
+  "footerHowItWorks": "How It Works",
+  "footerPricing": "Pricing",
+  "footerMarketplace": "Marketplace",
+  "footerBuyCredits": "Buy Credits",
+  "footerOurStory": "Our Story",
+  "footerInvestors": "Investors",
+  "footerFoundingMembers": "Founding Members",
+  "footerPrivacyPolicy": "Privacy Policy",
+  "footerTerms": "Terms of Service",
+  "footerPaymentNote": "Practice is free forever. Payment: cards (Stripe) · Bitcoin coming soon",
+  "comingSoon": {
+    "title": "Coming Soon",
+    "subtitle": "We're working on something special. Stay tuned.",
+    "cta": "Join the Waitlist"
+  },
+  "launch": {
+    "title": "We're live."
+  },
+  "funnels": {
+    "title": "Transform your mind"
+  },
+  "getQs": {
+    "title": "Get Qs",
+    "subtitle": "Credits to power your creation journey."
+  },
+  "explanation": {
+    "title": "Our Story"
+  },
+  "investors": {
+    "title": "Investors",
+    "contactCta": "Get in touch"
+  },
+  "forTeachers": {
+    "title": "For Teachers & Coaches",
+    "subtitle": "Give your clients personalized voice practices."
+  }
+}

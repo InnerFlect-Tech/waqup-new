@@ -130,7 +130,14 @@ export async function getMarketplaceItems(params: {
 
   const res = await fetch(`/api/marketplace/items?${qs.toString()}`);
   if (!res.ok) return [];
-  const json = (await res.json()) as { items: Record<string, unknown>[] };
+  const text = await res.text();
+  if (!text?.trim()) return [];
+  let json: { items?: Record<string, unknown>[] };
+  try {
+    json = JSON.parse(text) as { items: Record<string, unknown>[] };
+  } catch {
+    return [];
+  }
   return (json.items ?? []).flatMap((r) => {
     const item = normalizeMarketplaceItem(r);
     return item ? [item] : [];
@@ -148,7 +155,13 @@ export interface ProgressStatsResponse {
 export async function getProgressStats(): Promise<ProgressStatsResponse | null> {
   const res = await fetch('/api/progress/stats');
   if (!res.ok) return null;
-  return res.json() as Promise<ProgressStatsResponse>;
+  const text = await res.text();
+  if (!text?.trim()) return null;
+  try {
+    return JSON.parse(text) as ProgressStatsResponse;
+  } catch {
+    return null;
+  }
 }
 
 // ─── Reflection ───────────────────────────────────────────────────────────────

@@ -8,10 +8,12 @@ import { useTheme } from '@/theme';
 import { MainTabParamList, MainStackParamList } from './types';
 import { HomeScreen, LibraryScreen } from '@/screens';
 import SpeakScreen from '@/screens/main/SpeakScreen';
+import MarketplaceScreen from '@/screens/main/MarketplaceScreen';
 import ContentDetailScreen from '@/screens/content/ContentDetailScreen';
 import CreateModeScreen from '@/screens/content/CreateModeScreen';
 import ContentCreateScreen from '@/screens/content/ContentCreateScreen';
 import { CreditsScreen, ProgressScreen, SettingsScreen, RemindersScreen } from '@/screens/sanctuary';
+import ProfileScreen from '@/screens/main/ProfileScreen';
 import { QCoin } from '@/components';
 import { useCreditBalance } from '@/hooks';
 
@@ -26,9 +28,8 @@ function QBalanceBadge() {
   return (
     <TouchableOpacity
       onPress={() => {
-        // Navigate to Library tab where content and profile are accessed
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (navigation as any).navigate('Tabs', { screen: 'Library' });
+        (navigation as any).navigate('Credits');
       }}
       style={{ marginRight: 16 }}
       activeOpacity={0.75}
@@ -67,7 +68,9 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
       <Tab.Screen name="Library" component={LibraryScreen} options={{ tabBarLabel: 'Library' }} />
+      <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ tabBarLabel: 'Discover' }} />
       <Tab.Screen name="Speak" component={SpeakScreen} options={{ tabBarLabel: 'Speak' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
     </Tab.Navigator>
   );
 }

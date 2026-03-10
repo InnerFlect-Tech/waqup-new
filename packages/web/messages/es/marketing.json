@@ -1,0 +1,23 @@
+{
+  "hero": {
+    "headline": "Tu voz. Tu práctica. Tu transformación.",
+    "cta": "Unirme a la Lista de Espera",
+    "secondaryCta": "Ver cómo funciona",
+    "earlyAccess": "Acceso anticipado · Sin tarjeta · Practica gratis"
+  },
+  "footerTagline": "Tu voz. Tu transformación. Diseñado científicamente para reprogramar los patrones subconscientes que te definen.",
+  "joinWaitlist": "Unirse",
+  "footerProduct": "Producto",
+  "footerCompany": "Empresa",
+  "footerLegal": "Legal",
+  "footerHowItWorks": "Cómo Funciona",
+  "footerPricing": "Precios",
+  "footerMarketplace": "Mercado",
+  "footerBuyCredits": "Comprar Créditos",
+  "footerOurStory": "Nuestra Historia",
+  "footerInvestors": "Inversores",
+  "footerFoundingMembers": "Miembros Fundadores",
+  "footerPrivacyPolicy": "Política de Privacidad",
+  "footerTerms": "Términos de Servicio",
+  "footerPaymentNote": "Practicar es siempre gratis. Pago: tarjetas (Stripe) · Bitcoin próximamente"
+}

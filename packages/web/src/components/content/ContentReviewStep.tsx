@@ -2,11 +2,11 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { CONTENT_TYPE_META } from '@/lib/creation-steps';
@@ -202,8 +202,8 @@ export function ContentReviewStep({
               padding: spacing.lg,
               borderRadius: borderRadius.xl,
               background: colors.glass.light,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: BLUR.xl,
+              WebkitBackdropFilter: BLUR.xl,
               border: `1px solid ${value ? meta.color + '25' : colors.glass.border}`,
             }}
           >

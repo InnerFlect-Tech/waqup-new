@@ -33,7 +33,7 @@ export const SANCTUARY_MENU_ITEMS: MenuItem[] = [
 
 /** Home page uses Sparkles/GraduationCap; Sanctuary uses Plus/BookOpen */
 export const HOME_QUICK_ACTIONS: QuickAction[] = [
-  { name: 'Create New', description: 'Start a new ritual or affirmation', icon: Sparkles, href: '/create' },
+  { name: 'Create New', description: 'Start a new affirmation, meditation, or ritual', icon: Sparkles, href: '/create' },
   { name: 'Set Reminder', description: 'Schedule your practice', icon: Bell, href: '/sanctuary/reminders' },
   { name: 'Learn & Transform', description: 'Understand the science of transformation', icon: GraduationCap, href: '/sanctuary/learn' },
 ];
@@ -50,7 +50,7 @@ export const PROFILE_MENU_ITEMS: MenuItem[] = [
 ];
 
 export const SANCTUARY_QUICK_ACTIONS: QuickAction[] = [
-  { name: 'Create New', description: 'Start a new ritual or affirmation', icon: Plus, href: '/create' },
+  { name: 'Create New', description: 'Start a new affirmation, meditation, or ritual', icon: Plus, href: '/create' },
   { name: 'Set Reminder', description: 'Schedule your practice', icon: Bell, href: '/sanctuary/reminders' },
   { name: 'Learn & Transform', description: 'Understand the science of transformation', icon: BookOpen, href: '/sanctuary/learn' },
 ];

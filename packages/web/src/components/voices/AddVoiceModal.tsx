@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, ChevronRight, ChevronLeft, Loader2, AlertCircle } from 'lucide-react';
 import { Typography, Button } from '@/components';
+import { BaseModal } from '@/components/shared/BaseModal';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { QCoin } from '@/components/ui/QCoin';
@@ -104,40 +105,17 @@ export function AddVoiceModal({ onClose, onCreated, creditBalance }: AddVoiceMod
   const canAdvanceUpload = files.length > 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <BaseModal
+      isOpen
+      onClose={onClose}
+      maxWidth={520}
+      zIndex={50}
       style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 50,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: spacing.xl,
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(4px)',
+        padding: 0,
+        boxShadow: `0 24px 80px ${colors.overlay}, 0 0 60px ${meta.color}15`,
       }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        style={{
-          width: '100%',
-          maxWidth: 520,
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          borderRadius: borderRadius.xl,
-          background: colors.background.secondary ?? colors.background.primary,
-          border: `1px solid ${colors.glass.border}`,
-          boxShadow: `0 24px 80px rgba(0,0,0,0.5), 0 0 60px ${meta.color}15`,
-          position: 'relative',
-        }}
       >
-        {/* Header */}
+      {/* Header */}
         <div
           style={{
             padding: `${spacing.xl} ${spacing.xl} ${spacing.lg}`,
@@ -623,7 +601,6 @@ export function AddVoiceModal({ onClose, onCreated, creditBalance }: AddVoiceMod
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
-    </motion.div>
+    </BaseModal>
   );
 }

@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { useAuthStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
+import { OVERRIDE_STORAGE_KEY } from '@/lib/override-auth';
 
 /**
  * Auth Provider Component
@@ -11,7 +12,7 @@ import { useSuperAdmin } from '@/hooks';
  * access to the app based on profiles.access_granted.
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { user, isInitialized, initializeAuth } = useAuthStore();
+  const { user, isInitialized, initializeAuth, setUser, setSession, setInitialized } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
   const [isReady, setIsReady] = useState(false);
@@ -21,6 +22,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { hasAccess, isLoading: isProfileLoading } = useSuperAdmin();
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const overrideRaw = localStorage.getItem(OVERRIDE_STORAGE_KEY);
+    if (overrideRaw) {
+      try {
+        const overrideUser = JSON.parse(overrideRaw) as { id?: string; email?: string };
+        if (overrideUser?.id) {
+          setUser(overrideUser as Parameters<typeof setUser>[0]);
+          setSession(null);
+          setInitialized(true);
+          setIsReady(true);
+          return;
+        }
+      } catch {
+        localStorage.removeItem(OVERRIDE_STORAGE_KEY);
+      }
+    }
+
     let unsubscribe: (() => void) | null = null;
     initializeAuth()
       .then((unsub) => {
@@ -38,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         unsubscribe();
       }
     };
-  }, [initializeAuth]);
+  }, [initializeAuth, setUser, setSession, setInitialized]);
 
   const isProtectedRoute =
     pathname.startsWith('/library') ||
@@ -70,6 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/join', // Founding member signup — footer + popup target
       '/privacy',
       '/terms',
+      '/data-deletion',
     ];
     const isPublicRoute =
       publicRoutes.includes(pathname) ||

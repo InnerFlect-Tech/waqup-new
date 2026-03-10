@@ -14,6 +14,7 @@ import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, Button, Loading } from '@/components';
 import { useContent } from '@/hooks';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
 type FilterType = 'all' | ContentItemType;
 
@@ -51,8 +52,7 @@ export default function LibraryScreen() {
   const isEmpty = filteredItems.length === 0;
 
   const renderItem = useCallback(({ item }: { item: (typeof filteredItems)[number] }) => {
-    const typeColors: Record<string, string> = { affirmation: '#c084fc', meditation: '#60a5fa', ritual: '#f59e0b' };
-    const tc = typeColors[item.type] ?? colors.accent.primary;
+    const tc = CONTENT_TYPE_COLORS[item.type as keyof typeof CONTENT_TYPE_COLORS] ?? colors.accent.primary;
     return (
       <TouchableOpacity
         key={item.id}

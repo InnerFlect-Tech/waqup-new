@@ -11,6 +11,7 @@ import {
   FlatList,
   Modal,
   Pressable,
+  Alert,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/types';
@@ -23,9 +24,11 @@ import {
   sendConversationMessage,
   generateScript,
   generateAgentScript,
+  renderContentAudio,
 } from '@/services/ai';
 import type { ChatMessage } from '@/services/ai';
 import { useCreateContent } from '@/hooks/useContent';
+import { supabase } from '@/services/supabase';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'ContentCreate'>;
 
@@ -111,6 +114,10 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
   const [isAgentGenerating, setIsAgentGenerating] = useState(false);
   const [showAgentConfirm, setShowAgentConfirm] = useState(false);
   const [chatCostError, setChatCostError] = useState<string | null>(null);
+
+  // ── TTS rendering state ──────────────────────────────────────────────────
+  const [isRendering, setIsRendering] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
 
   const { mutateAsync: createContent } = useCreateContent();
 
@@ -215,6 +222,65 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
       setChatCostError('Something went wrong. Please try again.');
     } finally {
       setIsAgentGenerating(false);
+    }
+  };
+
+  /**
+   * Creates a content item from the generated script, then calls the render
+   * API to generate audio via ElevenLabs and navigate to ContentDetail.
+   */
+  const handleRenderAudio = async () => {
+    if (isRendering || !generatedScript) return;
+    setIsRendering(true);
+    setRenderError(null);
+
+    try {
+      // 1. Create the content item in draft state
+      const item = await createContent({
+        type: contentType,
+        title: `My ${contentType}`,
+        description: '',
+        script: generatedScript,
+        status: 'draft',
+      });
+
+      // 2. Fetch the user's ElevenLabs voice ID
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('elevenlabs_voice_id')
+        .eq('id', (await supabase.auth.getUser()).data.user?.id ?? '')
+        .single();
+
+      const voiceId = (profile as { elevenlabs_voice_id?: string } | null)?.elevenlabs_voice_id;
+
+      if (!voiceId) {
+        // No voice cloned yet — navigate to ContentDetail without audio
+        // User can set up their voice in Voice Settings
+        navigation.navigate('ContentDetail', { contentId: item.id, contentType });
+        Alert.alert(
+          'No Voice Set Up',
+          'Your content has been saved. Set up your voice in Profile → Voice Settings to generate audio.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      // 3. Render audio via ElevenLabs
+      const result = await renderContentAudio(item.id, generatedScript, voiceId);
+
+      if ('error' in result && result.error === 'insufficient_credits') {
+        setRenderError(result.message ?? 'Not enough Qs to render audio.');
+        // Still navigate to ContentDetail — audio can be rendered later
+        navigation.navigate('ContentDetail', { contentId: item.id, contentType });
+        return;
+      }
+
+      // 4. Navigate to ContentDetail — audio URL is now saved server-side
+      navigation.navigate('ContentDetail', { contentId: item.id, contentType });
+    } catch {
+      setRenderError('Could not generate audio. Please try again.');
+    } finally {
+      setIsRendering(false);
     }
   };
 
@@ -488,6 +554,14 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
               </Typography>
             </Card>
 
+            {renderError && (
+              <View style={[styles.costErrorRow, { backgroundColor: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)' }]}>
+                <Typography variant="caption" style={{ color: '#ef4444', fontSize: 12 }}>
+                  {renderError}
+                </Typography>
+              </View>
+            )}
+
             <View style={{ gap: spacing.md }}>
               <Button
                 variant="outline"
@@ -499,7 +573,9 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
                   setMessages([]);
                   setAgentIntent('');
                   setAgentContext('');
+                  setRenderError(null);
                 }}
+                disabled={isRendering}
               >
                 Start Over
               </Button>
@@ -507,9 +583,17 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
                 variant="primary"
                 size="lg"
                 fullWidth
-                onPress={() => navigation.navigate('Tabs')}
+                onPress={() => void handleRenderAudio()}
+                disabled={isRendering}
               >
-                ✨ Looks great — proceed to recording
+                {isRendering ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+                    <ActivityIndicator size="small" color="#fff" />
+                    <Typography variant="body" style={{ color: '#fff' }}>Generating Audio…</Typography>
+                  </View>
+                ) : (
+                  '✨ Generate Audio & Save'
+                )}
               </Button>
             </View>
           </ScrollView>

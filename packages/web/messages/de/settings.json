@@ -1,0 +1,47 @@
+{
+  "title": "Settings",
+  "account": {
+    "heading": "Account",
+    "displayName": "Display name",
+    "email": "Email address",
+    "emailCannotChange": "Email cannot be changed after signup.",
+    "password": "Password",
+    "changePassword": "Change password"
+  },
+  "language": {
+    "heading": "Language",
+    "current": "Current language",
+    "select": "Select language",
+    "saved": "Language updated."
+  },
+  "theme": {
+    "heading": "Theme",
+    "select": "Select theme"
+  },
+  "notifications": {
+    "heading": "Notifications",
+    "practiceReminders": "Practice reminders",
+    "marketingEmails": "Tips and updates"
+  },
+  "privacy": {
+    "heading": "Privacy",
+    "dataExport": "Export my data",
+    "deleteAccount": "Delete account",
+    "deleteAccountDescription": "Permanently delete your account and all your data. This cannot be undone.",
+    "deleteAccountConfirm": "Delete my account",
+    "deleteAccountWarning": "Are you sure? All your practices, progress, and credits will be permanently deleted.",
+    "privacyPolicy": "Privacy Policy",
+    "cookieSettings": "Cookie settings"
+  },
+  "subscription": {
+    "heading": "Subscription",
+    "currentPlan": "Current plan",
+    "manage": "Manage subscription",
+    "cancel": "Cancel subscription",
+    "noPlan": "No active subscription.",
+    "viewPlans": "View plans"
+  },
+  "save": "Save changes",
+  "saved": "Changes saved.",
+  "errorSaving": "Error saving. Please try again."
+}

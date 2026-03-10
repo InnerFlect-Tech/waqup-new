@@ -1,6 +1,6 @@
 # Technology Stack - waQup Mobile App
 
-**Status**: ✅ Finalized | **Last Updated**: 2026-02-07
+**Status**: ✅ Finalized | **Last Updated**: 2026-03-09
 
 ## Quick Reference
 
@@ -12,7 +12,7 @@
 | **State** | Zustand + React Query | v4 + v5 |
 | **Backend** | Supabase | Latest |
 | **Audio** | expo-av | ~14.0 |
-| **TTS** | ElevenLabs | Professional Voice Cloning |
+| **TTS** | ElevenLabs | Instant Voice Cloning (IVC) |
 | **AI** | OpenAI | GPT-4o-mini / GPT-4 |
 | **Payments** | Stripe React Native | Latest |
 | **Forms** | react-hook-form + zod | Latest |
@@ -45,11 +45,11 @@
 - Enable real-time subscriptions
 
 ### Audio: ElevenLabs + expo-av ✅
-**TTS**: ElevenLabs Professional Voice Cloning
-- Enterprise-grade (10,000+ businesses)
+**TTS**: ElevenLabs Instant Voice Cloning (IVC)
+- Implementation: `createInstantVoice`, `editVoice` in `packages/shared/src/services/ai/elevenlabs.ts`
+- IVC available on all tiers including free; PVC (Professional Voice Cloning) requires paid Creator plan and is not used
 - Best for long-form content (10-30 min)
 - 70+ languages
-- Professional quality
 
 **Playback**: expo-av
 - Native audio playback
@@ -67,11 +67,9 @@
 - Type-specific structures
 - Batch processing for background
 
-### Payments: Stripe React Native SDK ✅
-- Official SDK
-- Native payment UI
-- Apple Pay / Google Pay
-- Secure (PCI compliant)
+### Payments: Stripe ✅ (Web); Mobile pending
+- **Web**: Stripe checkout (credits, subscription), Customer Portal, webhook handling — fully implemented
+- **Mobile**: Stripe React Native SDK planned; credits displayed via `useCreditBalance`, but no checkout UI yet
 
 ---
 

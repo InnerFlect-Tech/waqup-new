@@ -29,6 +29,7 @@ export const APP_ROUTES: RouteEntry[] = [
   // ── Legal ──────────────────────────────────────────────────────────────────
   { path: '/privacy', section: 'Legal', description: 'Privacy policy', status: 'exists', note: 'Full GDPR/CCPA content' },
   { path: '/terms', section: 'Legal', description: 'Terms of service', status: 'exists', note: 'Full terms with wellness disclaimer' },
+  { path: '/data-deletion', section: 'Legal', description: 'User data deletion', status: 'exists', note: 'Required for Meta/Facebook app submission' },
 
   // ── Auth ───────────────────────────────────────────────────────────────────
   { path: '/login', section: 'Auth', description: 'Sign in', status: 'exists' },
@@ -40,9 +41,9 @@ export const APP_ROUTES: RouteEntry[] = [
 
   // ── Onboarding ─────────────────────────────────────────────────────────────
   { path: '/onboarding', section: 'Onboarding', description: 'Intention selector', status: 'exists' },
-  { path: '/onboarding/profile', section: 'Onboarding', description: 'Profile setup', status: 'to_change', note: 'Stub' },
-  { path: '/onboarding/preferences', section: 'Onboarding', description: 'Preferences', status: 'to_change', note: 'Stub' },
-  { path: '/onboarding/guide', section: 'Onboarding', description: 'Getting started guide', status: 'to_change', note: 'Stub' },
+  { path: '/onboarding/profile', section: 'Onboarding', description: 'Profile setup', status: 'exists' },
+  { path: '/onboarding/preferences', section: 'Onboarding', description: 'Preferences', status: 'exists' },
+  { path: '/onboarding/guide', section: 'Onboarding', description: 'Getting started guide', status: 'exists' },
 
   // ── Main App ───────────────────────────────────────────────────────────────
   { path: '/library', section: 'Main App', description: 'Content library', status: 'exists' },
@@ -85,7 +86,7 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/sanctuary/affirmations/create/audio', section: 'Affirmations', description: 'Create — audio mixing', status: 'exists' },
   { path: '/sanctuary/affirmations/create/review', section: 'Affirmations', description: 'Create — review before save', status: 'exists' },
   { path: '/sanctuary/affirmations/create/complete', section: 'Affirmations', description: 'Create — success screen', status: 'exists' },
-  { path: '/sanctuary/affirmations/record', section: 'Affirmations', description: 'Record voice for affirmation', status: 'to_change', note: 'Stub' },
+  { path: '/sanctuary/affirmations/record', section: 'Affirmations', description: 'Record voice for affirmation', status: 'exists', note: 'Placeholder' },
 
   // ── Meditations ────────────────────────────────────────────────────────────
   { path: '/sanctuary/meditations', section: 'Meditations', description: 'List', status: 'exists' },
@@ -140,6 +141,11 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/showcase', section: 'Superadmin', description: 'Design system component showcase', status: 'exists', note: 'Superadmin only' },
   { path: '/pages', section: 'Superadmin', description: 'Pages index (all routes)', status: 'exists', note: 'Superadmin only' },
   { path: '/sitemap-view', section: 'Superadmin', description: 'Visual sitemap', status: 'exists', note: 'Superadmin only' },
+  // ── Updates (Superadmin) ───────────────────────────────────────────────────
+  { path: '/updates', section: 'Updates', description: 'Updates & how-to guides index', status: 'exists', note: 'Superadmin only' },
+  { path: '/updates/beta-readiness-implementation', section: 'Updates', description: 'Beta readiness implementation: what was done, migrations, prompts for copyrights', status: 'exists', note: 'Superadmin only' },
+  { path: '/updates/beta-tester-recruitment', section: 'Updates', description: 'Beta tester recruitment guide', status: 'exists', note: 'Superadmin only' },
+  { path: '/updates/audio-system-implementation', section: 'Updates', description: 'Audio system audit: own-voice recording, atmosphere presets, migrations, prompts', status: 'exists', note: 'Superadmin only' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -163,7 +169,7 @@ export function routesBySection(): Record<string, string[]> {
 
 const PUBLIC_SECTIONS = ['Landing', 'Marketing', 'Legal', 'Auth', 'Onboarding'];
 const PROTECTED_SECTIONS = ['Main App', 'Voice', 'Sanctuary', 'Credits', 'Affirmations', 'Meditations', 'Rituals', 'Marketplace'];
-const SUPERADMIN_SECTIONS = ['Superadmin'];
+const SUPERADMIN_SECTIONS = ['Superadmin', 'Updates'];
 
 export function getPublicRoutes(): RouteEntry[] {
   return APP_ROUTES.filter((r) => PUBLIC_SECTIONS.includes(r.section));
@@ -199,6 +205,7 @@ const SECTION_TO_GROUP: Record<string, string> = {
   Meditations: 'Meditations',
   Rituals: 'Rituals',
   Marketplace: 'Marketplace',
+  Updates: 'Updates',
 };
 
 export function getRouteGroupsForPages(): { public: RouteGroup[]; protected: RouteGroup[]; superadmin: RouteGroup[] } {

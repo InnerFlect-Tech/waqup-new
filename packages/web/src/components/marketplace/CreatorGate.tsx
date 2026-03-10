@@ -20,6 +20,7 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import type { ProgressStats } from '@waqup/shared/types';
 import { LEVEL_THRESHOLDS } from '@waqup/shared/types';
 import { createProgressService } from '@waqup/shared/services';
+import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 import { supabase } from '@/lib/supabase';
 import { useRoleOverrideStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
@@ -45,9 +46,9 @@ const EMPTY_FORM: ProposalFormData = {
 };
 
 const CONTENT_TYPE_OPTIONS = [
-  { id: 'affirmation', label: 'Affirmations', color: '#c084fc' },
-  { id: 'meditation', label: 'Meditations', color: '#60a5fa' },
-  { id: 'ritual', label: 'Rituals', color: '#34d399' },
+  { id: 'affirmation', label: 'Affirmations', color: CONTENT_TYPE_COLORS.affirmation },
+  { id: 'meditation', label: 'Meditations', color: CONTENT_TYPE_COLORS.meditation },
+  { id: 'ritual', label: 'Rituals', color: CONTENT_TYPE_COLORS.ritual },
 ];
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -189,7 +190,9 @@ function LockedState({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: `64px ${spacing.lg} 96px`,
+          justifyContent: 'center',
+          minHeight: '100vh',
+          padding: `${spacing.xl} ${spacing.lg}`,
           maxWidth: 680,
           margin: '0 auto',
           gap: spacing.xl,
@@ -217,7 +220,7 @@ function LockedState({
 
         {/* Heading + badge */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.sm }}>
-          <Badge variant="outline" style={{ borderColor: '#a78bfa44', marginBottom: spacing.xs }}>
+          <Badge variant="outline" style={{ borderColor: '#a78bfa44', marginBottom: spacing.xs, alignSelf: 'center' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <Sparkles size={10} color="#a78bfa" />
               <span style={{ color: '#a78bfa', fontWeight: 700, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase' }}>

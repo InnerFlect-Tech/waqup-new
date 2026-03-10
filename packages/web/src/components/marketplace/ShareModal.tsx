@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, ExternalLink } from 'lucide-react';
-import { Typography, Button } from '@/components';
+import { X, Copy, Check, ExternalLink, QrCode, Download } from 'lucide-react';
+import { Typography } from '@/components';
+import { BaseModal } from '@/components/shared/BaseModal';
 import { spacing, borderRadius } from '@/theme';
 import { useTheme } from '@/theme';
 
 export type SharePlatform = 'instagram' | 'whatsapp' | 'x' | 'copy';
+type Tab = 'share' | 'qr';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -65,6 +66,10 @@ function getPublicUrl(contentId: string): string {
   return `${base}/play/${contentId}`;
 }
 
+function getQrUrl(url: string, size = 240): string {
+  return `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=${size}x${size}&bgcolor=0a0a0f&color=ffffff&margin=10&format=png&qzone=2`;
+}
+
 async function recordShare(contentId: string, platform: SharePlatform) {
   try {
     await fetch('/api/marketplace/share', {
@@ -73,7 +78,7 @@ async function recordShare(contentId: string, platform: SharePlatform) {
       body: JSON.stringify({ contentItemId: contentId, platform }),
     });
   } catch {
-    // Non-critical — don't surface errors to user
+    // Non-critical
   }
 }
 
@@ -90,8 +95,11 @@ export function ShareModal({
   const colors = theme.colors;
   const accent = TYPE_COLOR[contentType] ?? colors.accent.primary;
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('share');
+  const [qrDownloading, setQrDownloading] = useState(false);
 
   const shareUrl = getPublicUrl(contentId);
+  const qrUrl = getQrUrl(shareUrl);
   const shareText = creatorName
     ? `"${title}" by ${creatorName} on waQup`
     : `"${title}" on waQup`;
@@ -100,15 +108,7 @@ export function ShareModal({
     await recordShare(contentId, platform);
     onShare?.(platform);
 
-    if (platform === 'copy') {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      return;
-    }
-
-    if (platform === 'instagram') {
-      // Instagram doesn't support direct URL-share links from desktop — copy link instead
+    if (platform === 'copy' || platform === 'instagram') {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -121,77 +121,85 @@ export function ShareModal({
     }
   }, [contentId, shareUrl, shareText, onShare]);
 
-  if (!isOpen) return null;
+  const handleDownloadQr = async () => {
+    setQrDownloading(true);
+    try {
+      const response = await fetch(qrUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `waQup-${title.replace(/\s+/g, '-').toLowerCase()}-qr.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // fallback: open in new tab
+      window.open(qrUrl, '_blank');
+    } finally {
+      setQrDownloading(false);
+    }
+  };
+
+  const tabStyle = (tab: Tab) => ({
+    padding: `${spacing.sm} ${spacing.lg}`,
+    borderRadius: borderRadius.md,
+    background: activeTab === tab ? `${accent}20` : 'transparent',
+    border: `1px solid ${activeTab === tab ? accent + '50' : 'transparent'}`,
+    color: activeTab === tab ? accent : colors.text.secondary,
+    cursor: 'pointer',
+    fontSize: 13,
+    fontWeight: activeTab === tab ? 700 : 400,
+    transition: 'all 0.15s ease',
+  });
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      zIndex={1001}
+      style={{
+        padding: 0,
+        boxShadow: `0 32px 80px ${colors.overlay}, 0 0 0 1px ${accent}20`,
+        maxWidth: 400,
+      }}
+    >
+      <div style={{ padding: spacing.xl }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: spacing.lg }}>
+          <div>
+            <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
+              Share
+            </Typography>
+            <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 1.4, fontSize: 12 }}>
+              &ldquo;{title}&rdquo;
+              {creatorName ? ` by ${creatorName}` : ''}
+              <br />
+              <span style={{ color: accent, fontSize: 11 }}>Creator earns a Q for each share.</span>
+            </Typography>
+          </div>
+          <button
             onClick={onClose}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.6)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              zIndex: 1000,
-            }}
-          />
-
-          {/* Modal */}
-          <motion.div
-            key="modal"
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            style={{
-              position: 'fixed',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 1001,
-              width: 'min(420px, calc(100vw - 32px))',
-              padding: spacing.xl,
-              borderRadius: borderRadius.xl,
-              background: colors.background?.primary ?? '#0a0a0a',
-              border: `1px solid ${colors.glass.border}`,
-              boxShadow: `0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px ${accent}20`,
-            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: spacing.xs, color: colors.text.secondary, flexShrink: 0 }}
           >
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: spacing.xl }}>
-              <div>
-                <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                  Share
-                </Typography>
-                <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 1.4 }}>
-                  Share &ldquo;{title}&rdquo; and help others discover it.
-                  <br />
-                  <span style={{ color: accent, fontSize: 11 }}>The creator earns a credit for each share.</span>
-                </Typography>
-              </div>
-              <button
-                onClick={onClose}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: spacing.xs,
-                  color: colors.text.secondary,
-                  flexShrink: 0,
-                }}
-              >
-                <X size={18} />
-              </button>
-            </div>
+            <X size={18} />
+          </button>
+        </div>
 
+        {/* Tab switcher */}
+        <div style={{ display: 'flex', gap: spacing.xs, marginBottom: spacing.lg, padding: `${spacing.xs}`, borderRadius: borderRadius.md, background: colors.glass.light, border: `1px solid ${colors.glass.border}` }}>
+          <button style={tabStyle('share')} onClick={() => setActiveTab('share')}>
+            Share link
+          </button>
+          <button style={tabStyle('qr')} onClick={() => setActiveTab('qr')}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+              <QrCode size={13} />
+              QR code
+            </span>
+          </button>
+        </div>
+
+        {activeTab === 'share' && (
+          <>
             {/* Share URL preview */}
             <div
               style={{
@@ -209,14 +217,7 @@ export function ShareModal({
               <ExternalLink size={14} color={colors.text.secondary} style={{ flexShrink: 0 }} />
               <Typography
                 variant="small"
-                style={{
-                  color: colors.text.secondary,
-                  fontSize: 12,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flex: 1,
-                }}
+                style={{ color: colors.text.secondary, fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}
               >
                 {shareUrl}
               </Typography>
@@ -225,9 +226,7 @@ export function ShareModal({
             {/* Platform buttons */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.md, marginBottom: spacing.lg }}>
               {PLATFORMS.map((p) => {
-                const isCopyDone = p.id === 'copy' && copied;
-                const isInstaCopied = p.id === 'instagram' && copied;
-
+                const isCopyDone = (p.id === 'copy' || p.id === 'instagram') && copied;
                 return (
                   <button
                     key={p.id}
@@ -247,26 +246,102 @@ export function ShareModal({
                       fontWeight: 500,
                     }}
                   >
-                    {isCopyDone || isInstaCopied ? (
+                    {isCopyDone ? (
                       <Check size={16} color="#22c55e" />
                     ) : (
                       <span style={{ fontSize: 16 }}>{p.icon}</span>
                     )}
-                    <span style={{ color: isCopyDone || isInstaCopied ? '#22c55e' : colors.text.primary }}>
-                      {isCopyDone ? 'Copied!' : isInstaCopied ? 'Link copied!' : p.label}
+                    <span style={{ color: isCopyDone ? '#22c55e' : colors.text.primary }}>
+                      {isCopyDone ? 'Copied!' : p.label}
                     </span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Instagram note */}
             <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11, opacity: 0.7, textAlign: 'center' }}>
               For Instagram: the link is copied — paste it in your story or bio.
             </Typography>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          </>
+        )}
+
+        {activeTab === 'qr' && (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.lg }}>
+            <div
+              style={{
+                padding: spacing.md,
+                borderRadius: borderRadius.lg,
+                background: '#0a0a0f',
+                border: `1px solid ${accent}30`,
+                boxShadow: `0 0 32px ${accent}20`,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={qrUrl}
+                alt={`QR code for ${title}`}
+                width={200}
+                height={200}
+                style={{ display: 'block', borderRadius: borderRadius.md }}
+              />
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, lineHeight: 1.6 }}>
+                Scan to open the public player.
+                <br />
+                Post in your studio, on cards, or in print materials.
+              </Typography>
+            </div>
+
+            <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button
+                onClick={handleDownloadQr}
+                disabled={qrDownloading}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: spacing.xs,
+                  padding: `${spacing.sm} ${spacing.lg}`,
+                  borderRadius: borderRadius.lg,
+                  background: `${accent}18`,
+                  border: `1px solid ${accent}40`,
+                  color: accent,
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                <Download size={14} />
+                {qrDownloading ? 'Downloading...' : 'Download PNG'}
+              </button>
+
+              <button
+                onClick={() => {
+                  void navigator.clipboard.writeText(shareUrl);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: spacing.xs,
+                  padding: `${spacing.sm} ${spacing.lg}`,
+                  borderRadius: borderRadius.lg,
+                  background: colors.glass.light,
+                  border: `1px solid ${colors.glass.border}`,
+                  color: copied ? '#22c55e' : colors.text.secondary,
+                  cursor: 'pointer',
+                  fontSize: 13,
+                }}
+              >
+                {copied ? <Check size={14} /> : <Copy size={14} />}
+                {copied ? 'Copied!' : 'Copy link'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </BaseModal>
   );
 }

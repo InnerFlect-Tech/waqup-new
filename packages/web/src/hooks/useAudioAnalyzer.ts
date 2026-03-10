@@ -216,6 +216,7 @@ export function useAudioAnalyzer({
       }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
       }
       if (sourceRef.current) {
         try {
@@ -223,10 +224,12 @@ export function useAudioAnalyzer({
         } catch {
           /* ignore */
         }
+        sourceRef.current = null;
       }
-      if (contextRef.current?.state === 'running') {
-        contextRef.current.suspend();
-      }
+      // Close the AudioContext to release the browser resource slot.
+      // Suspending without closing causes a leak — Chrome allows ~6 contexts.
+      void contextRef.current?.close();
+      contextRef.current = null;
     };
   }, []);
 

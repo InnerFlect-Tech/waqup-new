@@ -1,6 +1,6 @@
 # Design System — waQup
 
-Single source of truth for the waQup design system. All values are verified against the live codebase and the `waqup-app` reference.
+Single source of truth for the waQup design system. All values are verified against the live codebase.
 
 ---
 
@@ -242,4 +242,4 @@ hover: rgba(255,255,255,0.05)
 
 ---
 
-*Last verified: 2026-03-07 — aligned with waqup-app reference design*
+*Last verified: 2026-03-07 — aligned with design-system.mdc rules*

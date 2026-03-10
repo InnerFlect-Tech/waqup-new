@@ -6,7 +6,8 @@
 
 ## TTS: ElevenLabs
 
-- **Provider**: ElevenLabs Professional Voice Cloning
+- **Provider**: ElevenLabs Instant Voice Cloning (IVC)
+- **Implementation**: `createInstantVoice`, `editVoice` in `packages/shared/src/services/ai/elevenlabs.ts` — IVC is available on all tiers including free; PVC (Professional Voice Cloning) exists but requires a paid Creator plan and is not used
 - **Use case**: Long-form content (10–30 min), prosody, 70+ languages
 - **Per tech stack**: [docs/02-mobile/01-technology-stack.md](../02-mobile/01-technology-stack.md)
 

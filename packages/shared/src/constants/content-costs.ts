@@ -41,12 +41,6 @@ export function getCreditCost(
   return AI_MODE_COSTS[mode] + voiceCost;
 }
 
-/** Backward-compatible overload for code that passes boolean */
-export function getCreditCostLegacy(type: ContentItemType, useAiVoice: boolean): number {
-  const costs = CONTENT_CREDIT_COSTS[type];
-  return useAiVoice ? costs.withAi : costs.base;
-}
-
 /**
  * Per-API-route credit costs — charged server-side on every successful call.
  * These are the canonical values used in both the API gate and the UI warning.

@@ -22,19 +22,13 @@ import { Typography } from '@/components';
 import { VoiceOrb } from '@/components/audio';
 import { useAudioPlayer } from '@/components/audio';
 import { useContentItem } from '@/hooks';
+import { formatTime } from '@waqup/shared/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'ContentDetail'>;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ORB_SIZE = Math.min(SCREEN_WIDTH * 0.52, 220);
 const BAR_COUNT = 28;
-
-function formatTime(ms: number): string {
-  const s = Math.floor(ms / 1000);
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec.toString().padStart(2, '0')}`;
-}
 
 function WaveformBar({ isPlaying, index }: { isPlaying: boolean; index: number }) {
   const phase = useSharedValue(0);

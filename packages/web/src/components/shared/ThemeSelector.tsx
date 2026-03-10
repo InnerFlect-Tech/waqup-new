@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/theme';
 import { Button } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, BLUR } from '@/theme';
 import { Palette, ChevronDown, Link2 } from 'lucide-react';
 
 export const ThemeSelector: React.FC = () => {
@@ -57,8 +57,8 @@ export const ThemeSelector: React.FC = () => {
           padding: `${spacing.sm} ${spacing.md}`,
           borderRadius: borderRadius.md,
           background: theme.colors.glass.light,
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
+          backdropFilter: BLUR.md,
+          WebkitBackdropFilter: BLUR.md,
           border: `1px solid ${theme.colors.glass.border}`,
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           color: theme.colors.text.secondary,
@@ -88,8 +88,8 @@ export const ThemeSelector: React.FC = () => {
             padding: spacing.md,
             borderRadius: borderRadius.md,
             background: theme.colors.glass.opaque,
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            backdropFilter: BLUR.lg,
+            WebkitBackdropFilter: BLUR.lg,
             border: `1px solid ${theme.colors.glass.border}`,
             boxShadow: `0 8px 24px ${theme.colors.mystical?.glow ?? 'rgba(0,0,0,0.2)'}40`,
             minWidth: '160px',

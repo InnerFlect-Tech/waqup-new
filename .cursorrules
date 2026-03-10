@@ -4,7 +4,7 @@
 
 This is the **waQup multi-platform rebuild** - building Mobile (React Native + Expo for Android/iOS) and Web (Next.js for desktop browsers) apps **simultaneously from scratch**. This is the **main development repository** for the new waQup platform.
 
-**Location**: `waqup-app/waqup-new/` (this is the active development repo)
+**Location**: `waqup-new/` (this repo — active development; `waqup-app/` inside repo is deprecated)
 **Strategy**: **Parallel Development** - Mobile and Web platforms developed simultaneously
 **Tech Stack**: 
 - **Mobile**: React Native + Expo SDK 54 + TypeScript 5.9.3 (Android + iOS)
@@ -113,7 +113,7 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 **Location**: `rebuild-roadmap/` (this project)
 
 **Planning** (`01-planning/`):
-- `01-roadmap.md` - Main roadmap (13 phases, 50+ steps), success criteria, UI checkpoints
+- `01-roadmap.md` - Main roadmap (18 phases: 0–17, 50+ steps), success criteria, UI checkpoints
 - `02-schema-verification.md` - Database schema analysis, missing tables, migrations, coherence checklist
 
 **Phase Analyses** (`02-phases/`):

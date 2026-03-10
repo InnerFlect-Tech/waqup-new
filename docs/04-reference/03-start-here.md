@@ -30,8 +30,8 @@ This doc is the entry point for developers: quick start, current phase, essentia
 
 ## Current phase
 
-**Web**: Phases 1–5 done (Sanctuary, content CRUD, speak, marketplace). Next: conversational create flows, Phase 7 API.  
-**Mobile**: Phases 1–3 done. Next: Phase 4 (Sanctuary, content).
+**Web**: Phases 1–5, 8, 10, 14 done (Sanctuary, content, audio, Stripe, marketplace). Next: conversational create flows, Phase 7 API completeness.  
+**Mobile**: Phases 1–5 partial (Sanctuary sub-pages, ContentCreateScreen, SpeakScreen). Next: Stripe checkout, full onboarding, marketplace.
 
 **Changelog**: [rebuild-roadmap/03-tracking/01-changelog.md](../../rebuild-roadmap/03-tracking/01-changelog.md)  
 **Current vs Final**: [docs/04-reference/09-current-vs-final-solution.md](./09-current-vs-final-solution.md)  
@@ -43,10 +43,12 @@ This doc is the entry point for developers: quick start, current phase, essentia
 
 ### Before starting
 
-1. **Roadmap** – [rebuild-roadmap/01-planning/01-roadmap.md](../../rebuild-roadmap/01-planning/01-roadmap.md)
-2. **Current phase analysis** – [rebuild-roadmap/02-phases/](../../rebuild-roadmap/02-phases/) (e.g. 01-phase-01-project-foundation.md)
-3. **Tech stack** – [docs/02-mobile/01-technology-stack.md](../02-mobile/01-technology-stack.md)
-4. **Multi-platform strategy** – [docs/03-platforms/01-multi-platform-strategy.md](../03-platforms/01-multi-platform-strategy.md)
+1. **Architecture** – [docs/00-architecture-overview.md](../00-architecture-overview.md)
+2. **Product overview** – [docs/00-product-overview.md](../00-product-overview.md)
+3. **Developer onboarding** – [docs/00-developer-onboarding.md](../00-developer-onboarding.md)
+4. **Roadmap** – [rebuild-roadmap/01-planning/01-roadmap.md](../../rebuild-roadmap/01-planning/01-roadmap.md)
+5. **Tech stack** – [docs/02-mobile/01-technology-stack.md](../02-mobile/01-technology-stack.md)
+6. **Multi-platform strategy** – [docs/03-platforms/01-multi-platform-strategy.md](../03-platforms/01-multi-platform-strategy.md)
 
 ### During development
 
@@ -94,4 +96,4 @@ Main product docs: [docs/01-core/](../01-core/README.md).
 
 ---
 
-**Last updated**: 2026-02-16
+**Last updated**: 2026-03-09

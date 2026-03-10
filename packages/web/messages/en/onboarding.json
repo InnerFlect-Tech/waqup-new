@@ -1,0 +1,55 @@
+{
+  "welcome": {
+    "title": "Welcome to waQup",
+    "subtitle": "Let's personalize your experience",
+    "cta": "Get started"
+  },
+  "profile": {
+    "title": "What should we call you?",
+    "subtitle": "We'll use this when we speak to you in your rituals. You can change it anytime.",
+    "placeholder": "e.g. Alex",
+    "primaryLabel": "Continue →",
+    "skipLabel": "Skip for now"
+  },
+  "preferences": {
+    "title": "What brings you here?",
+    "subtitle": "Choose the areas you most want to transform. You can update these anytime.",
+    "primaryLabel": "Continue →",
+    "skipLabel": "Skip for now",
+    "options": {
+      "confidence": "Confidence",
+      "abundance": "Abundance",
+      "health": "Health",
+      "relationships": "Relationships",
+      "focus": "Focus",
+      "peace": "Inner Peace",
+      "purpose": "Purpose",
+      "creativity": "Creativity"
+    }
+  },
+  "guide": {
+    "title": "Your practice guide",
+    "subtitle": "Here's how waQup works",
+    "primaryLabel": "Start my journey →",
+    "skipLabel": "Skip",
+    "steps": {
+      "create": {
+        "title": "Create",
+        "description": "Build personalized affirmations, meditations, or rituals through a guided conversation."
+      },
+      "listen": {
+        "title": "Listen",
+        "description": "Hear your own voice — the most powerful form of identity encoding."
+      },
+      "transform": {
+        "title": "Transform",
+        "description": "Consistent practice rewires your subconscious patterns over time."
+      }
+    }
+  },
+  "complete": {
+    "title": "You're all set.",
+    "subtitle": "Your personalized sanctuary is ready.",
+    "cta": "Enter my sanctuary"
+  }
+}

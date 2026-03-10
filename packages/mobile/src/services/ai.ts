@@ -65,6 +65,42 @@ export async function generateAgentScript(
   return res.json() as Promise<ScriptResponse>;
 }
 
+export interface RenderResponse {
+  audioUrl: string | null;
+  storagePath: string | null;
+  creditsUsed: number;
+}
+
+export interface RenderInsufficientCreditsError {
+  error: 'insufficient_credits';
+  message: string;
+  required: number;
+  balance: number;
+}
+
+/**
+ * Renders a content item's script to audio using ElevenLabs TTS via the web server.
+ * Deducts 1Q server-side. Returns the audio URL on success.
+ */
+export async function renderContentAudio(
+  contentId: string,
+  text: string,
+  voiceId: string,
+): Promise<RenderResponse | RenderInsufficientCreditsError> {
+  const res = await fetch(`${API_BASE_URL}/api/ai/render`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contentId, text, voiceId }),
+  });
+
+  if (res.status === 402) {
+    return res.json() as Promise<RenderInsufficientCreditsError>;
+  }
+
+  if (!res.ok) throw new Error(`Render API error: ${res.status}`);
+  return res.json() as Promise<RenderResponse>;
+}
+
 export interface OracleResponse {
   reply: string;
   creditsUsed: number;
