@@ -6,6 +6,8 @@ const nextConfig = {
   reactStrictMode: true,
   async redirects() {
     return [
+      // Root "/" → app/page.tsx redirects; config redirect as fallback
+      { source: '/', destination: '/en', permanent: false },
       { source: '/home', destination: '/sanctuary', permanent: true },
       { source: '/auth/beta-signup', destination: '/waitlist', permanent: true },
     ];
