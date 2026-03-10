@@ -43,3 +43,17 @@ export function createSupabaseAdminClient() {
     },
   });
 }
+
+/**
+ * Returns a Supabase admin client or null when env vars are missing.
+ * Use for non-critical reads (e.g. waitlist count, founding members remaining)
+ * so CI E2E can run without Supabase credentials.
+ */
+export function createSupabaseAdminClientOrNull(): ReturnType<typeof createClient> | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceRoleKey) return null;
+  return createClient(url, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseAdminClient } from '@/lib/stripe';
+import { createSupabaseAdminClientOrNull } from '@/lib/stripe';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -7,10 +7,14 @@ export const revalidate = 0;
 /**
  * GET /api/waitlist/count
  * Public — no auth. Returns waitlist signup count for social proof on landing.
+ * Returns 0 when Supabase env vars are missing (CI E2E).
  */
 export async function GET(): Promise<NextResponse> {
   try {
-    const supabase = createSupabaseAdminClient();
+    const supabase = createSupabaseAdminClientOrNull();
+    if (!supabase) {
+      return NextResponse.json({ count: 0 });
+    }
     const { count, error } = await supabase
       .from('waitlist_signups')
       .select('*', { count: 'exact', head: true });

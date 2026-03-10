@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseAdminClient } from '@/lib/stripe';
+import { createSupabaseAdminClientOrNull } from '@/lib/stripe';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -9,10 +9,14 @@ const FOUNDING_MEMBER_CAP = 500;
 /**
  * GET /api/founding-members/remaining
  * Public — no auth. Returns founding member spots remaining for join page and modal.
+ * Returns FOUNDING_MEMBER_CAP when Supabase env vars are missing (CI E2E).
  */
 export async function GET(): Promise<NextResponse> {
   try {
-    const supabase = createSupabaseAdminClient();
+    const supabase = createSupabaseAdminClientOrNull();
+    if (!supabase) {
+      return NextResponse.json({ remaining: FOUNDING_MEMBER_CAP });
+    }
     const { count, error } = await supabase
       .from('waitlist_signups')
       .select('*', { count: 'exact', head: true })
