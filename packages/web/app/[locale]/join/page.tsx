@@ -412,7 +412,7 @@ function JoinPageInner() {
                       label="First name"
                       placeholder="Your first name"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                       style={{ color: colors.text.primary }}
                     />
                     <Input
@@ -420,7 +420,7 @@ function JoinPageInner() {
                       label="Email address"
                       placeholder="you@example.com"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                       required
                       style={{ color: colors.text.primary }}
                     />

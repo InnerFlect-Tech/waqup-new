@@ -66,13 +66,13 @@ export function ContentEditPage({
           <Input
             label="Title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
             placeholder="Enter title"
           />
           <Input
             label="Description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
             placeholder="Enter description"
           />
           <div style={{ marginBottom: spacing.md }}>
@@ -81,7 +81,7 @@ export function ContentEditPage({
             </Typography>
             <textarea
               value={script}
-              onChange={(e) => setScript(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setScript(e.target.value)}
               placeholder="Enter script..."
               rows={8}
               style={{

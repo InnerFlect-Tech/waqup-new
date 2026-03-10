@@ -739,7 +739,7 @@ export default function SanctuaryRemindersPage() {
                 <Input
                   label="Label"
                   value={formLabel}
-                  onChange={(e) => setFormLabel(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormLabel(e.target.value)}
                   placeholder="Practice reminder"
                   wrapperStyle={{ marginBottom: 0 }}
                 />
@@ -776,7 +776,7 @@ export default function SanctuaryRemindersPage() {
                     type="time"
                     id="reminder-time"
                     value={formTime}
-                    onChange={(e) => setFormTime(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormTime(e.target.value)}
                     aria-label="Reminder time"
                     wrapperStyle={{ marginBottom: 0 }}
                   />

@@ -162,7 +162,7 @@ export default function SignupPage() {
                     label="Email"
                     placeholder="your@email.com"
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
                     onBlur={onBlur}
                     leftIcon={<Mail size={20} color={colors.text.secondary} />}
                     error={errors.email?.message ? tv(errors.email!.message as Parameters<typeof tv>[0]) : undefined}
@@ -183,7 +183,7 @@ export default function SignupPage() {
                     label="Password"
                     placeholder="Create a password"
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
                     onBlur={onBlur}
                     leftIcon={<Lock size={20} color={colors.text.secondary} />}
                     rightIcon={
@@ -225,7 +225,7 @@ export default function SignupPage() {
                     label="Confirm Password"
                     placeholder="Confirm your password"
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
                     onBlur={onBlur}
                     leftIcon={<Lock size={20} color={colors.text.secondary} />}
                     rightIcon={

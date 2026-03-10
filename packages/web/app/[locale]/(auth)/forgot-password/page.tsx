@@ -135,7 +135,7 @@ export default function ForgotPasswordPage() {
                     label="Email"
                     placeholder="your@email.com"
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
                     onBlur={onBlur}
                     leftIcon={<Mail size={20} color={colors.text.secondary} />}
                     error={errors.email?.message ? tv(errors.email!.message as Parameters<typeof tv>[0]) : undefined}

@@ -194,7 +194,7 @@ export default function ProfilePage() {
                     rows={2}
                     autoFocus
                     value={bioValue}
-                    onChange={(e) => setBioValue(e.target.value.slice(0, 160))}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setBioValue(e.target.value.slice(0, 160))}
                     placeholder="How you show up in the marketplace…"
                     wrapperStyle={{ marginBottom: spacing.xs }}
                   />

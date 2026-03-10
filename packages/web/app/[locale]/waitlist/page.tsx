@@ -370,7 +370,7 @@ export default function WaitlistPage() {
                         <Input
                           placeholder="Your name"
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                           autoComplete="name"
                           style={{ width: '100%' }}
                         />
@@ -378,7 +378,7 @@ export default function WaitlistPage() {
                           type="email"
                           placeholder="your@email.com"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                           autoComplete="email"
                           style={{ width: '100%' }}
                         />

@@ -267,7 +267,7 @@ export default function ShowcasePage() {
         <Section title="UI Components - Input" colors={colors}>
           <GlassCard variant="content">
             <div style={{ maxWidth: 400 }}>
-              <Input label="Default" placeholder="Enter text..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+              <Input label="Default" placeholder="Enter text..." value={inputValue} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} />
               <Input label="With error" error="This field is required" placeholder="Error state" />
               <Input label="Password" type="password" placeholder="••••••••" />
             </div>

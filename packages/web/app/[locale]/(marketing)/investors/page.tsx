@@ -1246,7 +1246,7 @@ export default function InvestorsPage() {
                   type="text"
                   placeholder="Your name"
                   value={formState.name}
-                  onChange={(e) => setFormState((s) => ({ ...s, name: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, name: e.target.value }))}
                   required
                   disabled={formState.status === 'loading'}
                 />
@@ -1257,7 +1257,7 @@ export default function InvestorsPage() {
                   type="email"
                   placeholder="you@example.com"
                   value={formState.email}
-                  onChange={(e) => setFormState((s) => ({ ...s, email: e.target.value }))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, email: e.target.value }))}
                   required
                   disabled={formState.status === 'loading'}
                 />
@@ -1269,7 +1269,7 @@ export default function InvestorsPage() {
                   </Typography>
                   <select
                     value={formState.interest}
-                    onChange={(e) => setFormState((s) => ({ ...s, interest: e.target.value }))}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormState((s) => ({ ...s, interest: e.target.value }))}
                     disabled={formState.status === 'loading'}
                     style={{
                       width: '100%',

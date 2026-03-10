@@ -185,7 +185,7 @@ export default function ResetPasswordPage() {
                     label="New Password"
                     placeholder="Enter new password"
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
                     onBlur={onBlur}
                     leftIcon={<Lock size={20} color={colors.text.secondary} />}
                     rightIcon={
@@ -228,7 +228,7 @@ export default function ResetPasswordPage() {
                     label="Confirm New Password"
                     placeholder="Confirm new password"
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
                     onBlur={onBlur}
                     leftIcon={<Lock size={20} color={colors.text.secondary} />}
                     rightIcon={

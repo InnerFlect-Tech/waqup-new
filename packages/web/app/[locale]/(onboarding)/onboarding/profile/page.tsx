@@ -72,7 +72,7 @@ export default function OnboardingProfilePage() {
       <Input
         placeholder={t('placeholder')}
         value={preferredName}
-        onChange={(e) => setPreferredName(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPreferredName(e.target.value)}
         autoComplete="given-name"
         aria-label={t('title')}
       />

@@ -146,7 +146,7 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
               type="email"
               placeholder={t('waitlistCta.placeholder')}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               autoComplete="email"
               wrapperStyle={{ marginBottom: 0 }}
               containerStyle={{ minHeight: BUTTON_TOKENS.minHeight.lg }}
