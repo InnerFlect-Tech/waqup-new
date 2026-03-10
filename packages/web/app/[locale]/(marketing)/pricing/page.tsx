@@ -687,9 +687,8 @@ export default function PricingPage() {
               variant="primary"
               size="lg"
               onClick={() => router.push('/join')}
-              rightIcon={ArrowRight}
             >
-              Try waQup free
+              Try waQup free <ArrowRight size={18} strokeWidth={2} />
             </Button>
           </div>
         </motion.div>
