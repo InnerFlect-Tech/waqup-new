@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA, FoundingMemberModal, PublicFooter } from '@/components';
@@ -26,6 +27,7 @@ function formatWaitlistCount(count: number): string {
 }
 
 export default function LandingPage() {
+  const t = useTranslations('marketing');
   const { theme } = useTheme();
   const colors = theme.colors;
   const [showFoundingModal, setShowFoundingModal] = useState(false);
@@ -43,45 +45,38 @@ export default function LandingPage() {
   const features = [
     {
       icon: Mic,
-      title: 'Your voice. Not someone else\'s.',
-      description: 'Record 60 seconds. waQup clones your voice — so every practice sounds like you, speaking to yourself from a place of strength.',
+      titleKey: 'landing.features.voice.title' as const,
+      descriptionKey: 'landing.features.voice.description' as const,
       color: colors.accent.tertiary,
       highlight: true,
     },
     {
       icon: Sparkles,
-      title: 'You create it — AI just helps',
-      description: 'Tell the orb what you\'re working on. It turns your intention into a personalised script you review, adjust, and own completely.',
+      titleKey: 'landing.features.create.title' as const,
+      descriptionKey: 'landing.features.create.description' as const,
       color: colors.accent.primary,
     },
     {
       icon: Zap,
-      title: 'Practice is always free',
-      description: 'Once you\'ve created it, replay your content as many times as you like. Credits are only used during creation — never during practice.',
+      titleKey: 'landing.features.practiceFree.title' as const,
+      descriptionKey: 'landing.features.practiceFree.description' as const,
       color: colors.accent.secondary,
     },
     {
       icon: Heart,
-      title: 'Three distinct practices',
-      description: 'Affirmations to shift your self-concept. Meditations to access deeper states. Rituals to encode new identity. Each does something different.',
+      titleKey: 'landing.features.threePractices.title' as const,
+      descriptionKey: 'landing.features.threePractices.description' as const,
       color: colors.accent.secondary,
     },
     {
       icon: Repeat,
-      title: 'Built for your daily rhythm',
-      description: 'Pin your most important practice. See your streak. Designed to become part of your morning in under 5 minutes.',
+      titleKey: 'landing.features.dailyRhythm.title' as const,
+      descriptionKey: 'landing.features.dailyRhythm.description' as const,
       color: colors.accent.primary,
     },
   ];
 
-  const benefits = [
-    'Hear yourself say what you most need to hear',
-    'Create personalised practices — not generic content',
-    'Practice free, forever — no hidden limits',
-    'Works in 3 minutes. Stays with you for life.',
-    'Your voice data is encrypted and always yours',
-    'Share your practices and earn credits back',
-  ];
+  const benefits = t.raw('landing.benefits') as string[];
 
   return (
     <PageShell intensity="high" bare scrollSnap allowDocumentScroll>
@@ -150,7 +145,7 @@ export default function LandingPage() {
             }}
           >
             <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Personal practice studio
+              {t('landing.badge')}
             </Typography>
           </div>
 
@@ -190,7 +185,7 @@ export default function LandingPage() {
               letterSpacing: '-0.01em',
             }}
           >
-            Your practice, in your voice.
+            {t('landing.headline')}
           </Typography>
 
           {/* Sub-headline — method clarification */}
@@ -207,14 +202,14 @@ export default function LandingPage() {
               fontWeight: 300,
             }}
           >
-            Create personalised affirmations, meditations, and rituals through conversation — then practice them free, forever.
+            {t('landing.subheadline')}
           </Typography>
 
           {/* Waitlist CTA — minimal, no extra copy */}
           <div style={{ width: '100%', maxWidth: 440, marginBottom: spacing.md }}>
             <WaitlistCTA
               variant="inline"
-              subtext="Early access · No card required · Practice free always"
+              subtext={t('landing.earlyAccess')}
               compact
             />
           </div>
@@ -234,11 +229,11 @@ export default function LandingPage() {
             }}
           >
             {waitlistCount !== null && waitlistCount > 0 && (
-              <span>{formatWaitlistCount(waitlistCount)} on the waitlist</span>
+              <span>{t('landing.waitlistCount', { count: formatWaitlistCount(waitlistCount) })}</span>
             )}
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <Headphones size={12} color={colors.accent.tertiary} />
-              <span style={{ color: colors.accent.tertiary }}>Practice in your own voice</span>
+              <span style={{ color: colors.accent.tertiary }}>{t('landing.practiceInYourVoice')}</span>
             </div>
           </div>
 
@@ -259,11 +254,11 @@ export default function LandingPage() {
               onClick={() => setShowFoundingModal(true)}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, fontSize: 'inherit' }}
             >
-              Founding Members →
+              {t('landing.foundingMembersLink')}
             </button>
             <Link href="/login" style={{ textDecoration: 'none' }}>
               <Button variant="ghost" size="sm" style={{ color: colors.text.primary, fontSize: 13 }}>
-                Member Login
+                {t('landing.memberLogin')}
               </Button>
             </Link>
           </div>
@@ -282,13 +277,13 @@ export default function LandingPage() {
               opacity: 0.7,
             }}
           >
-            <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none' }}>For teachers</Link>
+            <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forTeachers')}</Link>
             <span style={{ opacity: 0.4 }}>·</span>
-            <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none' }}>For coaches</Link>
+            <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forCoaches')}</Link>
             <span style={{ opacity: 0.4 }}>·</span>
-            <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none' }}>For studios</Link>
+            <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forStudios')}</Link>
             <span style={{ opacity: 0.4 }}>·</span>
-            <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none' }}>For creators</Link>
+            <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forCreators')}</Link>
           </div>
 
           <FoundingMemberModal
@@ -310,7 +305,7 @@ export default function LandingPage() {
         >
           <div style={{ textAlign: 'center', marginBottom: spacing.xl }}>
             <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
-              See how it works
+              {t('landing.seeHowItWorks')}
             </Typography>
           </div>
 
@@ -326,11 +321,11 @@ export default function LandingPage() {
             }}
           >
             {[
-              { icon: MessageCircle, label: 'Tell the orb' },
-              { icon: Sparkles, label: 'Create yours' },
-              { icon: Headphones, label: 'Practice free' },
-            ].map(({ icon: Icon, label }, i) => (
-              <React.Fragment key={label}>
+              { icon: MessageCircle, labelKey: 'landing.tellTheOrb' as const },
+              { icon: Sparkles, labelKey: 'landing.createYours' as const },
+              { icon: Headphones, labelKey: 'landing.practiceFree' as const },
+            ].map(({ icon: Icon, labelKey }, i) => (
+              <React.Fragment key={labelKey}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.xs }}>
                   <div
                     style={{
@@ -346,7 +341,7 @@ export default function LandingPage() {
                   >
                     <Icon size={24} color={colors.text.onDark} strokeWidth={2.5} />
                   </div>
-                  <Typography variant="small" style={{ color: colors.text.secondary }}>{label}</Typography>
+                  <Typography variant="small" style={{ color: colors.text.secondary }}>{t(labelKey)}</Typography>
                 </div>
                 {i < 2 && (
                   <ArrowRight size={20} color={colors.text.tertiary} style={{ flexShrink: 0, opacity: 0.6 }} />
@@ -370,7 +365,7 @@ export default function LandingPage() {
                 gap: 4,
               }}
             >
-              Full process <ArrowRight size={12} />
+              {t('landing.fullProcess')} <ArrowRight size={12} />
             </Link>
           </div>
         </section>
@@ -388,10 +383,10 @@ export default function LandingPage() {
         >
           <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
             <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.md }}>
-              The only practice that&apos;s actually about your life
+              {t('landing.sectionTitle')}
             </Typography>
             <Typography variant="body" style={{ color: colors.text.secondary, maxWidth: CONTENT_MEDIUM, margin: '0 auto' }}>
-              You created it. It&apos;s in your voice. It reflects your exact intention. That&apos;s why it works.
+              {t('landing.sectionSubtitle')}
             </Typography>
           </div>
 
@@ -466,10 +461,10 @@ export default function LandingPage() {
                   </span>
                   </div>
                   <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm, flexShrink: 0 }}>
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </Typography>
                   <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6, flex: 1, minHeight: 0 }}>
-                    {feature.description}
+                    {t(feature.descriptionKey)}
                   </Typography>
                 </div>
               );
@@ -551,15 +546,15 @@ export default function LandingPage() {
               backgroundClip: 'text',
             }}
           >
-            Hear yourself say what you most need to hear.
+            {t('landing.ctaHeadline')}
           </h2>
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md, fontSize: '18px', lineHeight: 1.5 }}>
-            Your first practice is free. No credit card. No commitment.
+            {t('landing.ctaSubline1')}
           </Typography>
           <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.xl, fontSize: '15px', opacity: 0.7 }}>
             {waitlistCount !== null && waitlistCount > 0
-              ? `Join ${formatWaitlistCount(waitlistCount)} others who are already creating.`
-              : 'Join the founding community.'}
+              ? t('landing.ctaSubline2WithCount', { count: formatWaitlistCount(waitlistCount) })
+              : t('landing.ctaSubline2Default')}
           </Typography>
           <Link href="/waitlist" style={{ textDecoration: 'none' }}>
             <Button
@@ -573,12 +568,12 @@ export default function LandingPage() {
                 gap: spacing.md,
               }}
             >
-              Create your first practice free
+              {t('landing.ctaButton')}
               <ArrowRight size={22} color={colors.text.onDark} />
             </Button>
           </Link>
           <div style={{ marginTop: spacing.lg, fontSize: 13, color: colors.text.secondary, opacity: 0.6 }}>
-            For teachers &amp; coaches: <Link href="/for-teachers" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>see the creator programme →</Link>
+            {t('landing.creatorProgrammePrefix')} <Link href="/for-teachers" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>{t('landing.creatorProgrammeLink')}</Link>
           </div>
         </section>
 

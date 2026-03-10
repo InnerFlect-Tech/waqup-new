@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTheme } from '@/theme';
-import { spacing, BLUR, HEADER_PADDING_X, PAGE_PADDING } from '@/theme';
+import { spacing, BLUR, PAGE_PADDING } from '@/theme';
 import { LEGAL_CONFIG } from '@/config/legal';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
@@ -45,7 +45,7 @@ export function PublicFooter() {
         className="footer-inner"
         style={{
           width: '100%',
-          padding: `${spacing.xxxl} ${HEADER_PADDING_X} ${PAGE_PADDING}`,
+          padding: `${spacing.xxxl} ${PAGE_PADDING} ${PAGE_PADDING}`,
         }}
       >
         {/* Top row: brand + columns */}
@@ -92,6 +92,7 @@ export function PublicFooter() {
             </div>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               {internalLinks('/how-it-works', t('footerHowItWorks'))}
+              {internalLinks('/explanation', t('footerTheScience'))}
               {internalLinks('/pricing', t('footerPricing'))}
               {internalLinks('/marketplace', t('footerMarketplace'))}
               {internalLinks('/get-qs', t('footerBuyCredits'))}
@@ -104,7 +105,7 @@ export function PublicFooter() {
               {t('footerCompany')}
             </div>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-              {internalLinks('/explanation', t('footerOurStory'))}
+              {internalLinks('/our-story', t('footerOurStory'))}
               {internalLinks('/investors', t('footerInvestors'))}
               {internalLinks('/join', t('footerFoundingMembers'))}
             </nav>

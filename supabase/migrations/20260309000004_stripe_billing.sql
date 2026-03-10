@@ -57,11 +57,13 @@ create trigger set_subscriptions_updated_at
 alter table public.subscriptions enable row level security;
 
 -- Users can read their own subscription
+drop policy if exists "Users can view own subscription" on public.subscriptions;
 create policy "Users can view own subscription"
   on public.subscriptions for select
   using (auth.uid() = user_id);
 
 -- Only service role (webhook handler) can insert / update / delete
+drop policy if exists "Service role manages subscriptions" on public.subscriptions;
 create policy "Service role manages subscriptions"
   on public.subscriptions for all
   using (true)
@@ -94,6 +96,7 @@ create table if not exists public.stripe_webhook_events (
 -- Only service role can insert; no user-facing access needed
 alter table public.stripe_webhook_events enable row level security;
 
+drop policy if exists "Service role manages webhook events" on public.stripe_webhook_events;
 create policy "Service role manages webhook events"
   on public.stripe_webhook_events for all
   using (true)

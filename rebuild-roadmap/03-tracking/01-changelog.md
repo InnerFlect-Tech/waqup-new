@@ -6,6 +6,65 @@
 
 ---
 
+## Final Master Audit (2026-03-10)
+
+### Summary
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Report**: `docs/audits/final-master-audit-report.md`
+
+### Changes
+- **Route consolidation**: Removed `app/page.tsx`; redirect `/` → `/en`; removed root `app/privacy/`
+- **Docs**: Updated `16-route-map.md` to `app/[locale]/...` paths; `00-current-context.md` locale section
+- **global-error.tsx**: Added root-level error boundary (build trace fix)
+- **Design tokens**: speak/page.tsx — replaced hardcoded rgba/hex with theme colors
+- **ESLint**: Scoped to `app src`; ignores `.next`, `.next.nosync`
+- **Next.js 16 proxy**: Removed `middleware.ts`; `proxy.ts` only (auth + next-intl)
+- **Build verification**: build:shared, build:web, type-check, lint — all pass
+
+### Updated
+- 2026-03-10
+
+---
+
+## Production Readiness Audit Implementation (2026-03-10)
+
+### Build fix (iCloud Drive)
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**: Projects in iCloud Drive (`Mobile Documents/com~apple~CloudDocs`) caused ENOENT during Next.js build (Turbopack and webpack cache). Fixed by: (1) `next build --webpack` to use webpack instead of Turbopack; (2) `webpack: { cache: false }` in next.config.js to avoid filesystem cache races.
+- **Updated**: 2026-03-10
+
+### Dead code removal
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - Removed `packages/web/proxy.ts` (duplicate of middleware; middleware.ts is the canonical Next.js middleware with standalone implementation).
+  - Removed unreachable routes: `app/(main)/speak/`, `app/sanctuary/`, `app/sanctuary/series/*` — rewrites send `/speak` and `/sanctuary` to `/en/speak` and `/en/sanctuary`, so these non-locale pages were never matched.
+  - Removed `proxy.ts` from tsconfig `include`.
+- **Updated**: 2026-03-10
+
+### E2E consolidation
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - Consolidated auth skip logic: all protected specs now use `skipIfNoAuth(test)` from `auth.helper.ts`.
+  - Created `e2e/specs/critical-flows.spec.ts` — smoke tests for public flows (landing, pricing, login, signup, protected redirect) and authenticated flows (login → sanctuary, credits buy, create hub, library).
+  - Added `npm run test:e2e:critical` — runs critical-flows spec only.
+  - Authenticated project now matches both `specs/protected/` and `specs/critical-flows.spec.ts`.
+- **Updated**: 2026-03-10
+
+### Documentation
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-10
+- **Notes**:
+  - E2E env vars documented in `docs/05-deployment/03-update-and-deployment-checklist.md` (OVERRIDE_LOGIN_EMAIL, OVERRIDE_LOGIN_PASSWORD, NEXT_PUBLIC_ENABLE_TEST_LOGIN).
+  - Quick reference: `test:e2e`, `test:e2e:critical`, `build:web:clean`.
+  - Changelog correction: middleware.ts is standalone; it does not re-export from proxy (proxy.ts was removed).
+- **Updated**: 2026-03-10
+
+---
+
 ## Marketplace Fully Functional + ChunkLoadError Fix (2026-03-10)
 
 ### ChunkLoadError
@@ -68,7 +127,7 @@
 - **Status**: ✅ Complete
 - **Completed**: 2026-03-09
 - **Notes**:
-  - **Middleware**: Created `packages/web/middleware.ts` that re-exports `proxy` from `proxy.ts` as Next.js default middleware — server-side route protection now active.
+  - **Middleware**: Created `packages/web/middleware.ts` as Next.js default middleware — server-side route protection now active (Supabase session check for protected routes).
   - **Admin API**: Replaced `x-admin-pass` / `NEXT_PUBLIC_ORACLE_ADMIN_PASS` with session-based auth. `GET /api/admin/users` and `GET /api/waitlist` now require `profile.role === 'superadmin'` via Supabase session.
   - **Marketplace proposals**: Fixed `profile?.is_admin` → `profile?.role === 'admin' || profile?.role === 'superadmin'` in `GET /api/marketplace/proposals`.
   - **Profiles RLS**: Migration `20260313000001_tighten_profiles_insert_rls.sql` drops permissive "Service role can insert profiles" policy; users may only insert their own profile.

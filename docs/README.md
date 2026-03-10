@@ -136,6 +136,8 @@ See `../rebuild-roadmap/` for:
 - Phase analyses
 - Changelog tracking
 
+**Open items** (unresolved work before launch): [`../updates/open-items.md`](../updates/open-items.md)
+
 ---
 
 **Last Updated**: 2026-03-09

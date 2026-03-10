@@ -68,6 +68,7 @@ create policy "Creators can manage own series items"
     )
   );
 
+drop policy if exists "Anyone can view items of listed series" on public.content_series_items;
 create policy "Anyone can view items of listed series"
   on public.content_series_items for select
   using (
@@ -94,11 +95,12 @@ create trigger trg_content_series_updated_at
 
 -- ─── 7. Tiered share award function ──────────────────────────────────────────
 -- Replaces the flat 1Q award with a tier-based award.
+-- p_sharer_user_id default null required to match existing function signature (no parameter default removal).
 
 create or replace function public.record_share_and_award_credit(
   p_content_item_id uuid,
   p_platform        text,
-  p_sharer_user_id  uuid
+  p_sharer_user_id  uuid default null
 ) returns void language plpgsql security definer as $$
 declare
   v_creator_id   uuid;
@@ -124,19 +126,19 @@ begin
     else             1   -- micro (default)
   end;
 
-  -- Record the share event
+  -- Record the share event (unique index on content_item_id, sharer_user_id when not null)
   insert into public.marketplace_shares (content_item_id, sharer_user_id, platform, shared_at)
   values (p_content_item_id, p_sharer_user_id, p_platform, now())
-  on conflict do nothing;
+  on conflict (content_item_id, sharer_user_id) where sharer_user_id is not null do nothing;
 
   -- Increment share_count on marketplace listing
   update public.marketplace_items
   set share_count = share_count + 1
   where content_item_id = p_content_item_id;
 
-  -- Award Q credits to creator
-  insert into public.credit_transactions (user_id, amount, description, transaction_type)
-  values (v_creator_id, v_award_amount, 'Share reward (' || p_platform || ')', 'credit');
+  -- Award Q credits to creator (credit_transactions has user_id, amount, description)
+  insert into public.credit_transactions (user_id, amount, description)
+  values (v_creator_id, v_award_amount, 'Share reward (' || p_platform || ')');
 
   -- Update creator tier based on total plays (auto-promotion)
   update public.profiles

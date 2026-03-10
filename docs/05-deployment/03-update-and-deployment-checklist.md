@@ -86,12 +86,12 @@ npm run supabase:reset
 3. Run
 4. Check results: all checks should show **PASS** (WARN acceptable for optional items)
 
-**Via script**:
+**Via script** (when `DATABASE_URL` is set in `.env.local`):
 ```bash
-# After linking, run verification (manual paste into Dashboard)
-# Or use Supabase CLI to run SQL:
-supabase db execute --file supabase/scripts/verify_database.sql
+npm run verify:db
 ```
+Use the **Session pooler** connection string (port 6543) from Dashboard if direct (5432) fails with "No route to host".  
+Or paste `supabase/scripts/verify_database.sql` into Supabase SQL Editor and run manually.
 
 ### 2.3 Repair Scripts (When Verification Fails)
 
@@ -178,6 +178,29 @@ Executes:
 - [ ] **E2E**: Critical flows (auth, create, playback)
 - [ ] **Lighthouse**: Web performance target
 
+**E2E env vars (for authenticated tests in CI or local)**:
+
+| Variable | Purpose |
+|----------|---------|
+| `OVERRIDE_LOGIN_EMAIL` | Test user email for override login (E2E only) |
+| `OVERRIDE_LOGIN_PASSWORD` | Test user password for override login |
+| `NEXT_PUBLIC_ENABLE_TEST_LOGIN` | `true` to show test login button on login page |
+| `NEXT_PUBLIC_OVERRIDE_LOGIN_EMAIL` | (Optional) Client-side override email |
+| `NEXT_PUBLIC_OVERRIDE_LOGIN_PASSWORD` | (Optional) Client-side override password |
+
+Without these, protected specs skip. Add to CI secrets for full E2E coverage.
+
+**Commands**:
+- `npm run test:all` — **Run everything**: shared + mobile unit tests, then web E2E critical (desktop + mobile viewports)
+- `npm run test:e2e:critical` — Web E2E smoke only (desktop + mobile viewports)
+- `npm run test:e2e` — All web E2E specs
+- `npm run test:e2e:desktop` — Desktop viewport only
+- `npm run test:e2e:mobile` — Mobile viewports only (web in mobile browsers)
+
+**Coverage**: Web E2E (Playwright) covers desktop + mobile viewports. Mobile app has Jest (unit tests); no native E2E yet (future: Maestro or Detox).
+
+**Reliable local E2E**: Playwright starts the dev server automatically. On iCloud or slow disks, cold starts can exceed the 90s timeout. To avoid `ERR_CONNECTION_REFUSED`, start the server first in a separate terminal: `npm run dev:web`, then run tests. Or run with `CI=true` so Playwright always starts the server (no `reuseExistingServer`).
+
 ### 5.7 Documentation
 
 - [ ] **Changelog**: `rebuild-roadmap/03-tracking/01-changelog.md` updated
@@ -196,6 +219,10 @@ Executes:
 | Repair schema | `supabase/scripts/repair_missing_schema.sql` |
 | Type-check | `npm run type-check` |
 | Build all | `npm run build:all` |
+| Build web (clean) | `npm run build:web:clean` |
+| **Test all** (shared + mobile + web E2E) | `npm run test:all` |
+| E2E (all) | `npm run test:e2e` |
+| E2E (critical smoke) | `npm run test:e2e:critical` |
 | Dev web | `npm run dev:web` |
 | Dev mobile | `npm run dev:mobile` |
 

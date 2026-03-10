@@ -69,11 +69,13 @@ create index if not exists oracle_sessions_user_active_idx
 alter table public.oracle_sessions enable row level security;
 
 -- Users can read their own sessions (for balance display).
+drop policy if exists "Users can view own oracle sessions" on public.oracle_sessions;
 create policy "Users can view own oracle sessions"
   on public.oracle_sessions for select
   using (auth.uid() = user_id);
 
 -- Sessions are inserted by API routes (server-side, authenticated user context).
+drop policy if exists "Users can create own oracle sessions" on public.oracle_sessions;
 create policy "Users can create own oracle sessions"
   on public.oracle_sessions for insert
   with check (auth.uid() = user_id);

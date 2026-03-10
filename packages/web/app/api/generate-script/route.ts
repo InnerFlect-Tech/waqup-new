@@ -13,7 +13,7 @@ const MAX_INTENT_LENGTH = 5000;
 /** Language instructions for AI script generation */
 const LANGUAGE_INSTRUCTION: Record<string, string> = {
   en: '',
-  pt: 'Write the script in Brazilian Portuguese. ',
+  pt: 'Write the script in European Portuguese (Portugal). ',
   es: 'Escribe el guion en español. ',
   fr: 'Écris le script en français. ',
   de: 'Schreibe das Skript auf Deutsch. ',

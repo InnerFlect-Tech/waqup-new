@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocale } from 'next-intl';
 import { Typography, Button, PageShell } from '@/components';
 import { spacing, borderRadius, useTheme, BLUR } from '@/theme';
 import { ScienceInsight } from '@/components/content/ScienceInsight';
@@ -41,6 +42,7 @@ function OrbPageInner() {
   const colors = theme.colors;
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
 
   const typeParam = searchParams.get('type') as ContentItemType | null;
 
@@ -191,7 +193,7 @@ function OrbPageInner() {
       const res = await fetch('/api/conversation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, messages }),
+        body: JSON.stringify({ type, messages, locale }),
       });
       if (!res.ok) throw new Error('API error');
       return res.json() as Promise<{ reply: string; shouldGenerateScript: boolean }>;
@@ -210,7 +212,7 @@ function OrbPageInner() {
         const res = await fetch('/api/generate-script', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type, intent }),
+          body: JSON.stringify({ type, intent, locale }),
         });
         if (!res.ok) throw new Error('Generation failed');
         const { script } = (await res.json()) as { script: string };

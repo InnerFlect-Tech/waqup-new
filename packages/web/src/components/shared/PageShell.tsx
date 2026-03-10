@@ -101,7 +101,7 @@ export const PageShell: React.FC<PageShellProps> = ({
       };
 
   return (
-    <div style={scrollContainerStyle}>
+    <div style={scrollContainerStyle} role="main">
       {!plain && <AnimatedBackground intensity={intensity} color="primary" />}
       <div
         style={{

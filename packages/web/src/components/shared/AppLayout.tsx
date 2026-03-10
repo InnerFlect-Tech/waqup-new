@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -122,6 +123,7 @@ const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations('marketing');
   const { theme } = useTheme();
   const colors = theme.colors;
   const user = useAuthStore((s) => s.user);
@@ -668,26 +670,34 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     >
                       Super Admin
                     </p>
-                    {SUPERADMIN_MENU_ITEMS.map((item) => (
-                      <button
-                        key={item.path}
-                        type="button"
-                        className="w-full flex items-center rounded-lg border-0 cursor-pointer"
-                        style={{
-                          padding: `${spacing.sm} ${spacing.md}`,
-                          gap: spacing.md,
-                          color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
-                          background: 'transparent',
-                        }}
-                        onClick={() => {
-                          router.push(item.path);
-                          setIsMobileMenuOpen(false);
-                        }}
-                      >
-                        {item.icon}
-                        {item.name}
-                      </button>
-                    ))}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: 2,
+                      }}
+                    >
+                      {SUPERADMIN_MENU_ITEMS.map((item) => (
+                        <button
+                          key={item.path}
+                          type="button"
+                          className="flex items-center rounded-lg border-0 cursor-pointer"
+                          style={{
+                            padding: `${spacing.sm} ${spacing.md}`,
+                            gap: spacing.md,
+                            color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
+                            background: 'transparent',
+                          }}
+                          onClick={() => {
+                            router.push(item.path);
+                            setIsMobileMenuOpen(false);
+                          }}
+                        >
+                          {item.icon}
+                          <span className="truncate">{item.name}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
                   <div>
@@ -832,7 +842,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 size="sm"
                 onClick={() => router.push('/waitlist')}
               >
-                Join Waitlist
+                {t('joinWaitlist')}
               </Button>
             </div>
 
@@ -892,7 +902,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               onClick={() => router.push('/waitlist')}
               className="w-full justify-start"
             >
-              Join Waitlist
+              {t('joinWaitlist')}
             </Button>
             <div style={{ paddingTop: spacing.xs }}>
               <LanguageSwitcher compact={false} />

@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Typography, Button, Input } from '@/components';
 import { useTheme } from '@/theme';
-import { Logo, PageShell, GlassCard } from '@/components';
-import { spacing, borderRadius, BLUR } from '@/theme';
+import { PageShell, GlassCard } from '@/components';
+import { spacing, borderRadius, BLUR, NAV_TOP_OFFSET } from '@/theme';
 import { useFoundingMembersRemaining } from '@/hooks';
 import { Link } from '@/i18n/navigation';
 import {
@@ -183,17 +183,15 @@ function JoinPageInner() {
 
   return (
     <PageShell intensity="strong" allowDocumentScroll>
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: `${spacing.xxl} ${spacing.lg}` }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: spacing.xxl }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
-            <Logo size="lg" showIcon href={undefined} />
-          </Link>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: spacing.xxl, alignItems: 'start' }}>
-          {/* Left: headline + perks */}
-          <div>
+      <div
+        className="join-page-grid"
+        style={{
+          '--join-viewport-height': `calc(100vh - ${NAV_TOP_OFFSET})`,
+        } as React.CSSProperties}
+      >
+        <div className="join-page-inner" style={{ maxWidth: 1080, margin: '0 auto', padding: `${spacing.lg} ${spacing.lg}`, display: 'flex', flexWrap: 'wrap', gap: spacing.xxl, alignItems: 'flex-start', minHeight: 0 }}>
+          {/* Left: headline + perks — scrolls on desktop */}
+          <div className="join-page-left" style={{ flex: '1 1 320px', minWidth: 0 }}>
             {/* Founding badge */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -332,8 +330,8 @@ function JoinPageInner() {
             </div>
           </div>
 
-          {/* Right: signup form */}
-          <div style={{ position: 'sticky', top: 100 }}>
+          {/* Right: signup form — stays visible (left column scrolls, form doesn't) */}
+          <div className="join-page-form" style={{ flex: '0 0 380px', minWidth: 320, maxWidth: '100%' }}>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
               <GlassCard variant="auth">
                 {/* Referral notice */}
@@ -485,6 +483,31 @@ function JoinPageInner() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.4; }
+        }
+        /* Desktop: fixed-height layout so left column scrolls and form stays on screen */
+        @media (min-width: 900px) {
+          .join-page-grid {
+            height: var(--join-viewport-height, calc(100vh - 80px));
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+          }
+          .join-page-inner {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            flex-wrap: nowrap !important;
+          }
+          .join-page-left {
+            flex: 1 1 auto !important;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+          }
+          .join-page-form {
+            flex: 0 0 380px !important;
+          }
         }
       `}</style>
     </PageShell>

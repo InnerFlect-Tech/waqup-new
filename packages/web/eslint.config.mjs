@@ -1,6 +1,7 @@
 import nextConfig from 'eslint-config-next/core-web-vitals';
 
 const config = [
+  { ignores: ['.next/**', '.next.nosync/**', 'node_modules/**', 'out/**'] },
   ...nextConfig,
   {
     rules: {

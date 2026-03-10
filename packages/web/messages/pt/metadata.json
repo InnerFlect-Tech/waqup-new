@@ -1,11 +1,11 @@
 {
-  "defaultDescription": "Transforme sua mente através da voz e frequências sagradas",
+  "defaultDescription": "Transforme a sua mente através da voz e frequências sagradas",
   "pages": {
     "home": "waQup — Transformação pela voz",
     "login": "Entrar",
     "signup": "Criar conta",
-    "forgotPassword": "Esqueceu a senha",
-    "resetPassword": "Redefinir senha",
+    "forgotPassword": "Esqueceu a palavra-passe",
+    "resetPassword": "Redefinir palavra-passe",
     "confirmEmail": "Confirmar email",
     "onboarding": "Primeiros passos",
     "sanctuary": "Santuário",
@@ -16,7 +16,7 @@
     "speak": "Falar",
     "marketplace": "Mercado",
     "profile": "Perfil",
-    "settings": "Configurações",
+    "settings": "Definições",
     "credits": "Créditos",
     "buyCredits": "Obter Qs",
     "transactions": "Histórico de transações",
@@ -31,20 +31,20 @@
     "howItWorks": "Como Funciona",
     "waitlist": "Lista de Espera",
     "join": "Membros Fundadores",
-    "explanation": "Nossa História",
+    "explanation": "A Nossa História",
     "investors": "Investidores",
     "privacy": "Política de Privacidade",
     "terms": "Termos de Serviço",
     "comingSoon": "Em Breve",
-    "dataDeletion": "Exclusão de Dados",
+    "dataDeletion": "Eliminação de Dados",
     "forTeachers": "Para Professores e Coaches",
     "getQs": "Obter Qs"
   },
   "auth": {
     "login": "Entrar",
     "signup": "Criar conta",
-    "forgotPassword": "Esqueceu a senha",
-    "resetPassword": "Redefinir senha",
+    "forgotPassword": "Esqueceu a palavra-passe",
+    "resetPassword": "Redefinir palavra-passe",
     "confirmEmail": "Confirmar email"
   }
 }

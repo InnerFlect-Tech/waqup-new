@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { canUseOverrideLogin } from '../../fixtures/test-user';
+import { skipIfNoAuth } from '../../helpers/auth.helper';
 
 /**
  * Onboarding flow tests.
@@ -7,10 +7,8 @@ import { canUseOverrideLogin } from '../../fixtures/test-user';
  *   /onboarding → /onboarding/profile → /onboarding/preferences → /onboarding/guide → /sanctuary
  */
 test.describe('Onboarding flow (authenticated)', () => {
-  test.beforeEach(async () => {
-    if (!canUseOverrideLogin || process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN !== 'true') {
-      test.skip();
-    }
+  test.beforeEach(() => {
+    skipIfNoAuth(test);
   });
 
   test('onboarding step 1 (intention) loads with selectable options', async ({ page }) => {

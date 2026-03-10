@@ -1147,7 +1147,7 @@ export default function InvestorsPage() {
           }}
         >
           <Typography variant="body" style={{ color: colors.text.secondary, lineHeight: 1.6 }}>
-            Payment terms (fiat, stablecoins, escrow) discussed per package.
+            We accept fiat (euro, USD), stablecoins, or escrow. Specific terms are agreed when you choose your investment package.
           </Typography>
         </div>
       </section>
@@ -1193,13 +1193,15 @@ export default function InvestorsPage() {
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5 }}
           style={{
-            padding: `clamp(${spacing.lg}, 5vw, ${spacing.xxl})`,
+            maxWidth: CONTENT_MEDIUM,
+            margin: '0 auto',
+            padding: spacing.xxl,
             borderRadius: borderRadius.xl,
             background: colors.glass.light,
             backdropFilter: BLUR.xl,
             WebkitBackdropFilter: BLUR.xl,
             border: `1px solid ${colors.glass.border}`,
-            boxShadow: `0 16px 64px ${colors.accent.primary}20`,
+            boxShadow: `0 8px 32px ${colors.accent.primary}20`,
           }}
         >
           <Typography

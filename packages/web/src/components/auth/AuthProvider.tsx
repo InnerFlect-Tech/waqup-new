@@ -96,6 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pathname.startsWith('/showcase') ||
       pathname.startsWith('/onboarding') ||
       pathname.startsWith('/explanation') ||
+      pathname.startsWith('/our-story') ||
       pathname.startsWith('/play'); // Public audio player for sharing
 
     if (isProtectedRoute && !user) {

@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build",
+    "build": "next build --webpack",
+    "test": "echo 'Web: use test:e2e or test:e2e:critical'",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint app src --max-warnings 0",
     "type-check": "tsc --noEmit",
     "test:e2e": "playwright test",
+    "test:e2e:critical": "playwright test specs/critical-flows.spec.ts --project=desktop-chromium --project=desktop-chromium-authenticated --project=mobile-chrome --project=mobile-safari",
     "test:e2e:desktop": "playwright test --project=desktop-chromium --project=desktop-chromium-authenticated",
     "test:e2e:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
     "test:e2e:headed": "playwright test --headed",
@@ -50,6 +52,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "dotenv": "^17.2.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24.0.0",
     "@types/p5": "^1.7.6",

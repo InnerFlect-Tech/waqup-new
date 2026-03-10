@@ -18,18 +18,22 @@ create index if not exists sanctuary_saves_content_item_id_idx
 
 alter table public.sanctuary_saves enable row level security;
 
+drop policy if exists "Users can view own sanctuary saves" on public.sanctuary_saves;
 create policy "Users can view own sanctuary saves"
   on public.sanctuary_saves for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can insert own sanctuary saves" on public.sanctuary_saves;
 create policy "Users can insert own sanctuary saves"
   on public.sanctuary_saves for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update own sanctuary saves" on public.sanctuary_saves;
 create policy "Users can update own sanctuary saves"
   on public.sanctuary_saves for update
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can delete own sanctuary saves" on public.sanctuary_saves;
 create policy "Users can delete own sanctuary saves"
   on public.sanctuary_saves for delete
   using (auth.uid() = user_id);

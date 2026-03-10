@@ -561,10 +561,10 @@ export default function IOSReleasePage() {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
                   <div style={{ width: 24, height: 24, borderRadius: '50%', background: `${colors.accent.primary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: colors.accent.primary }}>4</div>
-                  <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 600 }}>Create the RevenueCat Webhook API Route</Typography>
+                  <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 600 }}>Configure the RevenueCat Webhook</Typography>
                 </div>
                 <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 1.7, marginBottom: spacing.sm }}>
-                  This endpoint doesn&apos;t exist yet. Create it at <code style={{ color: colors.accent.tertiary }}>packages/web/app/api/webhooks/revenuecat/route.ts</code>. It should:
+                  ✅ Implemented at <code style={{ color: colors.accent.tertiary }}>packages/web/app/api/webhooks/revenuecat/route.ts</code>. Configure:
                 </Typography>
                 <CodeBlock lang="typescript" code={`// Minimal structure for the RevenueCat webhook handler
 // POST /api/webhooks/revenuecat
@@ -616,10 +616,10 @@ export async function POST(req: NextRequest) {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm }}>
                   <div style={{ width: 24, height: 24, borderRadius: '50%', background: `${colors.accent.primary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: colors.accent.primary }}>5</div>
-                  <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 600 }}>Create the Account Deletion API Route</Typography>
+                  <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 600 }}>Account Deletion API Route</Typography>
                 </div>
                 <Typography variant="small" style={{ color: colors.text.secondary, lineHeight: 1.7, marginBottom: spacing.sm }}>
-                  Required by Apple. Create at <code style={{ color: colors.accent.tertiary }}>packages/web/app/api/account/delete/route.ts</code>:
+                  ✅ Implemented at <code style={{ color: colors.accent.tertiary }}>packages/web/app/api/account/delete/route.ts</code>. Mobile SettingsScreen calls it on Delete Account.
                 </Typography>
                 <CodeBlock lang="typescript" code={`// DELETE /api/account/delete
 // Called by mobile SettingsScreen when user taps "Delete My Account"
@@ -704,9 +704,14 @@ eas submit --platform ios --profile production`} />
           >
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: spacing.sm, padding: spacing.md, background: `${colors.accent.secondary}10`, border: `1px solid ${colors.accent.secondary}30`, borderRadius: borderRadius.md, marginBottom: spacing.md }}>
               <AlertTriangle size={16} color={colors.accent.secondary} style={{ flexShrink: 0, marginTop: 2 }} />
-              <Typography variant="small" style={{ color: colors.accent.secondary, lineHeight: 1.6 }}>
-                Run this migration in Supabase Dashboard → SQL Editor → New query. It is safe to run multiple times (uses IF NOT EXISTS and ON CONFLICT DO NOTHING). Run on your production project.
-              </Typography>
+              <div>
+                <Typography variant="small" style={{ color: colors.accent.secondary, lineHeight: 1.6, marginBottom: spacing.xs }}>
+                  <strong>Option A:</strong> Run <code style={{ color: colors.accent.tertiary }}>supabase db push</code> from the project root — applies <code style={{ color: colors.accent.tertiary }}>supabase/migrations/20260325000001_iap_apple_purchases.sql</code>.
+                </Typography>
+                <Typography variant="small" style={{ color: colors.accent.secondary, lineHeight: 1.6 }}>
+                  <strong>Option B:</strong> Run the SQL below manually in Supabase Dashboard → SQL Editor. Safe to run multiple times (IF NOT EXISTS, ON CONFLICT DO NOTHING).
+                </Typography>
+              </div>
             </div>
             <CodeBlock lang="sql" code={SQL_MIGRATION} />
             <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, lineHeight: 1.6 }}>

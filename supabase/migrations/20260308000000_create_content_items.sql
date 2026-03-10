@@ -48,22 +48,26 @@ create trigger content_items_updated_at
 -- Row Level Security: users can only access their own content
 alter table public.content_items enable row level security;
 
--- Users can read their own content
+-- Users can read their own content (idempotent: drop if exists for repair/manual-setup DBs)
+drop policy if exists "Users can view own content" on public.content_items;
 create policy "Users can view own content"
   on public.content_items for select
   using (auth.uid() = user_id);
 
 -- Users can create their own content
+drop policy if exists "Users can create own content" on public.content_items;
 create policy "Users can create own content"
   on public.content_items for insert
   with check (auth.uid() = user_id);
 
 -- Users can update their own content
+drop policy if exists "Users can update own content" on public.content_items;
 create policy "Users can update own content"
   on public.content_items for update
   using (auth.uid() = user_id);
 
 -- Users can delete their own content
+drop policy if exists "Users can delete own content" on public.content_items;
 create policy "Users can delete own content"
   on public.content_items for delete
   using (auth.uid() = user_id);

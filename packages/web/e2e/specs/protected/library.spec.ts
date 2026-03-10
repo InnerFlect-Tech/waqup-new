@@ -1,11 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { canUseOverrideLogin } from '../../fixtures/test-user';
+import { skipIfNoAuth } from '../../helpers/auth.helper';
 
 test.describe('Library (authenticated)', () => {
-  test.beforeEach(async () => {
-    if (!canUseOverrideLogin || process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN !== 'true') {
-      test.skip();
-    }
+  test.beforeEach(() => {
+    skipIfNoAuth(test);
   });
 
   test('library page loads successfully', async ({ page }) => {

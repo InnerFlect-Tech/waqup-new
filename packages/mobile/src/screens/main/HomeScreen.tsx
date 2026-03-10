@@ -13,37 +13,34 @@ import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography } from '@/components';
 import { useAuthStore } from '@/stores';
-import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
+import {
+  CONTENT_TYPE_COPY,
+  CONTENT_TYPE_COLORS,
+  PRACTICE_IS_FREE_ONE_LINER,
+} from '@waqup/shared/constants';
+import type { ContentItemType } from '@waqup/shared/types';
 
-const CONTENT_TYPES = [
-  {
-    label: 'Affirmations',
-    subtitle: 'Rewire your beliefs',
-    description: 'Short, powerful statements that reshape your mindset',
-    icon: '☀',
-    accentColor: '#c084fc',
-    bgColor: '#3b0764',
-    contentType: 'affirmation' as const,
-  },
-  {
-    label: 'Meditations',
-    subtitle: 'Induce calm states',
-    description: 'Guided sessions to quiet the mind and restore focus',
-    icon: '☽',
-    accentColor: '#818cf8',
-    bgColor: '#1e1b4b',
-    contentType: 'meditation' as const,
-  },
-  {
-    label: 'Rituals',
-    subtitle: 'Encode identity',
-    description: 'Daily practices that align you with who you are becoming',
-    icon: '◎',
-    accentColor: '#a78bfa',
-    bgColor: '#2e1065',
-    contentType: 'ritual' as const,
-  },
-] as const;
+const CONTENT_TYPE_ICONS: Record<ContentItemType, string> = {
+  affirmation: '☀',
+  meditation: '☽',
+  ritual: '◎',
+};
+
+const CONTENT_TYPES = (['affirmation', 'meditation', 'ritual'] as const).map(
+  (contentType) => {
+    const copy = CONTENT_TYPE_COPY[contentType];
+    const accentColor = CONTENT_TYPE_COLORS[contentType];
+    return {
+      label: `${copy.label}s`,
+      subtitle: copy.depth,
+      description: copy.shortDesc,
+      icon: CONTENT_TYPE_ICONS[contentType],
+      accentColor,
+      bgColor: `${accentColor}30`,
+      contentType,
+    };
+  }
+);
 
 function getGreeting(): { label: string; emoji: string } {
   const hour = new Date().getHours();

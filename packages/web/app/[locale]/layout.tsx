@@ -39,12 +39,26 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
+/** Build hreflang alternates for SEO — one URL per locale */
+function buildAlternateLanguages(): Record<string, string> {
+  const base = SITE_URL.replace(/\/$/, '');
+  const entries: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    const path = loc === routing.defaultLocale ? '' : `/${loc}`;
+    entries[loc] = path ? `${base}${path}` : base;
+  }
+  return entries;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata' });
 
   return {
     metadataBase: new URL(SITE_URL),
+    alternates: {
+      languages: buildAlternateLanguages(),
+    },
     title: { default: 'waQup', template: '%s — waQup' },
     description: t('defaultDescription'),
     openGraph: {

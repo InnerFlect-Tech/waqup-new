@@ -18,7 +18,8 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/launch', section: 'Landing', description: 'Primary marketing landing page', status: 'exists' },
   { path: '/how-it-works', section: 'Marketing', description: 'How it works (step-by-step)', status: 'exists' },
   { path: '/pricing', section: 'Marketing', description: 'Pricing & plans', status: 'exists' },
-  { path: '/explanation', section: 'Marketing', description: 'Our story — narrative intro', status: 'exists' },
+  { path: '/explanation', section: 'Marketing', description: 'The Science — why voice + affirmations work', status: 'exists' },
+  { path: '/our-story', section: 'Marketing', description: 'Our Story — founder narrative', status: 'exists' },
   { path: '/join', section: 'Marketing', description: 'Founding member sign-up', status: 'exists' },
   { path: '/waitlist', section: 'Marketing', description: 'Join the waitlist (multi-step form)', status: 'exists' },
   { path: '/get-qs', section: 'Marketing', description: 'Public Q packs — view without login; sign in required to purchase', status: 'exists' },
@@ -146,6 +147,7 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/updates/beta-readiness-implementation', section: 'Updates', description: 'Beta readiness implementation: what was done, migrations, prompts for copyrights', status: 'exists', note: 'Superadmin only' },
   { path: '/updates/beta-tester-recruitment', section: 'Updates', description: 'Beta tester recruitment guide', status: 'exists', note: 'Superadmin only' },
   { path: '/updates/audio-system-implementation', section: 'Updates', description: 'Audio system audit: own-voice recording, atmosphere presets, migrations, prompts', status: 'exists', note: 'Superadmin only' },
+  { path: '/updates/open-items', section: 'Updates', description: 'Unresolved work requiring attention before launch', status: 'exists', note: 'Superadmin only' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

@@ -24,6 +24,7 @@ alter table public.waitlist_signups
 alter table public.waitlist_signups enable row level security;
 
 -- Anyone (including anonymous) can submit their details
+drop policy if exists "Anyone can join the waitlist" on public.waitlist_signups;
 create policy "Anyone can join the waitlist"
   on public.waitlist_signups
   for insert

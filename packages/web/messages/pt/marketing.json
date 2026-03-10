@@ -1,7 +1,7 @@
 {
   "hero": {
-    "headline": "Sua voz. Sua prática. Sua transformação.",
-    "subheadline": "waQup cria afirmações, meditações e rituais personalizados na sua própria voz — cientificamente projetados para reprogramar seu subconsciente.",
+    "headline": "A sua voz. A sua prática. A sua transformação.",
+    "subheadline": "Afirmações, meditações e rituais na sua voz. Projetados para reprogramar o subconsciente.",
     "cta": "Entrar na Lista de Espera",
     "secondaryCta": "Veja como funciona",
     "earlyAccess": "Acesso antecipado · Sem cartão · Pratique grátis"
@@ -12,32 +12,32 @@
   },
   "waitlist": {
     "title": "Entrar na Lista de Espera",
-    "subtitle": "Seja um dos primeiros a transformar sua mente com voz.",
+    "subtitle": "Seja um dos primeiros a transformar a sua mente com voz.",
     "emailPlaceholder": "seu@email.com",
-    "namePlaceholder": "Seu nome",
+    "namePlaceholder": "O seu nome",
     "cta": "Entrar na Lista",
-    "joining": "Entrando…",
-    "success": "Você está na lista! Entraremos em contato em breve.",
+    "joining": "A entrar…",
+    "success": "Está na lista! Entraremos em contacto em breve.",
     "errors": {
-      "nameRequired": "Por favor, insira seu nome.",
-      "emailInvalid": "Por favor, insira um email válido.",
+      "nameRequired": "Por favor, introduza o seu nome.",
+      "emailInvalid": "Por favor, introduza um email válido.",
       "intentionRequired": "Por favor, selecione pelo menos uma intenção.",
-      "networkError": "Erro de rede. Verifique sua conexão e tente novamente."
+      "networkError": "Erro de rede. Verifique a sua ligação e tente novamente."
     }
   },
   "joinFounders": {
     "title": "Membros Fundadores",
     "subtitle": "Vagas limitadas para quem quer moldar o futuro do waQup.",
-    "cta": "Garantir minha vaga",
+    "cta": "Garantir a minha vaga",
     "emailPlaceholder": "seu@email.com",
-    "joining": "Garantindo…",
-    "success": "Você garantiu sua vaga!",
+    "joining": "A garantir…",
+    "success": "Garantiu a sua vaga!",
     "errors": {
-      "emailRequired": "Por favor, insira seu email.",
-      "claimFailed": "Falha ao garantir sua vaga. Por favor, tente novamente."
+      "emailRequired": "Por favor, introduza o seu email.",
+      "claimFailed": "Falha ao garantir a sua vaga. Por favor, tente novamente."
     }
   },
-  "footerTagline": "Sua voz. Sua transformação. Cientificamente projetado para reprogramar os padrões subconscientes que moldam quem você é.",
+  "footerTagline": "A sua voz. A sua transformação.",
   "joinWaitlist": "Entrar na Lista",
   "footerProduct": "Produto",
   "footerCompany": "Empresa",
@@ -46,7 +46,7 @@
   "footerPricing": "Preços",
   "footerMarketplace": "Mercado",
   "footerBuyCredits": "Comprar Créditos",
-  "footerOurStory": "Nossa História",
+  "footerOurStory": "A Nossa História",
   "footerInvestors": "Investidores",
   "footerFoundingMembers": "Membros Fundadores",
   "footerPrivacyPolicy": "Política de Privacidade",
@@ -54,18 +54,114 @@
   "footerPaymentNote": "Praticar é sempre gratuito. Pagamento: cartões (Stripe) · Bitcoin em breve",
   "comingSoon": {
     "title": "Em Breve",
-    "subtitle": "Estamos trabalhando em algo especial. Fique atento.",
+    "subtitle": "Estamos a trabalhar em algo especial. Fique atento.",
     "cta": "Entrar na Lista de Espera"
   },
   "explanation": {
-    "title": "Nossa História"
+    "title": "A Nossa História"
   },
   "investors": {
     "title": "Investidores",
-    "contactCta": "Entre em contato"
+    "contactCta": "Contacte-nos"
   },
   "forTeachers": {
     "title": "Para Professores e Coaches",
     "subtitle": "Dê aos seus clientes práticas de voz personalizadas."
+  },
+  "landing": {
+    "badge": "Estúdio de prática pessoal",
+    "headline": "A sua prática, na sua voz.",
+    "subheadline": "Crie afirmações, meditações e rituais pela conversa. Pratique grátis, para sempre.",
+    "earlyAccess": "Acesso antecipado · Sem cartão · Pratique grátis sempre",
+    "waitlistCount": "{count} na lista de espera",
+    "practiceInYourVoice": "Pratique na sua própria voz",
+    "foundingMembersLink": "Membros Fundadores →",
+    "memberLogin": "Entrar como Membro",
+    "forTeachers": "Para professores",
+    "forCoaches": "Para coaches",
+    "forStudios": "Para estúdios",
+    "forCreators": "Para criadores",
+    "seeHowItWorks": "Veja como funciona",
+    "tellTheOrb": "Conte ao orbe",
+    "createYours": "Crie o seu",
+    "practiceFree": "Pratique grátis",
+    "fullProcess": "Processo completo",
+    "sectionTitle": "A prática feita à sua medida",
+    "sectionSubtitle": "Criou. Está na sua voz. Reflete a sua intenção.",
+    "features": {
+      "voice": {
+        "title": "A sua voz. Não a de outra pessoa.",
+        "description": "Grave 60 segundos. O waQup clona a sua voz para cada prática soar como si."
+      },
+      "create": {
+        "title": "Você cria — a IA só ajuda",
+        "description": "Diga ao orbe o que está a trabalhar. Ele transforma a sua intenção em guião personalizado que revê, ajusta e possui."
+      },
+      "practiceFree": {
+        "title": "A prática é sempre grátis",
+        "description": "Depois de criar, reproduza quantas vezes quiser. Créditos só na criação — nunca na prática."
+      },
+      "threePractices": {
+        "title": "Três práticas distintas",
+        "description": "Afirmações para mudar o autoconceito. Meditações para aceder estados mais profundos. Rituais para codificar nova identidade."
+      },
+      "dailyRhythm": {
+        "title": "Feito para o seu ritmo diário",
+        "description": "Fixar a prática mais importante. Ver a sua sequência. Projetado para a sua manhã em menos de 5 minutos."
+      }
+    },
+    "benefits": [
+      "Ouça-se dizer o que mais precisa ouvir",
+      "Crie práticas personalizadas — não conteúdo genérico",
+      "Pratique grátis, para sempre — sem limites ocultos",
+      "Funciona em 3 minutos. Fica consigo para a vida.",
+      "Os seus dados de voz são encriptados e sempre seus",
+      "Compartilhe as suas práticas e ganhe créditos de volta"
+    ],
+    "ctaHeadline": "Ouça-se dizer o que mais precisa ouvir.",
+    "ctaSubline1": "A primeira prática é grátis. Sem cartão. Sem compromisso.",
+    "ctaSubline2WithCount": "Junte-se a {count} outros que já estão a criar.",
+    "ctaSubline2Default": "Junte-se à comunidade fundadora.",
+    "ctaButton": "Crie a sua primeira prática grátis",
+    "creatorProgrammePrefix": "Para professores e coaches:",
+    "creatorProgrammeLink": "veja o programa de criadores →"
+  },
+  "waitlistCta": {
+    "placeholder": "seu@email.com",
+    "joining": "A entrar…",
+    "joinWaitlist": "Entrar na lista",
+    "onTheList": "Está na lista!",
+    "completeProfile": "Complete o seu perfil →",
+    "fillFullForm": "preencha o formulário completo",
+    "fillFormSuffix": "para partilhar as suas intenções e ter acesso prioritário.",
+    "errorEmail": "Por favor, introduza um email válido.",
+    "errorGeneric": "Algo correu mal.",
+    "errorNetwork": "Erro de rede. Por favor, tente novamente.",
+    "bannerHeadline": "Pronto para reprogramar a sua mente?",
+    "bannerSubtext": "Entrar na lista e ser o primeiro a aceder ao waQup quando lançar.",
+    "earlyAccessBadge": "Acesso Antecipado"
+  },
+  "foundingModal": {
+    "title": "Membros Fundadores",
+    "body": "Membros fundadores ganham 50 créditos grátis, 1 mês grátis e preço vitalício a €6,99/mês.",
+    "loadingSpots": "A carregar vagas...",
+    "spotsRemaining": "{count} vagas restantes.",
+    "limitedSpots": "Vagas limitadas.",
+    "perkBadge": "Emblema permanente de Membro Fundador",
+    "perkPrice": "€6,99/mês vitalício, bloqueado para sempre",
+    "perkCredits": "50 créditos grátis · 1 mês grátis",
+    "viewDetails": "Ver detalhes completos"
+  },
+  "getQs": {
+    "signInPrompt": "Entre para comprar. Trazemo-lo de volta aqui após o login.",
+    "signIn": "Entrar",
+    "qPacksTitle": "Pacotes Q",
+    "qPacksBody": "Qs alimentam afirmações, meditações e rituais. Compre uma vez — nunca expiram.",
+    "trustPoint1": "Qs nunca expiram — use ao seu ritmo",
+    "trustPoint3": "Entrega instantânea após o pagamento. Seguro pelo Stripe",
+    "bestValue": "Melhor Valor",
+    "saveVsSpark": "Economize {percent}% · €{amount} vs Spark",
+    "wantMonthlyAllocation": "Quer uma alocação mensal recorrente?",
+    "viewSubscriptionPlans": "Ver planos de assinatura"
   }
 }

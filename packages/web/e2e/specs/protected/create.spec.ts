@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { canUseOverrideLogin } from '../../fixtures/test-user';
+import { skipIfNoAuth } from '../../helpers/auth.helper';
 import { assertCreateHubLoaded, clickContentTypeCard } from '../../helpers/content.helper';
 
 test.describe('Create Hub (authenticated)', () => {
-  test.beforeEach(async () => {
-    if (!canUseOverrideLogin || process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN !== 'true') {
-      test.skip();
-    }
+  test.beforeEach(() => {
+    skipIfNoAuth(test);
   });
 
   test('create hub loads with all three content type cards', async ({ page }) => {

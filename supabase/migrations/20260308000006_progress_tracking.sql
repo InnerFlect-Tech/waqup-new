@@ -21,18 +21,22 @@ create index if not exists practice_sessions_user_played_at_idx
 
 alter table public.practice_sessions enable row level security;
 
+drop policy if exists "Users can view own practice sessions" on public.practice_sessions;
 create policy "Users can view own practice sessions"
   on public.practice_sessions for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can create own practice sessions" on public.practice_sessions;
 create policy "Users can create own practice sessions"
   on public.practice_sessions for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update own practice sessions" on public.practice_sessions;
 create policy "Users can update own practice sessions"
   on public.practice_sessions for update
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can delete own practice sessions" on public.practice_sessions;
 create policy "Users can delete own practice sessions"
   on public.practice_sessions for delete
   using (auth.uid() = user_id);
@@ -65,18 +69,22 @@ create trigger reflection_entries_updated_at
 
 alter table public.reflection_entries enable row level security;
 
+drop policy if exists "Users can view own reflection entries" on public.reflection_entries;
 create policy "Users can view own reflection entries"
   on public.reflection_entries for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can create own reflection entries" on public.reflection_entries;
 create policy "Users can create own reflection entries"
   on public.reflection_entries for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update own reflection entries" on public.reflection_entries;
 create policy "Users can update own reflection entries"
   on public.reflection_entries for update
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can delete own reflection entries" on public.reflection_entries;
 create policy "Users can delete own reflection entries"
   on public.reflection_entries for delete
   using (auth.uid() = user_id);

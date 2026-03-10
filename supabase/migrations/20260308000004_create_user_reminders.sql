@@ -42,18 +42,22 @@ create trigger user_reminders_updated_at
 
 alter table public.user_reminders enable row level security;
 
+drop policy if exists "Users can view own reminders" on public.user_reminders;
 create policy "Users can view own reminders"
   on public.user_reminders for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can create own reminders" on public.user_reminders;
 create policy "Users can create own reminders"
   on public.user_reminders for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update own reminders" on public.user_reminders;
 create policy "Users can update own reminders"
   on public.user_reminders for update
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can delete own reminders" on public.user_reminders;
 create policy "Users can delete own reminders"
   on public.user_reminders for delete
   using (auth.uid() = user_id);

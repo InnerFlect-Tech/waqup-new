@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Star, Shield, Zap, ArrowRight } from 'lucide-react';
 import { Typography, Button } from '@/components';
@@ -15,6 +16,7 @@ interface FoundingMemberModalProps {
 }
 
 export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProps) {
+  const t = useTranslations('marketing');
   const { theme } = useTheme();
   const colors = theme.colors;
   const { remaining, loading: remainingLoading } = useFoundingMembersRemaining();
@@ -76,7 +78,7 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
               }}
             >
               <Typography variant="h3" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
-                Founding Members
+                {t('foundingModal.title')}
               </Typography>
               <button
                 onClick={onClose}
@@ -105,13 +107,13 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
                 fontSize: 15,
               }}
             >
-              Founding members get 50 credits free, 1 month free, and lock in lifetime pricing at €6.99/month.
+              {t('foundingModal.body')}
               {remainingLoading ? (
-                ' Loading spots...'
+                ` ${t('foundingModal.loadingSpots')}`
               ) : remaining !== null ? (
-                <> {remaining} spots remaining.</>
+                <> {t('foundingModal.spotsRemaining', { count: remaining })}</>
               ) : (
-                ' Limited spots.'
+                ` ${t('foundingModal.limitedSpots')}`
               )}
             </Typography>
 
@@ -125,12 +127,12 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
               }}
             >
               {[
-                { icon: Star, text: 'Permanent Founding Member badge', color: colors.accent.tertiary },
-                { icon: Shield, text: 'Lifetime €6.99/month, locked forever', color: colors.accent.primary },
-                { icon: Zap, text: '50 credits free · 1 month free', color: colors.accent.secondary },
-              ].map(({ icon: Icon, text, color }) => (
+                { icon: Star, textKey: 'foundingModal.perkBadge' as const, color: colors.accent.tertiary },
+                { icon: Shield, textKey: 'foundingModal.perkPrice' as const, color: colors.accent.primary },
+                { icon: Zap, textKey: 'foundingModal.perkCredits' as const, color: colors.accent.secondary },
+              ].map(({ icon: Icon, textKey, color }) => (
                 <div
-                  key={text}
+                  key={textKey}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -143,7 +145,7 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
                 >
                   <Icon size={16} color={color} />
                   <Typography variant="small" style={{ color: colors.text.primary, fontWeight: 500, fontSize: 13 }}>
-                    {text}
+                    {t(textKey)}
                   </Typography>
                 </div>
               ))}
@@ -152,7 +154,7 @@ export function FoundingMemberModal({ isOpen, onClose }: FoundingMemberModalProp
             {/* CTA */}
             <Link href="/join" style={{ textDecoration: 'none' }} onClick={onClose}>
               <Button variant="primary" size="lg" fullWidth style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.sm }}>
-                View full details
+                {t('foundingModal.viewDetails')}
                 <ArrowRight size={18} color={colors.text.onDark} />
               </Button>
             </Link>

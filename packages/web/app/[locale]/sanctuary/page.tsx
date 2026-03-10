@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -30,6 +30,25 @@ export default function SanctuaryHomePage() {
   const { balance: creditsBalance } = useCreditBalance();
 
   const [streak, setStreak] = useState<number | null>(null);
+  const [streakError, setStreakError] = useState(false);
+
+  const fetchStreak = useCallback(() => {
+    let cancelled = false;
+    setStreakError(false);
+    getProgressStats()
+      .then((res) => {
+        if (cancelled) return;
+        if (res?.stats) {
+          setStreak(res.stats.streak ?? 0);
+        } else {
+          setStreakError(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setStreakError(true);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     if (searchParams.get('checkout') !== 'success') return;
@@ -41,13 +60,8 @@ export default function SanctuaryHomePage() {
   }, [user?.id]);
 
   useEffect(() => {
-    let cancelled = false;
-    getProgressStats().then((res) => {
-      if (cancelled || !res?.stats) return;
-      setStreak(res.stats.streak ?? 0);
-    });
-    return () => { cancelled = true; };
-  }, []);
+    return fetchStreak();
+  }, [fetchStreak]);
 
   const displayName =
     user?.user_metadata?.full_name ||
@@ -219,10 +233,35 @@ export default function SanctuaryHomePage() {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: spacing.md }}>
-                <Typography variant="captionBold" style={{ color: STREAK_COLOR }}>
-                  {t('viewProgress')}
-                </Typography>
-                <ChevronRight size={14} color={STREAK_COLOR} />
+                {streakError ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      fetchStreak();
+                    }}
+                    style={{
+                      background:  'none',
+                      border:      'none',
+                      padding:     0,
+                      cursor:      'pointer',
+                      color:       'rgba(252,165,165,0.85)',
+                      fontSize:    12,
+                      fontWeight:  600,
+                      letterSpacing: '0.02em',
+                    }}
+                  >
+                    Retry →
+                  </button>
+                ) : (
+                  <>
+                    <Typography variant="captionBold" style={{ color: STREAK_COLOR }}>
+                      {t('viewProgress')}
+                    </Typography>
+                    <ChevronRight size={14} color={STREAK_COLOR} />
+                  </>
+                )}
               </div>
             </motion.div>
           </Link>

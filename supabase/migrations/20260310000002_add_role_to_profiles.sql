@@ -9,6 +9,7 @@ alter table public.profiles
 -- and replace with a version that also exposes the role column for the same user.
 -- Policy logic is identical — select own row — but this makes intent explicit.
 drop policy if exists "Users can view own profile" on public.profiles;
+drop policy if exists "Users can read own profile" on public.profiles;
 
 create policy "Users can read own profile"
   on public.profiles for select

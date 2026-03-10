@@ -6,16 +6,15 @@ const nextConfig = {
   reactStrictMode: true,
   async redirects() {
     return [
-      // Root "/" → app/page.tsx redirects; config redirect as fallback
-      { source: '/', destination: '/en', permanent: false },
       { source: '/home', destination: '/sanctuary', permanent: true },
       { source: '/auth/beta-signup', destination: '/waitlist', permanent: true },
     ];
   },
   // Rewrite unprefixed routes to /en/... so they use [locale] layout (AppProviders).
-  // E2E and links use /login, /signup, etc. — these rewrite to default locale.
+  // Root / rewrites to /en so content shows at / (no redirect, cleaner UX).
   async rewrites() {
     return [
+      { source: '/', destination: '/en' },
       { source: '/sanctuary', destination: '/en/sanctuary' },
       { source: '/sanctuary/:path*', destination: '/en/sanctuary/:path*' },
       { source: '/speak', destination: '/en/speak' },
@@ -29,12 +28,17 @@ const nextConfig = {
       { source: '/join', destination: '/en/join' },
       { source: '/waitlist', destination: '/en/waitlist' },
       { source: '/explanation', destination: '/en/explanation' },
+      { source: '/our-story', destination: '/en/our-story' },
       { source: '/privacy', destination: '/en/privacy' },
       { source: '/terms', destination: '/en/terms' },
       { source: '/data-deletion', destination: '/en/data-deletion' },
       { source: '/how-it-works', destination: '/en/how-it-works' },
       { source: '/pricing', destination: '/en/pricing' },
       { source: '/get-qs', destination: '/en/get-qs' },
+      { source: '/for-teachers', destination: '/en/for-teachers' },
+      { source: '/for-coaches', destination: '/en/for-coaches' },
+      { source: '/for-studios', destination: '/en/for-studios' },
+      { source: '/for-creators', destination: '/en/for-creators' },
       { source: '/library', destination: '/en/library' },
       { source: '/create', destination: '/en/create' },
       { source: '/profile', destination: '/en/profile' },
@@ -43,6 +47,12 @@ const nextConfig = {
       { source: '/onboarding', destination: '/en/onboarding' },
       { source: '/onboarding/:path*', destination: '/en/onboarding/:path*' },
       { source: '/play/:path*', destination: '/en/play/:path*' },
+      { source: '/updates', destination: '/en/updates' },
+      { source: '/updates/:path*', destination: '/en/updates/:path*' },
+      { source: '/admin', destination: '/en/admin' },
+      { source: '/admin/:path*', destination: '/en/admin/:path*' },
+      { source: '/system', destination: '/en/system' },
+      { source: '/system/:path*', destination: '/en/system/:path*' },
     ];
   },
   transpilePackages: ['@waqup/shared'],
@@ -63,6 +73,11 @@ const nextConfig = {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
     // Fix ChunkLoadError 404 with Turbopack + dynamic imports (Next.js 16.1)
     turbopackClientSideNestedAsyncChunking: true,
+  },
+  // Disable webpack filesystem cache to avoid iCloud Drive ENOENT races
+  webpack: (config, { dev, isServer }) => {
+    config.cache = false;
+    return config;
   },
 };
 

@@ -80,6 +80,10 @@ Credits do not expire.
 
 ## 3. Pipelines — What Is Built
 
+### Web Route Structure (Locale-Aware)
+
+All web routes live under `app/[locale]/` with `next-intl` (locales: en, pt, es, fr, de; default: en). `/` redirects to `/en`. Unprefixed `/sanctuary` and `/speak` rewrite to `/en/sanctuary`, `/en/speak`. See `docs/04-reference/16-route-map.md`.
+
 ### Pipeline Step Definition (Shared Config)
 
 From `creation-steps.ts`, steps and which types they apply to:
@@ -249,6 +253,16 @@ Rituals additionally have: `goals` page (`/rituals/create/goals`), `recordings` 
 | ElevenLabs | TTS, IVC |
 | Stripe | Subscriptions, credit packs, Customer Portal |
 
+### Provider Coverage (Web & Mobile)
+
+**Web**: `QueryClientProvider`, `ThemeProvider`, `AuthProvider` live in `AppProviders` inside `app/[locale]/layout.tsx`. Root-level `/sanctuary` and `/speak` would bypass providers; `next.config.js` rewrites them to `/en/sanctuary`, `/en/speak` so they use the locale layout. Verified routes: `/sanctuary`, `/sanctuary/*`, `/speak`, `/speak/*`.
+
+**Mobile**: `PersistQueryClientProvider` wraps the app at `App.tsx` root. All screens (RootNavigator → MainNavigator, etc.) are children; no split routes. Screens using `useContent`, `useCreditBalance`, `useContentItem` are covered.
+
+**Verification**:
+- Web: run `npm run dev:web`, log in, open `/sanctuary` and `/speak`; no "No QueryClient set" in console. E2E: `npm run test:e2e` (requires `NEXT_PUBLIC_ENABLE_TEST_LOGIN=true`, override credentials in `.env.local`).
+- Mobile: run `npm run dev:mobile`, open Home, Library, Credits; no provider errors.
+
 ### Key Tables
 
 | Table | Purpose |
@@ -280,7 +294,7 @@ Rituals additionally have: `goals` page (`/rituals/create/goals`), `recordings` 
 
 ### APIs (Built)
 
-- Auth: Supabase; `/auth/callback`.
+- Auth: Supabase; `/auth/callback`. Protected routes (library, create, profile, sanctuary, speak, marketplace) enforced server-side in `proxy.ts` (Supabase `getUser`); `AuthProvider` handles client-side fallback, `access_granted`, E2E override.
 - Content: CRUD via Supabase client.
 - Script: `/api/generate-script`, `/api/ai/agent`.
 - TTS: `/api/ai/tts`, `/api/oracle/tts`, `/api/ai/render`.

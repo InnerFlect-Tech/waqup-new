@@ -2,13 +2,25 @@ import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainStackParamList, ContentItemType } from '@/navigation/types';
+import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card } from '@/components';
-import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
+import {
+  CONTENT_TYPE_COPY,
+  CONTENT_TYPE_COLORS,
+  CONTENT_CREDIT_COSTS,
+  PRACTICE_IS_FREE_ONE_LINER,
+} from '@waqup/shared/constants';
+import type { ContentItemType } from '@waqup/shared/types';
 
-interface ContentTypeConfig {
+const CONTENT_TYPE_ICONS: Record<ContentItemType, string> = {
+  affirmation: '✨',
+  meditation: '🧘',
+  ritual: '🔮',
+};
+
+const CONTENT_TYPES: {
   type: ContentItemType;
   icon: string;
   color: string;
@@ -17,40 +29,20 @@ interface ContentTypeConfig {
   depth: string;
   time: string;
   credits: string;
-}
-
-const CONTENT_TYPES: ContentTypeConfig[] = [
-  {
-    type: 'affirmation',
-    icon: '✨',
-    color: '#c084fc',
-    title: 'Affirmation',
-    description: 'Cognitive re-patterning for lasting belief change. Repeated short-form audio designed to shift your self-concept.',
-    depth: 'Shallow → Medium',
-    time: '2–5 min',
-    credits: '1–2 Qs',
-  },
-  {
-    type: 'meditation',
-    icon: '🧘',
-    color: '#60a5fa',
-    title: 'Guided Meditation',
-    description: 'State induction for deep relaxation and mental clarity. Extended guided journey into stillness.',
-    depth: 'Medium depth',
-    time: '10–30 min',
-    credits: '2–4 Qs',
-  },
-  {
-    type: 'ritual',
-    icon: '🔮',
-    color: '#34d399',
-    title: 'Ritual',
-    description: 'Identity encoding for transformational change. The deepest practice for permanent behaviour shifts.',
-    depth: 'Deepest',
-    time: '15–45 min',
-    credits: '5–10 Qs',
-  },
-];
+}[] = (['affirmation', 'meditation', 'ritual'] as const).map((type) => {
+  const copy = CONTENT_TYPE_COPY[type];
+  const costs = CONTENT_CREDIT_COSTS[type];
+  return {
+    type,
+    icon: CONTENT_TYPE_ICONS[type],
+    color: CONTENT_TYPE_COLORS[type],
+    title: copy.label,
+    description: copy.longDesc,
+    depth: copy.depth,
+    time: copy.duration,
+    credits: `${costs.base}–${costs.withAi} Qs`,
+  };
+});
 
 export default function CreateScreen() {
   const { theme } = useTheme();

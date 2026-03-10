@@ -3,6 +3,7 @@
 -- New policy only allows negative-amount (debit) inserts scoped to the calling user.
 
 drop policy if exists "Service role can insert transactions" on public.credit_transactions;
+drop policy if exists "Users can deduct own credits" on public.credit_transactions;
 
 create policy "Users can deduct own credits"
   on public.credit_transactions for insert

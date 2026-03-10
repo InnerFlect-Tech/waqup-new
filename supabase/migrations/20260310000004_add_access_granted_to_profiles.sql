@@ -10,6 +10,7 @@ update public.profiles
 
 -- Allow authenticated users to read their own waitlist signup (by matching email).
 -- This lets the /coming-soon page show the user's current waitlist status.
+drop policy if exists "Users can view own waitlist signup" on public.waitlist_signups;
 create policy "Users can view own waitlist signup"
   on public.waitlist_signups for select
   using (email = auth.email());

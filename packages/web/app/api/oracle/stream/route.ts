@@ -55,7 +55,7 @@ const FALLBACK_ORACLE_VOICE_ID = '21m00Tcm4TlvDq8ikWAM';
 /** Language instructions for the Oracle (Speak) session */
 const LANGUAGE_INSTRUCTION: Record<string, string> = {
   en: '',
-  pt: 'Responda sempre em Português do Brasil. ',
+  pt: 'Responda sempre em Português de Portugal. ',
   es: 'Responde siempre en español. ',
   fr: 'Réponds toujours en français. ',
   de: 'Antworte immer auf Deutsch. ',

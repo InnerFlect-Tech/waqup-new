@@ -13,6 +13,7 @@ create table if not exists public.investor_inquiries (
 -- Allow public (anon) to insert — contact form from unauthenticated visitors
 alter table public.investor_inquiries enable row level security;
 
+drop policy if exists "Anyone can submit inquiry" on public.investor_inquiries;
 create policy "Anyone can submit inquiry"
   on public.investor_inquiries for insert
   to anon

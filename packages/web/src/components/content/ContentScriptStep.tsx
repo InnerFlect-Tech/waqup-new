@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
@@ -48,6 +49,7 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
+  const locale = useLocale();
   const { contentType, intent, context, personalization, script, setScript, setCurrentStep } = useContentCreation();
 
   const [state, setState] = useState<ScriptState>(script ? 'ready' : 'idle');
@@ -66,7 +68,7 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
     setError('');
     setShowRegenerateConfirm(false);
     try {
-      const generated = await generateScript({ type: contentType, intent, context, personalization });
+      const generated = await generateScript({ type: contentType, intent, context, personalization, locale });
       setScript(generated);
       setEditValue(generated);
       setState('ready');
@@ -75,7 +77,7 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
       setError(message);
       setState('error');
     }
-  }, [contentType, intent, context, personalization, setScript]);
+  }, [contentType, intent, context, personalization, locale, setScript]);
 
   const handleSaveEdit = () => {
     setScript(editValue);

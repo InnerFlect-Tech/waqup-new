@@ -37,7 +37,7 @@ describe('signupSchema', () => {
   it('rejects mismatched passwords', () => {
     const result = signupSchema.safeParse({ ...valid, confirmPassword: 'Different1' });
     expect(result.success).toBe(false);
-    expect(JSON.stringify(result.error?.errors)).toContain('Passwords do not match');
+    expect(JSON.stringify(result.error?.errors)).toContain('passwordsMustMatch');
   });
 
   it('rejects weak password (no uppercase)', () => {

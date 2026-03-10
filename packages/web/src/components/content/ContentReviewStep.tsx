@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
@@ -44,7 +45,8 @@ export function ContentReviewStep({
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
-  const { contentType, intent, context, personalization, script, voiceId, voiceType, audioSettings, setCurrentStep } = useContentCreation();
+  const locale = useLocale();
+  const { contentType, intent, context, personalization, script, voiceId, voiceType, ownVoiceUrl, audioSettings, setCurrentStep } = useContentCreation();
 
   const meta = CONTENT_TYPE_META[contentType];
   const [saveState, setSaveState] = useState<SaveState>('idle');
@@ -140,12 +142,20 @@ export function ContentReviewStep({
       }
       const savedId = result.data.id;
 
-      // If AI voice selected, kick off TTS render (non-blocking — fires and continues)
+      // Kick off render: AI voice → TTS generation; own voice → use uploaded recording URL directly
       if (voiceType === 'ai' && voiceId && script) {
         fetch('/api/ai/render', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contentId: savedId, text: script, voiceId }),
+          body: JSON.stringify({ contentId: savedId, text: script, voiceId, locale }),
+        }).catch(() => {
+          // Render failure is non-fatal — user can retry from Audio Studio
+        });
+      } else if (voiceType === 'own' && ownVoiceUrl && script) {
+        fetch('/api/ai/render', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contentId: savedId, text: script, ownVoiceUrl, locale }),
         }).catch(() => {
           // Render failure is non-fatal — user can retry from Audio Studio
         });
@@ -158,7 +168,7 @@ export function ContentReviewStep({
       setSaveState('error');
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong saving your content. Please try again.');
     }
-  }, [contentType, completeHref, intent, script, voiceId, voiceType, audioSettings, router, setCurrentStep]);
+  }, [contentType, completeHref, intent, script, voiceId, voiceType, ownVoiceUrl, audioSettings, router, setCurrentStep]);
 
   return (
     <div style={{ maxWidth: '48rem', margin: '0 auto' }}>

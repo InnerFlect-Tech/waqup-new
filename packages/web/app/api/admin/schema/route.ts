@@ -57,6 +57,8 @@ export async function GET(): Promise<NextResponse> {
       { name: 'subscriptions', detail: 'public.subscriptions' },
       { name: 'waitlist_signups', detail: 'public.waitlist_signups' },
       { name: 'user_voices', detail: 'public.user_voices' },
+      { name: 'iap_purchases', detail: 'Apple IAP receipt tracking (iOS)' },
+      { name: 'iap_products', detail: 'Product ID → Qs mapping (iOS)' },
     ];
 
     for (const t of tables) {

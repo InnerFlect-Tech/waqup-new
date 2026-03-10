@@ -57,19 +57,23 @@ create trigger marketplace_items_updated_at
 alter table public.marketplace_items enable row level security;
 
 -- Anyone can view listed marketplace items
+drop policy if exists "Public can view listed marketplace items" on public.marketplace_items;
 create policy "Public can view listed marketplace items"
   on public.marketplace_items for select
   using (is_listed = true);
 
 -- Creators can manage their own listings
+drop policy if exists "Creators can insert own marketplace items" on public.marketplace_items;
 create policy "Creators can insert own marketplace items"
   on public.marketplace_items for insert
   with check (auth.uid() = creator_id);
 
+drop policy if exists "Creators can update own marketplace items" on public.marketplace_items;
 create policy "Creators can update own marketplace items"
   on public.marketplace_items for update
   using (auth.uid() = creator_id);
 
+drop policy if exists "Creators can delete own marketplace items" on public.marketplace_items;
 create policy "Creators can delete own marketplace items"
   on public.marketplace_items for delete
   using (auth.uid() = creator_id);
@@ -93,11 +97,13 @@ create index if not exists marketplace_shares_creator_lookup_idx
 alter table public.marketplace_shares enable row level security;
 
 -- Anyone (including anonymous) can insert a share event
+drop policy if exists "Anyone can record a share" on public.marketplace_shares;
 create policy "Anyone can record a share"
   on public.marketplace_shares for insert
   with check (true);
 
 -- Creators can view shares of their content (via join); users can view own shares
+drop policy if exists "Users can view own shares" on public.marketplace_shares;
 create policy "Users can view own shares"
   on public.marketplace_shares for select
   using (auth.uid() = sharer_user_id);

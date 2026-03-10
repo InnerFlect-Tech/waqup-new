@@ -62,6 +62,7 @@ export interface GenerateScriptInput {
   intent: string;
   context?: string;
   personalization?: PersonalizationData;
+  locale?: string;
 }
 
 export async function generateScript(input: GenerateScriptInput): Promise<string> {

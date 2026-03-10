@@ -2,10 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from '@/i18n/navigation';
-import { useTheme, spacing, borderRadius } from '@/theme';
-import { PageShell, GlassCard } from '@/components';
+import { useTheme, spacing } from '@/theme';
+import { PageShell, GlassCard, Logo } from '@/components';
 import { Typography, Button } from '@/components';
 
+/**
+ * The Science — Mechanism explanation
+ *
+ * Purpose: Proof, credibility, why voice + affirmations work.
+ * Visitor intent: "Is this real? Why does my own voice matter?"
+ *
+ * Distinct from Our Story (founder narrative) and How It Works (process steps).
+ */
 const STEPS = [
   {
     icon: '🧠',
@@ -55,20 +63,9 @@ export default function ExplanationPage() {
           gap: spacing.xl,
         }}
       >
-        {/* Logo wordmark */}
+        {/* Proper Logo */}
         <div style={{ textAlign: 'center', paddingTop: spacing.md }}>
-          <Typography
-            variant="h3"
-            style={{
-              color: colors.accent.primary,
-              letterSpacing: '0.12em',
-              fontWeight: 800,
-              fontSize: '13px',
-              textTransform: 'uppercase',
-            }}
-          >
-            waQup
-          </Typography>
+          <Logo size="lg" showIcon={false} href="/" />
         </div>
 
         {/* Hero */}

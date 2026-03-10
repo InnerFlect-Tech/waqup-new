@@ -7,6 +7,14 @@
 - **Mobile viewport** — Pixel 5 (Android), iPhone 14 (iOS) via device emulation
 - Public pages, auth flows, protected routes (with auth fixture), responsive layout
 
+## Provider Coverage Verification (Web + Shared + Mobile)
+
+**Shared (Jest)**: `packages/shared/src/hooks/__tests__/provider-coverage.test.tsx` — verifies that `useContentQuery` (from `createContentHooks`) renders correctly when wrapped in `QueryClientProvider`. Run with `npm run test --workspace=packages/shared`.
+
+**Web (Playwright)**: Protected routes `/sanctuary` and `/speak` are rewritten to `/en/*` so they receive `QueryClientProvider` (see `next.config.js` rewrites). The E2E spec `e2e/specs/protected/provider-coverage.spec.ts` visits these routes and asserts no "No QueryClient set" console errors. Run with `npm run test:e2e` (requires auth setup and dev server).
+
+**Mobile**: `PersistQueryClientProvider` wraps the app at root (`App.tsx`). All screens use the same React tree. No route splitting. The shared provider-coverage Jest test covers the hook behavior used by mobile.
+
 ## What Playwright Does Not Test
 
 - **Native Expo app** (iOS/Android): Playwright cannot automate native React Native apps. Use **Detox** (React Native) or **Maestro** for native E2E in a future phase.
@@ -54,7 +62,7 @@ E2E runs in GitHub Actions after the build job:
 
 - Builds web with placeholder Supabase + override env
 - Installs Chromium
-- Runs `npm run start` via Playwright webServer, then tests
+- Runs `npm run dev` via Playwright webServer (`next start` is incompatible with `output: standalone`)
 - On failure: uploads `playwright-report` and `test-results` as artifacts
 
 ## Adding Tests

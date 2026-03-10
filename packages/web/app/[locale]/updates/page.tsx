@@ -6,9 +6,15 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius } from '@/theme';
 import { CONTENT_MAX_WIDTH } from '@/theme';
 import { Link } from '@/i18n/navigation';
-import { FileText, Sparkles, Shield, Mic, Globe } from 'lucide-react';
+import { FileText, Sparkles, Shield, Mic, Globe, ListTodo } from 'lucide-react';
 
 const UPDATE_DOCS = [
+  {
+    slug: 'open-items',
+    title: 'Open Items',
+    description: 'Unresolved work requiring attention before launch. Single source of truth for what still needs to be done.',
+    icon: ListTodo,
+  },
   {
     slug: 'multilingual-i18n-implementation',
     title: 'Full Multilingual (i18n) Implementation',

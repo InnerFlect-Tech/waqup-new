@@ -1,20 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { Sparkles, Infinity, ArrowRight, CheckCircle2, LogIn } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTheme, spacing, borderRadius, CONTENT_MAX_WIDTH, BLUR } from '@/theme';
 import { Typography, Button, PageShell, QCoin } from '@/components';
-import { CREDIT_PACKS, getPackSavings, PRACTICE_IS_FREE_ONE_LINER, type CreditPackId } from '@waqup/shared/constants';
+import { CREDIT_PACKS, getPackSavings, type CreditPackId } from '@waqup/shared/constants';
+import { Analytics } from '@waqup/shared/utils';
 import { useAuthStore } from '@/stores';
-
-const TRUST_POINTS = [
-  { icon: Infinity, text: 'Qs never expire — use them at your own pace' },
-  { icon: Sparkles, text: PRACTICE_IS_FREE_ONE_LINER },
-  { icon: CheckCircle2, text: 'Instant delivery after payment. Secured by Stripe' },
-];
 
 function PackCard({
   pack,
@@ -27,6 +23,7 @@ function PackCard({
   loading: boolean;
   onCheckout: () => void;
 }) {
+  const t = useTranslations('marketing');
   const { theme } = useTheme();
   const colors = theme.colors;
   const isBestValue = pack.badge === 'Best Value';
@@ -73,7 +70,7 @@ function PackCard({
             whiteSpace: 'nowrap',
           }}
         >
-          Best Value
+          {t('getQs.bestValue')}
         </div>
       )}
 
@@ -142,7 +139,7 @@ function PackCard({
                 color: colors.accent.tertiary,
               }}
             >
-              Save {savings.discountPercent}% · €{savings.savedEuros.toFixed(2)} vs Spark
+              {t('getQs.saveVsSpark', { percent: savings.discountPercent, amount: savings.savedEuros.toFixed(2) })}
             </span>
           );
         })()}
@@ -163,10 +160,18 @@ function PackCard({
 }
 
 export default function GetQsPage() {
+  const t = useTranslations('marketing');
+  const tc = useTranslations('common');
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
+
+  const trustPoints = [
+    { icon: Infinity, text: t('getQs.trustPoint1') },
+    { icon: Sparkles, text: tc('practiceIsFreeOneLiner') },
+    { icon: CheckCircle2, text: t('getQs.trustPoint3') },
+  ];
   const [loading, setLoading] = useState<CreditPackId | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -194,9 +199,11 @@ export default function GetQsPage() {
       const { url } = await res.json();
       if (!url) throw new Error('No checkout URL returned');
 
+      const pack = CREDIT_PACKS.find((p) => p.id === packId);
+      Analytics.paymentStarted('credits', pack?.price ?? 0, pack?.currency ?? 'EUR');
       window.location.href = url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setError(err instanceof Error ? err.message : tc('error'));
     } finally {
       setLoading(null);
     }
@@ -231,11 +238,11 @@ export default function GetQsPage() {
           >
             <LogIn size={18} color={colors.accent.primary} strokeWidth={2} />
             <span style={{ fontSize: 14, color: colors.text.secondary, lineHeight: 1.5 }}>
-              Sign in to purchase. We&apos;ll bring you back here after you log in.
+              {t('getQs.signInPrompt')}
             </span>
             <Link href="/login?next=/get-qs" style={{ textDecoration: 'none' }}>
               <Button variant="ghost" size="sm" style={{ borderColor: `${colors.accent.primary}50`, color: colors.accent.primary }}>
-                Sign in
+                {t('getQs.signIn')}
               </Button>
             </Link>
           </motion.div>
@@ -261,7 +268,7 @@ export default function GetQsPage() {
               lineHeight: 1.1,
             }}
           >
-            Q packs
+            {t('getQs.qPacksTitle')}
           </Typography>
           <Typography
             variant="body"
@@ -273,9 +280,9 @@ export default function GetQsPage() {
               lineHeight: 1.65,
             }}
           >
-            Qs power affirmations, meditations, and rituals. Buy once — they never expire.
+            {t('getQs.qPacksBody')}
             <br />
-            <span style={{ color: colors.text.tertiary ?? colors.text.secondary }}>{PRACTICE_IS_FREE_ONE_LINER}</span>
+            <span style={{ color: colors.text.tertiary ?? colors.text.secondary }}>{tc('practiceIsFreeOneLiner')}</span>
           </Typography>
         </motion.div>
 
@@ -335,7 +342,7 @@ export default function GetQsPage() {
             borderBottom: `1px solid ${colors.glass.border}`,
           }}
         >
-          {TRUST_POINTS.map((point) => (
+          {trustPoints.map((point) => (
             <div
               key={point.text}
               style={{
@@ -360,7 +367,7 @@ export default function GetQsPage() {
           style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.sm }}
         >
           <Typography variant="small" style={{ color: colors.text.tertiary, fontSize: 13 }}>
-            Want a recurring monthly allocation instead?
+            {t('getQs.wantMonthlyAllocation')}
           </Typography>
           <Link href="/pricing" style={{ textDecoration: 'none' }}>
             <span
@@ -373,7 +380,7 @@ export default function GetQsPage() {
                 fontWeight: 500,
               }}
             >
-              View subscription plans
+              {t('getQs.viewSubscriptionPlans')}
               <ArrowRight size={14} />
             </span>
           </Link>

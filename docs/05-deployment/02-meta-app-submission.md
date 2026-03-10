@@ -60,7 +60,7 @@ ngrok http 3000
 ## Files Created
 
 - `packages/web/public/app-icon-1024.png` — 1024×1024 app icon for Meta
-- `packages/web/app/data-deletion/page.tsx` — User data deletion page (required for Meta)
+- `packages/web/app/[locale]/data-deletion/page.tsx` — User data deletion page (required for Meta; rewrite `/data-deletion` → `/en/data-deletion`)
 - `packages/web/app/api/webhooks/meta/route.ts` — Meta webhook handler (GET verify, POST events)
 
 ---

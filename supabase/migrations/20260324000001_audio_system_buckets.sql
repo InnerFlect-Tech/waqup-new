@@ -14,6 +14,7 @@
 -- Allow authenticated users to upload/read their own recordings at recordings/{userId}/...
 -- The existing "Owner audio access" covers {userId}/{contentId}.mp3.
 -- This policy covers recordings/{userId}/{contentId}.webm|.mp4
+drop policy if exists "Owner recordings access" on storage.objects;
 create policy "Owner recordings access"
   on storage.objects for all
   using (
@@ -43,12 +44,14 @@ on conflict (id) do update set
   allowed_mime_types = excluded.allowed_mime_types;
 
 -- Public read — anyone can fetch atmosphere files by URL
+drop policy if exists "Public atmosphere read" on storage.objects;
 create policy "Public atmosphere read"
   on storage.objects for select
   using (bucket_id = 'atmosphere');
 
 -- Only superadmins can upload atmosphere files (via Dashboard or API).
 -- Dashboard uploads use the session; API uploads must use a superadmin session.
+drop policy if exists "Superadmin atmosphere write" on storage.objects;
 create policy "Superadmin atmosphere write"
   on storage.objects for insert
   with check (
@@ -67,6 +70,7 @@ create policy "Superadmin atmosphere update"
     and exists (select 1 from public.profiles where id = auth.uid() and role = 'superadmin')
   );
 
+drop policy if exists "Superadmin atmosphere delete" on storage.objects;
 create policy "Superadmin atmosphere delete"
   on storage.objects for delete
   using (

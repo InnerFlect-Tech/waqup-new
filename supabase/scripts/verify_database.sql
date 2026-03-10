@@ -68,6 +68,12 @@ select 'content_series table', case when exists (select 1 from information_schem
 insert into _verify (check_name, status, detail)
 select 'content_series_items table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'content_series_items') then 'PASS' else 'WARN' end, 'Content series items';
 
+insert into _verify (check_name, status, detail)
+select 'iap_purchases table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'iap_purchases') then 'PASS' else 'WARN' end, 'Apple IAP receipt tracking (iOS)';
+
+insert into _verify (check_name, status, detail)
+select 'iap_products table', case when exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'iap_products') then 'PASS' else 'WARN' end, 'Product ID → Qs mapping (iOS)';
+
 -- ─── 2. profiles: role and access_granted columns (required for superadmin) ───
 insert into _verify (check_name, status, detail)
 select 'profiles.role column',
@@ -129,6 +135,9 @@ select 'record_share_and_award_credit()', case when exists (select 1 from pg_pro
 
 insert into _verify (check_name, status, detail)
 select 'deduct_credits()', case when exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'deduct_credits') then 'PASS' else 'FAIL' end, 'Used for credit deductions';
+
+insert into _verify (check_name, status, detail)
+select 'grant_iap_credits()', case when exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'grant_iap_credits') then 'PASS' else 'WARN' end, 'Used by RevenueCat webhook (iOS)';
 
 -- ─── 6. Storage: audio bucket (Supabase projects include storage by default) ──
 insert into _verify (check_name, status, detail)

@@ -18,6 +18,7 @@ on conflict (id) do update set
 
 -- Owner can upload, read, update, and delete their own files
 -- Files are stored at path: {userId}/{contentId}.mp3
+drop policy if exists "Owner audio access" on storage.objects;
 create policy "Owner audio access"
   on storage.objects for all
   using (
@@ -29,15 +30,16 @@ create policy "Owner audio access"
     and auth.uid()::text = (storage.foldername(name))[1]
   );
 
--- Marketplace: public read for files whose content_item is marketplace-enabled
+-- Marketplace: public read for files whose content_item is listed in marketplace_items
 -- This allows sharing and discovery outside the app
+drop policy if exists "Marketplace public read" on storage.objects;
 create policy "Marketplace public read"
   on storage.objects for select
   using (
     bucket_id = 'audio'
     and exists (
-      select 1 from public.content_items ci
-      where ci.id::text = replace(storage.filename(name), '.mp3', '')
-      and ci.marketplace_enabled = true
+      select 1 from public.marketplace_items mi
+      where mi.content_item_id::text = replace(storage.filename(name), '.mp3', '')
+      and mi.is_listed = true
     )
   );

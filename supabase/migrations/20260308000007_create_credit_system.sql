@@ -16,10 +16,12 @@ create index if not exists credit_transactions_user_created_idx on public.credit
 -- RLS
 alter table public.credit_transactions enable row level security;
 
+drop policy if exists "Users can view own transactions" on public.credit_transactions;
 create policy "Users can view own transactions"
   on public.credit_transactions for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Service role can insert transactions" on public.credit_transactions;
 create policy "Service role can insert transactions"
   on public.credit_transactions for insert
   with check (true);

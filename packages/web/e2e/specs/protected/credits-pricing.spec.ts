@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { canUseOverrideLogin } from '../../fixtures/test-user';
+import { skipIfNoAuth } from '../../helpers/auth.helper';
 import { goToCreditsBuyPage } from '../../helpers/credits.helper';
 
 test.describe('Credits & Pricing (authenticated)', () => {
-  test.beforeEach(async () => {
-    if (!canUseOverrideLogin || process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN !== 'true') {
-      test.skip();
-    }
+  test.beforeEach(() => {
+    skipIfNoAuth(test);
   });
 
   test('credits overview page loads', async ({ page }) => {

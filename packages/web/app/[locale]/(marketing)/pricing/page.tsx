@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
-import { Check, Sparkles, Infinity, Zap, ArrowRight } from 'lucide-react';
+import { Check, X, Sparkles, Infinity, Zap, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
 import { Typography, Button, PageShell, QCoin } from '@/components';
-import { PLANS, PRACTICE_IS_FREE_ONE_LINER, type PlanId } from '@waqup/shared/constants';
+import { PLANS, getPlanById, PRACTICE_IS_FREE_ONE_LINER, type PlanId } from '@waqup/shared/constants';
+import { Analytics } from '@waqup/shared/utils';
 
 const STRIPE_PRICE_IDS: Record<PlanId, string> = {
   starter: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID || '',
@@ -359,6 +360,8 @@ export default function PricingPage() {
       const { url } = await res.json();
       if (!url) throw new Error('No checkout URL returned');
 
+      const plan = getPlanById(planId);
+      Analytics.paymentStarted('subscription', plan?.price ?? 0, plan?.currency ?? 'EUR');
       window.location.href = url;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
@@ -556,7 +559,7 @@ export default function PricingPage() {
           </Link>
         </motion.div>
 
-        {/* Competitive comparison */}
+        {/* Competitive comparison — SEO: waQup vs Calm & Headspace */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -564,18 +567,18 @@ export default function PricingPage() {
           style={{ marginBottom: spacing.xxl }}
         >
           <Typography
-            variant="small"
+            variant="h3"
+            as="h2"
             style={{
               textAlign: 'center',
-              color: colors.text.secondary,
-              fontSize: 11,
+              color: colors.text.primary,
+              fontSize: 22,
               fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
               marginBottom: spacing.lg,
+              letterSpacing: '-0.02em',
             }}
           >
-            How waQup compares
+            waQup vs Calm & Headspace
           </Typography>
 
           <div
@@ -593,7 +596,7 @@ export default function PricingPage() {
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1.5fr 1fr 1fr',
-                padding: `${spacing.md} ${spacing.xl}`,
+                padding: `${spacing.lg} ${spacing.xl}`,
                 background: `${colors.accent.primary}08`,
                 borderBottom: `1px solid ${colors.glass.border}`,
                 gap: spacing.md,
@@ -603,42 +606,64 @@ export default function PricingPage() {
               <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center' }}>
                 Calm / Headspace
               </Typography>
-              <Typography variant="small" style={{ color: colors.accent.primary, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center' }}>
-                waQup
-              </Typography>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: spacing.xs }}>
+                <span
+                  style={{
+                    background: colors.gradients.primary,
+                    padding: '2px 8px',
+                    borderRadius: borderRadius.sm,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: '#fff',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  You
+                </span>
+                <Typography variant="small" style={{ color: colors.accent.primary, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center' }}>
+                  waQup
+                </Typography>
+              </div>
             </div>
 
             {[
-              { label: 'Content', other: "Someone else's", waQup: 'Yours — written for you' },
-              { label: 'Voice', other: 'Celebrity or generic AI', waQup: 'Your own voice or AI voice' },
-              { label: 'Personalisation', other: 'None', waQup: 'Every session, by design' },
-              { label: 'Practice cost', other: '€60–€100/year required', waQup: 'Always free — no catch' },
-              { label: 'Creation', other: 'Not possible', waQup: 'Qs · Create any time' },
+              { label: 'Content', other: 'Pre-made library', waQup: 'Yours — written for you' },
+              { label: 'Voice', other: 'Celebrity or generic voices', waQup: 'Your voice or AI voice' },
+              { label: 'Personalisation', other: 'Pre-set programs only', waQup: 'Every session, by design' },
+              { label: 'Practice cost', other: '~$70/year subscription', waQup: 'Always free — no catch' },
+              { label: 'Creation', other: 'Not available', waQup: 'Create anytime with Qs' },
             ].map((row, i, arr) => (
-              <div
+              <motion.div
                 key={row.label}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.55 + i * 0.04, duration: 0.25 }}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1.5fr 1fr 1fr',
-                  padding: `${spacing.md} ${spacing.xl}`,
+                  padding: `${spacing.lg} ${spacing.xl}`,
                   borderBottom: i < arr.length - 1 ? `1px solid ${colors.glass.border}` : undefined,
                   gap: spacing.md,
                   alignItems: 'center',
+                  minHeight: 52,
                 }}
               >
-                <Typography variant="small" style={{ color: colors.text.primary, fontWeight: 600, fontSize: 13 }}>
+                <Typography variant="small" style={{ color: colors.text.primary, fontWeight: 600, fontSize: 14 }}>
                   {row.label}
                 </Typography>
-                <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, textAlign: 'center', lineHeight: 1.4 }}>
-                  {row.other}
-                </Typography>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-                  <Check size={13} color={colors.accent.primary} strokeWidth={2.5} style={{ flexShrink: 0 }} />
-                  <Typography variant="small" style={{ color: colors.text.primary, fontSize: 12, lineHeight: 1.4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                  <X size={14} color={colors.text.tertiary} strokeWidth={2} style={{ flexShrink: 0, opacity: 0.8 }} />
+                  <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, textAlign: 'center', lineHeight: 1.4 }}>
+                    {row.other}
+                  </Typography>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                  <Check size={14} color={colors.accent.primary} strokeWidth={2.5} style={{ flexShrink: 0 }} />
+                  <Typography variant="small" style={{ color: colors.text.primary, fontSize: 12, fontWeight: 500, lineHeight: 1.4 }}>
                     {row.waQup}
                   </Typography>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -647,16 +672,26 @@ export default function PricingPage() {
             style={{
               textAlign: 'center',
               color: colors.text.secondary,
-              fontSize: 12,
+              fontSize: 13,
               marginTop: spacing.lg,
-              lineHeight: 1.6,
-              maxWidth: 520,
+              lineHeight: 1.65,
+              maxWidth: 560,
               margin: `${spacing.lg} auto 0`,
             }}
           >
-            Calm and Headspace charge you to listen to someone else&apos;s voice.
-            waQup charges you only to <em>create</em>. Listening is always free.
+            Calm and Headspace charge you to listen. waQup charges you only to <em>create</em>. Listening is always free.
           </Typography>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: spacing.lg }}>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => router.push('/join')}
+              rightIcon={ArrowRight}
+            >
+              Try waQup free
+            </Button>
+          </div>
         </motion.div>
       </div>
     </PageShell>

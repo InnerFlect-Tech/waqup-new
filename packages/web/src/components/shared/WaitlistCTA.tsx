@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Button, Input, Typography } from '@/components/ui';
 import { useTheme } from '@/theme';
@@ -27,6 +28,8 @@ interface WaitlistCTAProps {
 // ── Inline variant ────────────────────────────────────────────────────────────
 
 function InlineCTA({ headline, subtext, compact, style }: { headline?: string; subtext?: string; compact?: boolean; style?: React.CSSProperties }) {
+  const t = useTranslations('marketing');
+  const tc = useTranslations('common');
   const { theme } = useTheme();
   const colors = theme.colors;
 
@@ -40,7 +43,7 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
     setError('');
     const trimmed = email.trim().toLowerCase();
     if (!trimmed || !trimmed.includes('@')) {
-      setError('Please enter a valid email.');
+      setError(t('waitlistCta.errorEmail'));
       return;
     }
     setSubmitting(true);
@@ -58,11 +61,11 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
         if (res.status === 409 || data?.error?.toLowerCase().includes('already')) {
           setDone(true);
         } else {
-          setError(data?.error ?? 'Something went wrong.');
+          setError(data?.error ?? t('waitlistCta.errorGeneric'));
         }
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('waitlistCta.errorNetwork'));
     } finally {
       setSubmitting(false);
     }
@@ -115,13 +118,13 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
             <Check size={13} color={colors.text.onDark} />
           </div>
           <span style={{ color: colors.accent.tertiary, fontSize: 14, fontWeight: 500 }}>
-            You&apos;re on the list!
+            {t('waitlistCta.onTheList')}
           </span>
           <Link
             href={`/waitlist?email=${encodeURIComponent(email)}`}
             style={{ color: colors.text.tertiary, fontSize: 12, marginLeft: spacing.xs }}
           >
-            Complete your profile →
+            {t('waitlistCta.completeProfile')}
           </Link>
         </motion.div>
       ) : (
@@ -141,7 +144,7 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
           <div style={{ flex: '1 1 220px', minWidth: 200 }}>
             <Input
               type="email"
-              placeholder="your@email.com"
+              placeholder={t('waitlistCta.placeholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
@@ -157,8 +160,8 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
             disabled={submitting}
             style={{ flexShrink: 0 }}
           >
-            {submitting ? 'Joining…' : (
-              <>Join waitlist <ArrowRight size={15} style={{ marginLeft: 6 }} /></>
+            {submitting ? t('waitlistCta.joining') : (
+              <>{t('waitlistCta.joinWaitlist')} <ArrowRight size={15} style={{ marginLeft: 6 }} /></>
             )}
           </Button>
         </form>
@@ -178,11 +181,11 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
           variant="small"
           style={{ color: colors.text.tertiary, marginTop: spacing.lg, display: 'block' }}
         >
-          Or{' '}
+          {tc('or')}{' '}
           <Link href="/waitlist" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>
-            fill out the full form
+            {t('waitlistCta.fillFullForm')}
           </Link>{' '}
-          to share your intentions and get priority access.
+          {t('waitlistCta.fillFormSuffix')}
         </Typography>
       )}
     </div>
@@ -192,10 +195,11 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
 // ── Banner variant ─────────────────────────────────────────────────────────────
 
 function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: string; style?: React.CSSProperties }) {
+  const t = useTranslations('marketing');
   const { theme } = useTheme();
   const colors = theme.colors;
-  const defaultHeadline = headline ?? 'Ready to rewire your mind?';
-  const defaultSubtext = subtext ?? 'Join the waitlist and be first to access waQup when it launches.';
+  const defaultHeadline = headline ?? t('waitlistCta.bannerHeadline');
+  const defaultSubtext = subtext ?? t('waitlistCta.bannerSubtext');
 
   return (
     <div
@@ -232,7 +236,7 @@ function BannerCTA({ headline, subtext, style }: { headline?: string; subtext?: 
             variant="smallBold"
             style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.08em' }}
           >
-            Early Access
+            {t('waitlistCta.earlyAccessBadge')}
           </Typography>
         </div>
 

@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { useCreditBalance } from '@/hooks';
 import { useTheme, NAV_TOP_OFFSET, SPEAK_BOTTOM_UI_HEIGHT } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
 import type { OrbState } from '@/components/audio';
 import { ORB_INTRO_SHORT } from '@waqup/shared/constants';
 
@@ -74,6 +76,7 @@ export default function SpeakPage() {
   const { theme } = useTheme();
   const c = theme.colors;
   const { balance: creditBalance, refetch: refetchBalance } = useCreditBalance();
+  const locale = useLocale();
 
   // ── Core state ───────────────────────────────────────────────────────────
   const [orbState, setOrbState]       = useState<OrbState>('idle');
@@ -327,6 +330,7 @@ export default function SpeakPage() {
           sessionId:    s.id,
           messages:     nextMessages.map(m => ({ role: m.role, content: m.content })),
           voiceId,
+          locale,
           ...(cfg.systemPrompt !== undefined && { systemPrompt: cfg.systemPrompt }),
           ...(cfg.temperature  !== undefined && { temperature:  cfg.temperature }),
           ...(cfg.maxTokens    !== undefined && { maxTokens:    cfg.maxTokens }),
@@ -695,7 +699,7 @@ export default function SpeakPage() {
         style={{
           position:  'absolute',
           inset:     0,
-          background: 'radial-gradient(ellipse 70% 60% at 50% 40%, rgba(109,40,217,0.12) 0%, transparent 70%)',
+          background: `radial-gradient(ellipse 70% 60% at 50% 40%, ${withOpacity(c.accent.primary, 0.12)} 0%, transparent 70%)`,
           pointerEvents: 'none',
           zIndex: 0,
         }}
@@ -740,14 +744,14 @@ export default function SpeakPage() {
                   fontSize:     13,
                   lineHeight:   1.5,
                   background:   msg.role === 'user'
-                    ? 'rgba(124, 58, 237, 0.2)'
-                    : 'rgba(255, 255, 255, 0.05)',
+                    ? withOpacity(c.accent.primary, 0.2)
+                    : c.glass.dark,
                   border:       msg.role === 'user'
-                    ? '1px solid rgba(167, 139, 250, 0.25)'
-                    : '1px solid rgba(255, 255, 255, 0.06)',
+                    ? `1px solid ${withOpacity(c.accent.secondary, 0.25)}`
+                    : `1px solid ${c.glass.borderDark}`,
                   color:        msg.role === 'user'
-                    ? 'rgba(216,180,254,0.9)'
-                    : 'rgba(255,255,255,0.7)',
+                    ? withOpacity(c.accent.tertiary ?? c.accent.primary, 0.9)
+                    : withOpacity(c.text.onDark, 0.7),
                 }}
               >
                 {msg.content}
@@ -766,9 +770,9 @@ export default function SpeakPage() {
                   borderRadius: 12,
                   fontSize:     13,
                   lineHeight:   1.5,
-                  background:   'rgba(255, 255, 255, 0.05)',
-                  border:       '1px solid rgba(255, 255, 255, 0.08)',
-                  color:        'rgba(255,255,255,0.8)',
+                  background:   c.glass.dark,
+                  border:       `1px solid ${c.glass.borderDark}`,
+                  color:        c.glass.light,
                 }}
               >
                 {streamingText}
@@ -777,7 +781,7 @@ export default function SpeakPage() {
                     display:          'inline-block',
                     width:            2,
                     height:           '1em',
-                    background:       'rgba(167,139,250,0.7)',
+                    background:       withOpacity(c.accent.secondary, 0.7),
                     marginLeft:       3,
                     verticalAlign:    'text-bottom',
                     animation:        'speak-cursor-blink 0.7s steps(1) infinite',
@@ -834,7 +838,7 @@ export default function SpeakPage() {
               maxWidth:   'min(500px, 85vw)',
               fontSize:   13,
               fontStyle:  'italic',
-              color:      'rgba(167,139,250,0.7)',
+              color:      withOpacity(c.accent.secondary, 0.7),
               zIndex:     4,
             }}
           >
@@ -882,7 +886,7 @@ export default function SpeakPage() {
                   fontSize:      11,
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
-                  color:         'rgba(255,255,255,0.3)',
+                  color:         c.text.tertiary,
                   margin:        0,
                 }}
               >
@@ -891,7 +895,7 @@ export default function SpeakPage() {
               <p
                 style={{
                   fontSize:   12,
-                  color:      'rgba(255,255,255,0.5)',
+                  color:      withOpacity(c.text.onDark, 0.5),
                   margin:     '4px 0 0',
                   maxWidth:   320,
                   lineHeight: 1.4,
@@ -903,14 +907,14 @@ export default function SpeakPage() {
 
               {/* Session error */}
               {sessionError && (
-                <p style={{ fontSize: 13, color: 'rgba(252,165,165,0.8)', margin: 0, textAlign: 'center', maxWidth: 320 }}>
+                <p style={{ fontSize: 13, color: withOpacity(c.error, 0.85), margin: 0, textAlign: 'center', maxWidth: 320 }}>
                   {sessionError}
                 </p>
               )}
 
               {/* No support warning */}
               {!hasSupport && (
-                <p style={{ fontSize: 12, color: 'rgba(252,165,165,0.7)', margin: 0 }}>
+                <p style={{ fontSize: 12, color: withOpacity(c.error, 0.7), margin: 0 }}>
                   Speech recognition not supported in this browser.
                 </p>
               )}
@@ -925,9 +929,9 @@ export default function SpeakPage() {
                     gap:           8,
                     padding:       '11px 28px',
                     borderRadius:  32,
-                    background:    'rgba(124,58,237,0.18)',
-                    border:        '1px solid rgba(167,139,250,0.3)',
-                    color:         'rgba(216,180,254,0.9)',
+                    background:    withOpacity(c.accent.primary, 0.18),
+                    border:        `1px solid ${withOpacity(c.accent.secondary, 0.3)}`,
+                    color:         withOpacity(c.accent.tertiary ?? c.accent.primary, 0.9),
                     fontSize:      14,
                     fontWeight:    500,
                     textDecoration: 'none',
@@ -947,9 +951,9 @@ export default function SpeakPage() {
                         style={{
                           padding:      '6px 14px',
                           borderRadius: 20,
-                          border:       `1px solid ${selectedQs === opt.qs ? 'rgba(167,139,250,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                          background:   selectedQs === opt.qs ? 'rgba(124,58,237,0.2)' : 'transparent',
-                          color:        selectedQs === opt.qs ? 'rgba(216,180,254,0.9)' : 'rgba(255,255,255,0.4)',
+                          border:       `1px solid ${selectedQs === opt.qs ? withOpacity(c.accent.secondary, 0.5) : withOpacity(c.text.onDark, 0.1)}`,
+                          background:   selectedQs === opt.qs ? withOpacity(c.accent.primary, 0.2) : 'transparent',
+                          color:        selectedQs === opt.qs ? withOpacity(c.accent.tertiary ?? c.accent.primary, 0.9) : withOpacity(c.text.onDark, 0.4),
                           fontSize:     13,
                           cursor:       'pointer',
                           transition:   'all 0.15s',
@@ -968,9 +972,9 @@ export default function SpeakPage() {
                     style={{
                       padding:      '12px 40px',
                       borderRadius: 32,
-                      background:   sessionLoading ? 'rgba(124,58,237,0.1)' : 'rgba(124,58,237,0.22)',
-                      border:       '1px solid rgba(167,139,250,0.35)',
-                      color:        sessionLoading ? 'rgba(216,180,254,0.45)' : 'rgba(216,180,254,0.92)',
+                      background:   sessionLoading ? withOpacity(c.accent.primary, 0.1) : withOpacity(c.accent.primary, 0.22),
+                      border:       `1px solid ${withOpacity(c.accent.secondary, 0.35)}`,
+                      color:        sessionLoading ? withOpacity(c.accent.tertiary ?? c.accent.primary, 0.45) : withOpacity(c.accent.tertiary ?? c.accent.primary, 0.92),
                       fontSize:     15,
                       fontWeight:   500,
                       cursor:       sessionLoading ? 'wait' : 'pointer',
@@ -982,7 +986,7 @@ export default function SpeakPage() {
                   </button>
 
                   {/* Credit balance */}
-                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
+                  <p style={{ fontSize: 12, color: withOpacity(c.text.onDark, 0.25), margin: 0 }}>
                     {creditBalance ?? '—'} Q available
                   </p>
                 </>
@@ -1007,9 +1011,31 @@ export default function SpeakPage() {
             >
               {/* Oracle error (e.g. session expired, server error) */}
               {oracleError && (
-                <p style={{ fontSize: 12, color: 'rgba(252,165,165,0.85)', margin: 0, textAlign: 'center', maxWidth: 320 }}>
+                <p style={{ fontSize: 12, color: withOpacity(c.error, 0.85), margin: 0, textAlign: 'center', maxWidth: 320 }}>
                   {oracleError}
                 </p>
+              )}
+              {/* Low credits mid-session — upsell so user isn't stranded */}
+              {isLowCredits && (
+                <Link
+                  href="/sanctuary/credits/buy"
+                  style={{
+                    display:        'flex',
+                    alignItems:     'center',
+                    gap:            8,
+                    padding:        '9px 22px',
+                    borderRadius:   32,
+                    background:    withOpacity(c.accent.primary, 0.18),
+                    border:        `1px solid ${withOpacity(c.accent.secondary, 0.3)}`,
+                    color:         withOpacity(c.accent.tertiary ?? c.accent.primary, 0.9),
+                    fontSize:       13,
+                    fontWeight:     500,
+                    textDecoration: 'none',
+                    letterSpacing:  '0.02em',
+                  }}
+                >
+                  Get Qs →
+                </Link>
               )}
               {/* Reply dots */}
               <div style={{ display: 'flex', gap: 5 }}>
@@ -1021,8 +1047,8 @@ export default function SpeakPage() {
                       height:       6,
                       borderRadius: '50%',
                       background:   i < repliesLeft
-                        ? 'rgba(167,139,250,0.7)'
-                        : 'rgba(255,255,255,0.12)',
+                        ? withOpacity(c.accent.secondary, 0.7)
+                        : withOpacity(c.text.onDark, 0.12),
                       transition: 'background 0.3s',
                     }}
                   />
@@ -1034,25 +1060,25 @@ export default function SpeakPage() {
                 <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
                   {repliesLeft} {repliesLeft === 1 ? 'reply' : 'replies'} left
                 </p>
-                <span style={{ color: 'rgba(255,255,255,0.1)' }}>·</span>
+                <span style={{ color: withOpacity(c.text.onDark, 0.1) }}>·</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <label style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', cursor: 'pointer' }}>
+                  <label style={{ fontSize: 12, color: c.text.tertiary, cursor: 'pointer' }}>
                     <input
                       type="checkbox"
                       checked={autoRefill}
                       onChange={(e) => setAutoRefill(e.target.checked)}
-                      style={{ marginRight: 4, accentColor: '#7C3AED', cursor: 'pointer' }}
+                      style={{ marginRight: 4, accentColor: c.accent.primary, cursor: 'pointer' }}
                     />
                     Auto-refill
                   </label>
                 </div>
-                <span style={{ color: 'rgba(255,255,255,0.1)' }}>·</span>
+                <span style={{ color: withOpacity(c.text.onDark, 0.1) }}>·</span>
                 <button
                   onClick={endSession}
                   style={{
                     background:    'none',
                     border:        'none',
-                    color:         'rgba(255,255,255,0.3)',
+                    color:         c.text.tertiary,
                     fontSize:      12,
                     cursor:        'pointer',
                     letterSpacing: '0.08em',

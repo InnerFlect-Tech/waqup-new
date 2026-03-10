@@ -1,15 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { canUseOverrideLogin } from '../../fixtures/test-user';
+import { skipIfNoAuth } from '../../helpers/auth.helper';
 
 /**
  * End-to-end content creation flow tests for affirmations.
  * Tests the step-by-step form path: init → intent → context → personalization → script → voice → audio → review → complete
  */
 test.describe('Affirmation creation flow (authenticated)', () => {
-  test.beforeEach(async () => {
-    if (!canUseOverrideLogin || process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN !== 'true') {
-      test.skip();
-    }
+  test.beforeEach(() => {
+    skipIfNoAuth(test);
   });
 
   test('affirmation create init page loads with mode selector', async ({ page }) => {

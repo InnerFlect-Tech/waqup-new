@@ -16,6 +16,7 @@ create index if not exists feedback_created_at_idx on public.feedback (created_a
 
 alter table public.feedback enable row level security;
 
+drop policy if exists "Users can insert own feedback" on public.feedback;
 create policy "Users can insert own feedback"
   on public.feedback for insert
   to authenticated, anon

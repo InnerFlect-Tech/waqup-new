@@ -14,7 +14,7 @@ const conversationStepSchema = z.enum([
 /** Language instructions for Orb AI responses */
 const LANGUAGE_INSTRUCTION: Record<string, string> = {
   en: '',
-  pt: 'Responda sempre em Português. ',
+  pt: 'Responda sempre em Português de Portugal. ',
   es: 'Responde siempre en español. ',
   fr: 'Réponds toujours en français. ',
   de: 'Antworte immer auf Deutsch. ',

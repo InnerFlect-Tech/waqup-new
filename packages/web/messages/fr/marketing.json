@@ -19,5 +19,101 @@
   "footerFoundingMembers": "Membres fondateurs",
   "footerPrivacyPolicy": "Politique de confidentialité",
   "footerTerms": "Conditions d'utilisation",
-  "footerPaymentNote": "Pratiquer est toujours gratuit. Paiement : cartes (Stripe) · Bitcoin bientôt"
+  "footerPaymentNote": "Pratiquer est toujours gratuit. Paiement : cartes (Stripe) · Bitcoin bientôt",
+  "landing": {
+    "badge": "Studio de pratique personnelle",
+    "headline": "Votre pratique, dans votre voix.",
+    "subheadline": "Créez des affirmations, méditations et rituels personnalisés par la conversation — puis pratiquez gratuitement, pour toujours.",
+    "earlyAccess": "Accès anticipé · Sans carte · Pratiquez gratuitement toujours",
+    "waitlistCount": "{count} sur la liste d'attente",
+    "practiceInYourVoice": "Pratiquez dans votre propre voix",
+    "foundingMembersLink": "Membres Fondateurs →",
+    "memberLogin": "Connexion",
+    "forTeachers": "Pour enseignants",
+    "forCoaches": "Pour coaches",
+    "forStudios": "Pour studios",
+    "forCreators": "Pour créateurs",
+    "seeHowItWorks": "Voir comment ça marche",
+    "tellTheOrb": "Dites à l'orbe",
+    "createYours": "Créez le vôtre",
+    "practiceFree": "Pratiquez gratuitement",
+    "fullProcess": "Processus complet",
+    "sectionTitle": "La seule pratique qui parle vraiment de votre vie",
+    "sectionSubtitle": "Vous l'avez créé. C'est dans votre voix. Ça reflète votre intention exacte. C'est pourquoi ça marche.",
+    "features": {
+      "voice": {
+        "title": "Votre voix. Pas celle d'un autre.",
+        "description": "Enregistrez 60 secondes. waQup clone votre voix — chaque pratique sonne comme vous, vous parlant depuis la force."
+      },
+      "create": {
+        "title": "Vous créez — l'IA aide juste",
+        "description": "Dites à l'orbe sur quoi vous travaillez. Il transforme votre intention en script personnalisé que vous revisez, ajustez et possédez complètement."
+      },
+      "practiceFree": {
+        "title": "La pratique est toujours gratuite",
+        "description": "Une fois créé, rejouez votre contenu autant de fois que vous voulez. Les crédits ne sont utilisés qu'à la création — jamais à la pratique."
+      },
+      "threePractices": {
+        "title": "Trois pratiques distinctes",
+        "description": "Affirmations pour changer votre concept de soi. Méditations pour accéder à des états plus profonds. Rituels pour encoder une nouvelle identité. Chacun fait quelque chose de différent."
+      },
+      "dailyRhythm": {
+        "title": "Conçu pour votre rythme quotidien",
+        "description": "Épinglez votre pratique la plus importante. Voyez votre série. Conçu pour faire partie de votre matinée en moins de 5 minutes."
+      }
+    },
+    "benefits": [
+      "Entendez-vous dire ce dont vous avez le plus besoin",
+      "Créez des pratiques personnalisées — pas du contenu générique",
+      "Pratiquez gratuitement, pour toujours — sans limites cachées",
+      "Fonctionne en 3 minutes. Reste avec vous pour la vie.",
+      "Vos données vocales sont cryptées et toujours à vous",
+      "Partagez vos pratiques et gagnez des crédits en retour"
+    ],
+    "ctaHeadline": "Entendez-vous dire ce dont vous avez le plus besoin.",
+    "ctaSubline1": "Votre première pratique est gratuite. Sans carte bancaire. Sans engagement.",
+    "ctaSubline2WithCount": "Rejoignez {count} autres qui créent déjà.",
+    "ctaSubline2Default": "Rejoignez la communauté fondatrice.",
+    "ctaButton": "Créez votre première pratique gratuitement",
+    "creatorProgrammePrefix": "Pour enseignants et coaches :",
+    "creatorProgrammeLink": "voir le programme créateur →"
+  },
+  "waitlistCta": {
+    "placeholder": "votre@email.com",
+    "joining": "Inscription…",
+    "joinWaitlist": "Rejoindre la liste",
+    "onTheList": "Vous êtes sur la liste !",
+    "completeProfile": "Complétez votre profil →",
+    "fillFullForm": "remplissez le formulaire complet",
+    "fillFormSuffix": "pour partager vos intentions et obtenir un accès prioritaire.",
+    "errorEmail": "Veuillez entrer un email valide.",
+    "errorGeneric": "Une erreur s'est produite.",
+    "errorNetwork": "Erreur réseau. Veuillez réessayer.",
+    "bannerHeadline": "Prêt à reprogrammer votre esprit ?",
+    "bannerSubtext": "Rejoignez la liste et soyez le premier à accéder à waQup au lancement.",
+    "earlyAccessBadge": "Accès anticipé"
+  },
+  "foundingModal": {
+    "title": "Membres Fondateurs",
+    "body": "Les membres fondateurs obtiennent 50 crédits gratuits, 1 mois gratuit et tarif à vie à 6,99 €/mois.",
+    "loadingSpots": "Chargement des places...",
+    "spotsRemaining": "{count} places restantes.",
+    "limitedSpots": "Places limitées.",
+    "perkBadge": "Badge permanent Membre Fondateur",
+    "perkPrice": "6,99 €/mois à vie, verrouillé pour toujours",
+    "perkCredits": "50 crédits gratuits · 1 mois gratuit",
+    "viewDetails": "Voir tous les détails"
+  },
+  "getQs": {
+    "signInPrompt": "Connectez-vous pour acheter. Nous vous ramènerons ici après connexion.",
+    "signIn": "Connexion",
+    "qPacksTitle": "Packs Q",
+    "qPacksBody": "Les Qs alimentent affirmations, méditations et rituels. Achetez une fois — ils n'expirent jamais.",
+    "trustPoint1": "Les Qs n'expirent jamais — utilisez-les à votre rythme",
+    "trustPoint3": "Livraison instantanée après paiement. Sécurisé par Stripe",
+    "bestValue": "Meilleure valeur",
+    "saveVsSpark": "Économisez {percent}% · {amount} € vs Spark",
+    "wantMonthlyAllocation": "Vous voulez une allocation mensuelle récurrente ?",
+    "viewSubscriptionPlans": "Voir les abonnements"
+  }
 }
