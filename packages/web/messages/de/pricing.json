@@ -1,22 +1,46 @@
 {
-  "title": "Pricing",
-  "subtitle": "Simple, transparent pricing. Practice is always free.",
+  "title": "Preise",
+  "subtitle": "Einfach und transparent. Üben ist immer kostenlos.",
+  "hero": {
+    "headline": "Eine Praxis, die dich verändert",
+    "body": "Abos geben dir einen monatlichen Rhythmus an Qs für Affirmationen, Meditationen und Rituale. Üben ist immer kostenlos — Qs brauchst du nur zum Erstellen."
+  },
   "howQsWork": {
-    "heading": "How Qs work",
+    "heading": "So funktionieren Qs",
     "creation": {
-      "title": "Qs power creation",
-      "body": "Every affirmation, meditation, or ritual you create costs a small number of Qs. Think of them as creative fuel."
+      "title": "Qs ermöglichen das Erstellen",
+      "body": "Jede Affirmation, Meditation oder Ritual kostet ein paar Qs. Je tiefer die Arbeit, desto mehr."
     },
     "free": {
-      "title": "Practice is always free",
-      "body": "Replay your content as many times as you want. Qs are only spent on creation, never on listening."
+      "title": "Üben ist immer kostenlos",
+      "body": "Dein Inhalt lässt sich unbegrenzt abspielen. Qs nutzt du nur beim Erstellen."
     },
     "expire": {
-      "title": "Qs never expire",
-      "body": "Unused Qs carry forward indefinitely. No pressure, no waste."
+      "title": "Qs verfallen nie",
+      "body": "Unbenutzte Qs bleiben erhalten. Dein kreativer Schwung geht nicht verloren."
     }
   },
   "plans": {
+    "starter": {
+      "name": "Starter",
+      "description": "Beginne deine Praxis mit einem wöchentlichen Engagement.",
+      "features": ["11 Qs pro Woche", "Alle Inhaltstypen", "Stimmaufnahme", "Audiomischung"],
+      "ctaLabel": "Starter wählen"
+    },
+    "growth": {
+      "name": "Growth",
+      "description": "Ein monatlicher Rhythmus für engagierte Praktizierende.",
+      "features": ["33 Qs pro Monat", "Alle Inhaltstypen", "Prioritäts-Support"],
+      "badge": "Am beliebtesten",
+      "ctaLabel": "Kostenlos testen"
+    },
+    "devotion": {
+      "name": "Devotion",
+      "description": "Für tägliche Praktizierende mit maximaler kreativer Freiheit. Mehr Qs, Prioritäts-Verarbeitung und persönlicher Support.",
+      "features": ["99 Qs pro Monat", "Prioritäts-KI-Verarbeitung", "Premium-Stimmen", "Früher Zugang zu neuen Features", "Persönlicher Support"],
+      "badge": "Für engagierte Praktizierende",
+      "ctaLabel": "Devotion wählen"
+    },
     "monthly": {
       "name": "Monthly",
       "ctaLabel": "Start free trial",
@@ -31,6 +55,42 @@
       "ctaLabel": "Get lifetime access",
       "badge": "Best value"
     }
+  },
+  "badge": {
+    "mostPopular": "Am beliebtesten",
+    "forCommitted": "Für engagierte Praktizierende"
+  },
+  "billing": {
+    "trialDays": "{days} Tage kostenlos testen",
+    "perWeek": "pro Woche",
+    "perMonth": "pro Monat",
+    "week": "Woche",
+    "month": "Monat"
+  },
+  "footer": {
+    "preferBuyQs": "Lieber Qs ohne Abo kaufen?",
+    "browsePacks": "Einmal-Pakete durchsuchen"
+  },
+  "comparison": {
+    "heading": "waQup vs Calm & Headspace",
+    "you": "Du",
+    "row1Label": "Inhalt",
+    "row1Other": "Vorgefertigte Bibliothek",
+    "row1Waqup": "Deins — für dich geschrieben",
+    "row2Label": "Stimme",
+    "row2Other": "Promi- oder Standard-Stimmen",
+    "row2Waqup": "Deine Stimme oder KI-Stimme",
+    "row3Label": "Personalisierung",
+    "row3Other": "Nur vordefinierte Programme",
+    "row3Waqup": "Jede Sitzung individuell gestaltet",
+    "row4Label": "Übungskosten",
+    "row4Other": "~70 €/Jahr Abo",
+    "row4Waqup": "Immer kostenlos — ohne Haken",
+    "row5Label": "Erstellung",
+    "row5Other": "Nicht verfügbar",
+    "row5Waqup": "Jederzeit mit Qs erstellen",
+    "footer": "Calm und Headspace verlangen fürs Zuhören. waQup nur fürs Erstellen. Zuhören ist immer kostenlos.",
+    "cta": "waQup kostenlos testen"
   },
   "trialDisclaimer": "No charge for {days} days. Cancel anytime.",
   "weeklyBilling": "Billed weekly. Cancel anytime.",

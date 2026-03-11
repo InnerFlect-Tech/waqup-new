@@ -32,6 +32,20 @@
 
 ---
 
+## i18n Full Audit & Pricing Page Wiring (2026-03-11)
+
+### Pricing page localization
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-11
+- **Notes**:
+  - **Audit plan**: Created `docs/04-reference/18-i18n-full-audit-plan.md` — page-by-page audit, what to translate vs keep fixed, execution order, tone guidelines (natural over literal, brand names stay).
+  - **Pricing page**: Fully wired to `useTranslations('pricing')`. Replaced all hardcoded strings — hero, plan cards (name, description, features, badge, CTA, billing, trial disclaimer), How Qs work section, footer links, comparison table, error messages.
+  - **pricing.json**: Added `hero`, `plans.starter/growth/devotion` (name, description, features array, badge, ctaLabel), `badge`, `billing` (trialDays, perWeek, perMonth, week, month), `footer`, `comparison` (heading, rows 1–5, footer, cta) for en, de, es, fr, pt.
+  - **Verification**: `npm run verify:i18n` passes. `/de/pricing` and other locales now display in the correct language.
+- **Updated**: 2026-03-11
+
+---
+
 ## Full System Audit Plan Implementation (2026-03-10)
 
 ### Phase A: Cleanup & SSOT

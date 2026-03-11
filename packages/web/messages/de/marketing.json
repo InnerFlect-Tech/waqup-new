@@ -1,6 +1,7 @@
 {
   "hero": {
     "headline": "Deine Stimme. Deine Praxis. Deine Transformation.",
+    "subheadline": "waQup erstellt personalisierte Affirmationen, Meditationen und Rituale in deiner Stimme — wissenschaftlich entwickelt, um dein Unterbewusstsein neu zu verdrahten.",
     "cta": "Zur Warteliste anmelden",
     "secondaryCta": "So funktioniert es",
     "earlyAccess": "Frühzeitiger Zugang · Keine Karte · Kostenlos üben"
@@ -8,6 +9,20 @@
   "howItWorks": {
     "title": "So funktioniert es",
     "subtitle": "Für stimmenbasierte Transformation entwickelt",
+    "steps": {
+      "tell": {
+        "title": "Teile uns deine Absicht mit",
+        "description": "Führe ein Gespräch mit unserem KI-Guide, um deine personalisierte Praxis zu gestalten."
+      },
+      "create": {
+        "title": "Deine Stimme. Deine Worte.",
+        "description": "Nimm deine Praxis in deiner eigenen Stimme auf oder nutze unsere KI-Stimme. So oder so gehört sie dir."
+      },
+      "transform": {
+        "title": "Üben und transformieren",
+        "description": "Hör zu, wann immer du es brauchst. Beständige Praxis verdrahtet dein Unterbewusstsein mit der Zeit neu."
+      }
+    },
     "page": {
       "badge": "Der Prozess · Schritt für Schritt",
       "h1Line1": "Von den ersten Worten",
@@ -198,6 +213,121 @@
       "mockupTrackSub": "Deine Stimme · 3:42"
     }
   },
+  "features": {
+    "voiceFirst": {
+      "title": "Stimmen-first",
+      "description": "Deine eigene Stimme, die deine eigenen Worte spricht, ist die kraftvollste Form der Identitätskodierung."
+    },
+    "personalized": {
+      "title": "Voll personalisiert",
+      "description": "Kein generischer Inhalt — Praktiken, die an deine spezifische Absicht, deinen Kontext und deine Ziele angepasst sind."
+    },
+    "scientificallyDesigned": {
+      "title": "Wissenschaftlich entwickelt",
+      "description": "Basierend auf Neuroplastizitätsforschung, Hirnwellen-Entrainment und identitätsbasierter Veränderungswissenschaft."
+    }
+  },
+  "waitlist": {
+    "title": "Zur Warteliste anmelden",
+    "subtitle": "Sei unter den Ersten, die ihren Geist mit Stimme transformieren.",
+    "emailPlaceholder": "deine@email.com",
+    "namePlaceholder": "Dein Name",
+    "cta": "Zur Warteliste",
+    "joining": "Wird eingetragen…",
+    "success": "Du bist auf der Liste! Wir melden uns.",
+    "errors": {
+      "nameRequired": "Bitte gib deinen Namen ein.",
+      "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "intentionRequired": "Bitte wähle mindestens eine Absicht.",
+      "networkError": "Netzwerkfehler. Bitte überprüfe deine Verbindung und versuche es erneut.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "page": {
+      "reserveSpot": "Platz reservieren",
+      "welcomeFamily": "Willkommen in der Familie",
+      "joinTitle": "Zur Warteliste anmelden",
+      "subtitle": "waQup ist ein stimmenbasiertes KI-Studio für personalisiertes Audio, das neu verdrahtet, wie du denkst, fühlst und handelst.",
+      "continue": "Weiter",
+      "next": "Weiter",
+      "howWillYouUse": "Wie wirst du es nutzen?",
+      "selectResonates": "Wähle alles aus, was mit dir resoniert. Das hilft uns, dein Erlebnis zu personalisieren.",
+      "selectedCount": "{count} ausgewählt",
+      "fewMoreThings": "Noch ein paar Fragen",
+      "helpUsUnderstand": "Hilf uns zu verstehen, wie wir dich am besten unterstützen können.",
+      "betaTester": "Ich möchte Beta-Tester werden",
+      "betaTesterDesc": "Erhalte Frühzugang vor dem öffentlichen Launch. Du bekommst Hands-on-Sessions und hilfst, das Produkt mitzugestalten.",
+      "howDidYouHear": "Wie hast du von waQup gehört?",
+      "selectOption": "Option auswählen",
+      "anythingElse": "Möchtest du uns noch etwas mitteilen?",
+      "optional": "(optional)",
+      "messagePlaceholder": "Teile deine Vision, Anwendungsfall oder sag einfach Hallo...",
+      "reservingSpot": "Platz wird reserviert…",
+      "reserveMySpot": "Meinen Platz reservieren",
+      "back": "Zurück",
+      "alreadyHaveAccess": "Bereits Zugang?",
+      "signIn": "Anmelden",
+      "onTheList": "Du bist auf der Liste",
+      "reachOut": "Wir melden uns, wenn dein Zugang bereit ist.",
+      "betaFirstAccess": "Beta-Tester erhalten zuerst Zugang — wir melden uns bald.",
+      "reservedFor": "Reserviert für",
+      "backToHome": "Zurück zur Startseite"
+    },
+    "intentions": {
+      "create": { "label": "Erstellen", "description": "Personalisierte Audio-Erlebnisse aufbauen" },
+      "practice": { "label": "Üben", "description": "Eine tägliche Achtsamkeitsroutine etablieren" },
+      "share": { "label": "Teilen", "description": "Sitzungen mit Familie oder Community teilen" },
+      "monetise": { "label": "Monetarisieren", "description": "Ein Business mit waQup-Inhalten aufbauen" },
+      "gift": { "label": "Verschenken", "description": "Etwas Bedeutungsvolles für einen lieben Menschen schaffen" },
+      "research": { "label": "Forschen", "description": "KI- und Neurowissenschafts-Tools erkunden" },
+      "reflect": { "label": "Reflektieren", "description": "Für Journaling und tiefe Selbstreflexion nutzen" },
+      "curious": { "label": "Einfach neugierig", "description": "Schauen, worum es geht" }
+    },
+    "referralOptions": {
+      "socialMedia": "Soziale Medien",
+      "friendFamily": "Freunde oder Familie",
+      "newsletter": "Newsletter",
+      "podcast": "Podcast",
+      "search": "Suche",
+      "other": "Andere"
+    }
+  },
+  "joinFounders": {
+    "title": "Gründungsmitglieder",
+    "subtitle": "Begrenzte Plätze für alle, die die Zukunft von waQup mitgestalten möchten.",
+    "cta": "Platz sichern",
+    "emailPlaceholder": "deine@email.com",
+    "joining": "Wird gesichert…",
+    "success": "Du hast deinen Platz gesichert!",
+    "errors": {
+      "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",
+      "claimFailed": "Platz konnte nicht gesichert werden. Bitte versuche es erneut."
+    }
+  },
+  "comingSoon": {
+    "title": "Demnächst",
+    "subtitle": "Wir arbeiten an etwas Besonderem. Bleib dran.",
+    "cta": "Zur Warteliste"
+  },
+  "launch": {
+    "title": "Wir sind live."
+  },
+  "funnels": {
+    "title": "Transformiere deinen Geist"
+  },
+  "explanation": {
+    "title": "Die Wissenschaft"
+  },
+  "ourStory": {
+    "title": "Unsere Geschichte"
+  },
+  "investors": {
+    "title": "Investoren",
+    "contactCta": "Kontakt aufnehmen"
+  },
+  "forTeachers": {
+    "title": "Für Lehrer & Coaches",
+    "subtitle": "Gib deinen Klienten personalisierte Stimmübungen."
+  },
   "footerTagline": "Deine Stimme. Deine Transformation. Wissenschaftlich entwickelt, um die unbewussten Muster zu verändern, die dich definieren.",
   "joinWaitlist": "Anmelden",
   "signIn": "Anmelden",
@@ -260,6 +390,44 @@
     "fullProcess": "Voller Prozess",
     "sectionTitle": "Die einzige Praxis, die wirklich von deinem Leben handelt",
     "sectionSubtitle": "Du hast es erschaffen. Es ist in deiner Stimme. Es spiegelt deine exakte Absicht wider. Deshalb funktioniert es.",
+    "coreValue": {
+      "title": "Für Transformation gebaut",
+      "subtitle": "Keine weitere Meditations-App. Ein persönliches Übungsstudio, das zu dir passt.",
+      "yourVoice": { "title": "Deine Stimme, kein generisches Audio", "desc": "Einmal aufnehmen. Jede Praxis klingt wie du, zu dir selbst sprechend.", "benefit1": "60 Sekunden Aufnahme", "benefit2": "Unbegrenzte Praktiken in deiner Stimme", "cta": "Meine erste Praxis erstellen" },
+      "aiHelps": { "title": "KI hilft dir beim Erstellen, ersetzt dich nicht", "desc": "Erzähl dem Orb deine Absicht. Überprüfe, passe an und besitze jedes Wort." },
+      "replay": { "title": "Praktiken, die du wirklich wiedergibst", "desc": "Für dich gemacht. In deiner Stimme. Für die tägliche Nutzung." },
+      "minutes": { "title": "Minuten, nicht Stunden", "desc": "In unter 5 Minuten erstellen. Für immer kostenlos üben.", "badge": "5 Min" }
+    },
+    "howItWorks": {
+      "title": "So funktioniert es",
+      "subtitle": "Drei Schritte. Deine Stimme. Deine Transformation.",
+      "step1": { "title": "Erzähl dem Orb, woran du arbeitest", "desc": "Ein kurzes Gespräch formt deine Absicht in ein personalisiertes Skript." },
+      "step2": { "title": "Überprüfen und in deiner Stimme aufnehmen", "desc": "Passe die Worte an, dann nimm auf. Oder nutze KI-Stimmklonung. So oder so gehört es dir." },
+      "step3": { "title": "Täglich wiedergeben", "desc": "Hör zu, wann immer du es brauchst. Üben ist immer kostenlos." }
+    },
+    "differentiation": {
+      "title": "Keine weitere Meditations-App",
+      "subtitle": "Der Unterschied ist deine Stimme.",
+      "genericVs": "Generische Meditations-Apps",
+      "yourVoiceVs": "Deine eigene Stimme spricht deine Absichten",
+      "genericAffirm": "Generische Affirmationen",
+      "personalisedVs": "Personalisierte Identitätskodierung"
+    },
+    "pillars": {
+      "title": "Drei Praktiken, drei Tiefen",
+      "subtitle": "Jede macht etwas anderes. Nutze, was du brauchst, wann du es brauchst.",
+      "affirmations": { "title": "Affirmationen", "desc": "Kurze Aussagen, die Überzeugungen neu verdrahten. Verschiebt das Selbstkonzept — für Morgenmotivation, Selbstvertrauen, limitierende Glaubenssätze." },
+      "meditations": { "title": "Meditationen", "desc": "Geführte Reisen in Ruhezustände. Induziert Entspannung und Fokus — für Stressabbau, Schlaf, Klarheit." },
+      "rituals": { "title": "Rituale", "desc": "Strukturierte identitätskodierende Zeremonien. Verankert Werte und neue Identität — für große Übergänge und Lebensveränderungen." }
+    },
+    "benefitsSection": {
+      "title": "Warum waQup funktioniert",
+      "benefit1": "Hör dich sagen, was du brauchst",
+      "benefit2": "Persönlich, nicht generisch",
+      "benefit3": "Üben kostenlos — Credits nur für Erstellung",
+      "benefit4": "Minuten zum Erstellen, lebenslang zum Üben",
+      "benefit5": "Deine Stimmdaten bleiben deine"
+    },
     "features": {
       "voice": {
         "title": "Deine Stimme. Nicht die eines anderen.",

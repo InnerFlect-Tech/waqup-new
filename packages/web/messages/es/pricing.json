@@ -1,22 +1,46 @@
 {
-  "title": "Pricing",
-  "subtitle": "Simple, transparent pricing. Practice is always free.",
+  "title": "Precios",
+  "subtitle": "Precios claros. Practicar siempre es gratis.",
+  "hero": {
+    "headline": "Una práctica que te transforma",
+    "body": "Las suscripciones te dan un ritmo mensual de Qs para crear afirmaciones, meditaciones y rituales. Practicar siempre es gratis — los Qs solo se usan al crear."
+  },
   "howQsWork": {
-    "heading": "How Qs work",
+    "heading": "Cómo funcionan los Qs",
     "creation": {
-      "title": "Qs power creation",
-      "body": "Every affirmation, meditation, or ritual you create costs a small number of Qs. Think of them as creative fuel."
+      "title": "Los Qs impulsan la creación",
+      "body": "Cada afirmación, meditación o ritual que crees consume Qs. Cuanto más profundo el trabajo, más consumen."
     },
     "free": {
-      "title": "Practice is always free",
-      "body": "Replay your content as many times as you want. Qs are only spent on creation, never on listening."
+      "title": "Practicar siempre es gratis",
+      "body": "Reproduce tu contenido las veces que quieras. Los Qs solo se usan al crear algo nuevo."
     },
     "expire": {
-      "title": "Qs never expire",
-      "body": "Unused Qs carry forward indefinitely. No pressure, no waste."
+      "title": "Los Qs no caducan",
+      "body": "Los Qs no usados se conservan. Tu impulso creativo no se pierde."
     }
   },
   "plans": {
+    "starter": {
+      "name": "Starter",
+      "description": "Comienza tu práctica con un compromiso semanal.",
+      "features": ["11 Qs por semana", "Todos los tipos de contenido", "Grabación de voz", "Mezcla de audio"],
+      "ctaLabel": "Elegir Starter"
+    },
+    "growth": {
+      "name": "Growth",
+      "description": "Un ritmo mensual para practicantes dedicados.",
+      "features": ["33 Qs por mes", "Todos los tipos de contenido", "Soporte prioritario"],
+      "badge": "Más popular",
+      "ctaLabel": "Probar gratis"
+    },
+    "devotion": {
+      "name": "Devotion",
+      "description": "Para practicantes diarios que buscan máxima libertad creativa. Más Qs, procesamiento prioritario y soporte dedicado.",
+      "features": ["99 Qs por mes", "Procesamiento IA prioritario", "Modelos de voz premium", "Acceso anticipado a novedades", "Soporte dedicado"],
+      "badge": "Para practicantes comprometidos",
+      "ctaLabel": "Elegir Devotion"
+    },
     "monthly": {
       "name": "Monthly",
       "ctaLabel": "Start free trial",
@@ -31,6 +55,42 @@
       "ctaLabel": "Get lifetime access",
       "badge": "Best value"
     }
+  },
+  "badge": {
+    "mostPopular": "Más popular",
+    "forCommitted": "Para practicantes comprometidos"
+  },
+  "billing": {
+    "trialDays": "{days} días de prueba gratis",
+    "perWeek": "por semana",
+    "perMonth": "por mes",
+    "week": "semana",
+    "month": "mes"
+  },
+  "footer": {
+    "preferBuyQs": "¿Prefieres comprar Qs sin suscripción?",
+    "browsePacks": "Ver paquetes de Qs puntuales"
+  },
+  "comparison": {
+    "heading": "waQup vs Calm & Headspace",
+    "you": "Tú",
+    "row1Label": "Contenido",
+    "row1Other": "Biblioteca prediseñada",
+    "row1Waqup": "Tuyo — escrito para ti",
+    "row2Label": "Voz",
+    "row2Other": "Voces de famosos o genéricas",
+    "row2Waqup": "Tu voz o voz IA",
+    "row3Label": "Personalización",
+    "row3Other": "Solo programas preestablecidos",
+    "row3Waqup": "Cada sesión, a tu medida",
+    "row4Label": "Costo de práctica",
+    "row4Other": "~70 €/año de suscripción",
+    "row4Waqup": "Siempre gratis — sin trucos",
+    "row5Label": "Creación",
+    "row5Other": "No disponible",
+    "row5Waqup": "Crea cuando quieras con Qs",
+    "footer": "Calm y Headspace cobran por escuchar. waQup solo por crear. Escuchar siempre es gratis.",
+    "cta": "Probar waQup gratis"
   },
   "trialDisclaimer": "No charge for {days} days. Cancel anytime.",
   "weeklyBilling": "Billed weekly. Cancel anytime.",

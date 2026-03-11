@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { MessageCircle, Copy, Check } from 'lucide-react';
+import { MessageCircle, Copy, Check, Twitter } from 'lucide-react';
 import { useTheme } from '@/theme';
 import { spacing } from '@/theme';
 import { routing } from '@/i18n/routing';
@@ -77,75 +77,89 @@ export function PageShareButtons() {
   const buttonStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.xs,
-    padding: `${spacing.xs} ${spacing.md}`,
-    borderRadius: 8,
+    padding: `${spacing.xs} ${spacing.sm}`,
+    borderRadius: 6,
     border: `1px solid ${colors.glass.border}`,
     background: colors.glass.light,
     color: colors.text.secondary,
-    fontSize: 12,
+    fontSize: 11,
+    fontWeight: 500,
     textDecoration: 'none',
     cursor: 'pointer',
-    transition: 'color 0.15s ease, border-color 0.15s ease',
+    transition: 'color 0.15s ease, border-color 0.15s ease, background 0.15s ease',
+    minWidth: 32,
+    minHeight: 28,
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
+    <div className="page-share-buttons" style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, flexWrap: 'nowrap' }}>
       <a
         href={whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
         style={buttonStyle}
+        aria-label="Share on WhatsApp"
         onMouseEnter={(e) => {
           e.currentTarget.style.color = '#25d366';
           e.currentTarget.style.borderColor = '#25d36640';
+          e.currentTarget.style.background = 'rgba(37,211,102,0.08)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.color = colors.text.secondary;
           e.currentTarget.style.borderColor = colors.glass.border;
+          e.currentTarget.style.background = colors.glass.light;
         }}
       >
-        <MessageCircle size={14} />
-        WhatsApp
+        <MessageCircle size={12} strokeWidth={2} />
+        <span>WhatsApp</span>
       </a>
       <a
         href={twitterHref}
         target="_blank"
         rel="noopener noreferrer"
         style={buttonStyle}
+        aria-label="Share on X"
         onMouseEnter={(e) => {
           e.currentTarget.style.color = '#1d9bf0';
           e.currentTarget.style.borderColor = '#1d9bf040';
+          e.currentTarget.style.background = 'rgba(29,155,240,0.08)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.color = colors.text.secondary;
           e.currentTarget.style.borderColor = colors.glass.border;
+          e.currentTarget.style.background = colors.glass.light;
         }}
       >
-        X
+        <Twitter size={12} strokeWidth={2} />
+        <span>X</span>
       </a>
       <button
         type="button"
         onClick={handleCopy}
         style={buttonStyle}
+        aria-label={copied ? 'Copied' : 'Copy link'}
         onMouseEnter={(e) => {
           e.currentTarget.style.color = colors.text.primary;
           e.currentTarget.style.borderColor = colors.glass.border;
+          e.currentTarget.style.background = colors.glass.light;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.color = colors.text.secondary;
           e.currentTarget.style.borderColor = colors.glass.border;
+          e.currentTarget.style.background = colors.glass.light;
         }}
       >
         {copied ? (
           <>
-            <Check size={14} color="#22c55e" />
+            <Check size={12} color="#22c55e" strokeWidth={2.5} />
             <span style={{ color: '#22c55e' }}>Copied</span>
           </>
         ) : (
           <>
-            <Copy size={14} />
-            Copy link
+            <Copy size={12} strokeWidth={2} />
+            <span>Copy link</span>
           </>
         )}
       </button>

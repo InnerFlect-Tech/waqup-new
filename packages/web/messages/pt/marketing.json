@@ -9,6 +9,20 @@
   "howItWorks": {
     "title": "Como Funciona",
     "subtitle": "Criado para transformação pela voz",
+    "steps": {
+      "tell": {
+        "title": "Conte-nos a sua intenção",
+        "description": "Tenha uma conversa com o nosso guia IA para moldar a sua prática personalizada."
+      },
+      "create": {
+        "title": "A sua voz. As suas palavras.",
+        "description": "Grave a sua prática na sua própria voz, ou use a nossa voz IA. De qualquer forma, é sua."
+      },
+      "transform": {
+        "title": "Pratique e transforme-se",
+        "description": "Ouça quando precisar. A prática consistente reprograma o seu subconsciente ao longo do tempo."
+      }
+    },
     "page": {
       "badge": "O Processo · Passo a Passo",
       "h1Line1": "Das primeiras palavras",
@@ -263,6 +277,20 @@
       "other": "Outro"
     }
   },
+  "features": {
+    "voiceFirst": {
+      "title": "Voz primeiro",
+      "description": "A sua própria voz a falar as suas próprias palavras é a forma mais poderosa de codificação de identidade."
+    },
+    "personalized": {
+      "title": "Totalmente personalizado",
+      "description": "Não conteúdo genérico — práticas moldadas à sua intenção, contexto e metas específicos."
+    },
+    "scientificallyDesigned": {
+      "title": "Concebido cientificamente",
+      "description": "Baseado em investigação de neuroplasticidade, entrainment de ondas cerebrais e ciência da mudança baseada em identidade."
+    }
+  },
   "joinFounders": {
     "title": "Membros Fundadores",
     "subtitle": "Vagas limitadas para quem quer moldar o futuro do waQup.",
@@ -320,6 +348,12 @@
     "title": "Em Breve",
     "subtitle": "Estamos a trabalhar em algo especial. Fique atento.",
     "cta": "Entrar na Lista de Espera"
+  },
+  "launch": {
+    "title": "Estamos no ar."
+  },
+  "funnels": {
+    "title": "Transforme a sua mente"
   },
   "explanation": {
     "title": "A Ciência"

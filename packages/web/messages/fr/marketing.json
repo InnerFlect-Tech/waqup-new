@@ -1,6 +1,7 @@
 {
   "hero": {
     "headline": "Votre voix. Votre pratique. Votre transformation.",
+    "subheadline": "waQup crée des affirmations, méditations et rituels personnalisés dans votre propre voix — conçus scientifiquement pour reprogrammer votre subconscient.",
     "cta": "Rejoindre la liste d'attente",
     "secondaryCta": "Voir comment ça marche",
     "earlyAccess": "Accès anticipé · Sans carte · Pratiquez gratuitement"
@@ -8,6 +9,20 @@
   "howItWorks": {
     "title": "Comment ça marche",
     "subtitle": "Conçu pour la transformation voix d'abord",
+    "steps": {
+      "tell": {
+        "title": "Partagez votre intention",
+        "description": "Ayez une conversation avec notre guide IA pour façonner votre pratique personnalisée."
+      },
+      "create": {
+        "title": "Votre voix. Vos mots.",
+        "description": "Enregistrez votre pratique dans votre propre voix, ou utilisez notre voix IA. Dans tous les cas, c'est la vôtre."
+      },
+      "transform": {
+        "title": "Pratiquez et transformez-vous",
+        "description": "Écoutez quand vous en avez besoin. Une pratique consistante reprogramme votre subconscient au fil du temps."
+      }
+    },
     "page": {
       "badge": "Le Processus · Étape par Étape",
       "h1Line1": "Des premiers mots",
@@ -198,6 +213,121 @@
       "mockupTrackSub": "Votre Voix · 3:42"
     }
   },
+  "features": {
+    "voiceFirst": {
+      "title": "Voix d'abord",
+      "description": "Votre propre voix prononçant vos propres mots est la forme la plus puissante d'encodage d'identité."
+    },
+    "personalized": {
+      "title": "Entièrement personnalisé",
+      "description": "Pas de contenu générique — des pratiques façonnées à votre intention, contexte et objectifs spécifiques."
+    },
+    "scientificallyDesigned": {
+      "title": "Conçu scientifiquement",
+      "description": "Basé sur la recherche en neuroplasticité, l'entraînement aux ondes cérébrales et la science du changement basée sur l'identité."
+    }
+  },
+  "waitlist": {
+    "title": "Rejoindre la liste d'attente",
+    "subtitle": "Soyez parmi les premiers à transformer votre esprit avec la voix.",
+    "emailPlaceholder": "votre@email.com",
+    "namePlaceholder": "Votre nom",
+    "cta": "Rejoindre la liste",
+    "joining": "Inscription…",
+    "success": "Vous êtes sur la liste ! Nous vous contacterons.",
+    "errors": {
+      "nameRequired": "Veuillez entrer votre nom.",
+      "emailInvalid": "Veuillez entrer un email valide.",
+      "intentionRequired": "Veuillez sélectionner au moins une intention.",
+      "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+      "generic": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "page": {
+      "reserveSpot": "Réservez votre place",
+      "welcomeFamily": "Bienvenue dans la famille",
+      "joinTitle": "Rejoignez la liste d'attente",
+      "subtitle": "waQup est un studio IA voix d'abord pour créer de l'audio personnalisé qui reprogramme comment vous pensez, ressentez et agissez.",
+      "continue": "Continuer",
+      "next": "Suivant",
+      "howWillYouUse": "Comment allez-vous l'utiliser ?",
+      "selectResonates": "Sélectionnez tout ce qui résonne avec vous. Cela nous aide à personnaliser votre expérience.",
+      "selectedCount": "{count} sélectionnés",
+      "fewMoreThings": "Encore quelques questions",
+      "helpUsUnderstand": "Aidez-nous à comprendre comment mieux vous servir.",
+      "betaTester": "Je veux être beta testeur",
+      "betaTesterDesc": "Accédez tôt avant le lancement public. Vous recevrez des sessions pratiques et aiderez à façonner le produit.",
+      "howDidYouHear": "Comment avez-vous entendu parler de waQup ?",
+      "selectOption": "Sélectionner une option",
+      "anythingElse": "Autre chose à nous faire savoir ?",
+      "optional": "(optionnel)",
+      "messagePlaceholder": "Partagez votre vision, cas d'usage ou dites simplement bonjour...",
+      "reservingSpot": "Réservation de votre place…",
+      "reserveMySpot": "Réserver ma place",
+      "back": "Retour",
+      "alreadyHaveAccess": "Vous avez déjà accès ?",
+      "signIn": "Connexion",
+      "onTheList": "Vous êtes sur la liste",
+      "reachOut": "Nous vous contacterons quand votre accès sera prêt.",
+      "betaFirstAccess": "Les beta testeurs ont priorité — nous vous contacterons bientôt.",
+      "reservedFor": "Réservé pour",
+      "backToHome": "Retour à l'accueil"
+    },
+    "intentions": {
+      "create": { "label": "Créer", "description": "Construire des expériences audio personnalisées" },
+      "practice": { "label": "Pratiquer", "description": "Établir une routine quotidienne de pleine conscience" },
+      "share": { "label": "Partager", "description": "Partager des sessions avec famille ou communauté" },
+      "monetise": { "label": "Monétiser", "description": "Construire un business autour du contenu waQup" },
+      "gift": { "label": "Offrir", "description": "Créer quelque chose de significatif pour un proche" },
+      "research": { "label": "Rechercher", "description": "Explorer les outils IA et neurosciences" },
+      "reflect": { "label": "Réfléchir", "description": "Utiliser pour le journaling et l'auto-questionnement profond" },
+      "curious": { "label": "Juste curieux", "description": "Voir de quoi il s'agit" }
+    },
+    "referralOptions": {
+      "socialMedia": "Réseaux sociaux",
+      "friendFamily": "Ami ou famille",
+      "newsletter": "Newsletter",
+      "podcast": "Podcast",
+      "search": "Recherche",
+      "other": "Autre"
+    }
+  },
+  "joinFounders": {
+    "title": "Membres fondateurs",
+    "subtitle": "Places limitées pour ceux qui veulent façonner l'avenir de waQup.",
+    "cta": "Réserver votre place",
+    "emailPlaceholder": "votre@email.com",
+    "joining": "Réservation…",
+    "success": "Vous avez réservé votre place !",
+    "errors": {
+      "emailRequired": "Veuillez entrer votre email.",
+      "claimFailed": "Échec de la réservation. Veuillez réessayer."
+    }
+  },
+  "comingSoon": {
+    "title": "Bientôt disponible",
+    "subtitle": "Nous travaillons sur quelque chose de spécial. Restez à l'écoute.",
+    "cta": "Rejoindre la liste d'attente"
+  },
+  "launch": {
+    "title": "Nous sommes en ligne."
+  },
+  "funnels": {
+    "title": "Transformez votre esprit"
+  },
+  "explanation": {
+    "title": "La Science"
+  },
+  "ourStory": {
+    "title": "Notre Histoire"
+  },
+  "investors": {
+    "title": "Investisseurs",
+    "contactCta": "Nous contacter"
+  },
+  "forTeachers": {
+    "title": "Pour enseignants et coaches",
+    "subtitle": "Offrez à vos clients des pratiques vocales personnalisées."
+  },
   "footerTagline": "Votre voix. Votre transformation. Scientifiquement conçu pour reprogrammer les schémas subconscients qui vous définissent.",
   "joinWaitlist": "Rejoindre",
   "signIn": "Connexion",
@@ -260,6 +390,44 @@
     "fullProcess": "Processus complet",
     "sectionTitle": "La seule pratique qui parle vraiment de votre vie",
     "sectionSubtitle": "Vous l'avez créé. C'est dans votre voix. Ça reflète votre intention exacte. C'est pourquoi ça marche.",
+    "coreValue": {
+      "title": "Conçu pour la transformation",
+      "subtitle": "Pas une autre app de méditation. Un studio de pratique personnel qui fonctionne comme vous.",
+      "yourVoice": { "title": "Votre voix, pas de l'audio générique", "desc": "Enregistrez une fois. Chaque pratique sonne comme vous, vous parlant à vous-même.", "benefit1": "60 secondes pour enregistrer", "benefit2": "Pratiques illimitées dans votre voix", "cta": "Créer ma première pratique" },
+      "aiHelps": { "title": "L'IA vous aide à créer, ne vous remplace pas", "desc": "Dites à l'orbe votre intention. Révisez, ajustez et possédez chaque mot." },
+      "replay": { "title": "Des pratiques que vous rejouez vraiment", "desc": "Faites pour vous. Dans votre voix. Conçues pour un usage quotidien." },
+      "minutes": { "title": "Des minutes, pas des heures", "desc": "Créez en moins de 5 minutes. Pratiquez gratuitement pour toujours.", "badge": "5 min" }
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "subtitle": "Trois étapes. Votre voix. Votre transformation.",
+      "step1": { "title": "Dites à l'orbe sur quoi vous travaillez", "desc": "Une courte conversation façonne votre intention en un script personnalisé." },
+      "step2": { "title": "Révisez et enregistrez dans votre propre voix", "desc": "Ajustez les mots, puis enregistrez. Ou utilisez le clonage vocal IA. Dans tous les cas, c'est à vous." },
+      "step3": { "title": "Rejouez quotidiennement", "desc": "Écoutez quand vous en avez besoin. La pratique est toujours gratuite." }
+    },
+    "differentiation": {
+      "title": "Pas une autre app de méditation",
+      "subtitle": "La différence, c'est votre voix.",
+      "genericVs": "Apps de méditation génériques",
+      "yourVoiceVs": "Votre propre voix prononçant vos intentions",
+      "genericAffirm": "Affirmations génériques",
+      "personalisedVs": "Encodage d'identité personnalisé"
+    },
+    "pillars": {
+      "title": "Trois pratiques, trois profondeurs",
+      "subtitle": "Chacune fait quelque chose de différent. Utilisez ce dont vous avez besoin, quand vous en avez besoin.",
+      "affirmations": { "title": "Affirmations", "desc": "Déclarations brèves qui reprogramment les croyances. Change l'image de soi — pour motivation matinale, confiance, croyances limitantes." },
+      "meditations": { "title": "Méditations", "desc": "Voyages guidés vers des états de calme. Induit relaxation et concentration — pour gestion du stress, sommeil, clarté." },
+      "rituals": { "title": "Rituels", "desc": "Cérémonies structurées d'encodage d'identité. Ancre valeurs et nouvelle identité — pour transitions majeures et changements de vie." }
+    },
+    "benefitsSection": {
+      "title": "Pourquoi waQup fonctionne",
+      "benefit1": "Entendez-vous dire ce dont vous avez besoin",
+      "benefit2": "Personnel, pas générique",
+      "benefit3": "Pratique gratuite — crédits uniquement pour la création",
+      "benefit4": "Minutes pour créer, vie pour pratiquer",
+      "benefit5": "Vos données vocales restent les vôtres"
+    },
     "features": {
       "voice": {
         "title": "Votre voix. Pas celle d'un autre.",

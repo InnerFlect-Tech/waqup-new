@@ -1,22 +1,46 @@
 {
-  "title": "Pricing",
-  "subtitle": "Simple, transparent pricing. Practice is always free.",
+  "title": "Tarifs",
+  "subtitle": "Tarifs simples. Pratiquer reste gratuit.",
+  "hero": {
+    "headline": "Une pratique qui vous transforme",
+    "body": "Les abonnements vous offrent un rythme mensuel de Qs pour créer affirmations, méditations et rituels. Pratiquer reste toujours gratuit — les Qs servent uniquement à la création."
+  },
   "howQsWork": {
-    "heading": "How Qs work",
+    "heading": "Comment marchent les Qs",
     "creation": {
-      "title": "Qs power creation",
-      "body": "Every affirmation, meditation, or ritual you create costs a small number of Qs. Think of them as creative fuel."
+      "title": "Les Qs alimentent la création",
+      "body": "Chaque affirmation, méditation ou rituel consomme des Qs. Plus le travail est profond, plus ça en coûte."
     },
     "free": {
-      "title": "Practice is always free",
-      "body": "Replay your content as many times as you want. Qs are only spent on creation, never on listening."
+      "title": "Pratiquer est toujours gratuit",
+      "body": "Réécoutez votre contenu autant que vous voulez. Les Qs ne servent qu'à créer du nouveau."
     },
     "expire": {
-      "title": "Qs never expire",
-      "body": "Unused Qs carry forward indefinitely. No pressure, no waste."
+      "title": "Les Qs n'expirent jamais",
+      "body": "Les Qs inutilisés restent disponibles. Votre élan créatif ne se perd pas."
     }
   },
   "plans": {
+    "starter": {
+      "name": "Starter",
+      "description": "Commencez votre pratique avec un engagement hebdomadaire.",
+      "features": ["11 Qs par semaine", "Tous les types de contenu", "Enregistrement vocal", "Mixage audio"],
+      "ctaLabel": "Choisir Starter"
+    },
+    "growth": {
+      "name": "Growth",
+      "description": "Un rythme mensuel pour les pratiquants assidus.",
+      "features": ["33 Qs par mois", "Tous les types de contenu", "Support prioritaire"],
+      "badge": "Le plus populaire",
+      "ctaLabel": "Essayer gratuitement"
+    },
+    "devotion": {
+      "name": "Devotion",
+      "description": "Pour les pratiquants quotidiens qui veulent une liberté créative maximale. Plus de Qs, traitement prioritaire et support dédié.",
+      "features": ["99 Qs par mois", "Traitement IA prioritaire", "Modèles vocaux premium", "Accès anticipé aux nouveautés", "Support dédié"],
+      "badge": "Pour les pratiquants engagés",
+      "ctaLabel": "Choisir Devotion"
+    },
     "monthly": {
       "name": "Monthly",
       "ctaLabel": "Start free trial",
@@ -31,6 +55,42 @@
       "ctaLabel": "Get lifetime access",
       "badge": "Best value"
     }
+  },
+  "badge": {
+    "mostPopular": "Le plus populaire",
+    "forCommitted": "Pour les pratiquants engagés"
+  },
+  "billing": {
+    "trialDays": "{days} jours d'essai gratuit",
+    "perWeek": "par semaine",
+    "perMonth": "par mois",
+    "week": "semaine",
+    "month": "mois"
+  },
+  "footer": {
+    "preferBuyQs": "Préférer acheter des Qs sans abonnement ?",
+    "browsePacks": "Voir les packs Qs à l'unité"
+  },
+  "comparison": {
+    "heading": "waQup vs Calm & Headspace",
+    "you": "Vous",
+    "row1Label": "Contenu",
+    "row1Other": "Bibliothèque prête à l'emploi",
+    "row1Waqup": "Le vôtre — écrit pour vous",
+    "row2Label": "Voix",
+    "row2Other": "Voix de célébrités ou génériques",
+    "row2Waqup": "Votre voix ou voix IA",
+    "row3Label": "Personnalisation",
+    "row3Other": "Programmes prédéfinis uniquement",
+    "row3Waqup": "Chaque séance, sur mesure",
+    "row4Label": "Coût de la pratique",
+    "row4Other": "~70 €/an d'abonnement",
+    "row4Waqup": "Toujours gratuit — sans piège",
+    "row5Label": "Création",
+    "row5Other": "Non disponible",
+    "row5Waqup": "Créez quand vous voulez avec les Qs",
+    "footer": "Calm et Headspace font payer l'écoute. waQup fait payer uniquement la création. L'écoute reste toujours gratuite.",
+    "cta": "Essayer waQup gratuitement"
   },
   "trialDisclaimer": "No charge for {days} days. Cancel anytime.",
   "weeklyBilling": "Billed weekly. Cancel anytime.",

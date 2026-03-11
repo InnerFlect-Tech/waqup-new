@@ -20,7 +20,8 @@
     "test:e2e:install": "playwright install",
     "stripe:webhook:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
     "stripe:webhook:create": "node --env-file=.env.local scripts/create-stripe-webhook.mjs",
-    "icons:crop": "node scripts/process-icon-crop.mjs"
+    "icons:crop": "node scripts/process-icon-crop.mjs",
+    "verify:i18n": "node scripts/verify-i18n.mjs"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",

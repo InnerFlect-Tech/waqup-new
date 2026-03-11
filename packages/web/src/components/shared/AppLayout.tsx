@@ -244,7 +244,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
-            paddingTop: `max(${spacing.sm}, env(safe-area-inset-top, 0px))`,
+            paddingTop: `max(${spacing.md}, env(safe-area-inset-top, 0px))`,
             paddingLeft: HEADER_PADDING_X_RESPONSIVE,
             paddingRight: HEADER_PADDING_X_RESPONSIVE,
             ...(isScrolled
@@ -871,7 +871,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
-            paddingTop: `max(${spacing.sm}, env(safe-area-inset-top, 0px))`,
+            paddingTop: `max(${spacing.md}, env(safe-area-inset-top, 0px))`,
             paddingLeft: HEADER_PADDING_X_RESPONSIVE,
             paddingRight: HEADER_PADDING_X_RESPONSIVE,
             ...(isScrolled
