@@ -6,6 +6,19 @@
 
 ---
 
+## E2E (Playwright) CI fixes (2026-03-11)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-11
+- **Notes**:
+  - **signup-flow.spec.ts**: Fixed invalid Playwright locator — `'input[type="checkbox"], text=/terms|agree|accept/i'` was parsed as CSS and broke (Unexpected token "="). Replaced with `page.locator('input[type="checkbox"]').or(page.getByText(/terms|agree|accept/i)).first()`.
+  - **protected-redirect.spec.ts**: Increased `page.goto` timeout to 25s and URL assertion to 10s for "public pages remain accessible without auth" to reduce CI timeouts; use `domcontentloaded` for faster readiness.
+  - **analytics-events.spec.ts**: Increased navigation timeouts (15s → 20s) for "page_view fires on navigation".
+- **Affected**: `packages/web/e2e/specs/auth/signup-flow.spec.ts`, `packages/web/e2e/specs/auth/protected-redirect.spec.ts`, `packages/web/e2e/specs/analytics/analytics-events.spec.ts`.
+- **Updated**: 2026-03-11
+
+---
+
 ## Dependency cleanup: deprecation warnings (2026-03-11)
 
 - **Status**: ✅ Complete

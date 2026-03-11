@@ -41,10 +41,11 @@ test.describe('Signup flow', () => {
 
   test('signup page has terms acceptance requirement', async ({ page }) => {
     await page.goto('/signup', { waitUntil: 'networkidle', timeout: 15000 });
-    // Terms checkbox or accept text should be visible
-    const termsElement = page.locator(
-      'input[type="checkbox"], text=/terms|agree|accept/i'
-    ).first();
+    // Terms checkbox or accept text should be visible (use .or() — comma + text= is not valid CSS)
+    const termsElement = page
+      .locator('input[type="checkbox"]')
+      .or(page.getByText(/terms|agree|accept/i))
+      .first();
     await expect(termsElement).toBeVisible({ timeout: 8000 });
   });
 

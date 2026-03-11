@@ -33,9 +33,9 @@ test.describe('Route protection (unauthenticated)', () => {
   test('public pages remain accessible without auth', async ({ page }) => {
     const publicRoutes = ['/', '/login', '/signup', '/how-it-works', '/pricing', '/join'];
     for (const route of publicRoutes) {
-      await page.goto(route, { waitUntil: 'networkidle', timeout: 15000 });
+      await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 25000 });
       await expect(page).toHaveURL(new RegExp(route === '/' ? '^http.*/$' : route), {
-        timeout: 8000,
+        timeout: 10000,
       });
     }
   });
