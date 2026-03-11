@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
@@ -11,7 +11,8 @@ import { Typography, Button, PageShell, QCoin } from '@/components';
 import { PLANS, getPlanById, PRACTICE_IS_FREE_ONE_LINER, type PlanId } from '@waqup/shared/constants';
 import { Analytics } from '@waqup/shared/utils';
 
-const STRIPE_PRICE_IDS: Record<PlanId, string> = {
+/** Fallback when GET /api/stripe/price-ids is missing (e.g. 404 on older deployments). */
+const BUILD_TIME_STRIPE_PRICE_IDS: Record<PlanId, string> = {
   starter: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID || '',
   growth: process.env.NEXT_PUBLIC_STRIPE_GROWTH_PRICE_ID || '',
   devotion: process.env.NEXT_PUBLIC_STRIPE_DEVOTION_PRICE_ID || '',
@@ -42,10 +43,12 @@ function PlanCard({
   plan,
   loading,
   onCheckout,
+  checkoutDisabled,
 }: {
   plan: (typeof PLANS)[number];
   loading: boolean;
   onCheckout: () => void;
+  checkoutDisabled?: boolean;
 }) {
   const { theme } = useTheme();
   const colors = theme.colors;
@@ -285,6 +288,7 @@ function PlanCard({
             size="lg"
             fullWidth
             loading={loading}
+            disabled={checkoutDisabled}
             onClick={onCheckout}
             style={
               isDevotionTier
@@ -330,9 +334,21 @@ export default function PricingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState<PlanId | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [priceIds, setPriceIds] = useState<Record<PlanId, string> | null>(null);
+
+  useEffect(() => {
+    fetch('/api/stripe/price-ids')
+      .then((res) => {
+        if (res.ok) return res.json() as Promise<Record<PlanId, string>>;
+        // API missing (404) or error: fall back to build-time env so checkout can still work
+        return BUILD_TIME_STRIPE_PRICE_IDS;
+      })
+      .then((data: Record<PlanId, string>) => setPriceIds(data || BUILD_TIME_STRIPE_PRICE_IDS))
+      .catch(() => setPriceIds(BUILD_TIME_STRIPE_PRICE_IDS));
+  }, []);
 
   const handleCheckout = async (planId: PlanId) => {
-    const priceId = STRIPE_PRICE_IDS[planId];
+    const priceId = priceIds?.[planId] ?? '';
     if (!priceId) {
       setError('Checkout is not yet configured for this plan. Please contact support.');
       return;
@@ -365,7 +381,14 @@ export default function PricingPage() {
       Analytics.paymentStarted('subscription', plan?.price ?? 0, plan?.currency ?? 'EUR');
       window.location.href = url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      const isStripePrice =
+        typeof message === 'string' && (message.includes('No such price') || message.includes('no such price'));
+      setError(
+        isStripePrice
+          ? 'This plan is not set up in Stripe for this environment. Please check that your Stripe keys and price IDs use the same account and mode (test vs live).'
+          : message,
+      );
     } finally {
       setLoading(null);
     }
@@ -453,6 +476,7 @@ export default function PricingPage() {
               plan={plan}
               loading={loading === plan.id}
               onCheckout={() => handleCheckout(plan.id)}
+              checkoutDisabled={priceIds === null}
             />
           ))}
         </div>
