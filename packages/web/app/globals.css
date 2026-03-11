@@ -186,10 +186,42 @@ a {
   .landing-section { padding-left: 24px !important; padding-right: 24px !important; }
 }
 
-/* Small screens — reduce hero height so content doesn't feel oversized */
+/* Small screens — reduce hero height, add padding for logo/badge breathing room */
 @media (max-width: 768px) {
   .landing-hero {
     min-height: min(75dvh, 520px) !important;
+  }
+  .landing-hero-content {
+    padding-top: 24px !important; /* Extra space between header and badge on mobile */
+  }
+}
+
+/* Differentiation cards — align on phone: full width, left-align content when narrow */
+@media (max-width: 640px) {
+  .differentiation-section {
+    max-width: 100% !important;
+  }
+  .differentiation-card {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+}
+
+/* Pillars (Affirmations, Meditations, Rituals) — align on phone: single column, full width */
+@media (max-width: 640px) {
+  .pillars-section {
+    grid-template-columns: 1fr !important;
+    min-width: 0;
+  }
+  .pillars-section > * {
+    min-width: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 375px) {
+  .pillars-section {
+    gap: 20px !important;
   }
 }
 

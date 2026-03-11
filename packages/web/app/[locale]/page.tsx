@@ -132,6 +132,7 @@ export default function LandingPage() {
 
         {/* Main content — vertically centered */}
         <div
+          className="landing-hero-content"
           style={{
             flex: 1,
             minHeight: 0,
@@ -286,8 +287,9 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Footer links — anchored at bottom */}
+        {/* Footer links — anchored at bottom, safe-area aware on mobile */}
         <div
+          className="landing-hero-footer-links"
           style={{
             position: 'absolute',
             bottom: spacing.xl,
@@ -298,19 +300,23 @@ export default function LandingPage() {
             flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: spacing.md,
-            fontSize: 12,
+            gap: spacing.sm,
+            paddingTop: 0,
+            paddingLeft: spacing.md,
+            paddingRight: spacing.md,
+            paddingBottom: `max(${spacing.xl}, env(safe-area-inset-bottom, 0px))`,
+            fontSize: 13,
             color: colors.text.tertiary ?? colors.text.secondary,
-            opacity: 0.7,
+            opacity: 0.85,
           }}
         >
-          <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forTeachers')}</Link>
-          <span style={{ opacity: 0.4 }}>·</span>
-          <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forCoaches')}</Link>
-          <span style={{ opacity: 0.4 }}>·</span>
-          <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forStudios')}</Link>
-          <span style={{ opacity: 0.4 }}>·</span>
-          <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none' }}>{t('landing.forCreators')}</Link>
+          <Link href="/for-teachers" style={{ color: 'inherit', textDecoration: 'none', padding: `${spacing.xs} ${spacing.sm}` }}>{t('landing.forTeachers')}</Link>
+          <span style={{ opacity: 0.35 }}>·</span>
+          <Link href="/for-coaches" style={{ color: 'inherit', textDecoration: 'none', padding: `${spacing.xs} ${spacing.sm}` }}>{t('landing.forCoaches')}</Link>
+          <span style={{ opacity: 0.35 }}>·</span>
+          <Link href="/for-studios" style={{ color: 'inherit', textDecoration: 'none', padding: `${spacing.xs} ${spacing.sm}` }}>{t('landing.forStudios')}</Link>
+          <span style={{ opacity: 0.35 }}>·</span>
+          <Link href="/for-creators" style={{ color: 'inherit', textDecoration: 'none', padding: `${spacing.xs} ${spacing.sm}` }}>{t('landing.forCreators')}</Link>
         </div>
 
         <FoundingMemberModal
@@ -659,10 +665,12 @@ export default function LandingPage() {
         subtitle={t('landing.pillars.subtitle')}
       >
         <div
+          className="pillars-section"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: spacing.xl,
+            width: '100%',
           }}
         >
           <LandingCard
@@ -809,8 +817,23 @@ export default function LandingPage() {
             <ArrowRight size={22} color={colors.text.onDark} />
           </Button>
         </Link>
-        <div style={{ marginTop: spacing.lg, fontSize: 13, color: colors.text.secondary, opacity: 0.6 }}>
-          {t('landing.creatorProgrammePrefix')} <Link href="/for-creators" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>{t('landing.creatorProgrammeLink')}</Link>
+        <div
+          style={{
+            marginTop: spacing.lg,
+            fontSize: 13,
+            color: colors.text.secondary,
+            opacity: 0.6,
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: spacing.sm,
+          }}
+        >
+          <span>{t('landing.creatorProgrammePrefix')}</span>
+          <Link href="/for-creators" style={{ color: colors.accent.tertiary, textDecoration: 'none' }}>
+            {t('landing.creatorProgrammeLink')}
+          </Link>
         </div>
       </section>
 

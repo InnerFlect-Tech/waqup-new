@@ -106,8 +106,8 @@ export const AUTH_CARD_MAX_WIDTH = px(layout.authCardMaxWidth);
 export const CONTENT_NARROW = px(layout.contentNarrow);
 export const CONTENT_MEDIUM = px(layout.contentMedium);
 export const NAV_HEIGHT = px(layout.navHeight);
-/** Distance from top of viewport to where page content starts (nav clearance). Use for main paddingTop and fixed layouts (e.g. speak page). */
-export const NAV_TOP_OFFSET = `calc(${NAV_HEIGHT} + max(${spacing.sm}, env(safe-area-inset-top, 0px)))`;
+/** Distance from top of viewport to where page content starts (nav clearance). Use for main paddingTop and fixed layouts (e.g. speak page). Matches header paddingTop for consistent logo breathing room. */
+export const NAV_TOP_OFFSET = `calc(${NAV_HEIGHT} + max(${spacing.md}, env(safe-area-inset-top, 0px)))`;
 export const GRID_CARD_MIN = px(layout.gridCardMin);
 export const SEARCH_INPUT_MAX_WIDTH = px(layout.searchInputMaxWidth);
 export const CONTENT_READABLE = px(layout.contentReadable);

@@ -50,19 +50,19 @@ export function PublicFooter() {
           paddingRight: HEADER_PADDING_X_RESPONSIVE,
         }}
       >
-        {/* Single row: brand + button | columns */}
+        {/* Row 1: brand | product | for professionals | company | legal */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr',
-            gap: spacing.xxl,
-            marginBottom: spacing.xxl,
+            gridTemplateColumns: '1.2fr 1fr 1fr 1fr 1fr',
+            gap: spacing.xxxl,
+            marginBottom: spacing.xl,
             alignItems: 'start',
           }}
           className="footer-grid"
         >
           {/* Brand + button below logo */}
-          <div>
+          <div className="footer-brand" style={{ marginBottom: spacing.lg }}>
             <div style={{ fontSize: 24, fontWeight: 300, color: colors.text.primary, letterSpacing: '-0.5px', marginBottom: spacing.sm }}>
               wa<span style={{ color: colors.accent.tertiary }}>Q</span>up
             </div>
@@ -87,16 +87,10 @@ export function PublicFooter() {
             >
               {t('footerMailingList')}
             </Link>
-            <div style={{ marginTop: spacing.md }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.xs }}>
-                {tc('share')}
-              </div>
-              <PageShareButtons />
-            </div>
           </div>
 
           {/* Product */}
-          <div>
+          <div className="footer-column">
             <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.md }}>
               {t('footerProduct')}
             </div>
@@ -110,7 +104,7 @@ export function PublicFooter() {
           </div>
 
           {/* For Professionals */}
-          <div>
+          <div className="footer-column">
             <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.md }}>
               {t('footerForProfessionals')}
             </div>
@@ -123,7 +117,7 @@ export function PublicFooter() {
           </div>
 
           {/* Company */}
-          <div>
+          <div className="footer-column">
             <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.md }}>
               {t('footerCompany')}
             </div>
@@ -135,7 +129,7 @@ export function PublicFooter() {
           </div>
 
           {/* Legal */}
-          <div>
+          <div className="footer-column footer-legal">
             <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.md }}>
               {t('footerLegal')}
             </div>
@@ -155,8 +149,27 @@ export function PublicFooter() {
           </div>
         </div>
 
+        {/* Share — centered row above the lower footer */}
+        <div
+          className="footer-share"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            paddingTop: spacing.md,
+            paddingBottom: spacing.lg,
+            borderTop: `1px solid ${colors.glass.border}`,
+          }}
+        >
+          <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.xs }}>
+            {tc('share')}
+          </div>
+          <PageShareButtons />
+        </div>
+
         {/* Bottom bar */}
         <div
+          className="footer-bottom"
           style={{
             paddingTop: spacing.lg,
             borderTop: `1px solid ${colors.glass.border}`,
@@ -173,18 +186,42 @@ export function PublicFooter() {
           <span style={{ fontSize: 13, color: colors.text.tertiary }}>
             {t('footerPaymentNote')}
           </span>
+          <a
+            href="https://innerflect.tech"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: 13,
+              color: colors.text.tertiary,
+              textDecoration: 'none',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = colors.text.secondary; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = colors.text.tertiary; }}
+          >
+            Developed by Innerflect
+          </a>
         </div>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @media (max-width: 1024px) {
-          .footer-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 32px !important; }
+          .footer-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 40px !important; }
+          .page-share-buttons { flex-wrap: wrap !important; justify-content: center; }
         }
         @media (max-width: 768px) {
-          .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 24px !important; }
+          .footer-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; justify-items: center; text-align: center; align-items: start; }
+          .footer-brand { display: flex; flex-direction: column; align-items: center; text-align: center; }
+          .footer-brand p { margin-left: auto; margin-right: auto; }
+          .footer-column { display: flex; flex-direction: column; align-items: center; text-align: center; }
+          .footer-column nav { align-items: center; }
+          .page-share-buttons { flex-wrap: wrap !important; justify-content: center; }
+          .footer-bottom { flex-direction: column !important; align-items: center !important; text-align: center !important; justify-content: center !important; }
         }
         @media (max-width: 480px) {
-          .footer-grid { grid-template-columns: 1fr !important; }
+          .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; justify-items: center; text-align: center; }
+          .footer-brand { margin-bottom: 48px !important; }
+          .footer-legal { margin-bottom: 48px !important; }
+          .page-share-buttons { justify-content: center; flex-wrap: wrap !important; }
         }
       ` }} />
     </footer>

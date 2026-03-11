@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
 import { Check, X, Sparkles, Infinity, Zap, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING } from '@/theme';
+import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH } from '@/theme';
 import { Typography, Button, PageShell, QCoin } from '@/components';
-import { PLANS, getPlanById, PRACTICE_IS_FREE_ONE_LINER, type PlanId } from '@waqup/shared/constants';
+import { PLANS, getPlanById, type PlanId } from '@waqup/shared/constants';
 import { Analytics } from '@waqup/shared/utils';
 
 /** Fallback when GET /api/stripe/price-ids is missing (e.g. 404 on older deployments). */
@@ -18,23 +19,8 @@ const BUILD_TIME_STRIPE_PRICE_IDS: Record<PlanId, string> = {
   devotion: process.env.NEXT_PUBLIC_STRIPE_DEVOTION_PRICE_ID || '',
 };
 
-const HOW_QS_WORK = [
-  {
-    icon: Zap,
-    title: 'Qs power creation',
-    body: 'Every affirmation, meditation, or ritual you create consumes Qs. The deeper the work, the more they cost.',
-  },
-  {
-    icon: Infinity,
-    title: 'Practice is always free',
-    body: 'Replay your content as many times as you want. Qs are only used when you create something new.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Qs never expire',
-    body: 'Unused Qs carry forward indefinitely. Your creative momentum is never lost.',
-  },
-];
+const HOW_QS_WORK_KEYS = ['creation', 'free', 'expire'] as const;
+const HOW_QS_WORK_ICONS = [Zap, Infinity, Sparkles] as const;
 
 const BADGE_SLOT_HEIGHT = 48;
 const DISCLAIMER_SLOT_HEIGHT = 36;
@@ -52,8 +38,16 @@ function PlanCard({
 }) {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const isPopular = plan.badge === 'Most Popular';
+  const t = useTranslations('pricing');
+  const isPopular = plan.id === 'growth';
   const isDevotionTier = plan.id === 'devotion';
+
+  const planName = t(`plans.${plan.id}.name`);
+  const planDescription = t(`plans.${plan.id}.description`);
+  const planFeatures = t.raw(`plans.${plan.id}.features`) as string[];
+  const planCtaLabel = t(`plans.${plan.id}.ctaLabel`);
+  const topBadge = isPopular ? t('badge.mostPopular') : isDevotionTier ? t('badge.forCommitted') : null;
+  const disclaimerText = plan.trialDays ? t('trialDisclaimer', { days: plan.trialDays }) : t('weeklyBilling');
 
   const cardBackground = isDevotionTier
     ? `linear-gradient(145deg, #1a0533 0%, #0d0118 60%, #1a0533 100%)`
@@ -72,18 +66,6 @@ function PlanCard({
     : isPopular
       ? `0 20px 60px ${colors.accent.primary}20`
       : undefined;
-
-  const topBadge = isPopular
-    ? 'Most popular'
-    : isDevotionTier
-      ? 'For committed practitioners'
-      : null;
-
-  const disclaimerText = isDevotionTier
-    ? `No charge for ${plan.trialDays} days. Cancel anytime.`
-    : plan.trialDays
-      ? `No charge for ${plan.trialDays} days. Cancel anytime.`
-      : 'Billed weekly. Cancel anytime.';
 
   return (
     <motion.div
@@ -170,7 +152,7 @@ function PlanCard({
               letterSpacing: isDevotionTier ? '-0.02em' : undefined,
             }}
           >
-            {plan.name}
+            {planName}
           </Typography>
           <Typography
             variant="small"
@@ -179,7 +161,7 @@ function PlanCard({
               lineHeight: 1.55,
             }}
           >
-            {plan.description}
+            {planDescription}
           </Typography>
         </div>
 
@@ -204,7 +186,7 @@ function PlanCard({
                 marginBottom: 6,
               }}
             >
-              /{plan.billingCycle}
+              /{t(`billing.${plan.billingCycle}`)}
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -224,7 +206,7 @@ function PlanCard({
                 color: isDevotionTier ? 'rgba(233,213,255,0.45)' : colors.text.secondary,
               }}
             >
-              per {plan.billingCycle}
+              {t(`billing.per${plan.billingCycle === 'week' ? 'Week' : 'Month'}`)}
             </span>
           </div>
           {plan.trialDays && (
@@ -244,16 +226,16 @@ function PlanCard({
               }}
             >
               <Sparkles size={11} />
-              {plan.trialDays}-day free trial
+              {t('billing.trialDays', { days: plan.trialDays })}
             </div>
           )}
         </div>
 
         {/* Feature list — flex: 1 pushes CTA to bottom */}
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, minHeight: 120 }}>
-          {plan.features.map((feature) => (
+          {(planFeatures ?? []).map((feature, i) => (
             <li
-              key={feature}
+              key={i}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -298,7 +280,7 @@ function PlanCard({
                   : { borderColor: `${colors.accent.primary}50` }
             }
           >
-            {isDevotionTier ? 'Commit to Devotion' : plan.ctaLabel}
+            {planCtaLabel}
           </Button>
 
           <div
@@ -332,6 +314,7 @@ export default function PricingPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
+  const t = useTranslations('pricing');
   const [loading, setLoading] = useState<PlanId | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [priceIds, setPriceIds] = useState<Record<PlanId, string> | null>(null);
@@ -350,7 +333,7 @@ export default function PricingPage() {
   const handleCheckout = async (planId: PlanId) => {
     const priceId = priceIds?.[planId] ?? '';
     if (!priceId) {
-      setError('Checkout is not yet configured for this plan. Please contact support.');
+      setError(t('errors.checkoutNotConfigured'));
       return;
     }
 
@@ -381,7 +364,7 @@ export default function PricingPage() {
       Analytics.paymentStarted('subscription', plan?.price ?? 0, plan?.currency ?? 'EUR');
       window.location.href = url;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      const message = err instanceof Error ? err.message : t('errors.checkoutFailed');
       const isStripePrice =
         typeof message === 'string' && (message.includes('No such price') || message.includes('no such price'));
       setError(
@@ -434,7 +417,7 @@ export default function PricingPage() {
               lineHeight: 1.1,
             }}
           >
-            Build a practice that changes you
+            {t('hero.headline')}
           </Typography>
           <Typography
             variant="body"
@@ -446,8 +429,7 @@ export default function PricingPage() {
               lineHeight: 1.65,
             }}
           >
-            Subscriptions give you a monthly rhythm of Qs to create affirmations, meditations, and
-            rituals. {PRACTICE_IS_FREE_ONE_LINER}
+            {t('hero.body')}
           </Typography>
         </motion.div>
       </div>
@@ -520,7 +502,7 @@ export default function PricingPage() {
               marginBottom: spacing.xl,
             }}
           >
-            How Qs work
+            {t('howQsWork.heading')}
           </Typography>
           <div
             style={{
@@ -529,9 +511,11 @@ export default function PricingPage() {
               gap: spacing.lg,
             }}
           >
-            {HOW_QS_WORK.map((item) => (
+            {HOW_QS_WORK_KEYS.map((key, i) => {
+              const Icon = HOW_QS_WORK_ICONS[i];
+              return (
               <div
-                key={item.title}
+                key={key}
                 style={{
                   padding: spacing.lg,
                   borderRadius: borderRadius.lg,
@@ -556,18 +540,19 @@ export default function PricingPage() {
                     flexShrink: 0,
                   }}
                 >
-                  <item.icon size={16} color={colors.accent.primary} strokeWidth={1.5} />
+                  <Icon size={16} color={colors.accent.primary} strokeWidth={1.5} />
                 </div>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: colors.text.primary, marginBottom: 4 }}>
-                    {item.title}
+                    {t(`howQsWork.${key}.title`)}
                   </div>
                   <div style={{ fontSize: 13, color: colors.text.secondary, lineHeight: 1.55 }}>
-                    {item.body}
+                    {t(`howQsWork.${key}.body`)}
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </motion.div>
 
@@ -586,7 +571,7 @@ export default function PricingPage() {
           }}
         >
           <Typography variant="small" style={{ color: colors.text.tertiary, fontSize: 13 }}>
-            Prefer to buy Qs without a subscription?
+            {t('footer.preferBuyQs')}
           </Typography>
           <Link href="/get-qs" style={{ textDecoration: 'none' }}>
             <span
@@ -599,7 +584,7 @@ export default function PricingPage() {
                 fontWeight: 500,
               }}
             >
-              Browse one-time Q packs
+              {t('footer.browsePacks')}
               <ArrowRight size={14} />
             </span>
           </Link>
@@ -624,7 +609,7 @@ export default function PricingPage() {
               letterSpacing: '-0.02em',
             }}
           >
-            waQup vs Calm & Headspace
+            {t('comparison.heading')}
           </Typography>
 
           <div
@@ -683,7 +668,7 @@ export default function PricingPage() {
                     letterSpacing: '0.05em',
                   }}
                 >
-                  You
+                  {t('comparison.you')}
                 </span>
                 <Typography variant="small" style={{ color: colors.accent.primary, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center' }}>
                   waQup
@@ -691,15 +676,9 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {[
-              { label: 'Content', other: 'Pre-made library', waQup: 'Yours — written for you' },
-              { label: 'Voice', other: 'Celebrity or generic voices', waQup: 'Your voice or AI voice' },
-              { label: 'Personalisation', other: 'Pre-set programs only', waQup: 'Every session, by design' },
-              { label: 'Practice cost', other: '~$70/year subscription', waQup: 'Always free — no catch' },
-              { label: 'Creation', other: 'Not available', waQup: 'Create anytime with Qs' },
-            ].map((row, i, arr) => (
+            {[1, 2, 3, 4, 5].map((n, i, arr) => (
               <motion.div
-                key={row.label}
+                key={n}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.55 + i * 0.04, duration: 0.25 }}
@@ -714,18 +693,18 @@ export default function PricingPage() {
                 }}
               >
                 <Typography variant="small" style={{ color: colors.text.primary, fontWeight: 600, fontSize: 14 }}>
-                  {row.label}
+                  {t(`comparison.row${n}Label`)}
                 </Typography>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                   <X size={14} color={colors.text.tertiary} strokeWidth={2} style={{ flexShrink: 0, opacity: 0.8 }} />
                   <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, textAlign: 'center', lineHeight: 1.4 }}>
-                    {row.other}
+                    {t(`comparison.row${n}Other`)}
                   </Typography>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                   <Check size={14} color={colors.accent.primary} strokeWidth={2.5} style={{ flexShrink: 0 }} />
                   <Typography variant="small" style={{ color: colors.text.primary, fontSize: 12, fontWeight: 500, lineHeight: 1.4 }}>
-                    {row.waQup}
+                    {t(`comparison.row${n}Waqup`)}
                   </Typography>
                 </div>
               </motion.div>
@@ -744,7 +723,7 @@ export default function PricingPage() {
               margin: `${spacing.lg} auto 0`,
             }}
           >
-            Calm and Headspace charge you to listen. waQup charges you only to <em>create</em>. Listening is always free.
+            {t('comparison.footer')}
           </Typography>
 
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: spacing.lg }}>
@@ -753,7 +732,7 @@ export default function PricingPage() {
               size="lg"
               onClick={() => router.push('/join')}
             >
-              Try waQup free <ArrowRight size={18} strokeWidth={2} />
+              {t('comparison.cta')} <ArrowRight size={18} strokeWidth={2} />
             </Button>
           </div>
         </motion.div>

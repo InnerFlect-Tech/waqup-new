@@ -61,12 +61,14 @@ export const Input: React.FC<InputProps> = ({
     flexDirection: 'row',
     alignItems: multiline ? 'flex-start' : 'center',
     minHeight: multiline ? undefined : '44px',
+    overflow: 'hidden',
     transition: 'all 0.2s ease-in-out',
     ...containerStyle,
   };
 
   const baseInputStyle: React.CSSProperties = {
     flex: 1,
+    minWidth: 0,
     paddingLeft: leftIcon ? spacing.sm : spacing.md,
     paddingRight: rightIcon ? spacing.sm : spacing.md,
     paddingTop: spacing.sm,
@@ -131,7 +133,7 @@ export const Input: React.FC<InputProps> = ({
             {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
           />
         )}
-        {rightIcon && <div style={{ paddingRight: spacing.md, display: 'flex', alignItems: 'center', paddingTop: multiline ? spacing.sm : 0 }}>{rightIcon}</div>}
+        {rightIcon && <div style={{ paddingRight: spacing.md, display: 'flex', alignItems: 'center', paddingTop: multiline ? spacing.sm : 0, flexShrink: 0 }}>{rightIcon}</div>}
       </div>
       {error && (
         <Typography variant="small" style={{ marginTop: spacing.xs, color: colors.error }}>
