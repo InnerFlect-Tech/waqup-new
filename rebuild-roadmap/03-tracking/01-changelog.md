@@ -6,6 +6,19 @@
 
 ---
 
+## Dependency cleanup: deprecation warnings (2026-03-11)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-11
+- **Notes**:
+  - **Root overrides**: Pinned `glob` to `13.0.6` (exact) in root `package.json` to resolve deprecated glob@7/10/11 and security advisories; app uses `@ffmpeg-installer/ffmpeg` + `spawn` only, so `fluent-ffmpeg` was unused.
+  - **Web**: Removed deprecated dependency `fluent-ffmpeg` from `packages/web/package.json`; removed from `serverExternalPackages` in `packages/web/next.config.js` (kept `@ffmpeg-installer/ffmpeg`).
+  - **Affected**: `package.json`, `package-lock.json`, `packages/web/package.json`, `packages/web/next.config.js`.
+  - Remaining transitive deprecation warnings (whatwg-encoding, inflight, domexception, abab, node-domexception) come from tooling (e.g. Playwright/Jest) and do not affect the build.
+- **Updated**: 2026-03-11
+
+---
+
 ## Full System Audit Plan Implementation (2026-03-10)
 
 ### Phase A: Cleanup & SSOT

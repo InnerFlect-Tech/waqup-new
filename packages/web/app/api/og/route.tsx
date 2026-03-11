@@ -2,6 +2,7 @@ import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+/** Edge required for @vercel/og; Next.js will warn that this route is not statically generated (expected). */
 export const runtime = 'edge';
 
 const TYPE_GRADIENT: Record<string, string> = {

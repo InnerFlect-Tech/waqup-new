@@ -21,7 +21,7 @@ Vercel's built-in GitHub integration deploys automatically on every push.
    - **Root Directory**: `packages/web`
    - **Framework**: Next.js (auto-detected)
    - **Build Command**: Uses `packages/web/vercel.json` (builds shared first)
-3. **Environment variables**: Add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_APP_URL` in Vercel Project Settings
+3. **Environment variables**: Add in Vercel Project Settings → Environment Variables. Minimum: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`. For Stripe (checkout + webhook), see **[Vercel env & Stripe](02-vercel-env-stripe.md)** for the full checklist and production webhook setup.
 4. **Production branch**: `main` (default)
 
 GitHub Actions CI still runs for validation; Vercel handles deployment.

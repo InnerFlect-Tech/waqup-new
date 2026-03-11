@@ -404,6 +404,25 @@ When you build referral functionality:
 
 Before going live, test every flow end-to-end using Stripe's test card numbers.
 
+### Visual test on local build
+
+1. **Terminal 1** — from repo root, start the app and keep it running:
+   ```bash
+   npm run dev:web
+   ```
+2. **Terminal 2** — from repo root, start the Stripe webhook listener (so credits/subs sync):
+   ```bash
+   cd packages/web && npm run stripe:webhook:listen
+   ```
+3. **Browser** — open:
+   - **Subscriptions:** [http://localhost:3000/pricing](http://localhost:3000/pricing) (or `/en/pricing`) → pick a plan → complete Checkout with test card `4242 4242 4242 4242`.
+   - **Credit packs:** [http://localhost:3000/sanctuary/credits/buy](http://localhost:3000/sanctuary/credits/buy) or `/get-qs` (log in first, e.g. test login if enabled) → pick a pack → pay with same card.
+4. **Verify:** Redirect back to app, balance or subscription updated; optional: Sanctuary → Settings → Manage Billing.
+
+**E2E (automated):** From repo root, run Stripe-related Playwright tests (starts dev server if needed):  
+`npm run test:e2e --workspace=packages/web -- --grep "Pricing|credits|pricing" --project=desktop-chromium`.  
+For authenticated credits tests, use `--project=desktop-chromium-authenticated` and ensure `NEXT_PUBLIC_ENABLE_TEST_LOGIN=true` in `packages/web/.env.local`.
+
 ### Test cards
 
 | Scenario | Card number | Expiry | CVC |

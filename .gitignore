@@ -70,3 +70,4 @@ supabase/.env
 
 # Deprecated legacy app (do not use — see .cursorrules)
 waqup-app/
+.env*.local
