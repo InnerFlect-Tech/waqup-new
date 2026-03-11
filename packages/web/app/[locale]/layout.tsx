@@ -10,6 +10,7 @@ import '../../src/styles/animations.css';
 import { AppProviders } from '@/components/AppProviders';
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { AnalyticsProvider } from '@/components/AnalyticsProvider';
 import { GoogleAnalyticsTracker } from '@/components/analytics';
 import { routing } from '@/i18n/routing';
@@ -161,6 +162,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <GoogleAnalyticsTracker />
         </Suspense>
         <Analytics />
+        <SpeedInsights />
 
         <NextIntlClientProvider messages={messages}>
           <AppProviders>{children}</AppProviders>
