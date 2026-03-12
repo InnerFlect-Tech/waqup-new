@@ -6,6 +6,32 @@
 
 ---
 
+## E2E (Playwright) CI fixes (2026-03-11)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-11
+- **Notes**:
+  - **signup-flow.spec.ts**: Fixed invalid Playwright locator — `'input[type="checkbox"], text=/terms|agree|accept/i'` was parsed as CSS and broke (Unexpected token "="). Replaced with `page.locator('input[type="checkbox"]').or(page.getByText(/terms|agree|accept/i)).first()`.
+  - **protected-redirect.spec.ts**: Increased `page.goto` timeout to 25s and URL assertion to 10s for "public pages remain accessible without auth" to reduce CI timeouts; use `domcontentloaded` for faster readiness.
+  - **analytics-events.spec.ts**: Increased navigation timeouts (15s → 20s) for "page_view fires on navigation".
+- **Affected**: `packages/web/e2e/specs/auth/signup-flow.spec.ts`, `packages/web/e2e/specs/auth/protected-redirect.spec.ts`, `packages/web/e2e/specs/analytics/analytics-events.spec.ts`.
+- **Updated**: 2026-03-11
+
+---
+
+## Dependency cleanup: deprecation warnings (2026-03-11)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-11
+- **Notes**:
+  - **Root overrides**: Pinned `glob` to `13.0.6` (exact) in root `package.json` to resolve deprecated glob@7/10/11 and security advisories; app uses `@ffmpeg-installer/ffmpeg` + `spawn` only, so `fluent-ffmpeg` was unused.
+  - **Web**: Removed deprecated dependency `fluent-ffmpeg` from `packages/web/package.json`; removed from `serverExternalPackages` in `packages/web/next.config.js` (kept `@ffmpeg-installer/ffmpeg`).
+  - **Affected**: `package.json`, `package-lock.json`, `packages/web/package.json`, `packages/web/next.config.js`.
+  - Remaining transitive deprecation warnings (whatwg-encoding, inflight, domexception, abab, node-domexception) come from tooling (e.g. Playwright/Jest) and do not affect the build.
+- **Updated**: 2026-03-11
+
+---
+
 ## i18n Full Audit & Pricing Page Wiring (2026-03-11)
 
 ### Pricing page localization

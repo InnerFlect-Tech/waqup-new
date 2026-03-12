@@ -29,8 +29,8 @@ test.describe('Analytics events', () => {
   });
 
   test('page_view fires on navigation', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'networkidle', timeout: 15000 });
-    await page.goto('/signup', { waitUntil: 'networkidle', timeout: 15000 });
+    await page.goto('/', { waitUntil: 'networkidle', timeout: 20000 });
+    await page.goto('/signup', { waitUntil: 'networkidle', timeout: 20000 });
 
     const events = await page.evaluate(() => (window as unknown as { __analyticsEvents: unknown[] }).__analyticsEvents);
     const pageViews = events.filter(

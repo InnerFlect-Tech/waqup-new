@@ -62,7 +62,7 @@ const nextConfig = {
   },
   transpilePackages: ['@waqup/shared'],
   // Keep native/binary packages out of the Turbopack bundle so Node resolves them at runtime
-  serverExternalPackages: ['@ffmpeg-installer/ffmpeg', 'fluent-ffmpeg'],
+  serverExternalPackages: ['@ffmpeg-installer/ffmpeg'],
   turbopack: {
     // Monorepo: root must include where next/package.json is resolvable
     root: path.join(__dirname, '../..'),
