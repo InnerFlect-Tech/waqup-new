@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { PageShell, SuperAdminGate } from '@/components';
 import { Typography } from '@/components';
 import { useTheme } from '@/theme';
@@ -92,12 +92,12 @@ export default function RestartOnboardingPage() {
               <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center' }}>
                 {errorMessage}
               </Typography>
-              <a
+              <Link
                 href="/admin"
                 style={{ color: colors.accent.primary, fontSize: 14, textDecoration: 'none' }}
               >
                 Back to Admin
-              </a>
+              </Link>
             </>
           )}
         </div>
