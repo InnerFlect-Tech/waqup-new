@@ -13,7 +13,7 @@ const MARKETING_PAGES = [
 
 for (const { path, name } of MARKETING_PAGES) {
   test(`${name} page (${path}) loads successfully`, async ({ page }) => {
-    await page.goto(path, { waitUntil: 'networkidle', timeout: 15000 });
+    await page.goto(path, { waitUntil: 'load', timeout: 15000 });
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
     // Should not be a 404
     const title = await page.title();
@@ -23,11 +23,11 @@ for (const { path, name } of MARKETING_PAGES) {
 }
 
 test('privacy page loads with content', async ({ page }) => {
-  await page.goto('/privacy', { waitUntil: 'networkidle', timeout: 15000 });
+  await page.goto('/privacy', { waitUntil: 'load', timeout: 15000 });
   await expect(page.locator('main, [role="main"], article, section').first()).toBeVisible({ timeout: 10000 });
 });
 
 test('data-deletion page loads', async ({ page }) => {
-  await page.goto('/data-deletion', { waitUntil: 'networkidle', timeout: 15000 });
+  await page.goto('/data-deletion', { waitUntil: 'load', timeout: 15000 });
   await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
 });

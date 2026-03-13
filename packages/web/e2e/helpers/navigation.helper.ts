@@ -6,7 +6,7 @@ import { expect } from '@playwright/test';
  * Waits for the main landmark and network idle.
  */
 export async function navigateTo(page: Page, path: string, timeoutMs = 15000): Promise<void> {
-  await page.goto(path, { waitUntil: 'networkidle', timeout: timeoutMs });
+  await page.goto(path, { waitUntil: 'load', timeout: timeoutMs });
   await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: timeoutMs });
 }
 
