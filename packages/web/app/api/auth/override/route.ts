@@ -15,8 +15,11 @@ export async function POST(request: NextRequest) {
     const email = typeof body?.email === 'string' ? body.email.trim() : '';
     const password = typeof body?.password === 'string' ? body.password : '';
 
-    const envEmail = process.env.OVERRIDE_LOGIN_EMAIL?.trim();
-    const envPassword = process.env.OVERRIDE_LOGIN_PASSWORD;
+    const envEmail =
+      process.env.OVERRIDE_LOGIN_EMAIL?.trim() ??
+      process.env.NEXT_PUBLIC_OVERRIDE_LOGIN_EMAIL?.trim();
+    const envPassword =
+      process.env.OVERRIDE_LOGIN_PASSWORD ?? process.env.NEXT_PUBLIC_OVERRIDE_LOGIN_PASSWORD;
 
     if (!envEmail || !envPassword) {
       return NextResponse.json(

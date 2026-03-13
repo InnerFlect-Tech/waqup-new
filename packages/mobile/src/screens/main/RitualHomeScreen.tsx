@@ -1,9 +1,9 @@
 /**
- * RitualHomeScreen — Default ritual-first home tab.
- * Prepares for: Start Ritual / Resume Ritual CTA, today-focused ritual state, future mini-player.
+ * RitualHomeScreen — Home tab with greeting and 3 content-type cards.
+ * Affirmations, Meditations, Rituals — each navigates to ContentCreate.
  */
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,48 +11,40 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { MainStackParamList, MainTabParamList } from '@/navigation/types';
-import { useTheme, spacing, borderRadius, homeTokens } from '@/theme';
+import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography, Button } from '@/components';
-import { useAuthStore } from '@/stores';
-import { useContent } from '@/hooks';
-import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
+import { Typography } from '@/components';
+import { CONTENT_TYPE_COPY } from '@waqup/shared/constants';
+import type { ContentItemType } from '@waqup/shared/types';
 
 type RitualHomeNav = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList, 'Ritual'>,
   NativeStackNavigationProp<MainStackParamList>
 >;
 
-function getGreeting(): { label: string; emoji: string } {
+function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return { label: 'Good morning', emoji: '☀' };
-  if (hour < 17) return { label: 'Good afternoon', emoji: '◑' };
-  return { label: 'Good evening', emoji: '☽' };
+  if (hour < 12) return 'GOOD MORNING';
+  if (hour < 17) return 'GOOD AFTERNOON';
+  return 'GOOD EVENING';
 }
+
+const CARD_CONFIG: { type: ContentItemType; icon: string; subtitle: string }[] = [
+  { type: 'affirmation', icon: 'white-balance-sunny', subtitle: 'Rewire your beliefs' },
+  { type: 'meditation', icon: 'moon-waning-crescent', subtitle: 'Induce calm states' },
+  { type: 'ritual', icon: 'fire', subtitle: 'Encode identity' },
+];
 
 export default function RitualHomeScreen() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<RitualHomeNav>();
-  const { user } = useAuthStore();
-  const { data: rituals = [] } = useContent('ritual');
 
   const greeting = getGreeting();
-  const firstName = user?.user_metadata?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? '';
-  const hasRituals = rituals.length > 0;
 
-  const handleStartRitual = () => {
-    navigation.navigate('ContentCreate', { contentType: 'ritual', mode: 'chat' });
-  };
-
-  const handleResumeRitual = () => {
-    if (hasRituals) {
-      // Navigate to Library tab so user can pick a ritual
-      navigation.navigate('Library');
-    } else {
-      handleStartRitual();
-    }
+  const handleCardPress = (contentType: ContentItemType) => {
+    navigation.navigate('ContentCreate', { contentType, mode: 'chat' });
   };
 
   return (
@@ -70,53 +62,63 @@ export default function RitualHomeScreen() {
             variant="small"
             style={[styles.greetingLabel, { color: colors.text.secondary }]}
           >
-            {greeting.label}{firstName ? `, ${firstName}` : ''} {greeting.emoji}
+            {greeting}
           </Typography>
           <Typography
             variant="h2"
             style={[styles.headline, { color: colors.text.primary }]}
           >
-            Your ritual{'\n'}awaits
+            Ready to transform? ✨
           </Typography>
         </View>
 
-        {/* Primary CTA */}
-        <View style={styles.ctaSection}>
-          {hasRituals ? (
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
-              onPress={handleResumeRitual}
-              style={styles.primaryButton}
-            >
-              Resume Ritual
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              size="lg"
-              fullWidth
-              onPress={handleStartRitual}
-              style={styles.primaryButton}
-            >
-              Start Ritual
-            </Button>
-          )}
-        </View>
-
-        {/* Placeholder for today-focused ritual state — future: show suggested/last ritual */}
-        {/* Placeholder for future mini-player support */}
-
-        {/* Quick tip */}
-        <View style={[styles.tipCard, { backgroundColor: colors.glass.transparent, borderColor: colors.glass.border }]}>
-          <View style={styles.tipRow}>
-            <MaterialCommunityIcons name="lightbulb-on-outline" size={homeTokens.tipIconSize} color={colors.accent.tertiary} style={styles.tipIcon} />
-            <View style={styles.tipTextWrap}>
-              <Typography variant="smallBold" style={{ color: colors.text.primary }}>Tip: </Typography>
-              <Typography variant="small" style={{ color: colors.text.secondary }}>{PRACTICE_IS_FREE_ONE_LINER}</Typography>
-            </View>
-          </View>
+        {/* 3 content-type cards */}
+        <View style={styles.cardList}>
+          {CARD_CONFIG.map(({ type, icon, subtitle }) => {
+            const copy = CONTENT_TYPE_COPY[type];
+            const title = copy?.label ? `${copy.label}s` : type;
+            return (
+              <TouchableOpacity
+                key={type}
+                activeOpacity={0.8}
+                onPress={() => handleCardPress(type)}
+                style={[
+                  styles.card,
+                  {
+                    backgroundColor: colors.glass.opaque,
+                    borderColor: colors.glass.border,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      borderColor: colors.accent.tertiary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
+                  <MaterialCommunityIcons
+                    name={icon as 'white-balance-sunny' | 'moon-waning-crescent' | 'fire'}
+                    size={24}
+                    color={colors.accent.tertiary}
+                  />
+                </View>
+                <View style={styles.cardText}>
+                  <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
+                    {title}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    style={{ color: colors.text.secondary, marginTop: 2 }}
+                  >
+                    {subtitle}
+                  </Typography>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
     </Screen>
@@ -131,36 +133,34 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   greetingLabel: {
-    letterSpacing: homeTokens.greetingLetterSpacing,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
     marginBottom: spacing.sm,
   },
   headline: {
-    fontWeight: '300',
+    fontWeight: '600',
     letterSpacing: -0.3,
-    lineHeight: homeTokens.headlineLineHeight,
   },
-  ctaSection: {
-    marginBottom: spacing.xl,
+  cardList: {
+    gap: spacing.md,
   },
-  primaryButton: {
-    minHeight: homeTokens.ctaMinHeight,
-  },
-  tipCard: {
-    padding: spacing.md,
-    borderRadius: borderRadius.lg,
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.lg,
+    borderRadius: borderRadius.xl,
     borderWidth: 1,
+    minHeight: 88,
   },
-  tipRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: spacing.sm,
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: borderRadius.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
   },
-  tipIcon: {
-    marginTop: 2,
-  },
-  tipTextWrap: {
+  cardText: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
 });

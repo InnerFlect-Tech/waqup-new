@@ -86,6 +86,21 @@ export function isAuthError(error: AppError): boolean {
 }
 
 /**
+ * Returns true if the error indicates an invalid or expired refresh token.
+ * When true, the app should clear the session and show login (no user-facing error).
+ */
+export function isInvalidRefreshTokenError(error: unknown): boolean {
+  const msg =
+    error instanceof Error ? error.message : typeof error === 'string' ? error : '';
+  const lower = String(msg).toLowerCase();
+  return (
+    lower.includes('invalid refresh token') ||
+    lower.includes('refresh token not found') ||
+    lower.includes('refresh_token_not_found')
+  );
+}
+
+/**
  * Safely logs an error (avoids logging sensitive data in production)
  */
 export function logError(context: string, error: unknown): void {

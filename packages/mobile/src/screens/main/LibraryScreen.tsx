@@ -81,22 +81,7 @@ export default function LibraryScreen() {
   return (
     <Screen scrollable={false} padding={false}>
       <View style={styles.container}>
-        {/* Header */}
-        <View style={[styles.header, { paddingTop: spacing.xl }]}>
-          <View>
-            <Typography
-              variant="h1"
-              style={{ color: colors.text.primary, fontWeight: '300', letterSpacing: -1 }}
-            >
-              Library
-            </Typography>
-            <Typography variant="body" style={{ color: colors.text.secondary, marginTop: spacing.xs }}>
-              Your practices in one place
-            </Typography>
-          </View>
-        </View>
-
-        {/* Search bar */}
+        {/* Search bar — header (avatar, title, search, plus) via SpotifyHeader */}
         <View style={[styles.searchContainer, { marginHorizontal: spacing.xl }]}>
           <View
             style={[
@@ -294,7 +279,7 @@ const styles = StyleSheet.create({
   },
   itemCard: {
     padding: spacing.md,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.xl,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',

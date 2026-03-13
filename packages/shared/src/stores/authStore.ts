@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { User, Session } from '@supabase/supabase-js';
 import type { AuthStore, AuthState } from '../types/auth';
 import { createAuthService } from '../services/auth/authService';
+import { isInvalidRefreshTokenError } from '../utils/errors';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
@@ -224,6 +225,12 @@ export function createAuthStore(options: CreateAuthStoreOptions) {
             error: null,
           });
         } else {
+          // Invalid refresh token → clear storage and treat as logged out (no user-facing error)
+          const authError = sessionResult.error ?? null;
+          if (authError && isInvalidRefreshTokenError(authError)) {
+            await authService.clearSession();
+            get().clearAuth();
+          }
           set({
             session: null,
             user: null,
@@ -245,11 +252,24 @@ export function createAuthStore(options: CreateAuthStoreOptions) {
         // Store unsubscribe function for cleanup
         return unsubscribe;
       } catch (error) {
-        set({
-          isLoading: false,
-          isInitialized: true,
-          error: error instanceof Error ? error.message : 'Failed to initialize auth',
-        });
+        // Invalid refresh token thrown (e.g. from Supabase internals) → clear and treat as logged out
+        if (isInvalidRefreshTokenError(error)) {
+          await authService.clearSession();
+          get().clearAuth();
+          set({
+            session: null,
+            user: null,
+            isLoading: false,
+            isInitialized: true,
+            error: null,
+          });
+        } else {
+          set({
+            isLoading: false,
+            isInitialized: true,
+            error: error instanceof Error ? error.message : 'Failed to initialize auth',
+          });
+        }
         return () => {}; // Return no-op unsubscribe
       }
     },

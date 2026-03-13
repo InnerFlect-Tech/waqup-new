@@ -34,7 +34,6 @@ export type AuthStackParamList = {
 export type MainTabParamList = {
   Ritual: undefined;
   Library: undefined;
-  Create: undefined;
   Profile: undefined;
 };
 

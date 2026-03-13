@@ -16,6 +16,9 @@ function isDarkBg(hex: string): boolean {
   return luminance < 0.5;
 }
 
+/** Blob size that stays within viewport on mobile: min(design size, 50vmin) prevents cutoff arcs on narrow screens */
+const responsiveSize = (px: number) => `min(${px}px, 50vmin)`;
+
 export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   intensity = 'medium',
   color = 'primary',
@@ -24,7 +27,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);  
+    setMounted(true);
   }, []);
 
   if (!mounted) {
@@ -44,19 +47,20 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
   const accentColor = color === 'primary' ? colors.accent.primary : color === 'secondary' ? colors.accent.secondary : colors.accent.tertiary;
 
   if (!darkMode) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          pointerEvents: 'none',
-          zIndex: -10,
-          overflow: 'hidden',
-        }}
-      >
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: -10,
+        overflow: 'hidden',
+        clipPath: 'inset(0)', // Force clip so blurred blobs never show cutoff arcs on narrow viewports
+      }}
+    >
         <div
           style={{
             position: 'absolute',
@@ -69,8 +73,8 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
             position: 'absolute',
             top: '20%',
             left: '20%',
-            width: '400px',
-            height: '400px',
+            width: responsiveSize(400),
+            height: responsiveSize(400),
             borderRadius: '50%',
             background: `radial-gradient(circle, ${hexToRgba(accentColor, 0.08)}, transparent)`,
             filter: 'blur(80px)',
@@ -82,8 +86,8 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
             position: 'absolute',
             bottom: '20%',
             right: '20%',
-            width: '450px',
-            height: '450px',
+            width: responsiveSize(450),
+            height: responsiveSize(450),
             borderRadius: '50%',
             background: `radial-gradient(circle, ${hexToRgba(colors.accent.secondary, 0.06)}, transparent)`,
             filter: 'blur(90px)',
@@ -113,6 +117,7 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
         pointerEvents: 'none',
         zIndex: -10,
         overflow: 'hidden',
+        clipPath: 'inset(0)', // Force clip so blur expansion cannot bleed past viewport
       }}
     >
       <div
@@ -127,8 +132,8 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
           position: 'absolute',
           top: '25%',
           left: '25%',
-          width: '500px',
-          height: '500px',
+          width: responsiveSize(500),
+          height: responsiveSize(500),
           borderRadius: '50%',
           background: `radial-gradient(circle, ${hexToRgba(colors.accent.primary, 0.3)}, transparent)`,
           filter: 'blur(100px)',
@@ -140,8 +145,8 @@ export const AnimatedBackground: React.FC<AnimatedBackgroundProps> = ({
           position: 'absolute',
           bottom: '25%',
           right: '25%',
-          width: '600px',
-          height: '600px',
+          width: responsiveSize(600),
+          height: responsiveSize(600),
           borderRadius: '50%',
           background: `radial-gradient(circle, ${hexToRgba(colors.accent.secondary, 0.3)}, transparent)`,
           filter: 'blur(120px)',

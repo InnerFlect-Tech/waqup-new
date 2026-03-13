@@ -21,6 +21,7 @@ import {
   Wrench,
   Smartphone,
   RotateCcw,
+  Compass,
 } from 'lucide-react';
 import { PageShell, SuperAdminGate } from '@/components';
 import { Typography } from '@/components';
@@ -32,10 +33,12 @@ interface AdminCard {
   description: string;
   href: string;
   icon: React.ReactNode;
-  category: 'ops' | 'config' | 'docs' | 'system' | 'tools';
+  category: 'strategy' | 'ops' | 'config' | 'docs' | 'system' | 'tools';
 }
 
 const ADMIN_CARDS: AdminCard[] = [
+  // Strategy — company master plan
+  { title: 'Company Strategy', description: 'Internal master plan — thesis, economic engine, flywheel, phase roadmap, risks.', href: '/admin/company-strategy', icon: <Compass />, category: 'strategy' },
   // Operations — day-to-day admin
   { title: 'iOS App Store Release', description: 'Implementation log, setup checklist, DB migration, marketing prompts.', href: '/admin/ios-release', icon: <Smartphone />, category: 'ops' },
   { title: 'User Management', description: 'Users, credit balances, subscriptions, transactions.', href: '/admin/users', icon: <Users />, category: 'ops' },
@@ -64,6 +67,7 @@ const ADMIN_CARDS: AdminCard[] = [
 ];
 
 const CATEGORY_CONFIG: Record<AdminCard['category'], { label: string; order: number }> = {
+  strategy: { label: 'Strategy', order: -1 },
   ops: { label: 'Operations', order: 0 },
   config: { label: 'Configuration', order: 1 },
   docs: { label: 'Documentation', order: 2 },
@@ -71,7 +75,7 @@ const CATEGORY_CONFIG: Record<AdminCard['category'], { label: string; order: num
   tools: { label: 'Tools & Shortcuts', order: 4 },
 };
 
-const CATEGORY_ORDER: AdminCard['category'][] = ['ops', 'config', 'docs', 'system', 'tools'];
+const CATEGORY_ORDER: AdminCard['category'][] = ['strategy', 'ops', 'config', 'docs', 'system', 'tools'];
 
 function AdminTile({
   card,
@@ -172,6 +176,7 @@ export default function AdminDashboardPage() {
             const cards = ADMIN_CARDS.filter((c) => c.category === category);
             const config = CATEGORY_CONFIG[category];
             if (cards.length === 0) return null;
+            const sortKey = config.order;
             return (
               <div key={category} style={{ marginBottom: spacing.xl }}>
                 <Typography

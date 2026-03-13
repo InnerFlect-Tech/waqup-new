@@ -520,7 +520,9 @@
       "submitting": "Sending...",
       "success": "Message sent",
       "successBody": "We'll get back to you soon.",
-      "successConfidential": "We'll contact you within 1–2 business days and share confidentially: full term sheet, ROI scenarios, pitch deck, and next steps."
+      "successConfidential": "We'll contact you within 1–2 business days and share confidentially: full term sheet, ROI scenarios, pitch deck, and next steps.",
+      "selectOption": "Select an option",
+      "back": "Back"
     },
     "form": {
       "namePlaceholder": "Your name",
@@ -541,6 +543,15 @@
       "content-creator": "Content Creator",
       "other": "Other"
     },
+    "interestDescriptions": {
+      "seed": "Helps fast-finish the build, polish, and put waQup in the market.",
+      "production": "Ensure production quality: authentication, build standards, marketplace readiness.",
+      "marketing": "Knows how to sell. Proof of experience making 1M+ with apps required.",
+      "promotion": "Specific ROI terms and access to promotion decisions.",
+      "influencer": "Promote waQup to your audience. Limited aligned creator slots.",
+      "content-creator": "Create affirmations, meditations, rituals. 70% of sales, ongoing passive income.",
+      "other": "Something else — tell us more in your message."
+    },
     "referralOptions": {
       "socialMedia": "Social Media",
       "friendFamily": "Friend or Family",
@@ -548,6 +559,14 @@
       "podcast": "Podcast",
       "search": "Search",
       "other": "Other"
+    },
+    "referralDescriptions": {
+      "socialMedia": "Instagram, LinkedIn, Twitter, etc.",
+      "friendFamily": "Someone you know told you",
+      "newsletter": "Email or newsletter",
+      "podcast": "Heard on a podcast",
+      "search": "Google, Bing, etc.",
+      "other": "Another source"
     },
     "errors": {
       "nameRequired": "Please enter your name.",
@@ -811,7 +830,8 @@
       "benefit2": "Personal, not generic",
       "benefit3": "Minutes to create. Lifetime to use.",
       "benefit4": "Your voice data stays yours",
-      "benefit5": "Listening free. Credits only for creation."
+      "benefit5": "Listening free. Credits only for creation.",
+      "benefit6": "Share practices, earn credits back"
     },
     "features": {
       "voice": {

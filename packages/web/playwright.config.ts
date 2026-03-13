@@ -22,6 +22,7 @@ export default defineConfig({
   reporter: [
     ['html', { open: 'never', outputFolder: 'playwright-report' }],
     ['list'],
+    ['json', { outputFile: 'playwright-report/results.json' }],
   ],
   outputDir: 'test-results',
   use: {
@@ -33,11 +34,11 @@ export default defineConfig({
     navigationTimeout: 15000,
   },
   projects: [
-    { name: 'setup', testMatch: /auth\.setup\.ts/ },
+    { name: 'setup', testMatch: /auth\.setup\.ts/, timeout: 90_000 },
     {
       name: 'desktop-chromium',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: /specs\/protected\//,
+      testIgnore: /specs\/(protected\/|onboarding\/)/,
       dependencies: ['setup'],
     },
     {
@@ -52,11 +53,39 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         storageState: authStoragePath,
       },
-      testMatch: /specs\/(protected\/|critical-flows\.spec)/,
+      testMatch: /specs\/(protected\/|critical-flows\.spec|onboarding\/)/,
       dependencies: ['setup'],
     },
-    { name: 'mobile-chrome', use: { ...devices['Pixel 5'] }, dependencies: ['setup'] },
-    { name: 'mobile-safari', use: { ...devices['iPhone 14'] }, dependencies: ['setup'] },
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 5'] },
+      testIgnore: /specs\/(protected\/|critical-flows\.spec|onboarding\/)/,
+      dependencies: ['setup'],
+    },
+    {
+      name: 'mobile-safari',
+      use: { ...devices['iPhone 14'] },
+      testIgnore: /specs\/(protected\/|critical-flows\.spec|onboarding\/)/,
+      dependencies: ['setup'],
+    },
+    {
+      name: 'mobile-chrome-authenticated',
+      use: {
+        ...devices['Pixel 5'],
+        storageState: authStoragePath,
+      },
+      testMatch: /specs\/(protected\/|critical-flows\.spec|onboarding\/)/,
+      dependencies: ['setup'],
+    },
+    {
+      name: 'mobile-safari-authenticated',
+      use: {
+        ...devices['iPhone 14'],
+        storageState: authStoragePath,
+      },
+      testMatch: /specs\/(protected\/|critical-flows\.spec|onboarding\/)/,
+      dependencies: ['setup'],
+    },
   ],
   webServer: {
     // Use dev server: 'next start' is incompatible with output: standalone
@@ -65,5 +94,14 @@ export default defineConfig({
     reuseExistingServer: reuseServer,
     // iCloud paths can slow cold starts; 90s covers dev server boot locally
     timeout: 90_000,
+    // Pass E2E env so middleware honor override auth (NEXT_PUBLIC_* inlined at build)
+    env: {
+      ...process.env,
+      NEXT_PUBLIC_ENABLE_TEST_LOGIN: process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN ?? 'true',
+      OVERRIDE_LOGIN_EMAIL: process.env.OVERRIDE_LOGIN_EMAIL ?? process.env.NEXT_PUBLIC_OVERRIDE_LOGIN_EMAIL ?? 'test@waqup.app',
+      OVERRIDE_LOGIN_PASSWORD: process.env.OVERRIDE_LOGIN_PASSWORD ?? process.env.NEXT_PUBLIC_OVERRIDE_LOGIN_PASSWORD ?? 'testpass123',
+      NEXT_PUBLIC_OVERRIDE_LOGIN_EMAIL: process.env.NEXT_PUBLIC_OVERRIDE_LOGIN_EMAIL ?? process.env.OVERRIDE_LOGIN_EMAIL ?? 'test@waqup.app',
+      NEXT_PUBLIC_OVERRIDE_LOGIN_PASSWORD: process.env.NEXT_PUBLIC_OVERRIDE_LOGIN_PASSWORD ?? process.env.OVERRIDE_LOGIN_PASSWORD ?? 'testpass123',
+    },
   },
 });

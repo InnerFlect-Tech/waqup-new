@@ -74,7 +74,7 @@ E2E runs in GitHub Actions after the build job:
 - Runs `npm run dev` via Playwright webServer (`next start` is incompatible with `output: standalone`)
 - On failure: uploads `playwright-report` and `test-results` as artifacts
 
-**Authenticated specs**: CI currently runs **public-only** E2E (`desktop-chromium` only) because the build uses placeholder Supabase and no test user exists. Full E2E (including protected routes) runs locally with real Supabase and `supabase/scripts/ensure-e2e-user.sql`. To run authenticated specs in CI: (a) add Supabase secrets to the workflow, (b) run the E2E user seed before tests, (c) include `desktop-chromium-authenticated` in the playwright test command.
+**Authenticated specs**: CI runs `desktop-chromium` only with placeholder Supabase. `canRunAuthTests()` returns `false` when `CI=true`, so specs using `skipIfNoAuth()` (critical-flows authenticated block, onboarding-flow, create-affirmation) are skipped in CI. This avoids failures from profile fetch returning no `access_granted` with placeholder Supabase. Full E2E (including protected routes and authenticated specs) runs locally with real Supabase and `supabase/scripts/ensure-e2e-user.sql`. To run authenticated specs in CI: (a) add Supabase secrets to the workflow, (b) run the E2E user seed before tests, (c) include `desktop-chromium-authenticated` in the playwright test command.
 
 ## Suite Structure (Consolidated)
 

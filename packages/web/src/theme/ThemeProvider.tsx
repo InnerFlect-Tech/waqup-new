@@ -56,8 +56,11 @@ export function ThemeProvider({ children, defaultThemeName = 'mystical-purple' }
     root.style.setProperty('--theme-accent-secondary', c.accent.secondary);
     root.style.setProperty('--theme-accent-focus', withOpacity(c.accent.primary, 0.6));
     root.style.setProperty('--theme-accent-selection', withOpacity(c.accent.primary, 0.2));
+    root.style.setProperty('--theme-menu-item-hover', withOpacity(c.text.onDark, 0.05));
+    root.style.setProperty('--theme-menu-item-active-bg', withOpacity(c.accent.tertiary, 0.12));
     root.style.setProperty('--theme-glass-light', c.glass.light);
     root.style.setProperty('--theme-glass-border', c.glass.border);
+    root.style.setProperty('--theme-menu-item-hover', withOpacity(c.text.onDark, 0.05));
     root.style.setProperty('--theme-gradient-primary', c.gradients.primary);
     root.style.setProperty('--theme-gradient-background', c.gradients.background);
     root.style.setProperty('--theme-mystical-glow', c.mystical.glow);

@@ -1,6 +1,6 @@
 /**
- * ContentDetailScreen — Premium ritual playback experience.
- * Orb-centered, minimal, audio-first. Works with playbackStore + MiniPlayer.
+ * ContentDetailScreen — Premium playback experience.
+ * Donut + waveform, minimal, audio-first. Works with playbackStore + MiniPlayer.
  */
 import React, { useEffect } from 'react';
 import {
@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  Platform,
 } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -21,12 +23,11 @@ import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Loading } from '@/components';
-import { VoiceOrb } from '@/components/audio';
+import { PlaybackDonut, WaveformBar } from '@/components/audio';
 import { useContentItem } from '@/hooks';
 import { usePlaybackStore } from '@/stores';
 import { formatTime } from '@waqup/shared/utils';
 import { API_BASE_URL } from '@/constants/app';
-import { CONTENT_TYPE_COPY } from '@waqup/shared/constants';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'ContentDetail'>;
 
@@ -80,6 +81,11 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
     width: `${progressWidth.value * 100}%`,
   }));
 
+  const thumbStyle = useAnimatedStyle(() => ({
+    left: `${progressWidth.value * 100}%`,
+    marginLeft: -6,
+  }));
+
   const handleSeekBack = () => {
     seek(Math.max(0, position.positionMs - 15000));
   };
@@ -90,7 +96,7 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
 
   const title = item?.title ?? 'Untitled';
   const duration = position.durationMs > 0 ? formatTime(position.durationMs) : '--:--';
-  const intentLine = CONTENT_TYPE_COPY[contentType]?.depth ?? '';
+  const subtitle = `Your Voice · ${duration}`;
 
   const handleEdit = () => {
     navigation.navigate('ContentEdit', { contentId, contentType });
@@ -117,7 +123,7 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
   return (
     <Screen scrollable={false} padding={false}>
       <View style={[styles.container, { paddingHorizontal: PADDING_H }]}>
-        {/* Header: Back + More */}
+        {/* Header: Back + NOW PLAYING + More */}
         <View style={styles.topRow}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -126,37 +132,23 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
           >
             <Typography variant="body" style={{ color: colors.accent.primary }}>← Back</Typography>
           </TouchableOpacity>
+          <Typography
+            variant="small"
+            style={[
+              styles.nowPlayingLabel,
+              { color: colors.text.secondary },
+            ]}
+          >
+            NOW PLAYING
+          </Typography>
           <TouchableOpacity onPress={handleMore} activeOpacity={0.8} style={styles.moreBtn}>
             <Typography variant="small" style={{ color: colors.text.secondary }}>More</Typography>
           </TouchableOpacity>
         </View>
 
-        {/* Title */}
-        <View style={styles.titleSection}>
-          <Typography
-            variant="h2"
-            style={{ color: colors.text.primary, fontWeight: '400', textAlign: 'center' }}
-            numberOfLines={2}
-          >
-            {title}
-          </Typography>
-          {intentLine ? (
-            <Typography
-              variant="caption"
-              style={{ color: colors.text.secondary, marginTop: spacing.xs, textAlign: 'center' }}
-            >
-              {intentLine}
-            </Typography>
-          ) : null}
-        </View>
-
-        {/* Orb */}
-        <View style={styles.orbContainer}>
-          <VoiceOrb
-            size="lg"
-            orbState={isAudioLoading ? 'thinking' : isPlaying ? 'speaking' : 'idle'}
-            style={{ width: ORB_SIZE, height: ORB_SIZE }}
-          />
+        {/* Donut */}
+        <View style={styles.donutContainer}>
+          <PlaybackDonut size={ORB_SIZE} glow />
           {!hasVoice && (
             <Typography
               variant="caption"
@@ -167,8 +159,30 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
           )}
         </View>
 
-        {/* Progress scrubber */}
-        <View style={styles.scrubContainer}>
+        {/* Track info */}
+        <View style={styles.trackSection}>
+          <Typography
+            variant="h2"
+            style={{ color: colors.text.primary, fontWeight: '600', textAlign: 'center' }}
+            numberOfLines={2}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="caption"
+            style={{ color: colors.text.secondary, marginTop: spacing.xs, textAlign: 'center' }}
+          >
+            {subtitle}
+          </Typography>
+        </View>
+
+        {/* Waveform + Progress */}
+        <View style={styles.waveformSection}>
+          <WaveformBar
+            progress={progress}
+            isPlaying={isPlaying}
+            style={{ marginBottom: spacing.md }}
+          />
           <View style={[styles.scrubTrack, { backgroundColor: colors.glass.border }]}>
             <Animated.View
               style={[styles.scrubFill, progressBarStyle, { backgroundColor: colors.accent.primary }]}
@@ -176,7 +190,7 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
             <Animated.View
               style={[
                 styles.scrubDot,
-                progressBarStyle,
+                thumbStyle,
                 { backgroundColor: colors.text.onDark, borderColor: colors.accent.primary },
               ]}
             />
@@ -199,7 +213,11 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
             style={[styles.controlBtn, !hasVoice && { opacity: 0.5 }]}
             disabled={!hasVoice}
           >
-            <Typography style={[styles.controlIcon, { color: colors.text.secondary }]}>⏮</Typography>
+            <MaterialCommunityIcons
+              name="skip-previous"
+              size={28}
+              color={colors.text.secondary}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -210,18 +228,29 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
               {
                 backgroundColor: hasVoice ? colors.accent.primary : colors.glass.border,
                 opacity: hasVoice ? 1 : 0.7,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: colors.accent.primary,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 16,
+                  },
+                  android: { elevation: 8 },
+                }),
               },
             ]}
             disabled={!hasVoice}
           >
             {!hasVoice ? (
-              <Typography style={[styles.playIcon, { color: colors.text.secondary }]}>▶</Typography>
+              <MaterialCommunityIcons name="play" size={32} color={colors.text.secondary} />
             ) : isAudioLoading ? (
               <Typography style={{ color: colors.text.onDark, fontSize: 20 }}>…</Typography>
             ) : (
-              <Typography style={[styles.playIcon, { color: colors.text.onDark }]}>
-                {isPlaying ? '⏸' : '▶'}
-              </Typography>
+              <MaterialCommunityIcons
+                name={isPlaying ? 'pause' : 'play'}
+                size={32}
+                color={colors.text.onDark}
+              />
             )}
           </TouchableOpacity>
 
@@ -231,7 +260,11 @@ export default function ContentDetailScreen({ navigation, route }: Props) {
             style={[styles.controlBtn, !hasVoice && { opacity: 0.5 }]}
             disabled={!hasVoice}
           >
-            <Typography style={[styles.controlIcon, { color: colors.text.secondary }]}>⏭</Typography>
+            <MaterialCommunityIcons
+              name="skip-next"
+              size={28}
+              color={colors.text.secondary}
+            />
           </TouchableOpacity>
         </View>
         {/* TODO: repeat toggle when playbackStore supports loop */}
@@ -257,9 +290,28 @@ const styles = StyleSheet.create({
   backBtn: {
     paddingVertical: spacing.sm,
   },
+  nowPlayingLabel: {
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    fontWeight: '600',
+  },
   moreBtn: {
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
+  },
+  donutContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xl,
+  },
+  trackSection: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+    paddingHorizontal: spacing.md,
+  },
+  waveformSection: {
+    width: '100%',
+    marginBottom: spacing.xxl,
   },
   titleSection: {
     alignItems: 'center',

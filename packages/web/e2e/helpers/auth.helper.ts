@@ -42,9 +42,12 @@ export async function logout(page: Page): Promise<void> {
 }
 
 /**
- * Returns true if override login is available and configured.
+ * Returns true if override login is available and authenticated tests can run.
+ * In CI (placeholder Supabase), profile fetch fails so hasAccess is false and users
+ * land on /coming-soon — protected routes are unreachable. Skip auth tests in CI.
  */
 export function canRunAuthTests(): boolean {
+  if (process.env.CI === 'true') return false;
   return canUseOverrideLogin && process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true';
 }
 

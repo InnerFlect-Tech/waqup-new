@@ -1,15 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { Button, Input, Typography } from '@/components/ui';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR, CARD_PADDING_AUTH, BUTTON_TOKENS } from '@/theme';
+import { buttonTokens } from '@waqup/shared/theme';
 import { ArrowRight, Sparkles, Check } from 'lucide-react';
+
 import { Link } from '@/i18n/navigation';
 import { usePathname } from 'next/navigation';
 import { Analytics } from '@waqup/shared/utils';
+
+/** Breakpoint for stacked layout — mobile-first, touch-friendly CTA */
+const STACK_BREAKPOINT = 480;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -41,6 +46,15 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${STACK_BREAKPOINT}px)`);
+    setIsNarrow(mq.matches);
+    const handler = () => setIsNarrow(mq.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,16 +152,17 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
           onSubmit={handleSubmit}
           style={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: isNarrow ? 'column' : 'row',
             alignItems: 'stretch',
-            gap: spacing.sm,
+            justifyContent: 'center',
+            gap: spacing.md,
             width: '100%',
             maxWidth: 480,
             margin: '0 auto',
-            flexWrap: 'wrap',
+            textAlign: 'center',
           }}
         >
-          <div style={{ flex: '1 1 220px', minWidth: 200 }}>
+          <div style={{ width: '100%', minWidth: 0 }}>
             <Input
               type="email"
               placeholder={t('waitlistCta.placeholder')}
@@ -163,11 +178,18 @@ function InlineCTA({ headline, subtext, compact, style }: { headline?: string; s
             type="submit"
             variant="primary"
             size="lg"
+            fullWidth={isNarrow}
             disabled={submitting}
-            style={{ flexShrink: 0 }}
+            style={
+              isNarrow
+                ? { minHeight: BUTTON_TOKENS.minHeight.lg, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: BUTTON_TOKENS.iconGap }
+                : { flexShrink: 0 }
+            }
           >
             {submitting ? t('waitlistCta.joining') : (
-              <>{t('waitlistCta.joinWaitlist')} <ArrowRight size={15} style={{ marginLeft: 6 }} /></>
+              <>
+                {t('waitlistCta.joinWaitlist')} <ArrowRight size={buttonTokens.iconSize.lg} strokeWidth={2.5} />
+              </>
             )}
           </Button>
         </form>

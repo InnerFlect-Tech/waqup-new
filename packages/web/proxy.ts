@@ -3,6 +3,7 @@ import createIntlMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from './i18n/routing';
 import type { Locale } from './i18n/routing';
+import { OVERRIDE_COOKIE_NAME } from '@/lib/override-auth';
 
 // Routes that require an authenticated Supabase session.
 // Matches AuthProvider.tsx protected route list.
@@ -37,6 +38,12 @@ export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isProtectedPath(pathname)) {
+    // E2E / dev: override auth cookie allows protected routes without Supabase session
+    const overrideAuth = request.cookies.get(OVERRIDE_COOKIE_NAME)?.value === '1';
+    if (overrideAuth && process.env.NEXT_PUBLIC_ENABLE_TEST_LOGIN === 'true') {
+      return intlMiddleware(request);
+    }
+
     const supabaseResponse = NextResponse.next({ request });
 
     const supabase = createServerClient(

@@ -33,6 +33,7 @@
     "warmup:dev": "npm run warmup:dev --workspace=packages/web",
     "dev:web:clean": "rm -rf packages/web/.next 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:3002 2>/dev/null|xargs kill -9) || true; npm run dev:web",
     "dev:all": "npm run dev:mobile & npm run dev:web",
+    "dev:all:tunnel": "rm -rf packages/web/.next/dev 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:3001 2>/dev/null|xargs kill -9) || true; (lsof -ti:3002 2>/dev/null|xargs kill -9) || true; (lsof -ti:8081 2>/dev/null|xargs kill -9) || true; (lsof -ti:8082 2>/dev/null|xargs kill -9) || true; sleep 1; npm run dev:web & npm run dev:mobile:tunnel",
     "dev:all:clean": "rm -rf packages/web/.next 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:3002 2>/dev/null|xargs kill -9) || true; (lsof -ti:8081 2>/dev/null|xargs kill -9) || true; npm run dev:all",
     "dev:all:win": "npm run dev:mobile & npm run dev:web",
     "build:shared": "npm run build --workspace=packages/shared",
@@ -68,6 +69,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "concurrently": "^9.1.2",
     "supabase": "^2.77.0",
     "typescript": "^5.9.3"
   },

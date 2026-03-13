@@ -1,0 +1,297 @@
+{
+  "name": "waQup Form Emails",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "waqup-forms",
+        "responseMode": "immediately",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "waqup-forms"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Supabase sends payload as body - normalize for Switch node\nconst body = $input.first().json.body || $input.first().json;\nconst record = body.record || {};\nconst table = body.table || 'unknown';\n\nreturn {\n  json: {\n    table,\n    record,\n    type: body.type,\n    schema: body.schema\n  }\n};"
+      },
+      "id": "parse-payload",
+      "name": "Parse Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "outputKey": "waitlist",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "cond-waitlist",
+                    "leftValue": "={{ $json.table }}",
+                    "rightValue": "waitlist_signups",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "outputKey": "investor",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "cond-investor",
+                    "leftValue": "={{ $json.table }}",
+                    "rightValue": "investor_inquiries",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "outputKey": "creator",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "cond-creator",
+                    "leftValue": "={{ $json.table }}",
+                    "rightValue": "creator_proposals",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "outputKey": "feedback",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "cond-feedback",
+                    "leftValue": "={{ $json.table }}",
+                    "rightValue": "feedback",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-table",
+      "name": "Route by Table",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build Resend API payloads for waitlist_signups\nconst r = $input.first().json.record;\nconst isFounding = r.is_founding_member === true;\nconst name = r.name || r.email?.split('@')[0] || 'there';\nconst email = r.email || '';\n\nconst htmlUser = isFounding\n  ? `<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>body{background:#0f0a1a;color:#f5f5f5;font-family:-apple-system,sans-serif;margin:0;padding:24px}.card{background:rgba(255,255,255,0.05);border-radius:12px;padding:24px}h1{font-size:24px}p{margin:0 0 12px;line-height:1.6;color:#a0a0a0}.accent{color:#a855f7}</style></head><body><div class=\"card\"><h1>You're in, ${name}</h1><p>Welcome to the founding circle. We'll send your activation link to <strong>${email}</strong>.</p><ul><li>50 credits on activation</li><li>Founding Member badge — permanent</li><li>1 month free, then €6.99/month forever</li></ul><p class=\"accent\">— The waQup team</p></div></body></html>`\n  : `<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>body{background:#0f0a1a;color:#f5f5f5;font-family:-apple-system,sans-serif;margin:0;padding:24px}.card{background:rgba(255,255,255,0.05);border-radius:12px;padding:24px}h1{font-size:24px}p{margin:0 0 12px;line-height:1.6;color:#a0a0a0}.accent{color:#a855f7}</style></head><body><div class=\"card\"><h1>You're on the list</h1><p>Hi ${name},</p><p>Thanks for joining the waQup waitlist. We'll reach out when we're ready for you.</p><p class=\"accent\">— The waQup team</p></div></body></html>`;\n\nconst subject = isFounding ? 'Welcome to waQup Founding Members' : \"You're on the waQup waitlist\";\nconst recordSummary = JSON.stringify(r, null, 2);\nconst teamHtml = `<h2>New waitlist_signups</h2><pre>${recordSummary}</pre><p><small>${new Date().toISOString()}</small></p>`;\n\nreturn { json: {\n  userPayload: email ? { from: 'waQup <hello@waqup.com>', to: [email], subject, html: htmlUser } : null,\n  teamPayload: { from: 'waQup <hello@waqup.com>', to: ['ops@waqup.com'], subject: `[waQup] New waitlist — ${name || email}`, html: teamHtml }\n} };"
+      },
+      "id": "build-waitlist",
+      "name": "Build Waitlist Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build Resend API payloads for investor_inquiries\nconst r = $input.first().json.record;\nconst name = r.name || r.email?.split('@')[0] || 'there';\nconst email = r.email || '';\n\nconst htmlUser = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>body{background:#0f0a1a;color:#f5f5f5;font-family:-apple-system,sans-serif;margin:0;padding:24px}.card{background:rgba(255,255,255,0.05);border-radius:12px;padding:24px}h1{font-size:24px}p{margin:0 0 12px;line-height:1.6;color:#a0a0a0}.accent{color:#a855f7}</style></head><body><div class=\"card\"><h1>We received your inquiry</h1><p>Hi ${name},</p><p>Thanks for reaching out. We'll review your message and get back to you soon.</p><p class=\"accent\">— The waQup team</p></div></body></html>`;\n\nconst subject = 'We received your waQup inquiry';\nconst recordSummary = JSON.stringify(r, null, 2);\nconst teamHtml = `<h2>New investor_inquiries</h2><pre>${recordSummary}</pre><p><small>${new Date().toISOString()}</small></p>`;\n\nreturn { json: {\n  userPayload: { from: 'waQup <hello@waqup.com>', to: [email], subject, html: htmlUser },\n  teamPayload: { from: 'waQup <hello@waqup.com>', to: ['legal@waqup.com'], subject: `[waQup] New investor — ${name}`, html: teamHtml }\n} };"
+      },
+      "id": "build-investor",
+      "name": "Build Investor Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build Resend API payloads for creator_proposals\nconst r = $input.first().json.record;\nconst name = r.name || r.email?.split('@')[0] || 'there';\nconst email = r.email || '';\n\nconst htmlUser = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>body{background:#0f0a1a;color:#f5f5f5;font-family:-apple-system,sans-serif;margin:0;padding:24px}.card{background:rgba(255,255,255,0.05);border-radius:12px;padding:24px}h1{font-size:24px}p{margin:0 0 12px;line-height:1.6;color:#a0a0a0}.accent{color:#a855f7}</style></head><body><div class=\"card\"><h1>We received your creator proposal</h1><p>Hi ${name},</p><p>Thanks for your interest in the waQup Creator Marketplace. We'll review your proposal and be in touch.</p><p class=\"accent\">— The waQup team</p></div></body></html>`;\n\nconst subject = 'We received your waQup creator proposal';\nconst recordSummary = JSON.stringify(r, null, 2);\nconst teamHtml = `<h2>New creator_proposals</h2><pre>${recordSummary}</pre><p><small>${new Date().toISOString()}</small></p>`;\n\nreturn { json: {\n  userPayload: { from: 'waQup <hello@waqup.com>', to: [email], subject, html: htmlUser },\n  teamPayload: { from: 'waQup <hello@waqup.com>', to: ['ops@waqup.com'], subject: `[waQup] New creator — ${name}`, html: teamHtml }\n} };"
+      },
+      "id": "build-creator",
+      "name": "Build Creator Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 340]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build Resend API payloads for feedback (no user email - feedback table has user_id, not email)\nconst r = $input.first().json.record;\nconst recordSummary = JSON.stringify(r, null, 2);\nconst teamHtml = `<h2>New feedback</h2><pre>${recordSummary}</pre><p><small>${new Date().toISOString()}</small></p>`;\n\nreturn { json: {\n  userPayload: null,\n  teamPayload: { from: 'waQup <hello@waqup.com>', to: ['support@waqup.com'], subject: `[waQup] New feedback — ${r.category || 'general'}`, html: teamHtml }\n} };"
+      },
+      "id": "build-feedback",
+      "name": "Build Feedback Emails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 460]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "has-user-payload",
+              "leftValue": "={{ $json.userPayload }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "if-user-email",
+      "name": "Has User Email?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.userPayload }}",
+        "options": {}
+      },
+      "id": "send-user-email",
+      "name": "Send User Email (Resend)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.teamPayload }}",
+        "options": {}
+      },
+      "id": "send-team-email",
+      "name": "Send Team Email (Resend)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [{ "node": "Parse Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Payload": {
+      "main": [
+        [{ "node": "Route by Table", "type": "main", "index": 0 }]
+      ]
+    },
+    "Route by Table": {
+      "main": [
+        [{ "node": "Build Waitlist Emails", "type": "main", "index": 0 }],
+        [{ "node": "Build Investor Emails", "type": "main", "index": 0 }],
+        [{ "node": "Build Creator Emails", "type": "main", "index": 0 }],
+        [{ "node": "Build Feedback Emails", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Waitlist Emails": {
+      "main": [
+        [
+          { "node": "Has User Email?", "type": "main", "index": 0 },
+          { "node": "Send Team Email (Resend)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build Investor Emails": {
+      "main": [
+        [
+          { "node": "Has User Email?", "type": "main", "index": 0 },
+          { "node": "Send Team Email (Resend)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build Creator Emails": {
+      "main": [
+        [
+          { "node": "Has User Email?", "type": "main", "index": 0 },
+          { "node": "Send Team Email (Resend)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build Feedback Emails": {
+      "main": [
+        [
+          { "node": "Has User Email?", "type": "main", "index": 0 },
+          { "node": "Send Team Email (Resend)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Has User Email?": {
+      "main": [
+        [{ "node": "Send User Email (Resend)", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

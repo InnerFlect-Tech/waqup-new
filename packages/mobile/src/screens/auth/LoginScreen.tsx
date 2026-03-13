@@ -1,5 +1,9 @@
+/**
+ * LoginScreen — Minimal Vercel-style: social-first, stacked pill buttons.
+ */
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +11,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
 import { useTheme } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Button, Input, Typography, Card, GoogleIcon } from '@/components';
+import { Button, Input, Typography, GoogleIcon } from '@/components';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores/authStore';
 import { spacing, borderRadius, layout, authTokens } from '@/theme';
@@ -23,6 +27,7 @@ export default function LoginScreen({ navigation, route }: Props) {
   const { login, isLoading, error, setError } = useAuthStore();
   const [googleLoading, setGoogleLoading] = useState(false);
   const [googleError, setGoogleError] = useState<string | null>(null);
+  const [showEmailForm, setShowEmailForm] = useState(false);
   const message = route.params?.message;
 
   const {
@@ -31,23 +36,16 @@ export default function LoginScreen({ navigation, route }: Props) {
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   });
 
-  // Clear error when component mounts or when navigating away
   useEffect(() => {
-    return () => {
-      setError(null);
-    };
+    return () => setError(null);
   }, [setError]);
 
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
     await login(data.email, data.password);
-    // Navigation happens automatically via RootNavigator auth state check
   };
 
   const handleGoogleSignIn = async () => {
@@ -55,172 +53,137 @@ export default function LoginScreen({ navigation, route }: Props) {
     setGoogleLoading(true);
     const result = await signInWithGoogle();
     setGoogleLoading(false);
-    if (result.error) {
-      setGoogleError(result.error);
-    }
-    // On success, onAuthStateChange fires SIGNED_IN → RootNavigator navigates automatically
+    if (result.error) setGoogleError(result.error);
   };
 
   return (
     <Screen scrollable padding={false}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+        style={[styles.keyboardView, { backgroundColor: colors.background.primary }]}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.container}>
-            {/* Header */}
+          <Animated.View entering={FadeIn.duration(600)} style={styles.container}>
+            {/* Centered logo — minimal */}
             <View style={styles.header}>
               <Typography
                 variant="h1"
-                style={[
-                  styles.logo,
-                  {
-                    color: colors.text.primary,
-                    fontWeight: '300',
-                    letterSpacing: -2,
-                  },
-                ]}
+                style={[styles.logo, { color: colors.text.primary, fontWeight: '300', letterSpacing: -2 }]}
               >
                 {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
               </Typography>
-              <Typography variant="body" style={[styles.subtitle, { color: colors.text.secondary }]}>
-                {t('login.subtitle')}
-              </Typography>
             </View>
 
-            {/* Login Form */}
-            <Card variant="auth" style={styles.card}>
-              {message && (
-                <View style={[styles.messageContainer, { backgroundColor: `${colors.success}20`, borderColor: colors.success }]}>
-                  <Typography variant="body" style={{ color: colors.success }}>
-                    {message}
-                  </Typography>
-                </View>
-              )}
-              {error && (
-                <View style={[styles.errorContainer, { backgroundColor: `${colors.error}20`, borderColor: colors.error }]}>
-                  <Typography variant="body" style={{ color: colors.error }}>
-                    {error}
-                  </Typography>
-                </View>
-              )}
-
-              <Controller
-                control={control}
-                name="email"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    label={t('fields.email')}
-                    placeholder={t('login.emailPlaceholder')}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoComplete="email"
-                    autoCorrect={false}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    error={errors.email?.message}
-                    containerStyle={styles.input}
-                  />
-                )}
-              />
-
-              <Controller
-                control={control}
-                name="password"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    label={t('fields.password')}
-                    placeholder={t('login.passwordPlaceholder')}
-                    secureTextEntry
-                    autoCapitalize="none"
-                    autoComplete="password"
-                    autoCorrect={false}
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    error={errors.password?.message}
-                    containerStyle={styles.input}
-                  />
-                )}
-              />
-
-              <Button
-                variant="primary"
-                size="lg"
-                fullWidth
-                loading={isLoading}
-                onPress={handleSubmit(onSubmit)}
-                style={styles.loginButton}
-              >
-                {t('login.submit')}
-              </Button>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate('ForgotPassword')}
-                style={styles.forgotPasswordLink}
-              >
-                <Typography variant="body" style={{ color: colors.accent.tertiary }}>
-                  {t('login.forgotPassword')}
-                </Typography>
-              </TouchableOpacity>
-
-              {/* Divider */}
-              <View style={styles.dividerRow}>
-                <View style={[styles.dividerLine, { backgroundColor: colors.glass.border }]} />
-                <Typography variant="small" style={[styles.dividerText, { color: colors.text.secondary }]}>
-                  {t('common:or')}
-                </Typography>
-                <View style={[styles.dividerLine, { backgroundColor: colors.glass.border }]} />
+            {message && (
+              <View style={[styles.banner, { backgroundColor: `${colors.success}20`, borderColor: colors.success }]}>
+                <Typography variant="body" style={{ color: colors.success }}>{message}</Typography>
               </View>
+            )}
+            {(error || googleError) && (
+              <View style={[styles.banner, { backgroundColor: `${colors.error}20`, borderColor: colors.error }]}>
+                <Typography variant="body" style={{ color: colors.error }}>{error || googleError}</Typography>
+              </View>
+            )}
 
-              {/* Google error */}
-              {googleError && (
-                <View style={[styles.errorContainer, { backgroundColor: `${colors.error}20`, borderColor: colors.error, marginBottom: spacing.sm }]}>
-                  <Typography variant="body" style={{ color: colors.error }}>
-                    {googleError}
+            {!showEmailForm ? (
+              <>
+                {/* Social-first: stacked full-width pill buttons */}
+                <TouchableOpacity
+                  onPress={handleGoogleSignIn}
+                  disabled={googleLoading || isLoading}
+                  style={[
+                    styles.pillButton,
+                    { backgroundColor: colors.accent.primary, opacity: googleLoading || isLoading ? 0.6 : 1 },
+                  ]}
+                  activeOpacity={0.75}
+                >
+                  <GoogleIcon size={20} />
+                  <Typography variant="bodyBold" style={[styles.pillText, { color: colors.text.onDark }]}>
+                    {googleLoading ? t('login.connectingToGoogle') : t('login.continueWithGoogle')}
                   </Typography>
-                </View>
-              )}
+                </TouchableOpacity>
 
-              {/* Google Sign In */}
-              <TouchableOpacity
-                onPress={handleGoogleSignIn}
-                disabled={googleLoading || isLoading}
-                style={[
-                  styles.googleButton,
-                  {
-                    borderColor: colors.glass.border,
-                    backgroundColor: colors.glass.opaque,
-                    opacity: googleLoading || isLoading ? 0.6 : 1,
-                  },
-                ]}
-                activeOpacity={0.75}
-              >
-                <GoogleIcon size={20} />
-                <Typography variant="bodyBold" style={{ color: colors.text.primary, marginLeft: spacing.sm }}>
-                  {googleLoading ? t('login.connectingToGoogle') : t('login.continueWithGoogle')}
-                </Typography>
-              </TouchableOpacity>
-            </Card>
+                <TouchableOpacity
+                  onPress={() => setShowEmailForm(true)}
+                  disabled={googleLoading || isLoading}
+                  style={[styles.pillButtonOutlined, { borderColor: colors.glass.border }]}
+                  activeOpacity={0.75}
+                >
+                  <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
+                    Sign in with email
+                  </Typography>
+                </TouchableOpacity>
+              </>
+            ) : (
+              /* Email/password form when "Sign in with email" tapped */
+              <View style={[styles.emailForm, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      label={t('fields.email')}
+                      placeholder={t('login.emailPlaceholder')}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      error={errors.email?.message}
+                      containerStyle={styles.input}
+                    />
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      label={t('fields.password')}
+                      placeholder={t('login.passwordPlaceholder')}
+                      secureTextEntry
+                      autoCapitalize="none"
+                      autoComplete="password"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      error={errors.password?.message}
+                      containerStyle={styles.input}
+                    />
+                  )}
+                />
+                <Button
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  loading={isLoading}
+                  onPress={handleSubmit(onSubmit)}
+                  style={styles.submitButton}
+                >
+                  {t('login.submit')}
+                </Button>
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgotLink}>
+                  <Typography variant="body" style={{ color: colors.accent.tertiary }}>{t('login.forgotPassword')}</Typography>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setShowEmailForm(false)} style={styles.backLink}>
+                  <Typography variant="caption" style={{ color: colors.text.secondary }}>← Use Google instead</Typography>
+                </TouchableOpacity>
+              </View>
+            )}
 
-            {/* Sign Up Link */}
+            {/* Sign up link */}
             <View style={styles.signupContainer}>
-              <Typography variant="body" style={{ color: colors.text.secondary }}>
-                {t('login.noAccount')}{' '}
-              </Typography>
+              <Typography variant="body" style={{ color: colors.text.secondary }}>{t('login.noAccount')} </Typography>
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                <Typography variant="bodyBold" style={{ color: colors.accent.tertiary }}>
-                  {t('login.signupLink')}
-                </Typography>
+                <Typography variant="bodyBold" style={{ color: colors.accent.tertiary }}>{t('login.signupLink')}</Typography>
               </TouchableOpacity>
             </View>
-          </View>
+          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
@@ -252,64 +215,63 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     textAlign: 'center',
   },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  card: {
-    borderRadius: borderRadius.lg,
-  },
-  messageContainer: {
+  banner: {
     padding: spacing.md,
     borderRadius: borderRadius.md,
     borderWidth: 1,
     marginBottom: spacing.md,
   },
-  errorContainer: {
-    padding: spacing.md,
-    borderRadius: borderRadius.md,
+  pillButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.full,
+    minHeight: authTokens.socialButtonMinHeight,
+    marginBottom: spacing.md,
+  },
+  pillText: {
+    marginLeft: spacing.sm,
+  },
+  pillButtonOutlined: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    minHeight: authTokens.socialButtonMinHeight,
+    marginBottom: spacing.md,
+  },
+  emailForm: {
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
     borderWidth: 1,
     marginBottom: spacing.md,
   },
   input: {
     marginBottom: spacing.md,
   },
-  loginButton: {
-    marginTop: spacing.md,
-    marginBottom: spacing.md,
+  submitButton: {
+    marginTop: spacing.sm,
+    marginBottom: spacing.sm,
   },
-  forgotPasswordLink: {
+  forgotLink: {
     alignItems: 'center',
     marginTop: spacing.sm,
+    marginBottom: spacing.xs,
+  },
+  backLink: {
+    alignItems: 'center',
+    marginTop: spacing.xs,
   },
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: spacing.xl,
-  },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: spacing.lg,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-  },
-  dividerText: {
-    marginHorizontal: spacing.md,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    minHeight: authTokens.socialButtonMinHeight,
   },
 });

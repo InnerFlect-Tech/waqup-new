@@ -52,6 +52,17 @@ a {
   color: inherit;
 }
 
+/* Nav menu item hover — uses theme token; used by AppLayout profile dropdown and mobile menu */
+.nav-menu-item-btn {
+  transition: background 0.15s ease;
+}
+.nav-menu-item-btn:hover {
+  background: var(--theme-menu-item-hover, rgba(255, 255, 255, 0.05)) !important;
+}
+.nav-menu-item-btn.active:hover {
+  background: var(--theme-menu-item-active-bg, rgba(168, 85, 247, 0.12)) !important;
+}
+
 /* Utility: glass morphism surface — uses theme vars; blur aligned with BLUR.md (blurTokens.md = 10px, SSOT: packages/shared/src/theme/tokens.ts) */
 .glass {
   background: var(--theme-glass-light, rgba(255, 255, 255, 0.05));

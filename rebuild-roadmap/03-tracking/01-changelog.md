@@ -6,6 +6,18 @@
 
 ---
 
+## Playwright E2E CI — Skip authenticated tests (2026-03-13)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-13
+- **Notes**:
+  - **canRunAuthTests()**: Returns `false` when `process.env.CI === 'true'` so specs using `skipIfNoAuth()` (critical-flows authenticated block, onboarding-flow, create-affirmation) skip in CI. CI uses placeholder Supabase; profile fetch returns no `access_granted` → users land on /coming-soon → protected routes unreachable.
+  - **Docs**: Updated `docs/06-testing/01-playwright-e2e.md` CI section to document this behavior.
+- **Affected**: `packages/web/e2e/helpers/auth.helper.ts`, `docs/06-testing/01-playwright-e2e.md`.
+- **Updated**: 2026-03-13
+
+---
+
 ## Mobile usability and error fixes (2026-03-13)
 
 - **Status**: ✅ Complete

@@ -36,7 +36,9 @@ test.describe('Critical flows — public (no auth required)', () => {
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('unauthenticated user redirected from /sanctuary', async ({ page }) => {
+  test('unauthenticated user redirected from /sanctuary', async ({ page }, testInfo) => {
+    // Only run when unauthenticated — on auth projects we'd stay on sanctuary
+    test.skip(testInfo.project.name.includes('authenticated'), 'Requires unauthenticated context');
     await page.goto('/sanctuary', navOpts);
     await expect(page).not.toHaveURL(/\/sanctuary/);
   });

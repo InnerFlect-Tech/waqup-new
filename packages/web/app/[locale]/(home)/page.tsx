@@ -26,6 +26,7 @@ import {
   User,
   Shield,
   Gift,
+  Share2,
 } from 'lucide-react';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
@@ -51,11 +52,12 @@ export default function LandingPage() {
   }, []);
 
   const benefits = [
-    { text: t('landing.benefitsSection.benefit1'), icon: Brain, highlight: true },
-    { text: t('landing.benefitsSection.benefit2'), icon: User, highlight: false },
-    { text: t('landing.benefitsSection.benefit3'), icon: Clock, highlight: false },
-    { text: t('landing.benefitsSection.benefit4'), icon: Shield, highlight: false },
-    { text: t('landing.benefitsSection.benefit5'), icon: Gift, highlight: true },
+    { text: t('landing.benefitsSection.benefit1'), icon: Brain },
+    { text: t('landing.benefitsSection.benefit2'), icon: User },
+    { text: t('landing.benefitsSection.benefit3'), icon: Clock },
+    { text: t('landing.benefitsSection.benefit4'), icon: Shield },
+    { text: t('landing.benefitsSection.benefit5'), icon: Gift },
+    { text: t('landing.benefitsSection.benefit6'), icon: Share2 },
   ];
 
   return (
@@ -717,12 +719,13 @@ export default function LandingPage() {
         title={t('landing.benefitsSection.title')}
       >
         <div
+          className="benefits-grid"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             gap: spacing.lg,
             width: '100%',
-            maxWidth: 720,
+            maxWidth: 900,
             margin: '0 auto',
           }}
         >
@@ -731,44 +734,46 @@ export default function LandingPage() {
             return (
               <div
                 key={index}
+                className="benefit-card"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: spacing.md,
-                  padding: benefit.highlight ? spacing.xl : spacing.lg,
+                  padding: spacing.lg,
+                  minHeight: 88,
                   borderRadius: borderRadius.lg,
-                  background: benefit.highlight
-                    ? `linear-gradient(135deg, ${colors.accent.primary}14, ${colors.glass.light})`
-                    : colors.glass.light,
+                  background: `linear-gradient(145deg, ${colors.glass.light} 0%, ${colors.glass.dark} 100%)`,
                   backdropFilter: BLUR.xl,
                   WebkitBackdropFilter: BLUR.xl,
-                  border: benefit.highlight
-                    ? `1px solid ${colors.accent.primary}40`
-                    : `1px solid ${colors.glass.border}`,
-                  boxShadow: benefit.highlight ? `0 8px 32px ${colors.accent.primary}18` : undefined,
+                  border: `1px solid ${colors.glass.border}`,
+                  boxShadow: `0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)`,
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 }}
               >
                 <div
                   style={{
-                    width: 36,
-                    height: 36,
+                    width: 40,
+                    height: 40,
                     borderRadius: borderRadius.md,
-                    background: colors.gradients.primary,
+                    background: `linear-gradient(135deg, ${colors.accent.primary}30, ${colors.accent.tertiary}20)`,
+                    border: `1px solid ${colors.accent.primary}35`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                   }}
                 >
-                  <Icon size={18} color={colors.text.onDark} strokeWidth={2.5} />
+                  <Icon size={20} color={colors.accent.primary} strokeWidth={2} />
                 </div>
                 <Typography
                   variant="body"
                   style={{
                     color: colors.text.primary,
-                    fontSize: benefit.highlight ? 16 : 15,
-                    fontWeight: benefit.highlight ? 600 : 400,
-                    lineHeight: 1.4,
+                    fontSize: 15,
+                    fontWeight: 500,
+                    lineHeight: 1.45,
+                    flex: 1,
+                    paddingTop: 2,
                   }}
                 >
                   {benefit.text}
@@ -777,6 +782,22 @@ export default function LandingPage() {
             );
           })}
         </div>
+        <style jsx>{`
+          @media (max-width: 768px) {
+            .benefits-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+            }
+          }
+          @media (max-width: 480px) {
+            .benefits-grid {
+              grid-template-columns: 1fr !important;
+            }
+          }
+          .benefit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
+          }
+        `}</style>
       </LandingSection>
 
       {/* Final CTA */}
@@ -785,7 +806,7 @@ export default function LandingPage() {
         style={{
           scrollSnapAlign: 'start',
           scrollSnapStop: 'always',
-          padding: `clamp(${spacing.xl}, 5vh, ${spacing.xxxl}) clamp(16px, 4vw, 48px)`,
+          padding: `clamp(${spacing.xxl}, 12vh, 160px) clamp(16px, 4vw, 48px)`,
           textAlign: 'center',
           maxWidth: CONTENT_MAX_WIDTH,
           margin: '0 auto',

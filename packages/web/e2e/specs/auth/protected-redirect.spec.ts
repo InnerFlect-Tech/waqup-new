@@ -14,19 +14,20 @@ const PROTECTED_ROUTES = [
 test.describe('Route protection (unauthenticated)', () => {
   for (const route of PROTECTED_ROUTES) {
     test(`${route} redirects unauthenticated users away`, async ({ page }) => {
-      await page.goto(route, { waitUntil: 'networkidle', timeout: 15000 });
+      await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 15000 });
 
-      // Should not stay on the protected route
-      await expect(page).not.toHaveURL(new RegExp(`^${route.replace(/\//g, '\\/')}$`), {
-        timeout: 8000,
-      });
+      // Should not stay on the protected route (path-aware: matches /route, /route/, /en/route, etc.)
+      const pathPattern = route.replace(/\//g, '\\/') + '(\\/|$|\\?)';
+      await expect(page).not.toHaveURL(new RegExp(pathPattern), { timeout: 8000 });
 
-      // Should land on a public page
+      // Should land on a public page (handle locale-prefixed paths)
       const url = page.url();
-      const isPublic =
-        url.includes('localhost:3000/') &&
-        !PROTECTED_ROUTES.some((r) => url.endsWith(r) || url.includes(r + '/'));
-      expect(isPublic).toBeTruthy();
+      const pathname = new URL(url).pathname;
+      const isProtectedPath = PROTECTED_ROUTES.some(
+        (r) => pathname === r || pathname.endsWith(r) || pathname.includes(r + '/'),
+      );
+      expect(url).toContain('localhost:3000');
+      expect(isProtectedPath, `Expected redirect away from ${route}, got ${url}`).toBe(false);
     });
   }
 

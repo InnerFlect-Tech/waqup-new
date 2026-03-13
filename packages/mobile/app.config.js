@@ -1,21 +1,31 @@
 const path = require('path');
 const fs = require('fs');
 
-// Read .env directly - Expo may eval config before loading env, EXPO_PUBLIC_* can miss web bundle
+// Read .env and .env.local — ensures EXPO_PUBLIC_* and SENTRY_* are in process.env before config
 function loadEnv() {
-  const envPath = path.resolve(__dirname, '.env');
-  if (!fs.existsSync(envPath)) return {};
-  const content = fs.readFileSync(envPath, 'utf8');
   const env = {};
-  for (const line of content.split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const match = trimmed.match(/^EXPO_PUBLIC_(\w+)=(.*)$/);
-    if (match) env['EXPO_PUBLIC_' + match[1]] = match[2].trim().replace(/^["']|["']$/g, '');
+  for (const filename of ['.env', '.env.local']) {
+    const envPath = path.resolve(__dirname, filename);
+    if (!fs.existsSync(envPath)) continue;
+    const content = fs.readFileSync(envPath, 'utf8');
+    for (const line of content.split('\n')) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const match = trimmed.match(/^(EXPO_PUBLIC_\w+|SENTRY_\w+)=(.*)$/);
+      if (match) {
+        const value = match[2].trim().replace(/^["']|["']$/g, '');
+        env[match[1]] = value;
+        process.env[match[1]] = value;
+      }
+    }
   }
   return env;
 }
 const env = loadEnv();
+
+// Sentry plugin config — org/project silence "Missing config" warning; auth via SENTRY_AUTH_TOKEN
+const sentryOrg = env.SENTRY_ORG || process.env.SENTRY_ORG || 'waqup';
+const sentryProject = env.SENTRY_PROJECT || process.env.SENTRY_PROJECT || 'waqup-mobile';
 
 module.exports = {
   name: 'waQup',
@@ -26,7 +36,10 @@ module.exports = {
   userInterfaceStyle: 'automatic',
   scheme: 'waqup',
   plugins: [
-    '@sentry/react-native',
+    [
+      '@sentry/react-native',
+      { organization: sentryOrg, project: sentryProject },
+    ],
     'expo-localization',
     'expo-web-browser',
   ],

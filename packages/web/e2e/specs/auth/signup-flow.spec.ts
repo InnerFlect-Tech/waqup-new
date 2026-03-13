@@ -98,8 +98,20 @@ test.describe('Signup flow', () => {
 
 test.describe('hasAccess gate', () => {
   test('authenticated user without access_granted is sent to /coming-soon', async ({ page }) => {
-    // Simulate a user who is logged in (localStorage override user) but without access_granted
-    await page.addInitScript(() => {
+    // Mock profile queries (Supabase REST: /rest/v1/profiles or /rest/v1/profiles?select=...)
+    const profilesMock = async (route: { request: () => { url: () => string }; fulfill: (opts: object) => Promise<void> }) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([{ id: 'test-no-access-id', access_granted: false, role: 'user' }]),
+      });
+    };
+    await page.route('**/rest/v1/profiles*', profilesMock);
+    await page.route('**/profiles*', profilesMock);
+
+    // Load a public page first so we can set cookie + localStorage before requesting /sanctuary
+    await page.goto('/login', { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.evaluate(() => {
       const fakeUser = {
         id: 'test-no-access-id',
         email: 'noaccess@example.com',
@@ -108,27 +120,18 @@ test.describe('hasAccess gate', () => {
         aud: 'authenticated',
         created_at: new Date().toISOString(),
       };
-      // Use the override storage key (waqup-override-user)
-      localStorage.setItem('waqup-override-user', JSON.stringify(fakeUser));
+      localStorage.setItem('waqup_override_user', JSON.stringify(fakeUser));
+      document.cookie = 'waqup-override-auth=1; path=/; max-age=60; SameSite=Lax';
     });
 
-    // Mock the profile query to return access_granted: false
-    await page.route('**/rest/v1/profiles*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([{ id: 'test-no-access-id', access_granted: false, role: 'user' }]),
-      });
-    });
-
-    await page.goto('/sanctuary', { waitUntil: 'networkidle', timeout: 15000 });
+    await page.goto('/sanctuary', { waitUntil: 'domcontentloaded', timeout: 20000 });
 
     // Should be redirected to /coming-soon, not stay on /sanctuary
-    await expect(page).toHaveURL(/\/coming-soon/, { timeout: 10000 });
+    await expect(page).toHaveURL(/\/coming-soon/, { timeout: 15000 });
   });
 
   test('/coming-soon page is accessible and renders content', async ({ page }) => {
-    await page.goto('/coming-soon', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
+    await page.goto('/coming-soon', { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
   });
 });

@@ -19,6 +19,8 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
+    "test:e2e:for-cursor": "playwright test; node scripts/playwright-failures-to-markdown.mjs",
+    "e2e:failures-to-md": "node scripts/playwright-failures-to-markdown.mjs",
     "test:e2e:install": "playwright install",
     "test:e2e:public": "playwright test specs/public/ specs/i18n/ --project=desktop-chromium --project=i18n",
     "test:e2e:public:batch1": "playwright test specs/public/landing.spec.ts --project=desktop-chromium",

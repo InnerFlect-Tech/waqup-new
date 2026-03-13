@@ -141,6 +141,7 @@ export const APP_ROUTES: RouteEntry[] = [
 
   // ── Superadmin ─────────────────────────────────────────────────────────────
   { path: '/admin', section: 'Superadmin', description: 'Superadmin dashboard hub', status: 'exists', completeness: 'complete', note: 'Superadmin only' },
+  { path: '/admin/company-strategy', section: 'Superadmin', description: 'Company strategy / master plan — internal strategic command map', status: 'exists', completeness: 'complete', note: 'Superadmin only' },
   { path: '/admin/oracle', section: 'Superadmin', description: 'Oracle AI config', status: 'exists', completeness: 'complete', note: 'Superadmin only' },
   { path: '/admin/users', section: 'Superadmin', description: 'User management', status: 'exists', completeness: 'complete', note: 'Superadmin only' },
   { path: '/admin/waitlist', section: 'Superadmin', description: 'Waitlist signups dashboard', status: 'exists', completeness: 'complete', note: 'Superadmin only' },

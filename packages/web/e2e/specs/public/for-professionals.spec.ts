@@ -10,8 +10,8 @@ const FOR_PROFESSIONALS_PAGES = [
 
 for (const { path, name } of FOR_PROFESSIONALS_PAGES) {
   test(`${name} page (${path}) loads successfully`, async ({ page }) => {
-    await page.goto(path, { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 10000 });
+    await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
     const title = await page.title();
     expect(title.toLowerCase()).not.toContain('404');
     expect(title.toLowerCase()).not.toContain('not found');

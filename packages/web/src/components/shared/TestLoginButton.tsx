@@ -5,7 +5,7 @@ import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components';
 import { useAuthStore } from '@/stores';
 import { Analytics } from '@waqup/shared/utils';
-import { OVERRIDE_STORAGE_KEY } from '@/lib/override-auth';
+import { OVERRIDE_STORAGE_KEY, OVERRIDE_COOKIE_NAME } from '@/lib/override-auth';
 import type { User } from '@supabase/supabase-js';
 
 /**
@@ -54,6 +54,8 @@ export function TestLoginButton() {
       setSession(null);
       if (typeof window !== 'undefined') {
         localStorage.setItem(OVERRIDE_STORAGE_KEY, JSON.stringify(overrideUser));
+        // Cookie for middleware — override auth is client-only; middleware cannot read localStorage
+        document.cookie = `${OVERRIDE_COOKIE_NAME}=1; path=/; max-age=86400; SameSite=Lax`;
       }
       Analytics.loginCompleted('override', overrideUser.id);
       router.push('/coming-soon');

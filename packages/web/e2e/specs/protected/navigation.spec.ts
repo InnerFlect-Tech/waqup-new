@@ -6,7 +6,11 @@ test.describe('Navigation (authenticated)', () => {
     skipIfNoAuth(test);
   });
 
-  test('desktop nav links are visible on authenticated pages', async ({ page }) => {
+  test('desktop nav links are visible on authenticated pages', async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name.includes('mobile'),
+      'Desktop nav is hidden on mobile viewport (hamburger menu)',
+    );
     await page.goto('/sanctuary');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
@@ -16,7 +20,8 @@ test.describe('Navigation (authenticated)', () => {
     await expect(page.getByTestId('nav-marketplace')).toBeVisible({ timeout: 10000 });
   });
 
-  test('Speak nav link navigates to /speak', async ({ page }) => {
+  test('Speak nav link navigates to /speak', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.includes('mobile'), 'Desktop nav hidden on mobile');
     await page.goto('/sanctuary');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
@@ -25,7 +30,8 @@ test.describe('Navigation (authenticated)', () => {
     await expect(page.locator('main, [role="main"]').first()).toBeVisible();
   });
 
-  test('Sanctuary nav link navigates to /sanctuary', async ({ page }) => {
+  test('Sanctuary nav link navigates to /sanctuary', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.includes('mobile'), 'Desktop nav hidden on mobile');
     await page.goto('/speak');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
@@ -33,7 +39,8 @@ test.describe('Navigation (authenticated)', () => {
     await expect(page).toHaveURL(/\/sanctuary/, { timeout: 10000 });
   });
 
-  test('Marketplace nav link navigates to /marketplace', async ({ page }) => {
+  test('Marketplace nav link navigates to /marketplace', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.includes('mobile'), 'Desktop nav hidden on mobile');
     await page.goto('/sanctuary');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 

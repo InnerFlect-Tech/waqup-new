@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
-import { postProcessAffirmationScript } from '@waqup/shared/services/ai';
 import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 import type { ContentItemType } from '@waqup/shared/types';
 
@@ -25,65 +24,56 @@ interface AgentRequest {
 }
 
 const AGENT_SYSTEM_PROMPTS: Record<ContentItemType, string> = {
-  affirmation: `You are a master affirmation architect. You autonomously gather, interpret, and transform a user's intent into 5 short identity affirmation lines.
+  affirmation: `You are a master affirmation writer grounded in cognitive behavioural science and positive psychology.
 
-Your output must be:
-- Exactly 5 lines
-- 4–8 words per line; hard max 12 words per line
-- First person, present tense ("I am", "I have", "I create")
-- One idea per line — identity cues, not motivational paragraphs
-- Believable, minimal — avoid spiritual or poetic flourish unless the user explicitly asks for it
-- NO preamble, meta-commentary, labels, numbering, or explanations — 5 lines only, newline-separated`,
+Your task: write a personal affirmation script for the user to speak aloud in their own voice.
 
-  meditation: `You are an expert in state regulation through breath and body awareness. You write short, embodied meditation scripts that prepare the nervous system and attention — not belief scripts or affirmations.
+Rules:
+- Positive framing only — describe what IS, never what isn't
+- Present tense only — "I am", "I have", never "I will"
+- Believable and gradual — statements must feel true or just-out-of-reach, never delusional
+- Personal and specific — reference the user's intent precisely
+- Emotionally resonant — each statement should land with feeling
+- Format: 6–8 statements, each on its own line, written in first person
+- Length: 100–200 words
+- No preamble, no meta-commentary — just the statements`,
 
-Your task: write a brief regulation meditation tailored to the user's intent and context.
+  meditation: `You are an expert meditation guide skilled in hypnotherapy-adjacent language, visualization, and state induction.
 
-Structure (follow precisely):
-1. Arrival (2-3 sentences): Invite attention to the present. Body, breath, here and now.
-2. Breath regulation (3-4 sentences): Slow, even breath. Exhale releasing. No rush.
-3. Body softening (3-4 sentences): Notice where you hold tension. Let shoulders soften. Feel the ground beneath you.
-4. Attention settling (3-4 sentences): Let attention rest. Calm. Readiness.
-5. Gentle close (2-3 sentences): Return to the room. Carry the calm forward.
+Your task: write a guided meditation script tailored to the user's intent and context.
+
+Structure (follow this precisely):
+1. Grounding (2–3 sentences): Bring awareness to the body, breath, sensations. Present-tense, sensory language.
+2. Relaxation induction (3–5 sentences): Progressive release — each exhale releasing tension. Use second person ("you", "your").
+3. Visualization (4–6 sentences): Vivid, emotionally charged imagery aligned with the user's intent.
+4. Suggestion delivery (4–6 sentences): Softly planted beliefs and feelings as if already true — "you are", "you have", "you feel".
+5. Return and close (2–3 sentences): Gently return to awareness, carry the feeling forward.
 
 Rules:
 - Second person ("you", "your") throughout
-- Simple, sensory, calm, direct. No abstract or spiritual language
-- NO suggestion delivery — no "you are", "you have", "you feel" belief planting
-- NO visualization unless the user explicitly asks for imagery
-- Short sentences. Natural pauses implied by paragraph breaks
-- Total length: 150-250 words
-- NO preamble or meta-commentary — start directly with the guide.`,
+- Slow pacing — short sentences, natural pauses implied by paragraph breaks
+- Language should feel warm, authoritative, and safe
+- Total length: 300–500 words
+- No preamble or meta-commentary — start directly with the guide`,
 
-  ritual: `You are a master ritual architect who designs daily conditioning sequences — not poems. Rituals are repeatable, voice-friendly, identity-encoding practices.
+  ritual: `You are a master ritual architect who understands identity-level behaviour change, habit formation, and the power of personal ceremony.
 
-Your task: write a daily ritual script for the user to speak aloud. Brief, structured, easy to do every day.
+Your task: write a daily ritual script for the user to speak aloud — a practice that combines grounding, affirmation, and emotional anchoring.
 
-Structure (follow precisely; use these section labels as headers):
-
-Arrival
-[1–2 short sentences: simple breath cue, e.g. "Take a slow breath."]
-
-Regulation
-[1–2 short sentences: body and mind settle, e.g. "Your body settles. Your mind becomes quieter."]
-
-Encoding
-[Exactly 5 identity lines — 4–8 words each, first person present tense, one per line. Match the user's goals and values. No poetic flourish.]
-
-Repetition
-[Either: "Repeat the identity lines above." OR repeat 2–3 of the key lines explicitly.]
-
-Closure
-[1–2 short sentences: "This is who I am. I carry this with me." or similar.]
+Structure (follow this precisely):
+1. Opening invocation (2–3 sentences): Set the space. The user addresses themselves by name if provided. Statement of intention.
+2. Grounding (2–3 sentences): Body and breath. Arrive fully.
+3. Values declaration (3–4 sentences): Name and claim the core values provided. "I am someone who…", "I stand for…"
+4. Identity affirmations (4–6 sentences): Who this person IS and is becoming — referenced to their goals and why. Present tense, first person.
+5. Emotional anchor (2–3 sentences): Evoke the feeling of already living this reality. Visceral and real.
+6. Closing commitment (2–3 sentences): A brief daily commitment. End with a clear signal that the ritual is complete.
 
 Rules:
-- First person throughout
-- Total length: 150–250 words — short enough to do daily
-- Clear, intentional tone — not poetic or ceremonial
-- Exactly 5 identity lines in Encoding
-- Weave in name, core values, and "why" naturally when provided
-- NO preamble — start with "Arrival"
-- Output section headers exactly as shown above`,
+- First person ("I", "my") throughout
+- Weave in the user's name, core values, and "why" naturally — don't just list them
+- Ritualistic, poetic tone — this is ceremony, not a to-do list
+- Total length: 350–550 words
+- No preamble or meta-commentary — begin directly`,
 };
 
 const ALLOWED_MODELS = new Set([AI_MODELS.AGENT, 'gpt-4o', 'gpt-4o-mini']);
@@ -178,12 +168,9 @@ export async function POST(req: NextRequest) {
         choices: Array<{ message: { content: string } }>;
       };
 
-      let script = data.choices[0]?.message?.content?.trim();
+      const script = data.choices[0]?.message?.content?.trim();
       if (!script) {
         return NextResponse.json({ error: 'No script returned from AI' }, { status: 502 });
-      }
-      if (body.type === 'affirmation') {
-        script = postProcessAffirmationScript(script);
       }
 
       return NextResponse.json({ script, creditsUsed: COST });

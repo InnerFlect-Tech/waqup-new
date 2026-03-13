@@ -12,9 +12,8 @@ test.describe('Auth pages (public)', () => {
   test('login form shows validation errors on empty submit', async ({ page }) => {
     await page.goto('/login', { waitUntil: 'load', timeout: 15000 });
     await page.getByTestId('login-submit-button').click();
-    // Zod validation should produce error messages
-    const errors = page.locator('[class*="error"], [data-error], p[style*="color: rgb(239"]');
-    await expect(errors.first()).toBeVisible({ timeout: 5000 });
+    // Zod validation marks invalid fields with aria-invalid (Input component)
+    await expect(page.locator('input[aria-invalid="true"]').first()).toBeVisible({ timeout: 5000 });
   });
 
   test('login form shows error on bad credentials', async ({ page }) => {

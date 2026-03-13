@@ -21,6 +21,8 @@ export interface AuthService {
   login: (credentials: LoginCredentials) => Promise<AuthServiceResult<Session>>;
   signup: (data: SignupData) => Promise<AuthServiceResult<{ user: User }>>;
   logout: () => Promise<AuthServiceResult<void>>;
+  /** Clears Supabase session from storage (e.g. when refresh token is invalid). Ignores errors. */
+  clearSession: () => Promise<void>;
   getCurrentSession: () => Promise<AuthServiceResult<Session>>;
   getCurrentUser: () => Promise<AuthServiceResult<User>>;
   requestPasswordReset: (data: ForgotPasswordData, redirectTo?: string) => Promise<AuthServiceResult<void>>;
@@ -137,6 +139,18 @@ export function createAuthService(client: SupabaseClient): AuthService {
           error: toErrorMessage(error, 'An unexpected error occurred during logout.'),
           data: null,
         };
+      }
+    },
+
+    /**
+     * Clears session from storage. Use when refresh token is invalid to avoid AuthApiError.
+     * Ignores signOut errors since the goal is to clear local state.
+     */
+    async clearSession(): Promise<void> {
+      try {
+        await client.auth.signOut();
+      } catch {
+        // Ignore — we're clearing invalid session anyway
       }
     },
 

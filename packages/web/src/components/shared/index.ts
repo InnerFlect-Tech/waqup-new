@@ -14,3 +14,4 @@ export * from './WaitlistCTA';
 export * from './FoundingMemberModal';
 export * from './PublicFooter';
 export * from './LanguageSwitcher';
+export * from './MenuDivider';

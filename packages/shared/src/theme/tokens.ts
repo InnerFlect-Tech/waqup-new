@@ -86,6 +86,30 @@ export const homeTokens = {
   tipIconSize: 18,
 } as const;
 
+/** Drawer/sidebar tokens - Material Design 280dp mobile, 320dp tablet */
+export const drawerTokens = {
+  width: 280,
+  widthTablet: 320,
+  padding: 24,
+  swipeEdgeWidth: 28,
+} as const;
+
+/** Motion tokens - durations (ms) and easing for animations */
+export const motionTokens = {
+  fast: 120,
+  normal: 180,
+  slow: 240,
+  sheet: 300,
+  easing: { standard: 'ease-in-out' as const },
+} as const;
+
+/** Icon size tokens - for nav, list, and standalone icons */
+export const iconTokens = {
+  sm: 16,
+  md: 20,
+  lg: 24,
+} as const;
+
 /** Layout constants (px) - Web uses as CSS, Mobile may scale */
 export const layout = {
   /** Tab bar height — bottom navigation */

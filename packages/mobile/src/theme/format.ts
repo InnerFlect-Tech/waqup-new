@@ -12,12 +12,12 @@ export const typography = Object.fromEntries(
     k,
     {
       fontSize: v.fontSize,
-      fontWeight: String(v.fontWeight) as '400' | '600' | '700',
+      fontWeight: String(v.fontWeight) as '300' | '400' | '500' | '600' | '700',
       lineHeight: v.lineHeight,
       ...(v.letterSpacing !== 0 && { letterSpacing: v.letterSpacing }),
     },
   ])
-) as Record<keyof typeof ty, { fontSize: number; fontWeight: '400' | '600' | '700'; lineHeight: number; letterSpacing?: number }>;
+) as Record<keyof typeof ty, { fontSize: number; fontWeight: '300' | '400' | '500' | '600' | '700'; lineHeight: number; letterSpacing?: number }>;
 
 export const shadows = Object.fromEntries(
   Object.entries(shadowTokens).map(([k, v]) => [

@@ -489,7 +489,9 @@
       "submitting": "Wird gesendet...",
       "success": "Nachricht gesendet",
       "successBody": "Wir melden uns bald bei dir.",
-      "successConfidential": "Wir kontaktieren dich innerhalb von 1–2 Werktagen und teilen vertraulich mit: vollständiger Vertragsentwurf, ROI-Szenarien, Pitch-Deck und nächste Schritte."
+      "successConfidential": "Wir kontaktieren dich innerhalb von 1–2 Werktagen und teilen vertraulich mit: vollständiger Vertragsentwurf, ROI-Szenarien, Pitch-Deck und nächste Schritte.",
+      "selectOption": "Option auswählen",
+      "back": "Zurück"
     },
     "form": {
       "namePlaceholder": "Dein Name",
@@ -510,6 +512,15 @@
       "content-creator": "Content Creator",
       "other": "Sonstiges"
     },
+    "interestDescriptions": {
+      "seed": "Hilft beim schnellen Abschluss des Aufbaus, der Verfeinerung und dem Markteintritt von waQup.",
+      "production": "Produktionsqualität sichern: Authentifizierung, Build-Standards, Marktplatz-Bereitschaft.",
+      "marketing": "Weiß, wie man verkauft. Nachweis über 1M+ Umsatz mit Apps erforderlich.",
+      "promotion": "Spezifische ROI-Bedingungen und Zugang zu Promotions-Entscheidungen.",
+      "influencer": "waQup in deinem Publikum promoten. Begrenzte Plätze für passende Creator.",
+      "content-creator": "Affirmationen, Meditationen, Rituale erstellen. 70% der Verkäufe, laufendes passives Einkommen.",
+      "other": "Etwas anderes — erzähl uns mehr in deiner Nachricht."
+    },
     "referralOptions": {
       "socialMedia": "Soziale Medien",
       "friendFamily": "Freund oder Familie",
@@ -517,6 +528,14 @@
       "podcast": "Podcast",
       "search": "Suche",
       "other": "Sonstiges"
+    },
+    "referralDescriptions": {
+      "socialMedia": "Instagram, LinkedIn, Twitter, etc.",
+      "friendFamily": "Jemand, den du kennst, hat es dir erzählt",
+      "newsletter": "E-Mail oder Newsletter",
+      "podcast": "In einem Podcast gehört",
+      "search": "Google, Bing, etc.",
+      "other": "Andere Quelle"
     },
     "errors": {
       "nameRequired": "Bitte gib deinen Namen ein.",
@@ -718,7 +737,8 @@
       "benefit2": "Persönlich, nicht generisch",
       "benefit3": "Üben kostenlos — Credits nur für Erstellung",
       "benefit4": "Minuten zum Erstellen, lebenslang zum Üben",
-      "benefit5": "Deine Stimmdaten bleiben deine"
+      "benefit5": "Deine Stimmdaten bleiben deine",
+      "benefit6": "Teile Praktiken, verdiene Credits"
     },
     "features": {
       "voice": {

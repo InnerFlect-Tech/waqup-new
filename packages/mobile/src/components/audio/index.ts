@@ -7,3 +7,7 @@ export { VoiceOrb } from './VoiceOrb';
 export type { VoiceOrbProps, OrbState, OrbSize } from './VoiceOrb';
 export { PlaybackEngineProvider } from './PlaybackEngineProvider';
 export { MiniPlayer } from './MiniPlayer';
+export { PlaybackDonut } from './PlaybackDonut';
+export type { PlaybackDonutProps } from './PlaybackDonut';
+export { WaveformBar } from './WaveformBar';
+export type { WaveformBarProps } from './WaveformBar';

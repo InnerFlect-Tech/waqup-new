@@ -19,7 +19,20 @@ test.describe('Analytics events', () => {
   });
 
   test('funnel_signup_started fires when visiting signup page', async ({ page }) => {
-    await page.goto('/signup', { waitUntil: 'networkidle', timeout: 15000 });
+    await page.goto('/signup', { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
+
+    // Wait for signup page useEffect to fire the event (analytics runs after mount)
+    await page.waitForFunction(
+      () => {
+        const events = (window as unknown as { __analyticsEvents?: unknown[] }).__analyticsEvents ?? [];
+        return events.some(
+          (args: unknown) =>
+            Array.isArray(args) && args[0] === 'event' && args[1] === 'funnel_signup_started',
+        );
+      },
+      { timeout: 10000 },
+    );
 
     const events = await page.evaluate(() => (window as unknown as { __analyticsEvents: unknown[] }).__analyticsEvents);
     const funnelStarted = events.some(
@@ -48,8 +61,8 @@ test.describe('Analytics events', () => {
       }
     });
 
-    await page.goto('/signup', { waitUntil: 'networkidle', timeout: 15000 });
-    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 8000 });
+    await page.goto('/signup', { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
     // Filter out known acceptable errors (e.g. network, Supabase placeholder in CI)
     const critical = consoleErrors.filter(

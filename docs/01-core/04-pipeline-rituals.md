@@ -13,7 +13,7 @@
 | 1. Intent | What identity/change; "why this matters" | Conversation | intent | LLM clarifies |
 | 2. Context | Situation, emotional state | intent | context | LLM gathers |
 | 3. Personalization | Core values, name, specific life details, "why this matters" | context | personalization | LLM explores |
-| 4. Script | Generate ritual: arrival, regulation, identity encoding (5 lines), repetition, closure; daily conditioning sequence | intent, context, personalization | script (structured) | LLM (GPT-4) |
+| 4. Script | Generate ritual: grounding, context, affirmations, emotional anchoring, closure; identity-level language | intent, context, personalization | script (structured) | LLM (GPT-4) |
 | 5. Voice | ElevenLabs (emotional prosody) or user record | script | raw audio | ElevenLabs / Recording |
 | 6. **Audio** | **Audio page**: volumes, waves, effects, preview | raw audio | mixed audio | — |
 | 7. Review | Preview, feel, confirm | script, audio | saved content_item | — |
@@ -28,15 +28,15 @@
 
 ---
 
-## Ritual structure (daily conditioning sequence)
+## Ritual structure (from scientific foundations)
 
-1. **Arrival**: Brief breath cue; simple settling
-2. **Regulation**: Body and mind quiet down
-3. **Identity encoding**: 5 short lines (4–8 words each); first person, present tense
-4. **Repetition**: Repeat key identity lines or instruction to repeat
-5. **Closure**: "This is who I am. I carry this with me."
+- **Grounding**: Shift into receptive state; devote time and space
+- **Context**: "Why this matters" — connect to personal meaning
+- **Affirmations**: Identity-level, present-tense, value-aligned
+- **Emotional anchoring**: Felt sense, emotional integration
+- **Closure**: Integration guidance; signal completion
 
-Total length: 150–250 words. Rituals are repeatable daily practices — not poetic monologues. The structured sequence signals importance to the subconscious.
+Rituals are "events, not content" — the structured sequence signals importance to the subconscious.
 
 ---
 

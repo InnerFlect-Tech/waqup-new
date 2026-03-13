@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
@@ -31,9 +31,11 @@ import {
   BarChart3,
   Info,
   RotateCcw,
+  Compass,
 } from 'lucide-react';
-import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher } from '@/components';
-import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X_RESPONSIVE, BLUR } from '@/theme';
+import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher, MenuDivider } from '@/components';
+import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, HEADER_PADDING_X_RESPONSIVE, BLUR, MENU_PANEL_BG, MENU_PANEL_BG_OPAQUE, MENU_PANEL_SHADOW, MENU_DRAWER_SHADOW, NAV_SCROLLED_BG } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
 import type { ViewAsRole } from '@/stores';
@@ -125,6 +127,7 @@ const VIEW_AS_BANNER_HEIGHT = 44;
 
 const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
   { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
+  { name: 'Company Strategy', path: '/admin/company-strategy', icon: <Compass className="w-4 h-4" /> },
   { name: 'Restart onboarding', path: '/admin/onboarding/reset', icon: <RotateCcw className="w-4 h-4" /> },
   { name: 'About & Acknowledgments', path: '/sanctuary/settings/about', icon: <Info className="w-4 h-4" /> },
   { name: 'Updates', path: '/updates', icon: <FileText className="w-4 h-4" /> },
@@ -176,6 +179,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       : []),
   ];
 
+  const navScrolledStyle = useMemo(
+    () => ({
+      background: NAV_SCROLLED_BG,
+      backdropFilter: BLUR.lg,
+      WebkitBackdropFilter: BLUR.lg,
+      boxShadow: `0 1px 0 ${colors.glass.border}`,
+    }),
+    [colors.glass.border]
+  );
+
   useEffect(() => {
     const container = scrollContainerRef.current;
     const handleScroll = () => {
@@ -202,9 +215,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     const el = avatarButtonRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const gap = 8; // spacing.sm equivalent
+    const gapPx = 8; /* matches spacing.sm */
     setProfileMenuPosition({
-      top: rect.bottom + gap,
+      top: rect.bottom + gapPx,
       right: window.innerWidth - rect.right,
     });
   }, [showProfileMenu]);
@@ -296,9 +309,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             paddingTop: `max(${spacing.md}, env(safe-area-inset-top, 0px))`,
             paddingLeft: HEADER_PADDING_X_RESPONSIVE,
             paddingRight: HEADER_PADDING_X_RESPONSIVE,
-            ...(isScrolled
-              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
-              : { background: 'transparent' }),
+            ...(isScrolled ? navScrolledStyle : { background: 'transparent' }),
           }}
         >
           <div
@@ -357,8 +368,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     className="rounded-full shrink-0 inline-flex"
                     style={{
                       padding: '2px 7px 2px 4px',
-                      background: 'rgba(147,51,234,0.15)',
-                      border: '1px solid rgba(168,85,247,0.25)',
+                      background: withOpacity(colors.accent.primary, 0.15),
+                      border: `1px solid ${withOpacity(colors.accent.tertiary, 0.25)}`,
                       flexShrink: 0,
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -368,7 +379,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     }}
                   >
                     <QCoin size="sm" />
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#C084FC', lineHeight: 1 }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: colors.accent.tertiary, lineHeight: 1 }}>
                       {creditsBalance}
                     </span>
                   </Link>
@@ -403,11 +414,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                           width: actualIsSuperAdmin && viewAsRole === null ? 380 : 288,
                           maxHeight: 'min(85vh, 560px)',
                           borderRadius: borderRadius.xl,
-                          background: 'rgba(15,5,35,0.88)',
+                          background: MENU_PANEL_BG,
                           backdropFilter: BLUR.xl,
                           WebkitBackdropFilter: BLUR.xl,
                           border: `1px solid ${colors.glass.border}`,
-                          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                          boxShadow: MENU_PANEL_SHADOW,
                           overflowY: 'auto',
                           overflowX: 'hidden',
                           display: 'flex',
@@ -420,8 +431,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                       <div
                         style={{
                           padding: `${spacing.lg} ${spacing.xl}`,
-                          background: 'rgba(147,51,234,0.08)',
-                          borderBottom: '1px solid rgba(168,85,247,0.15)',
+                          background: withOpacity(colors.accent.primary, 0.08),
+                          borderBottom: `1px solid ${withOpacity(colors.accent.tertiary, 0.15)}`,
                           display: 'flex',
                           alignItems: 'center',
                           gap: spacing.md,
@@ -450,8 +461,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                               style={{
                                 padding: `${spacing.xs} ${spacing.sm}`,
                                 gap: spacing.xs,
-                                background: 'rgba(147,51,234,0.20)',
-                                border: '1px solid rgba(168,85,247,0.30)',
+                                background: withOpacity(colors.accent.primary, 0.2),
+                                border: `1px solid ${withOpacity(colors.accent.tertiary, 0.3)}`,
                                 fontSize: '0.75rem',
                                 color: colors.text.secondary,
                               }}
@@ -497,15 +508,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                           <button
                             key={item.path}
                             type="button"
-                            className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                            className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn"
                             style={{
                               padding: `${spacing.md} ${spacing.lg}`,
                               gap: spacing.md,
                               color: colors.text.onDark,
                               background: 'transparent',
                             }}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                             onClick={() => {
                               router.push(item.path);
                               setShowProfileMenu(false);
@@ -517,7 +526,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         ))}
                       </div>
 
-                      <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+                      <MenuDivider background={withOpacity(colors.accent.tertiary, 0.12)} margin={`0 ${spacing.lg}`} />
 
                       {/* Secondary items */}
                       <div style={{ padding: `${spacing.sm} ${spacing.sm}` }}>
@@ -525,15 +534,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                           <button
                             key={item.path}
                             type="button"
-                            className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                            className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn"
                             style={{
                               padding: `${spacing.md} ${spacing.lg}`,
                               gap: spacing.md,
                               color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
                               background: 'transparent',
                             }}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                             onClick={() => {
                               router.push(item.path);
                               setShowProfileMenu(false);
@@ -547,7 +554,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                       {actualIsSuperAdmin && viewAsRole === null && (
                         <>
-                          <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+                          <MenuDivider background={withOpacity(colors.accent.tertiary, 0.12)} margin={`0 ${spacing.lg}`} />
                           <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
                             <p
                               className="text-xs font-medium"
@@ -566,18 +573,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                 <button
                                   key={item.path}
                                   type="button"
-                                  className="flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                                  className={`flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn ${pathname === item.path ? 'active' : ''}`}
                                   style={{
                                     padding: `${spacing.sm} ${spacing.md}`,
                                     gap: spacing.md,
                                     color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
-                                    background: pathname === item.path ? 'rgba(168,85,247,0.12)' : 'transparent',
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    if (pathname !== item.path) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                                    background: pathname === item.path ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
                                   }}
                                   onClick={() => {
                                     router.push(item.path);
@@ -590,7 +591,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                               ))}
                             </div>
                           </div>
-                          <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+                          <MenuDivider background={withOpacity(colors.accent.tertiary, 0.12)} margin={`0 ${spacing.lg}`} />
                         </>
                       )}
                       {actualIsSuperAdmin && (
@@ -608,18 +609,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                   <button
                                     key={opt.label}
                                     type="button"
-                                    className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer transition-all"
+                                    className={`w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn ${isActive ? 'active' : ''}`}
                                     style={{
                                       padding: `${spacing.sm} ${spacing.md}`,
                                       gap: spacing.md,
                                       color: isActive ? colors.accent.tertiary : colors.text.onDark,
-                                      background: isActive ? 'rgba(168,85,247,0.12)' : 'transparent',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                                      background: isActive ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
                                     }}
                                     onClick={() => handleViewAsSelect(opt.value)}
                                   >
@@ -632,21 +627,19 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                           </div>
                       )}
 
-                      <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
+                      <MenuDivider background={withOpacity(colors.accent.tertiary, 0.12)} margin={`0 ${spacing.lg}`} />
 
                       {/* Sign out */}
                       <div style={{ padding: `${spacing.sm} ${spacing.sm}` }}>
                         <button
                           type="button"
-                          className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all"
+                          className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn"
                           style={{
                             padding: `${spacing.md} ${spacing.lg}`,
                             gap: spacing.md,
                             color: colors.text.secondary,
                             background: 'transparent',
                           }}
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; }}
-                          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
                           onClick={handleSignOut}
                         >
                           <LogOut className="w-4 h-4" />
@@ -682,7 +675,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 style={{
                   width: '100%',
                   padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE}`,
-                  background: 'rgba(147,51,234,0.12)',
+                  background: withOpacity(colors.accent.primary, 0.12),
                   borderBottom: `1px solid ${colors.glass.border}`,
                   display: 'flex',
                   alignItems: 'center',
@@ -702,7 +695,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     fontSize: 12,
                     fontWeight: 600,
                     color: colors.accent.tertiary,
-                    background: 'rgba(168,85,247,0.2)',
+                    background: withOpacity(colors.accent.tertiary, 0.2),
                     border: `1px solid ${colors.accent.tertiary}40`,
                     borderRadius: borderRadius.md,
                     cursor: 'pointer',
@@ -713,231 +706,251 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
+        </motion.nav>
 
-          <motion.div
-            initial={false}
-            animate={{
-              height: isMobileMenuOpen ? 'auto' : 0,
-              opacity: isMobileMenuOpen ? 1 : 0,
-            }}
-          className="md:hidden overflow-hidden"
-          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg }}
-        >
-          <div
-            style={{
-              padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE} ${spacing.md}`,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: spacing.sm,
-              maxHeight: 'min(80vh, 520px)',
-              overflowY: 'auto',
-            }}
-          >
-              {navItems.map((item) => (
-                <Button
-                  key={item.path}
-                  variant="ghost"
-                  onClick={() => router.push(item.path)}
-                  className="w-full justify-start"
-                  style={{
-                    color: pathname === item.path ? colors.text.primary : colors.text.secondary,
-                    background: pathname === item.path ? colors.glass.border : undefined,
-                  }}
-                >
-                  {item.icon}
-                  <span>{item.name}</span>
-                </Button>
-              ))}
-
-              <div
-                style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }}
-              />
-
-              {/* Account card (mobile) */}
-              <button
-                type="button"
-                className="w-full text-left rounded-lg border-0 cursor-pointer"
+        {/* Authenticated mobile menu: portaled to body to prevent scroll-induced clipping on mobile browsers */}
+        <AnimatePresence>
+          {isMobileMenuOpen && typeof document !== 'undefined' && createPortal(
+            <div className="md:hidden fixed inset-0 z-[45]" style={{ pointerEvents: 'auto' }} aria-hidden="false">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                key="auth-menu-backdrop"
+                transition={{ duration: 0.2 }}
                 style={{
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  background: 'rgba(147,51,234,0.08)',
-                  border: '1px solid rgba(168,85,247,0.15)',
+                  position: 'fixed',
+                  inset: 0,
+                  background: colors.overlay,
+                  backdropFilter: BLUR.sm,
+                  WebkitBackdropFilter: BLUR.sm,
                 }}
-                onClick={() => {
-                  router.push('/sanctuary/credits');
-                  setIsMobileMenuOpen(false);
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+              <motion.div
+                key="auth-menu-panel"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  position: 'fixed',
+                  top: viewAsRole !== null && actualIsSuperAdmin ? `calc(${NAV_TOP_OFFSET} + ${VIEW_AS_BANNER_HEIGHT}px)` : NAV_TOP_OFFSET,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: NAV_SCROLLED_BG,
+                  backdropFilter: BLUR.lg,
+                  WebkitBackdropFilter: BLUR.lg,
+                  padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE} ${spacing.md}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: spacing.sm,
+                  maxHeight: 'min(80vh, 520px)',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                  WebkitOverflowScrolling: 'touch',
                 }}
+                onClick={(e) => e.stopPropagation()}
               >
-                {displayName && (
-                  <p className="text-sm font-medium truncate" style={{ color: colors.text.primary, marginBottom: 2 }}>
-                    {displayName}
+                {navItems.map((item) => (
+                  <Button
+                    key={item.path}
+                    variant="ghost"
+                    onClick={() => router.push(item.path)}
+                    className="w-full justify-start"
+                    style={{
+                      color: pathname === item.path ? colors.text.primary : colors.text.secondary,
+                      background: pathname === item.path ? colors.glass.border : undefined,
+                    }}
+                  >
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </Button>
+                ))}
+
+                <MenuDivider background={colors.glass.border} />
+
+                <button
+                  type="button"
+                  className="w-full text-left rounded-lg border-0 cursor-pointer"
+                  style={{
+                    padding: `${spacing.md} ${spacing.lg}`,
+                    background: withOpacity(colors.accent.primary, 0.08),
+                    border: `1px solid ${withOpacity(colors.accent.tertiary, 0.15)}`,
+                  }}
+                  onClick={() => {
+                    router.push('/sanctuary/credits');
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  {displayName && (
+                    <p className="text-sm font-medium truncate" style={{ color: colors.text.primary, marginBottom: 2 }}>
+                      {displayName}
+                    </p>
+                  )}
+                  <p className="text-xs truncate" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
+                    {user?.email}
                   </p>
+                  <span
+                    className="inline-flex items-center rounded-full"
+                    style={{
+                      padding: `${spacing.xs} ${spacing.sm}`,
+                      gap: spacing.xs,
+                      background: withOpacity(colors.accent.primary, 0.2),
+                      border: `1px solid ${withOpacity(colors.accent.tertiary, 0.3)}`,
+                      fontSize: '0.75rem',
+                      color: colors.text.secondary,
+                    }}
+                  >
+                    <QCoin size="sm" showAmount={creditsBalance} />
+                    <span style={{ marginLeft: spacing.xs }}>Qs</span>
+                  </span>
+                </button>
+
+                {USER_MENU_ITEMS.map((item) => (
+                  <button
+                    key={item.path}
+                    type="button"
+                    className="w-full flex items-center rounded-lg border-0 cursor-pointer"
+                    style={{
+                      padding: `${spacing.md} ${spacing.lg}`,
+                      gap: spacing.md,
+                      color: colors.text.onDark,
+                      background: 'transparent',
+                    }}
+                    onClick={() => {
+                      router.push(item.path);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </button>
+                ))}
+
+                <MenuDivider background={colors.glass.border} />
+
+                {USER_MENU_ITEMS_SECONDARY.map((item) => (
+                  <button
+                    key={item.path}
+                    type="button"
+                    className="w-full flex items-center rounded-lg border-0 cursor-pointer"
+                    style={{
+                      padding: `${spacing.md} ${spacing.lg}`,
+                      gap: spacing.md,
+                      color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
+                      background: 'transparent',
+                    }}
+                    onClick={() => {
+                      router.push(item.path);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </button>
+                ))}
+
+                {actualIsSuperAdmin && viewAsRole === null && (
+                  <>
+                    <MenuDivider background={colors.glass.border} />
+                    <div>
+                      <p
+                        className="text-xs font-medium"
+                        style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                      >
+                        Super Admin
+                      </p>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                        {SUPERADMIN_MENU_ITEMS.map((item) => (
+                          <button
+                            key={item.path}
+                            type="button"
+                            className="flex items-center rounded-lg border-0 cursor-pointer"
+                            style={{
+                              padding: `${spacing.sm} ${spacing.md}`,
+                              gap: spacing.md,
+                              color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
+                              background: 'transparent',
+                            }}
+                            onClick={() => {
+                              router.push(item.path);
+                              setIsMobileMenuOpen(false);
+                            }}
+                          >
+                            {item.icon}
+                            <span className="truncate">{item.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <MenuDivider background={colors.glass.border} />
+                  </>
                 )}
-                <p className="text-xs truncate" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
-                  {user?.email}
-                </p>
-                <span
-                  className="inline-flex items-center rounded-full"
-                  style={{
-                    padding: `${spacing.xs} ${spacing.sm}`,
-                    gap: spacing.xs,
-                    background: 'rgba(147,51,234,0.20)',
-                    border: '1px solid rgba(168,85,247,0.30)',
-                    fontSize: '0.75rem',
-                    color: colors.text.secondary,
-                  }}
-                >
-                  <QCoin size="sm" showAmount={creditsBalance} />
-                  <span style={{ marginLeft: spacing.xs }}>Qs</span>
-                </span>
-              </button>
-
-              {USER_MENU_ITEMS.map((item) => (
-                <button
-                  key={item.path}
-                  type="button"
-                  className="w-full flex items-center rounded-lg border-0 cursor-pointer"
-                  style={{
-                    padding: `${spacing.md} ${spacing.lg}`,
-                    gap: spacing.md,
-                    color: colors.text.onDark,
-                    background: 'transparent',
-                  }}
-                  onClick={() => {
-                    router.push(item.path);
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  {item.icon}
-                  {item.name}
-                </button>
-              ))}
-
-              <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
-
-              {USER_MENU_ITEMS_SECONDARY.map((item) => (
-                <button
-                  key={item.path}
-                  type="button"
-                  className="w-full flex items-center rounded-lg border-0 cursor-pointer"
-                  style={{
-                    padding: `${spacing.md} ${spacing.lg}`,
-                    gap: spacing.md,
-                    color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
-                    background: 'transparent',
-                  }}
-                  onClick={() => {
-                    router.push(item.path);
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  {item.icon}
-                  {item.name}
-                </button>
-              ))}
-
-              {actualIsSuperAdmin && viewAsRole === null && (
-                <>
-                  <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+                {actualIsSuperAdmin && (
                   <div>
                     <p
                       className="text-xs font-medium"
                       style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
                     >
-                      Super Admin
+                      View as
                     </p>
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: 2,
-                      }}
-                    >
-                      {SUPERADMIN_MENU_ITEMS.map((item) => (
-                        <button
-                          key={item.path}
-                          type="button"
-                          className="flex items-center rounded-lg border-0 cursor-pointer"
-                          style={{
-                            padding: `${spacing.sm} ${spacing.md}`,
-                            gap: spacing.md,
-                            color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
-                            background: 'transparent',
-                          }}
-                          onClick={() => {
-                            router.push(item.path);
-                            setIsMobileMenuOpen(false);
-                          }}
-                        >
-                          {item.icon}
-                          <span className="truncate">{item.name}</span>
-                        </button>
-                      ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      {VIEW_AS_OPTIONS.map((opt) => {
+                        const isActive = viewAsRole === opt.value;
+                        return (
+                          <button
+                            key={opt.label}
+                            type="button"
+                            className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer"
+                            style={{
+                              padding: `${spacing.sm} ${spacing.md}`,
+                              gap: spacing.md,
+                              color: isActive ? colors.accent.tertiary : colors.text.onDark,
+                              background: isActive ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
+                            }}
+                            onClick={() => handleViewAsSelect(opt.value)}
+                          >
+                            <span>{opt.label}</span>
+                            {isActive && <Check className="w-4 h-4" />}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                  <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
-                </>
-              )}
-              {actualIsSuperAdmin && (
-                <div>
-                  <p
-                    className="text-xs font-medium"
-                    style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                  >
-                    View as
+                )}
+
+                <MenuDivider background={colors.glass.border} />
+
+                <div style={{ padding: spacing.lg }}>
+                  <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}>
+                    {t('language')}
                   </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {VIEW_AS_OPTIONS.map((opt) => {
-                      const isActive = viewAsRole === opt.value;
-                      return (
-                        <button
-                          key={opt.label}
-                          type="button"
-                          className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer"
-                          style={{
-                            padding: `${spacing.sm} ${spacing.md}`,
-                            gap: spacing.md,
-                            color: isActive ? colors.accent.tertiary : colors.text.onDark,
-                            background: isActive ? 'rgba(168,85,247,0.12)' : 'transparent',
-                          }}
-                          onClick={() => handleViewAsSelect(opt.value)}
-                        >
-                          <span>{opt.label}</span>
-                          {isActive && <Check className="w-4 h-4" />}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <LanguageSwitcher compact />
                 </div>
-              )}
 
-              <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
+                <MenuDivider background={colors.glass.border} />
 
-              <div style={{ padding: spacing.lg }}>
-                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}>
-                  {t('language')}
-                </p>
-                <LanguageSwitcher compact />
-              </div>
-
-              <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
-
-              <button
-                type="button"
-                className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer"
-                style={{
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  gap: spacing.md,
-                  color: colors.text.secondary,
-                  background: 'transparent',
-                }}
-                onClick={handleSignOut}
-              >
-                <LogOut className="w-4 h-4" />
-                Sign out
-              </button>
-            </div>
-          </motion.div>
-        </motion.nav>
+                <button
+                  type="button"
+                  className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer"
+                  style={{
+                    padding: `${spacing.md} ${spacing.lg}`,
+                    gap: spacing.md,
+                    color: colors.text.secondary,
+                    background: 'transparent',
+                  }}
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </button>
+              </motion.div>
+            </div>,
+            document.body
+          )}
+        </AnimatePresence>
 
         {/* Single scroll container — matches guest layout; prevents nested scroll / "scroll twice" bug */}
         <div
@@ -987,9 +1000,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             paddingTop: `max(${spacing.md}, env(safe-area-inset-top, 0px))`,
             paddingLeft: HEADER_PADDING_X_RESPONSIVE,
             paddingRight: HEADER_PADDING_X_RESPONSIVE,
-            ...(isScrolled
-              ? { background: 'rgba(0,0,0,0.8)', backdropFilter: BLUR.lg, WebkitBackdropFilter: BLUR.lg, boxShadow: `0 1px 0 ${colors.glass.border}` }
-              : { background: 'transparent' }),
+            ...(isScrolled ? navScrolledStyle : { background: 'transparent' }),
           }}
         >
           <div
@@ -1095,7 +1106,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               style={{
                 position: 'fixed',
                 inset: 0,
-                background: 'rgba(0,0,0,0.5)',
+                background: colors.overlay,
                 backdropFilter: BLUR.sm,
                 WebkitBackdropFilter: BLUR.sm,
               }}
@@ -1114,11 +1125,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 bottom: 0,
                 width: 'min(320px, 88vw)',
                 maxWidth: 320,
-                background: 'rgba(15,5,35,0.96)',
+                background: MENU_PANEL_BG_OPAQUE,
                 backdropFilter: BLUR.xl,
                 WebkitBackdropFilter: BLUR.xl,
                 borderLeft: `1px solid ${colors.glass.border}`,
-                boxShadow: '-8px 0 32px rgba(0,0,0,0.4)',
+                boxShadow: MENU_DRAWER_SHADOW,
                 display: 'flex',
                 flexDirection: 'column',
                 overflowY: 'auto',

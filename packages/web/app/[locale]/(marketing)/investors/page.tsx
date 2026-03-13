@@ -23,9 +23,34 @@ import {
   BarChart3,
   TrendingDown,
   Lock,
+  HelpCircle,
+  Check,
+  Share2,
+  Mail,
+  Radio,
+  Search,
 } from 'lucide-react';
 
 const REFERRAL_OPTION_KEYS = ['socialMedia', 'friendFamily', 'newsletter', 'podcast', 'search', 'other'] as const;
+
+const REFERRAL_OPTION_ICONS: Record<(typeof REFERRAL_OPTION_KEYS)[number], React.ComponentType<{ size?: number; color?: string }>> = {
+  socialMedia: Share2,
+  friendFamily: Users,
+  newsletter: Mail,
+  podcast: Radio,
+  search: Search,
+  other: HelpCircle,
+};
+
+const INTEREST_OPTION_IDS = [
+  { id: 'seed', icon: Sprout },
+  { id: 'production', icon: Factory },
+  { id: 'marketing', icon: Megaphone },
+  { id: 'promotion', icon: TrendingUp },
+  { id: 'influencer', icon: Users },
+  { id: 'content-creator', icon: PenLine },
+  { id: 'other', icon: HelpCircle },
+] as const;
 
 /** Repayment scenarios: monthly revenue → months to 1.2× (at 12.5% share) */
 const REPAYMENT_SCENARIOS = [
@@ -1342,35 +1367,85 @@ export default function InvestorsPage() {
                     <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xl }}>
                       {t('page.interestSubtitle')}
                     </Typography>
-                    <label>
-                      <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
-                        {t('form.interestLabel')}
-                      </Typography>
-                      <select
-                        value={formState.interest}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormState((s) => ({ ...s, interest: e.target.value }))}
-                        disabled={formState.status === 'loading'}
-                        style={{
-                          width: '100%',
-                          padding: `${spacing.sm} ${spacing.md}`,
-                          minHeight: 44,
-                          borderRadius: borderRadius.md,
-                          border: `1px solid ${colors.glass.border}`,
-                          background: colors.glass.light,
-                          color: colors.text.primary,
-                          fontSize: 15,
-                        }}
-                      >
-                        <option value="">{t('page.selectOption', { default: 'Select an option' })}</option>
-                        <option value="seed">{t('interestOptions.seed')}</option>
-                        <option value="production">{t('interestOptions.production')}</option>
-                        <option value="marketing">{t('interestOptions.marketing')}</option>
-                        <option value="promotion">{t('interestOptions.promotion')}</option>
-                        <option value="influencer">{t('interestOptions.influencer')}</option>
-                        <option value="content-creator">{t('interestOptions.content-creator')}</option>
-                        <option value="other">{t('interestOptions.other')}</option>
-                      </select>
-                    </label>
+                    <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
+                      {t('form.interestLabel')}
+                    </Typography>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, 1fr)',
+                        gap: spacing.sm,
+                        marginBottom: spacing.md,
+                      }}
+                    >
+                      {INTEREST_OPTION_IDS.map(({ id, icon: Icon }) => {
+                        const selected = formState.interest === id;
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => setFormState((s) => ({ ...s, interest: id }))}
+                            disabled={formState.status === 'loading'}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-start',
+                              gap: 8,
+                              padding: 16,
+                              borderRadius: borderRadius.lg,
+                              background: selected ? `${colors.accent.primary}26` : colors.glass.light,
+                              border: `1px solid ${selected ? `${colors.accent.primary}99` : colors.glass.border}`,
+                              cursor: formState.status === 'loading' ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.2s ease',
+                              textAlign: 'left',
+                              outline: 'none',
+                              width: '100%',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                              <div
+                                style={{
+                                  width: 36,
+                                  height: 36,
+                                  borderRadius: 10,
+                                  background: selected ? `${colors.accent.primary}4d` : colors.glass.dark,
+                                  border: `1px solid ${selected ? `${colors.accent.primary}80` : colors.glass.border}`,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  flexShrink: 0,
+                                }}
+                              >
+                                <Icon size={16} color={selected ? colors.accent.primary : colors.text.secondary} />
+                              </div>
+                              {selected && (
+                                <div
+                                  style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: '50%',
+                                    background: colors.gradients.primary,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                  }}
+                                >
+                                  <Check size={12} color={colors.text.onDark} />
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <div style={{ fontSize: 13, fontWeight: 500, color: selected ? colors.text.primary : colors.text.secondary, lineHeight: 1.2, marginBottom: 3 }}>
+                                {t(`interestOptions.${id}`)}
+                              </div>
+                              <div style={{ fontSize: 11, color: colors.text.tertiary, lineHeight: 1.4 }}>
+                                {t(`interestDescriptions.${id}`)}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </motion.div>
                 )}
                 {formStep === 2 && (
@@ -1407,28 +1482,83 @@ export default function InvestorsPage() {
                         <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
                           {t('form.referralLabel')} <span style={{ color: colors.text.tertiary }}>{t('form.optional')}</span>
                         </Typography>
-                        <select
-                          value={formState.referral_source}
-                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormState((s) => ({ ...s, referral_source: e.target.value }))}
-                          disabled={formState.status === 'loading'}
+                        <div
                           style={{
-                            width: '100%',
-                            padding: `${spacing.sm} ${spacing.md}`,
-                            minHeight: 44,
-                            borderRadius: borderRadius.md,
-                            border: `1px solid ${colors.glass.border}`,
-                            background: colors.glass.light,
-                            color: colors.text.primary,
-                            fontSize: 15,
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: spacing.sm,
+                            marginBottom: spacing.md,
                           }}
                         >
-                          <option value="">{t('page.selectOption', { default: 'Select an option' })}</option>
-                          {REFERRAL_OPTION_KEYS.map((key) => (
-                            <option key={key} value={key}>
-                              {t(`referralOptions.${key}`)}
-                            </option>
-                          ))}
-                        </select>
+                          {REFERRAL_OPTION_KEYS.map((key) => {
+                            const selected = formState.referral_source === key;
+                            const Icon = REFERRAL_OPTION_ICONS[key];
+                            return (
+                              <button
+                                key={key}
+                                type="button"
+                                onClick={() => setFormState((s) => ({ ...s, referral_source: selected ? '' : key }))}
+                                disabled={formState.status === 'loading'}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  gap: 8,
+                                  padding: 16,
+                                  borderRadius: borderRadius.lg,
+                                  background: selected ? `${colors.accent.primary}26` : colors.glass.light,
+                                  border: `1px solid ${selected ? `${colors.accent.primary}99` : colors.glass.border}`,
+                                  cursor: formState.status === 'loading' ? 'not-allowed' : 'pointer',
+                                  transition: 'all 0.2s ease',
+                                  textAlign: 'left',
+                                  outline: 'none',
+                                  width: '100%',
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                  <div
+                                    style={{
+                                      width: 36,
+                                      height: 36,
+                                      borderRadius: 10,
+                                      background: selected ? `${colors.accent.primary}4d` : colors.glass.dark,
+                                      border: `1px solid ${selected ? `${colors.accent.primary}80` : colors.glass.border}`,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      flexShrink: 0,
+                                    }}
+                                  >
+                                    <Icon size={16} color={selected ? colors.accent.primary : colors.text.secondary} />
+                                  </div>
+                                  {selected && (
+                                    <div
+                                      style={{
+                                        width: 20,
+                                        height: 20,
+                                        borderRadius: '50%',
+                                        background: colors.gradients.primary,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      <Check size={12} color={colors.text.onDark} />
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div style={{ fontSize: 13, fontWeight: 500, color: selected ? colors.text.primary : colors.text.secondary, lineHeight: 1.2, marginBottom: 3 }}>
+                                    {t(`referralOptions.${key}`)}
+                                  </div>
+                                  <div style={{ fontSize: 11, color: colors.text.tertiary, lineHeight: 1.4 }}>
+                                    {t(`referralDescriptions.${key}`)}
+                                  </div>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                       <div>
                         <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>

@@ -18,8 +18,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MainStackParamList } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Typography, Card, Button } from '@/components';
-import { VoiceOrb } from '@/components/audio';
 import { AI_MODE_COSTS } from '@waqup/shared/constants';
 import { withOpacity } from '@waqup/shared/theme';
 import {
@@ -176,8 +176,12 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
             <Typography variant="body" style={{ color: colors.accent.primary }}>← Back</Typography>
           </TouchableOpacity>
           <View style={styles.navTitle}>
-            {showChat && <VoiceOrb size="sm" orbState={isChatLoading || chatPhase === 'generating' ? 'thinking' : 'idle'} style={{ marginRight: spacing.sm }} />}
-            <View style={{ alignItems: 'center' }}>
+            {showChat && (
+              <View style={[styles.sparkIcon, { backgroundColor: colors.accent.primary }]}>
+                <MaterialCommunityIcons name="star-four-points" size={20} color={colors.text.onDark} />
+              </View>
+            )}
+            <View style={{ alignItems: 'center', marginLeft: spacing.sm }}>
               <Typography variant="captionBold" style={{ color: colors.text.primary }}>
                 Creating Your {TYPE_LABELS[contentType]}
               </Typography>
@@ -199,10 +203,19 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
               renderItem={({ item }) => (
                 <View style={item.role === 'user' ? styles.bubbleRowUser : styles.bubbleRowAI}>
                   {item.role === 'assistant' && (
-                    <VoiceOrb size="sm" orbState="idle" style={{ marginRight: spacing.sm, flexShrink: 0 }} />
+                    <View style={[styles.sparkIcon, { backgroundColor: colors.accent.primary, marginRight: spacing.sm }]}>
+                      <MaterialCommunityIcons name="star-four-points" size={16} color={colors.text.onDark} />
+                    </View>
                   )}
-                  <View style={[styles.bubble, item.role === 'user' ? [styles.bubbleUser, { backgroundColor: colors.accent.primary }] : [styles.bubbleAI, { backgroundColor: colors.glass.transparent, borderColor: colors.glass.border }]]}>
-                    <Typography variant="body" style={{ color: item.role === 'user' ? colors.text.onDark : colors.text.primary, lineHeight: 22 }}>
+                  <View
+                    style={[
+                      styles.bubble,
+                      item.role === 'user'
+                        ? [styles.bubbleUser, { backgroundColor: colors.glass.opaque }]
+                        : [styles.bubbleAI, { backgroundColor: colors.accent.primary }],
+                    ]}
+                  >
+                    <Typography variant="body" style={{ color: colors.text.onDark, lineHeight: 22 }}>
                       {item.content}
                     </Typography>
                   </View>
@@ -211,9 +224,11 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
               ListFooterComponent={
                 isChatLoading ? (
                   <View style={styles.bubbleRowAI}>
-                    <VoiceOrb size="sm" orbState="thinking" style={{ marginRight: spacing.sm, flexShrink: 0 }} />
-                    <View style={[styles.bubble, styles.bubbleAI, { backgroundColor: colors.glass.transparent, borderColor: colors.glass.border }]}>
-                      <ActivityIndicator size="small" color={colors.accent.primary} />
+                    <View style={[styles.sparkIcon, { backgroundColor: colors.accent.primary, marginRight: spacing.sm }]}>
+                      <MaterialCommunityIcons name="star-four-points" size={16} color={colors.text.onDark} />
+                    </View>
+                    <View style={[styles.bubble, styles.bubbleAI, { backgroundColor: colors.accent.primary }]}>
+                      <ActivityIndicator size="small" color={colors.text.onDark} />
                     </View>
                   </View>
                 ) : null
@@ -222,10 +237,14 @@ export default function ContentCreateScreen({ navigation, route }: Props) {
 
             {chatPhase === 'generating' && (
               <View style={[styles.generatingBar, { backgroundColor: colors.glass.opaque, borderTopColor: colors.glass.border }]}>
-                <View style={[styles.generatingProgress, { backgroundColor: colors.accent.primary }]} />
-                <Typography variant="caption" style={{ color: colors.text.secondary, marginTop: spacing.xs }}>
-                  Creating…
-                </Typography>
+                <View style={styles.generatingRow}>
+                  <View style={[styles.generatingProgressTrack, { backgroundColor: colors.glass.border }]}>
+                    <View style={[styles.generatingProgressFill, { backgroundColor: colors.accent.primary }]} />
+                  </View>
+                  <Typography variant="caption" style={{ color: colors.text.secondary, marginLeft: spacing.sm }}>
+                    Creating…
+                  </Typography>
+                </View>
               </View>
             )}
 
@@ -355,8 +374,15 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: borderRadius.sm,
   },
   bubbleAI: {
-    borderWidth: 1,
     borderBottomLeftRadius: borderRadius.sm,
+  },
+  sparkIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   generatingBar: {
     paddingHorizontal: spacing.xl,
@@ -364,11 +390,21 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     alignItems: 'flex-start',
   },
-  generatingProgress: {
-    height: 2,
+  generatingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  generatingProgressTrack: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  generatingProgressFill: {
+    height: '100%',
     width: '40%',
-    borderRadius: 1,
-    marginBottom: spacing.xs,
+    borderRadius: 2,
   },
   navTitle: {
     flexDirection: 'row',

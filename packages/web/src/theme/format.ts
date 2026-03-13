@@ -182,3 +182,13 @@ export const GLASS_CARD_STYLES = {
   WebkitBackdropFilter: BLUR.xl,
   borderBase: '1px solid',
 };
+
+/** Menu/drawer panel backgrounds — SSOT for nav dropdown, profile menu, mobile drawer */
+export const MENU_PANEL_BG = 'rgba(15,5,35,0.88)';
+export const MENU_PANEL_BG_OPAQUE = 'rgba(15,5,35,0.96)';
+/** Menu panel box shadows */
+export const MENU_PANEL_SHADOW = '0 8px 32px rgba(0,0,0,0.5)';
+export const MENU_DRAWER_SHADOW = '-8px 0 32px rgba(0,0,0,0.4)';
+/** Nav bar background when scrolled — SSOT for fixed header glass effect */
+export const NAV_SCROLLED_BG = 'rgba(0,0,0,0.8)';
+

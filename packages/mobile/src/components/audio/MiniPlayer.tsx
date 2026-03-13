@@ -3,15 +3,13 @@
  * Tap to open full ContentDetailScreen; play/pause control.
  */
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useTheme, spacing, borderRadius } from '@/theme';
+import { useTheme, spacing, borderRadius, layout } from '@/theme';
 import { Typography } from '@/components/ui';
 import { usePlaybackStore } from '@/stores';
-
-const TAB_BAR_HEIGHT = 60;
 const MINI_PLAYER_HEIGHT = 56;
 
 export function MiniPlayer() {
@@ -47,7 +45,7 @@ export function MiniPlayer() {
     void (isPlaying ? pause() : play());
   };
 
-  const bottomOffset = TAB_BAR_HEIGHT + (Platform.OS === 'ios' ? insets.bottom : 0);
+  const bottomOffset = layout.tabBarHeight + insets.bottom;
 
   return (
     <View

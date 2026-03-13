@@ -61,17 +61,7 @@ export default function ProfileScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Typography
-            variant="h1"
-            style={{ color: colors.text.primary, fontWeight: '300', letterSpacing: -1 }}
-          >
-            Profile
-          </Typography>
-        </View>
-
-        {/* User card */}
+        {/* User card — header (avatar, title, QCoin, Plus) via SpotifyHeader */}
         <Card
           variant="elevated"
           style={[styles.userCard, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
@@ -192,9 +182,6 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     paddingTop: spacing.xl,
     paddingBottom: spacing.xxxl,
-  },
-  header: {
-    marginBottom: spacing.xl,
   },
   userCard: {
     borderRadius: borderRadius.xl,
