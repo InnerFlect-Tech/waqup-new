@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '@/theme';
 import { withOpacity } from '@waqup/shared/theme';
-import { withOpacity } from '@waqup/shared/theme';
 
 export interface QCoinProps {
   size?: 'sm' | 'md' | 'lg';
@@ -113,10 +112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  shine: {
-    position: 'absolute',
-    backgroundColor: 'rgba(255,255,255,0.32)',
-  },
+  shine: {},
   q: {
     fontWeight: '800',
     textAlign: 'center',
