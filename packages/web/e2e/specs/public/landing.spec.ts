@@ -61,6 +61,6 @@ test.describe('Landing page', () => {
 
   test('how-it-works page loads with heading', async ({ page }) => {
     await page.goto('/how-it-works');
-    await expect(page.locator('h1, h2')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 15000 });
   });
 });
