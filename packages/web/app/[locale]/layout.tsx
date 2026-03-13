@@ -9,7 +9,7 @@ import '../globals.css';
 import '../../src/styles/animations.css';
 import { AppProviders } from '@/components/AppProviders';
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
-import { Analytics } from '@vercel/analytics/react';
+import { VercelAnalytics } from '@/components/VercelAnalytics';
 import { AnalyticsProvider } from '@/components/AnalyticsProvider';
 import { GoogleAnalyticsTracker } from '@/components/analytics';
 import { routing } from '@/i18n/routing';
@@ -91,7 +91,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: DEFAULT_BRAND_COLORS.accent,
+  themeColor: DEFAULT_BRAND_COLORS.background,
 };
 
 export default async function LocaleLayout({ children, params }: Props) {
@@ -160,7 +160,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <Suspense fallback={null}>
           <GoogleAnalyticsTracker />
         </Suspense>
-        <Analytics />
+        <VercelAnalytics />
 
         <NextIntlClientProvider messages={messages}>
           <AppProviders>{children}</AppProviders>

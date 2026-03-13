@@ -186,7 +186,7 @@ function JoinPageInner() {
       <div
         className="join-page-grid"
         style={{
-          '--join-viewport-height': `calc(100vh - ${NAV_TOP_OFFSET})`,
+          '--join-viewport-height': `calc(100dvh - ${NAV_TOP_OFFSET})`,
         } as React.CSSProperties}
       >
         <div className="join-page-inner" style={{ maxWidth: 1080, margin: '0 auto', padding: `${spacing.lg} ${spacing.lg}`, display: 'flex', flexWrap: 'wrap', gap: spacing.xxl, alignItems: 'flex-start', minHeight: 0 }}>
@@ -487,7 +487,7 @@ function JoinPageInner() {
         /* Desktop: fixed-height layout so left column scrolls and form stays on screen */
         @media (min-width: 900px) {
           .join-page-grid {
-            height: var(--join-viewport-height, calc(100vh - 80px));
+            height: var(--join-viewport-height, calc(100dvh - 80px));
             min-height: 600px;
             display: flex;
             flex-direction: column;

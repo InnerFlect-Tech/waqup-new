@@ -53,7 +53,7 @@ export default function SpeakTestPage() {
   };
 
   return (
-    <PageShell intensity="strong">
+    <PageShell intensity="strong" allowDocumentScroll>
       <PageContent width="medium">
         <div
           style={{

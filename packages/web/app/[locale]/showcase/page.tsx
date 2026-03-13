@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Typography,
   Button,
@@ -16,7 +16,6 @@ import {
 import {
   PageShell,
   PageContent,
-  SpeakingAnimation,
   GlassCard,
   Logo,
   ThemeSelector,
@@ -24,6 +23,7 @@ import {
   VoiceOrb,
   SuperAdminGate,
 } from '@/components';
+import { AudioWaveform } from '@/components/audio';
 import { spacing, typography, borderRadius, BLUR } from '@/theme';
 import { CONTENT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
@@ -40,6 +40,24 @@ export default function ShowcasePage() {
   const [createStep, setCreateStep] = useState<ConversationStep>('init');
   const [voiceOrbActive, setVoiceOrbActive] = useState(false);
   const frequencyDataRef = useRef<Uint8Array | null>(null);
+  const [simulatedFreq, setSimulatedFreq] = useState<number[]>([]);
+
+  // Simulate frequency data for showcase when "playing"
+  useEffect(() => {
+    if (!isSpeaking) { setSimulatedFreq([]); return; }
+    let raf = 0;
+    const tick = () => {
+      const t = Date.now() / 80;
+      setSimulatedFreq(
+        Array.from({ length: 32 }, (_, i) =>
+          Math.floor(80 + 80 * Math.sin((t + i * 0.5) * 0.3) + 40 * Math.sin((t * 0.7 + i) * 0.2))
+        )
+      );
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [isSpeaking]);
 
   return (
     <SuperAdminGate>
@@ -448,22 +466,22 @@ export default function ShowcasePage() {
           </GlassCard>
         </Section>
 
-        {/* Audio Components - Speaking Animation */}
-        <Section title="Audio Components - SpeakingAnimation" colors={colors}>
+        {/* Audio Components - Waveform */}
+        <Section title="Audio Components - AudioWaveform" colors={colors}>
           <Card variant="elevated">
-            <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>Speaking Animation</Typography>
+            <Typography variant="h3" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>Audio Waveform</Typography>
             <Typography variant="body" style={{ marginBottom: spacing.md, color: colors.text.secondary }}>
-              Cycles through 4 pages: floating glass orbs, frequency bars, subtle waves, rotating rings.
+              Reactive bar visualization for audio playback. Idle: subtle static bars. Playing: live frequency-driven bars (when analyser available).
             </Typography>
-            <div style={{ width: '100%', height: 450, marginBottom: spacing.md, borderRadius: borderRadius.lg, overflow: 'hidden', position: 'relative', background: colors.background.primary, border: `1px solid ${colors.glass.border}` }}>
-              <SpeakingAnimation isSpeaking={isSpeaking} pageDuration={5000} />
+            <div style={{ width: '100%', minHeight: 200, marginBottom: spacing.md, borderRadius: borderRadius.lg, overflow: 'hidden', position: 'relative', background: colors.background.primary, border: `1px solid ${colors.glass.border}`, padding: spacing.lg }}>
+              <AudioWaveform isPlaying={isSpeaking} frequencyData={simulatedFreq} style={{ minHeight: 180 }} />
             </div>
             <div style={{ display: 'flex', gap: spacing.sm, alignItems: 'center' }}>
               <Button variant={isSpeaking ? 'secondary' : 'primary'} onClick={() => setIsSpeaking(!isSpeaking)}>
                 {isSpeaking ? 'Pause' : 'Play'}
               </Button>
               <Typography variant="small" style={{ color: colors.text.tertiary, marginLeft: spacing.sm }}>
-                {isSpeaking ? 'Animations active' : 'Click to start'}
+                {isSpeaking ? 'Active (idle bars)' : 'Click to simulate play state'}
               </Typography>
             </div>
           </Card>

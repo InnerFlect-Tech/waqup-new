@@ -16,16 +16,16 @@ const MAX_CHARS = 300;
 
 const TYPE_PROMPTS: Record<ContentItemType, { heading: string; placeholder: string; hint: string }> = {
   affirmation: {
-    heading: 'What do you want to change or strengthen?',
+    heading: 'What identity or behavior do you want to strengthen?',
     placeholder:
-      'e.g. I want to feel genuinely confident in social situations and stop second-guessing myself…',
-    hint: 'Focus on a specific area — confidence, abundance, health, relationships. The more specific, the more powerful.',
+      'e.g. I want to be someone who finishes what I start and stays calm under pressure…',
+    hint: 'Focus on who you want to become — the identity, not just the goal. Short, specific cues work best.',
   },
   meditation: {
-    heading: 'What state or outcome are you seeking?',
+    heading: 'What state do you want to regulate?',
     placeholder:
-      'e.g. I want to fall asleep more easily and wake up feeling genuinely rested…',
-    hint: 'Think about the feeling you want — calm, focus, deep sleep, clarity. Describe the experience, not just the goal.',
+      'e.g. calm before sleep, focus for work, reset after stress…',
+    hint: 'Brief, embodied practices that prepare your nervous system. Calm, focus, sleep, or reset.',
   },
   ritual: {
     heading: 'What transformation do you intend?',

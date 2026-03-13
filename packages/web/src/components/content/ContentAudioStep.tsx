@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
@@ -10,12 +10,10 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 import { CONTENT_TYPE_META } from '@/lib/creation-steps';
-import { useAtmosphereAvailable } from '@/hooks';
+import { useAtmosphereAvailable, useLayersPreview } from '@/hooks';
 import {
   getActiveBinauralPresets,
   getActiveAtmospherePresets,
-  type BinauralPreset,
-  type AtmospherePreset,
 } from '@waqup/shared/constants';
 import { resolveAtmosphereUrl } from '@/utils/atmosphere';
 import type { AudioSettings } from '@waqup/shared/types';
@@ -130,86 +128,6 @@ function PresetCard({
   );
 }
 
-// ─── Binaural Preview Engine ──────────────────────────────────────────────────
-
-function useBinauralPreview() {
-  const ctxRef = useRef<AudioContext | null>(null);
-  const leftRef = useRef<OscillatorNode | null>(null);
-  const rightRef = useRef<OscillatorNode | null>(null);
-  const leftPanRef = useRef<StereoPannerNode | null>(null);
-  const rightPanRef = useRef<StereoPannerNode | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const stop = useCallback(() => {
-    try { leftRef.current?.stop(); } catch { /* ok */ }
-    try { rightRef.current?.stop(); } catch { /* ok */ }
-    leftRef.current?.disconnect();
-    rightRef.current?.disconnect();
-    leftPanRef.current?.disconnect();
-    rightPanRef.current?.disconnect();
-    gainRef.current?.disconnect();
-    leftRef.current = null;
-    rightRef.current = null;
-    leftPanRef.current = null;
-    rightPanRef.current = null;
-    gainRef.current = null;
-    setIsPlaying(false);
-  }, []);
-
-  const play = useCallback((preset: BinauralPreset, volume: number, durationMs: number) => {
-    stop();
-    if (preset.id === 'none' || preset.beatFrequencyHz <= 0) return;
-
-    try {
-      const ctx = new AudioContext();
-      ctxRef.current = ctx;
-
-      const gain = ctx.createGain();
-      gain.gain.value = (volume / 100) * 0.15; // Keep preview quiet
-      gain.connect(ctx.destination);
-      gainRef.current = gain;
-
-      const leftFreq = preset.carrierFrequencyHz + preset.beatFrequencyHz / 2;
-      const rightFreq = preset.carrierFrequencyHz - preset.beatFrequencyHz / 2;
-
-      const leftOsc = ctx.createOscillator();
-      const leftPan = ctx.createStereoPanner();
-      leftOsc.type = 'sine';
-      leftOsc.frequency.value = leftFreq;
-      leftPan.pan.value = -1;
-      leftOsc.connect(leftPan);
-      leftPan.connect(gain);
-      leftOsc.start();
-      leftRef.current = leftOsc;
-      leftPanRef.current = leftPan;
-
-      const rightOsc = ctx.createOscillator();
-      const rightPan = ctx.createStereoPanner();
-      rightOsc.type = 'sine';
-      rightOsc.frequency.value = rightFreq;
-      rightPan.pan.value = 1;
-      rightOsc.connect(rightPan);
-      rightPan.connect(gain);
-      rightOsc.start();
-      rightRef.current = rightOsc;
-      rightPanRef.current = rightPan;
-
-      setIsPlaying(true);
-      setTimeout(() => {
-        stop();
-        void ctx.close();
-      }, durationMs);
-    } catch {
-      stop();
-    }
-  }, [stop]);
-
-  useEffect(() => () => stop(), [stop]);
-
-  return { play, stop, isPlaying };
-}
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) {
@@ -220,9 +138,6 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
   const meta = CONTENT_TYPE_META[contentType];
 
   const [settings, setSettings] = useState<AudioSettings>(audioSettings ?? DEFAULT_AUDIO_SETTINGS);
-  const binauralPreview = useBinauralPreview();
-  const atmosphereAudioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPreviewing, setIsPreviewing] = useState(false);
 
   const { available: atmosphereAvailable } = useAtmosphereAvailable();
   const binauralPresets = getActiveBinauralPresets();
@@ -235,6 +150,17 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
   const effectiveAtmospherePresets = atmosphereAvailable ? atmospherePresets : atmospherePresets.filter((p) => p.id === 'none');
   const effectiveSelectedAtmosphere = atmosphereAvailable ? selectedAtmosphere : atmospherePresets[0]; // "None"
 
+  const ambientUrl =
+    effectiveSelectedAtmosphere.fileUrl ??
+    (effectiveSelectedAtmosphere.id !== 'none' ? resolveAtmosphereUrl(effectiveSelectedAtmosphere.id) : null);
+
+  const layersPreview = useLayersPreview({
+    binauralPreset: selectedBinaural.id === 'none' ? null : selectedBinaural,
+    ambientUrl,
+    volumeBinaural: settings.volumeBinaural,
+    volumeAmbient: settings.volumeAmbient,
+  });
+
   useEffect(() => {
     if (!atmosphereAvailable && settings.atmospherePresetId !== 'none') {
       setSettings((prev) => ({ ...prev, atmospherePresetId: 'none' }));
@@ -245,57 +171,14 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
     setSettings((prev) => ({ ...prev, [key]: value }));
   }, []);
 
+  const PREVIEW_MS = 6000;
   const handlePreview = useCallback(() => {
-    if (isPreviewing) {
-      // Stop preview
-      binauralPreview.stop();
-      if (atmosphereAudioRef.current) {
-        atmosphereAudioRef.current.pause();
-        atmosphereAudioRef.current = null;
-      }
-      setIsPreviewing(false);
+    if (layersPreview.isPlaying) {
+      layersPreview.stop();
       return;
     }
-
-    setIsPreviewing(true);
-    const PREVIEW_MS = 6000;
-
-    // Start binaural preview (oscillators)
-    if (selectedBinaural.id !== 'none') {
-      binauralPreview.play(selectedBinaural, settings.volumeBinaural, PREVIEW_MS);
-    }
-
-    // Start atmosphere preview (HTMLAudioElement) if file exists
-    const ambientUrl = effectiveSelectedAtmosphere.fileUrl ?? (effectiveSelectedAtmosphere.id !== 'none' ? resolveAtmosphereUrl(effectiveSelectedAtmosphere.id) : null);
-    if (ambientUrl) {
-      const audio = new Audio(ambientUrl);
-      audio.loop = true;
-      audio.volume = (settings.volumeAmbient / 100) * 0.5;
-      void audio.play().catch(() => { /* autoplay blocked — ignore */ });
-      atmosphereAudioRef.current = audio;
-    }
-
-    setTimeout(() => {
-      binauralPreview.stop();
-      if (atmosphereAudioRef.current) {
-        atmosphereAudioRef.current.pause();
-        atmosphereAudioRef.current = null;
-      }
-      setIsPreviewing(false);
-    }, PREVIEW_MS);
-  }, [isPreviewing, selectedBinaural, effectiveSelectedAtmosphere, settings.volumeBinaural, settings.volumeAmbient, binauralPreview]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      binauralPreview.stop();
-      if (atmosphereAudioRef.current) {
-        atmosphereAudioRef.current.pause();
-        atmosphereAudioRef.current = null;
-      }
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    layersPreview.play(PREVIEW_MS);
+  }, [layersPreview]);
 
   const handleContinue = useCallback(() => {
     setAudioSettings(settings);
@@ -305,6 +188,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
 
   const atmosphereHasFile = effectiveSelectedAtmosphere.id !== 'none' && !!effectiveSelectedAtmosphere.fileUrl;
   const binauralActive = selectedBinaural.id !== 'none';
+  const canPreview = binauralActive || effectiveSelectedAtmosphere.id !== 'none';
 
   return (
     <div style={{ maxWidth: '48rem', margin: '0 auto' }}>
@@ -335,6 +219,50 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
         <Typography variant="body" style={{ color: colors.text.secondary }}>
           Configure three independent audio layers for this {contentType}
         </Typography>
+      </motion.div>
+
+      {/* ── Preview your mix (always visible, prominent) ────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.02 }}
+        style={{
+          padding: spacing.md,
+          borderRadius: borderRadius.lg,
+          background: canPreview ? `${meta.color}0d` : colors.glass.light,
+          border: `1px solid ${canPreview ? `${meta.color}30` : colors.glass.border}`,
+          marginBottom: spacing.md,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: spacing.md,
+        }}
+      >
+        <div>
+          <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 500, fontSize: 14 }}>
+            Preview your mix
+          </Typography>
+          <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, marginTop: 2 }}>
+            {canPreview
+              ? 'Hear binaural + atmosphere for 6 seconds — use headphones for best effect'
+              : 'Select a binaural or atmosphere preset below to enable preview'}
+          </Typography>
+        </div>
+        <Button
+          variant={layersPreview.isPlaying ? 'outline' : canPreview ? 'primary' : 'ghost'}
+          size="md"
+          onClick={handlePreview}
+          disabled={!canPreview && !layersPreview.isPlaying}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.sm,
+            ...(layersPreview.isPlaying ? { borderColor: meta.color, color: meta.color } : canPreview ? { backgroundColor: meta.color, borderColor: meta.color } : { opacity: 0.7 }),
+          }}
+        >
+          {layersPreview.isPlaying ? <><Square size={14} /> Stop</> : <><Play size={14} /> Preview</>}
+        </Button>
       </motion.div>
 
       {/* ── Volume Mix ─────────────────────────────────────────────────────── */}
@@ -438,8 +366,8 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
       </motion.div>
 
       {/* ── Atmosphere Preset Selector (hidden when no presets uploaded) ──────── */}
-      {atmosphereAvailable && (
-      <motion.div
+      {atmosphereAvailable ? (
+        <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
@@ -487,7 +415,7 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           )}
         </AnimatePresence>
       </motion.div>
-      )}
+      ) : null}
 
       {/* ── Fade Effects ────────────────────────────────────────────────────── */}
       <motion.div
@@ -563,24 +491,6 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
           </Button>
         </Link>
         <div style={{ display: 'flex', gap: spacing.md, alignItems: 'center' }}>
-          {(binauralActive || selectedAtmosphere.id !== 'none') && (
-            <Button
-              variant="ghost"
-              size="md"
-              onClick={handlePreview}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.sm,
-                color: isPreviewing ? meta.color : colors.text.secondary,
-              }}
-            >
-              {isPreviewing
-                ? <><Square size={12} color={meta.color} /> Stop</>
-                : <><Play size={13} /> Preview</>
-              }
-            </Button>
-          )}
           <Button variant="primary" size="lg" onClick={handleContinue}>
             Review →
           </Button>

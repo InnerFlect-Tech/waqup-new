@@ -11,7 +11,6 @@ docs/
 ├── README.md                    # This file
 ├── 00-architecture-overview.md  # Monorepo, backend, data flows
 ├── 00-current-context.md       # Business, pricing, pipelines, design — full app context
-├── 00-product-overview.md      # What waQup is, principles
 ├── 00-developer-onboarding.md  # Full onboarding guide
 │
 ├── 01-core/                    # Core product documentation
@@ -34,29 +33,22 @@ docs/
 │   └── 02-browser-optimization-strategy.md
 │
 ├── 04-reference/               # Reference guides
-│   ├── 01-showcase-access.md
-│   ├── 02-context7-usage.md
-│   ├── 02-cursor-rules-guide.md
+│   ├── 02-developer-tooling.md
 │   ├── 03-start-here.md
 │   ├── 04-pages-comparison.md
-│   ├── 05-documentation-coverage-analysis.md
-│   ├── 06-first-commits-vs-now.md
-│   ├── 07-design-system-cross-platform.md
-│   ├── 08-full-codebase-analysis.md
+│   ├── 07-design-system.md
 │   ├── 09-current-vs-final-solution.md
-│   ├── 10-admin-pages-proposal.md
-│   ├── 11-design-system.md
 │   ├── 12-local-development.md
 │   ├── 13-stripe-setup.md
-│   ├── 14-spacing-analysis-full.md
-│   ├── 15-button-design-tokens.md
 │   ├── 16-route-map.md
-│   └── 17-spacing-usage-guide.md
+│   └── 23-full-audit-consolidated.md
 │
-├── 05-testing/
-│   └── 01-playwright-e2e.md      # Playwright E2E testing guide
-└── 05-deployment/
-    └── 01-github-vercel-setup.md
+├── 05-deployment/
+│   ├── 01-github-vercel-setup.md
+│   ├── 02-releases.md
+│   └── 02-meta-app-submission.md
+└── 06-testing/
+    └── 01-playwright-e2e.md      # Playwright E2E testing guide
 ```
 
 ---
@@ -65,8 +57,7 @@ docs/
 
 ### 🏠 Overview (start here)
 - **[00 Architecture Overview](./00-architecture-overview.md)** - Monorepo structure, backend services, data flows
-- **[00 Current Context](./00-current-context.md)** - Business, pricing, pipelines, design — single reference for app context
-- **[00 Product Overview](./00-product-overview.md)** - What waQup is, principles, content types
+- **[00 Current Context](./00-current-context.md)** - Business, pricing, pipelines, design — single reference for app context (includes product principles)
 - **[00 Developer Onboarding](./00-developer-onboarding.md)** - Full onboarding guide
 - **[03 Start Here](./04-reference/03-start-here.md)** - Quick start, current phase, workflow
 
@@ -80,16 +71,18 @@ docs/
 - **[02 Browser Optimization Strategy](./03-platforms/02-browser-optimization-strategy.md)** - Chrome-first browser strategy
 
 ### 📚 Reference Guides (`04-reference/`)
-- **[01 Showcase Access](./04-reference/01-showcase-access.md)** - Component showcase (Web URL & Mobile deep links)
-- **[02 Context7 Usage](./04-reference/02-context7-usage.md)** - How to use Context7 for documentation queries
+- **[02 Developer Tooling](./04-reference/02-developer-tooling.md)** - Context7, Cursor rules, developer workflows
 - **[03 Start Here](./04-reference/03-start-here.md)** - Developer entry point (quick start, current phase, workflow)
 - **[04 Pages Comparison](./04-reference/04-pages-comparison.md)** - What exists vs what’s needed (SSOT for pages)
-- **[05 Documentation Coverage Analysis](./04-reference/05-documentation-coverage-analysis.md)** - Architecture, LLM, pipelines, pages, marketplace (gaps & recommendations)
-- **[06 First Commits vs Now](./04-reference/06-first-commits-vs-now.md)** - Doc coherence: first commits vs now, what's fixed
+- **[07 Design System](./04-reference/07-design-system.md)** - Tokens, spacing, buttons, cross-platform
 - **[09 Current vs Final Solution](./04-reference/09-current-vs-final-solution.md)** - Implementation status: Web vs Mobile, gaps, roadmap alignment
 - **[12 Local Development](./04-reference/12-local-development.md)** - Full local Supabase setup, env config, Stripe testing, troubleshooting
-- **[13 Responsive Design](./04-reference/13-responsive-design.md)** - Breakpoints, padding rules, responsive checklist for web and mobile
-- **[17 Spacing Usage Guide](./04-reference/17-spacing-usage-guide.md)** - Spacing tokens, semantic rules, audit checklist
+- **[13 Stripe Setup](./04-reference/13-stripe-setup.md)** - Stripe setup, products, webhook, env validation
+- **[16 Route Map](./04-reference/16-route-map.md)** - Authoritative route list
+
+### 🚀 Deployment (`05-deployment/`)
+- **[01 GitHub & Vercel Setup](./05-deployment/01-github-vercel-setup.md)** - CI/CD, Vercel env, Stripe
+- **[02 Releases](./05-deployment/02-releases.md)** - Versioning, migrations, pre-deploy checklist
 
 ### 🔗 Core Product Docs (`01-core/`)
 - **[README](./01-core/README.md)** - Reference to main product docs + in-repo pipelines
@@ -111,13 +104,12 @@ docs/
 
 3. **For Overview & Onboarding**: 
    - Architecture: `00-architecture-overview.md`
-   - Product: `00-product-overview.md`
+   - Product/context: `00-current-context.md`
    - Developer onboarding: `00-developer-onboarding.md`
    - Start Here: `04-reference/03-start-here.md`
 
 4. **For Reference Guides**: 
-   - Context7: `04-reference/02-context7-usage.md`
-   - Cursor rules: `04-reference/02-cursor-rules-guide.md`
+   - Developer tooling (Context7, Cursor rules): `04-reference/02-developer-tooling.md`
    - Pages comparison: `04-reference/04-pages-comparison.md`
    - Current vs final: `04-reference/09-current-vs-final-solution.md`
    - Route map: `04-reference/16-route-map.md`
@@ -125,7 +117,7 @@ docs/
 
 5. **For Product Context**: See `01-core/README.md`
 
-6. **For Testing**: See `05-testing/01-playwright-e2e.md` — Playwright E2E setup, auth, CI
+6. **For Testing**: See `06-testing/01-playwright-e2e.md` — Playwright E2E setup, auth, CI
 
 ---
 
@@ -141,4 +133,19 @@ See `../rebuild-roadmap/` for:
 
 ---
 
-**Last Updated**: 2026-03-09
+## Organization & Hierarchy
+
+- **01-core/**: Core product — pipelines, audio, marketplace, LLM
+- **02-mobile/**: Mobile-only — tech stack, architecture, implementation
+- **03-platforms/**: Cross-platform — multi-platform strategy, browser optimization
+- **04-reference/**: Reference guides — SSOT for pages, routes, design, local dev
+- **05-deployment/**: Deployment — GitHub, Vercel, Stripe
+- **06-testing/**: Testing — Playwright E2E
+
+**Numbering**: Folders use `01-`, `02-` prefix; files use sequential numbering within folders. Mobile-specific → `02-mobile/`; cross-platform → `03-platforms/`.
+
+**AI context**: [`../CONTEXT-FOR-AI.md`](../CONTEXT-FOR-AI.md) — canonical current implementation reference for AI assistants.
+
+---
+
+**Last Updated**: 2026-03-13

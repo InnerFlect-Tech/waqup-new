@@ -354,11 +354,11 @@ export default function PricingPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Failed to start checkout');
+        throw new Error(data.error || t('errors.checkoutStartFailed'));
       }
 
       const { url } = await res.json();
-      if (!url) throw new Error('No checkout URL returned');
+      if (!url) throw new Error(t('errors.noCheckoutUrl'));
 
       const plan = getPlanById(planId);
       Analytics.paymentStarted('subscription', plan?.price ?? 0, plan?.currency ?? 'EUR');
@@ -367,11 +367,7 @@ export default function PricingPage() {
       const message = err instanceof Error ? err.message : t('errors.checkoutFailed');
       const isStripePrice =
         typeof message === 'string' && (message.includes('No such price') || message.includes('no such price'));
-      setError(
-        isStripePrice
-          ? 'This plan is not set up in Stripe for this environment. Please check that your Stripe keys and price IDs use the same account and mode (test vs live).'
-          : message,
-      );
+      setError(isStripePrice ? t('errors.stripePriceNotConfigured') : message);
     } finally {
       setLoading(null);
     }

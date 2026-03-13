@@ -23,6 +23,7 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/pricing', section: 'Marketing', description: 'Pricing & plans', status: 'exists', completeness: 'complete' },
   { path: '/explanation', section: 'Marketing', description: 'The Science — why voice + affirmations work', status: 'exists', completeness: 'complete' },
   { path: '/our-story', section: 'Marketing', description: 'Our Story — founder narrative', status: 'exists', completeness: 'complete' },
+  { path: '/community', section: 'Marketing', description: 'Community — collective intention', status: 'exists', completeness: 'complete' },
   { path: '/join', section: 'Marketing', description: 'Founding member sign-up', status: 'exists', completeness: 'complete' },
   { path: '/waitlist', section: 'Marketing', description: 'Join the waitlist (multi-step form)', status: 'exists', completeness: 'complete' },
   { path: '/get-qs', section: 'Marketing', description: 'Public Q packs — view without login; sign in required to purchase', status: 'exists', completeness: 'wired' },
@@ -48,8 +49,9 @@ export const APP_ROUTES: RouteEntry[] = [
   { path: '/coming-soon', section: 'Auth', description: 'Access gate — shown to logged-in users pending waitlist approval', status: 'exists', completeness: 'complete' },
 
   // ── Onboarding ─────────────────────────────────────────────────────────────
-  { path: '/onboarding', section: 'Onboarding', description: 'Intention selector', status: 'exists', completeness: 'placeholder' },
-  { path: '/onboarding/profile', section: 'Onboarding', description: 'Profile setup', status: 'exists', completeness: 'placeholder' },
+  { path: '/onboarding', section: 'Onboarding', description: 'Why + Intention selector', status: 'exists', completeness: 'complete' },
+  { path: '/onboarding/voice', section: 'Onboarding', description: 'Voice cloning (IVC)', status: 'exists', completeness: 'complete' },
+  { path: '/onboarding/profile', section: 'Onboarding', description: 'Profile setup', status: 'exists', completeness: 'complete' },
   { path: '/onboarding/preferences', section: 'Onboarding', description: 'Preferences', status: 'exists', completeness: 'placeholder' },
   { path: '/onboarding/guide', section: 'Onboarding', description: 'Getting started guide', status: 'exists', completeness: 'placeholder' },
   { path: '/onboarding/role', section: 'Onboarding', description: 'Role selection', status: 'exists', completeness: 'placeholder' },
@@ -68,6 +70,7 @@ export const APP_ROUTES: RouteEntry[] = [
   // ── Sanctuary ──────────────────────────────────────────────────────────────
   { path: '/sanctuary', section: 'Sanctuary', description: 'Sanctuary home dashboard', status: 'exists', completeness: 'complete' },
   { path: '/sanctuary/settings', section: 'Sanctuary', description: 'Account settings', status: 'exists', completeness: 'stub' },
+  { path: '/sanctuary/settings/about', section: 'Sanctuary', description: 'About & acknowledgments (version, changelog, credits)', status: 'exists', completeness: 'complete' },
   { path: '/sanctuary/voice', section: 'Sanctuary', description: 'Voice cloning setup', status: 'exists', completeness: 'wired' },
   { path: '/sanctuary/voices', section: 'Sanctuary', description: 'Voice library browser', status: 'exists', completeness: 'wired' },
   { path: '/sanctuary/progress', section: 'Sanctuary', description: 'Progress tracking & XP', status: 'exists', completeness: 'stub' },

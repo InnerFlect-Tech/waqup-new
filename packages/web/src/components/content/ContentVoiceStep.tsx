@@ -6,10 +6,18 @@ import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius, BLUR } from '@/theme';
+import { spacing, borderRadius, BLUR, SCRIPT_READ_MAX_HEIGHT } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
+import { RecordingWaveform } from './RecordingWaveform';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
-import { Mic, Sparkles, Square, Play, Pause, Trash2, BookAudio, Check, ChevronLeft, Loader2, AlertCircle } from 'lucide-react';
+import { CONTENT_TYPE_META } from '@/lib/creation-steps';
+import {
+  CONTENT_CREDIT_COSTS,
+  RECORDING_LIMITS_SEC,
+  getTtsCreditsForScript,
+  estimateDurationMinutes,
+} from '@waqup/shared/constants';
+import { Mic, Sparkles, Square, Play, Pause, Trash2, BookAudio, Check, ChevronLeft, Loader2, AlertCircle, RefreshCw, ChevronRight } from 'lucide-react';
 import type { UserVoice } from '@waqup/shared/types';
 import { RELATIONSHIP_META } from '@waqup/shared/types';
 import { getVoices } from '@/lib/api-client';
@@ -26,7 +34,9 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
   const { theme } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
-  const { setCurrentStep, setVoiceId, setVoiceType, setOwnVoiceUrl } = useContentCreation();
+  const { contentType, script, setCurrentStep, setVoiceId, setVoiceType, setOwnVoiceUrl } = useContentCreation();
+  const meta = CONTENT_TYPE_META[contentType];
+  const maxRecordingSec = RECORDING_LIMITS_SEC[contentType];
 
   const [choice, setChoice] = useState<VoiceChoice>(null);
   const [recordState, setRecordState] = useState<RecordState>('idle');
@@ -41,11 +51,62 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
   const [libraryLoading, setLibraryLoading] = useState(false);
   const [selectedLibraryVoice, setSelectedLibraryVoice] = useState<UserVoice | null>(null);
   const [micError, setMicError] = useState<string | null>(null);
+  const [recordingStream, setRecordingStream] = useState<MediaStream | null>(null);
+  const [lineByLineMode, setLineByLineMode] = useState(true);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+
+  const scriptLines = script
+    ? script
+        .split('\n')
+        .map((l) => l.trim())
+        .filter(Boolean)
+    : [];
+  const isAffirmation = contentType === 'affirmation';
+  const isRitual = contentType === 'ritual';
+  const canUseLineByLine =
+    (isAffirmation && scriptLines.length >= 1 && scriptLines.length <= 10) ||
+    (isRitual && scriptLines.length >= 5 && scriptLines.length <= 12);
+  const displayLine = canUseLineByLine && lineByLineMode
+    ? scriptLines[currentLineIndex] ?? scriptLines[0]
+    : null;
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const UPLOAD_TIMEOUT_MS = 30_000;
+
+  const uploadRecording = useCallback((blob: Blob, mime: string) => {
+    setUploadingRecording(true);
+    setUploadError(null);
+    const formData = new FormData();
+    formData.append('file', blob, `recording.${mime.includes('mp4') ? 'mp4' : 'webm'}`);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
+
+    fetch('/api/audio/upload-recording', { method: 'POST', body: formData, signal: controller.signal })
+      .then(async (res) => {
+        const data = (await res.json()) as { url?: string; error?: string };
+        if (!res.ok || !data.url) {
+          setUploadError(data.error ?? 'Upload failed. Please try again or re-record.');
+        } else {
+          setUploadedUrl(data.url);
+        }
+      })
+      .catch((err) => {
+        if (err?.name === 'AbortError') {
+          setUploadError('Upload timed out. Please check your connection and try again.');
+        } else {
+          setUploadError('Recording could not be uploaded. Please check your connection and try again.');
+        }
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        setUploadingRecording(false);
+      });
+  }, []);
 
   const startRecording = useCallback(async () => {
     try {
@@ -71,6 +132,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
       mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
 
       mr.onstop = () => {
+        setRecordingStream(null);
         stream.getTracks().forEach((t) => t.stop());
         const blob = new Blob(chunksRef.current, { type: detectedMime });
         const url = URL.createObjectURL(blob);
@@ -78,37 +140,29 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
         setAudioUrl(url);
         setRecordState('recorded');
         setUploadError(null);
-
-        // Upload the recording to Supabase Storage so it can be used by the render route
-        setUploadingRecording(true);
-        const formData = new FormData();
-        formData.append('file', blob, `recording.${detectedMime.includes('mp4') ? 'mp4' : 'webm'}`);
-        fetch('/api/audio/upload-recording', { method: 'POST', body: formData })
-          .then(async (res) => {
-            const data = (await res.json()) as { url?: string; error?: string };
-            if (!res.ok || !data.url) {
-              setUploadError(data.error ?? 'Upload failed — you can still continue, but playback may not work until re-recorded.');
-            } else {
-              setUploadedUrl(data.url);
-            }
-          })
-          .catch(() => {
-            setUploadError('Recording could not be uploaded. Please check your connection and try again.');
-          })
-          .finally(() => {
-            setUploadingRecording(false);
-          });
+        uploadRecording(blob, detectedMime);
       };
 
       mr.start();
       mediaRecorderRef.current = mr;
+      setRecordingStream(stream);
       setRecordState('recording');
       setDuration(0);
-      timerRef.current = setInterval(() => setDuration((d) => d + 1), 1000);
+      timerRef.current = setInterval(() => {
+        setDuration((d) => {
+          const next = d + 1;
+          if (next >= maxRecordingSec) {
+            mediaRecorderRef.current?.stop();
+            if (timerRef.current) clearInterval(timerRef.current);
+            return maxRecordingSec;
+          }
+          return next;
+        });
+      }, 1000);
     } catch {
       setMicError('Microphone access is required. Please allow access in your browser settings and try again.');
     }
-  }, []);
+  }, [maxRecordingSec, uploadRecording]);
 
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
@@ -120,8 +174,13 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
     if (!audioRef.current) {
       audioRef.current = new Audio(audioUrl);
       audioRef.current.onended = () => setRecordState('recorded');
+      audioRef.current.onerror = () => {
+        setUploadError('This browser cannot play back the recording format. Try re-recording or use a different browser.');
+      };
     }
-    audioRef.current.play();
+    audioRef.current.play().catch(() => {
+      setUploadError('Playback failed. This format may not be supported in your browser.');
+    });
     setRecordState('playing');
   }, [audioUrl]);
 
@@ -201,6 +260,27 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
           Your own voice is the most powerful option. A professional voice works beautifully too.
         </Typography>
       </motion.div>
+
+      {/* Cost estimator — when script exists */}
+      {script && script.trim().length > 0 && (
+        <div
+          style={{
+            padding: spacing.md,
+            borderRadius: borderRadius.lg,
+            background: colors.glass.light,
+            border: `1px solid ${colors.glass.border}`,
+            marginBottom: spacing.lg,
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: spacing.sm,
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+            ~{estimateDurationMinutes(script.length)} min · Own voice: {CONTENT_CREDIT_COSTS[contentType].base} Q · AI voice: {getTtsCreditsForScript(script)} Q
+          </Typography>
+        </div>
+      )}
 
       {/* Voice choice cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: spacing.md, marginBottom: spacing.xl }}>
@@ -357,9 +437,71 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
             >
               {recordState === 'idle' && (
                 <>
-                  <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center' }}>
+                  <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: script ? spacing.md : 0 }}>
                     Read your script aloud in a calm, intentional voice. Take a breath before you start.
                   </Typography>
+                  {script && script.trim().length > 0 && (
+                    <>
+                      {canUseLineByLine && (
+                        <div style={{ display: 'flex', gap: spacing.sm, alignItems: 'center', marginBottom: spacing.sm }}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setLineByLineMode(!lineByLineMode)}
+                            style={{ color: colors.text.secondary, fontSize: 13 }}
+                          >
+                            {lineByLineMode ? 'Read all' : 'Line by line'}
+                          </Button>
+                        </div>
+                      )}
+                      <div
+                        className="script-read-scroll"
+                        style={{
+                          width: '100%',
+                          maxHeight: SCRIPT_READ_MAX_HEIGHT,
+                          minHeight: 120,
+                          overflowY: displayLine ? 'hidden' : 'auto',
+                          overflowX: 'hidden',
+                          padding: spacing.lg,
+                          borderRadius: borderRadius.lg,
+                          background: colors.glass.medium,
+                          border: `1px solid ${colors.glass.border}`,
+                          scrollbarGutter: 'stable',
+                        }}
+                      >
+                        <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
+                          {displayLine ? `Line ${currentLineIndex + 1} of ${scriptLines.length}` : 'Your script to read'}
+                        </Typography>
+                        {displayLine ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={currentLineIndex <= 0}
+                              onClick={() => setCurrentLineIndex((i) => Math.max(0, i - 1))}
+                            >
+                              <ChevronLeft size={18} />
+                            </Button>
+                            <Typography variant="body" style={{ color: colors.text.primary, lineHeight: 1.7, fontSize: 17, flex: 1, textAlign: 'center' }}>
+                              {displayLine}
+                            </Typography>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={currentLineIndex >= scriptLines.length - 1}
+                              onClick={() => setCurrentLineIndex((i) => Math.min(scriptLines.length - 1, i + 1))}
+                            >
+                              <ChevronRight size={18} />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Typography variant="body" style={{ color: colors.text.primary, lineHeight: 1.7, whiteSpace: 'pre-wrap', fontSize: 15 }}>
+                            {script}
+                          </Typography>
+                        )}
+                      </div>
+                    </>
+                  )}
                   {micError && (
                     <div
                       style={{
@@ -392,6 +534,56 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
 
               {recordState === 'recording' && (
                 <>
+                  {script && (
+                    <div
+                      className="script-read-scroll"
+                      style={{
+                        width: '100%',
+                        maxHeight: SCRIPT_READ_MAX_HEIGHT,
+                        overflowY: displayLine ? 'hidden' : 'auto',
+                        overflowX: 'hidden',
+                        padding: spacing.lg,
+                        borderRadius: borderRadius.lg,
+                        background: colors.glass.medium,
+                        border: `1px solid ${colors.glass.border}`,
+                        textAlign: 'left',
+                      }}
+                    >
+                      {displayLine ? (
+                        <>
+                          <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm, display: 'block' }}>
+                            Line {currentLineIndex + 1} of {scriptLines.length}
+                          </Typography>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={currentLineIndex <= 0}
+                              onClick={() => setCurrentLineIndex((i) => Math.max(0, i - 1))}
+                            >
+                              <ChevronLeft size={18} />
+                            </Button>
+                            <Typography variant="body" style={{ color: colors.text.primary, lineHeight: 1.7, fontSize: 17, flex: 1, textAlign: 'center' }}>
+                              {displayLine}
+                            </Typography>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={currentLineIndex >= scriptLines.length - 1}
+                              onClick={() => setCurrentLineIndex((i) => Math.min(scriptLines.length - 1, i + 1))}
+                            >
+                              <ChevronRight size={18} />
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <Typography variant="body" style={{ color: colors.text.primary, lineHeight: 1.7, whiteSpace: 'pre-wrap', fontSize: 14 }}>
+                          {script}
+                        </Typography>
+                      )}
+                    </div>
+                  )}
+                  <RecordingWaveform stream={recordingStream} style={{ marginBottom: spacing.sm }} />
                   <motion.div
                     animate={{ scale: [1, 1.08, 1], opacity: [0.8, 1, 0.8] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
@@ -409,7 +601,7 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
                     <Mic size={28} color="#ef4444" />
                   </motion.div>
                   <Typography variant="h3" style={{ color: '#ef4444', margin: 0 }}>
-                    {formatDuration(duration)}
+                    {formatDuration(duration)} / {formatDuration(maxRecordingSec)} max
                   </Typography>
                   <Button
                     variant="ghost"
@@ -440,15 +632,27 @@ export function ContentVoiceStep({ backHref, nextHref }: ContentVoiceStepProps) 
                   )}
                   {uploadError && !uploadingRecording && (
                     <div style={{
-                      display: 'flex', alignItems: 'flex-start', gap: spacing.sm,
+                      display: 'flex', flexDirection: 'column', gap: spacing.sm,
                       padding: `${spacing.sm} ${spacing.md}`,
                       borderRadius: 8, background: `${colors.error}12`,
                       border: `1px solid ${colors.error}30`,
                     }}>
-                      <AlertCircle size={14} color={colors.error} style={{ flexShrink: 0, marginTop: 2 }} />
-                      <Typography variant="small" style={{ color: colors.error, margin: 0 }}>
-                        {uploadError}
-                      </Typography>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: spacing.sm }}>
+                        <AlertCircle size={14} color={colors.error} style={{ flexShrink: 0, marginTop: 2 }} />
+                        <Typography variant="small" style={{ color: colors.error, margin: 0 }}>
+                          {uploadError}
+                        </Typography>
+                      </div>
+                      {audioBlob && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => uploadRecording(audioBlob, recordingMime)}
+                          style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, alignSelf: 'flex-start' }}
+                        >
+                          <RefreshCw size={13} /> Retry upload
+                        </Button>
+                      )}
                     </div>
                   )}
                   {uploadedUrl && !uploadingRecording && !uploadError && (

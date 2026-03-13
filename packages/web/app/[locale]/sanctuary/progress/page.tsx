@@ -323,7 +323,7 @@ export default function ProgressPage() {
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <style>{`
         @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.8} }
         @keyframes flamePulse { 0%,100%{transform:scale(1) rotate(-3deg)} 50%{transform:scale(1.12) rotate(3deg)} }

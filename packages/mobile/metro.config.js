@@ -26,14 +26,26 @@ const config = getDefaultConfig(projectRoot);
 // Monorepo: allow Metro to watch files from the entire workspace
 config.watchFolders = [workspaceRoot];
 
-// Monorepo: resolve modules from workspace root node_modules first, then project
+// Monorepo: resolve from workspace root FIRST to avoid duplicate native modules
+// (e.g. RNCSafeAreaProvider - must use single hoisted copy)
 config.resolver.nodeModulesPaths = [
-  path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
+  path.resolve(projectRoot, 'node_modules'),
 ];
 
 // Support package.json `exports` field for @waqup/shared sub-path imports
 // e.g. @waqup/shared/schemas, @waqup/shared/stores, @waqup/shared/theme
 config.resolver.unstable_enablePackageExports = true;
+
+// Force single resolution for react-native-safe-area-context to avoid
+// "Tried to register two views with the same name RNCSafeAreaProvider"
+const safeAreaPath = path.resolve(
+  workspaceRoot,
+  'node_modules/react-native-safe-area-context'
+);
+config.resolver.extraNodeModules = {
+  ...config.resolver.extraNodeModules,
+  'react-native-safe-area-context': safeAreaPath,
+};
 
 module.exports = config;

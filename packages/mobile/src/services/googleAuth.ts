@@ -1,19 +1,28 @@
 import * as WebBrowser from 'expo-web-browser';
-import * as Linking from 'expo-linking';
 import { supabase } from './supabase';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const REDIRECT_PATH = 'auth/callback';
+/**
+ * OAuth redirect URL for mobile. Uses custom scheme so the redirect stays in-app
+ * (no Safari handoff). Supabase redirects to waqup://auth/callback?code=xxx and
+ * openAuthSessionAsync receives it.
+ *
+ * Add to Supabase Redirect URLs: waqup://auth/callback
+ */
+const MOBILE_REDIRECT_URL = 'waqup://auth/callback';
 
 /**
  * Opens Google OAuth flow in a browser session and exchanges the code for a
  * Supabase session. Once the session is set, the shared auth store's
  * onAuthStateChange listener fires SIGNED_IN and navigation happens automatically.
+ *
+ * Uses waqup://auth/callback so the redirect returns to the app (in-app browser),
+ * not Safari.
  */
 export async function signInWithGoogle(): Promise<{ success: boolean; error: string | null }> {
   try {
-    const redirectUrl = Linking.createURL(REDIRECT_PATH);
+    const redirectUrl = MOBILE_REDIRECT_URL;
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -27,7 +36,9 @@ export async function signInWithGoogle(): Promise<{ success: boolean; error: str
       return { success: false, error: error?.message ?? 'Failed to initiate Google sign-in.' };
     }
 
-    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl, {
+      preferEphemeralSession: false,
+    });
 
     if (result.type === 'cancel' || result.type === 'dismiss') {
       return { success: false, error: null }; // User cancelled — not an error

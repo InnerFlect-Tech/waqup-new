@@ -124,7 +124,10 @@
   },
   "errors": {
     "checkoutNotConfigured": "Checkout is not yet configured for this plan. Please contact support.",
-    "checkoutFailed": "Something went wrong. Please try again."
+    "checkoutFailed": "Something went wrong. Please try again.",
+    "checkoutStartFailed": "Failed to start checkout",
+    "noCheckoutUrl": "No checkout URL returned",
+    "stripePriceNotConfigured": "This plan is not set up in Stripe for this environment. Please check that your Stripe keys and price IDs use the same account and mode (test vs live)."
   },
   "transactions": {
     "title": "Transaction History",

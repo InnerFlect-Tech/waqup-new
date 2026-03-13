@@ -62,7 +62,7 @@ export default function CreatePage() {
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
         {/* Primary: conversational entry */}
         <motion.div

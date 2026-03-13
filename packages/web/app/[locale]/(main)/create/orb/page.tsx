@@ -63,6 +63,7 @@ function OrbPageInner() {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const conversationRef = useRef<Array<{ role: 'user' | 'assistant'; content: string }>>([]);
   const stepIndexRef = useRef(0);
+  const isMountedRef = useRef(true);
 
   // Web Audio for TTS playback + orb reactivity
   const audioCtxRef        = useRef<AudioContext | null>(null);
@@ -88,6 +89,35 @@ function OrbPageInner() {
     }
   });
 
+  // ── Cleanup on unmount: stop TTS, speech recognition, and audio resources ──
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      // Stop Web Audio TTS
+      if (ttsCurrentSrcRef.current) {
+        try { ttsCurrentSrcRef.current.stop(); } catch { /* ignore */ }
+        ttsCurrentSrcRef.current = null;
+      }
+      cancelAnimationFrame(ttsRafRef.current);
+      masterFreqRef.current = null;
+      // Stop browser speechSynthesis
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      // Stop speech recognition
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch { /* ignore */ }
+        recognitionRef.current = null;
+      }
+      // Close AudioContext to release resources
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close().catch(() => {});
+        audioCtxRef.current = null;
+      }
+      startListeningRef.current = null;
+    };
+  }, []);
+
   // ── Web Audio TTS: plays audio through AnalyserNode → orb reactivity ──────
   const initTtsAudio = useCallback(() => {
     if (audioCtxRef.current) return;
@@ -106,8 +136,10 @@ function OrbPageInner() {
     masterFreqRef.current    = null;
     ttsCurrentSrcRef.current = null;
     setOrbState('idle');
-    // Auto-start listening after AI speaks (uses stable ref to avoid circular dep)
-    setTimeout(() => startListeningRef.current?.(), 200);
+    // Auto-start listening after AI speaks — only if component still mounted
+    if (isMountedRef.current) {
+      setTimeout(() => startListeningRef.current?.(), 200);
+    }
   }, []);
 
   // ── TTS: reads admin config from localStorage ──────────────────────────────
@@ -418,7 +450,7 @@ function OrbPageInner() {
   const currentStepPipelineData = selectedType ? ALL_PIPELINE_STEPS.find((s) => s.step === currentStep) : null;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <div
         style={{
           maxWidth: 680,

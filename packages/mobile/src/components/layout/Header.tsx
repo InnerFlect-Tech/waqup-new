@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ViewStyle, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@/theme';
-import { Typography } from '@/components';
+import { Typography } from '@/components/ui';
 import { spacing, borderRadius } from '@/theme';
 // Icons will be imported from @expo/vector-icons or custom icon component
 // For now, using simple text/emoji as placeholder

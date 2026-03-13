@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Typography, Button, Input, PageShell } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, CONTENT_MEDIUM, GRID_CARD_MIN } from '@/theme';
@@ -18,10 +19,13 @@ import {
   Shield,
   Zap,
   ArrowRight,
+  ArrowLeft,
   BarChart3,
   TrendingDown,
   Lock,
 } from 'lucide-react';
+
+const REFERRAL_OPTION_KEYS = ['socialMedia', 'friendFamily', 'newsletter', 'podcast', 'search', 'other'] as const;
 
 /** Repayment scenarios: monthly revenue → months to 1.2× (at 12.5% share) */
 const REPAYMENT_SCENARIOS = [
@@ -32,10 +36,10 @@ const REPAYMENT_SCENARIOS = [
   { label: '€25,000/mo', revenue: 25000, months: 1.92, share: 0.125 },
 ];
 
-const INVESTOR_PACKAGES = [
+const FOUNDING_PARTNER_PACKAGES = [
   {
     id: 'seed',
-    name: 'Seed Investor',
+    nameKey: 'seed',
     amount: '~€5,000',
     returnExample: '€6,000 back (1.2×)',
     badge: 'Closed package',
@@ -45,7 +49,7 @@ const INVESTOR_PACKAGES = [
   },
   {
     id: 'production',
-    name: 'Production Partner Investor',
+    nameKey: 'production',
     amount: '€50,000',
     returnExample: '€60,000 back (1.2×)',
     badge: 'Closed package',
@@ -56,7 +60,7 @@ const INVESTOR_PACKAGES = [
   },
   {
     id: 'marketing',
-    name: 'Marketing Partner Investor',
+    nameKey: 'marketing',
     amount: '€100,000',
     returnExample: '€120,000 back (1.2×)',
     badge: 'Closed package',
@@ -67,7 +71,7 @@ const INVESTOR_PACKAGES = [
   },
   {
     id: 'promotion',
-    name: 'Promotion Investor',
+    nameKey: 'promotion',
     amount: 'No max',
     returnExample: 'ROI per agreement — uncapped',
     badge: 'Open',
@@ -98,13 +102,19 @@ const OTHER_WAYS = [
 ];
 
 export default function InvestorsPage() {
+  const t = useTranslations('marketing.investors');
   const { theme } = useTheme();
   const colors = theme.colors;
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [formStep, setFormStep] = useState(0);
+  const [formDirection, setFormDirection] = useState(1);
   const [formState, setFormState] = useState<{
     name: string;
     email: string;
     interest: string;
+    phone: string;
+    company: string;
+    referral_source: string;
     message: string;
     status: 'idle' | 'loading' | 'success' | 'error';
     error?: string;
@@ -112,9 +122,31 @@ export default function InvestorsPage() {
     name: '',
     email: '',
     interest: '',
+    phone: '',
+    company: '',
+    referral_source: '',
     message: '',
     status: 'idle',
   });
+
+  const goNext = () => {
+    setFormState((s) => ({ ...s, error: '' }));
+    if (formStep === 0) {
+      if (!formState.name.trim()) { setFormState((s) => ({ ...s, error: t('errors.nameRequired') })); return; }
+      if (!formState.email.trim() || !formState.email.includes('@')) { setFormState((s) => ({ ...s, error: t('errors.emailInvalid') })); return; }
+    }
+    if (formStep === 1 && !formState.interest) {
+      setFormState((s) => ({ ...s, error: t('errors.interestRequired') })); return;
+    }
+    setFormDirection(1);
+    setFormStep((s) => s + 1);
+  };
+
+  const goBack = () => {
+    setFormState((s) => ({ ...s, error: '' }));
+    setFormDirection(-1);
+    setFormStep((s) => s - 1);
+  };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,20 +156,23 @@ export default function InvestorsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formState.name,
-          email: formState.email,
+          name: formState.name.trim(),
+          email: formState.email.trim().toLowerCase(),
           interest: formState.interest || undefined,
-          message: formState.message || undefined,
+          phone: formState.phone.trim() || undefined,
+          company: formState.company.trim() || undefined,
+          referral_source: formState.referral_source || undefined,
+          message: formState.message.trim() || undefined,
         }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setFormState((s) => ({ ...s, status: 'error', error: data.error || 'Something went wrong' }));
+        setFormState((s) => ({ ...s, status: 'error', error: data.error ?? t('errors.generic') }));
         return;
       }
-      setFormState({ name: '', email: '', interest: '', message: '', status: 'success' });
+      setFormState((s) => ({ ...s, status: 'success' }));
     } catch {
-      setFormState((s) => ({ ...s, status: 'error', error: 'Failed to send. Please try again.' }));
+      setFormState((s) => ({ ...s, status: 'error', error: t('errors.networkError') }));
     }
   };
 
@@ -184,7 +219,7 @@ export default function InvestorsPage() {
             fontWeight: 300,
           }}
         >
-          Investor Proposition
+          Founding Partner Proposition
         </Typography>
         <Typography
           variant="body"
@@ -267,7 +302,7 @@ export default function InvestorsPage() {
         </div>
       </section>
 
-      {/* Investment Packages */}
+      {/* Founding Partner Packages */}
       <section
         style={{
           padding: `clamp(${spacing.lg}, 5vw, ${spacing.xxl}) clamp(${spacing.md}, 4vw, ${spacing.xl})`,
@@ -276,7 +311,7 @@ export default function InvestorsPage() {
         }}
       >
         <Typography variant="h2" style={{ marginBottom: spacing.lg, color: colors.text.primary, textAlign: 'center', fontSize: 'clamp(22px, 5vw, 28px)' }}>
-          Investment Packages
+          Founding Partner Packages
         </Typography>
         <Typography
           variant="body"
@@ -297,7 +332,7 @@ export default function InvestorsPage() {
             gap: `clamp(${spacing.lg}, 3vw, ${spacing.xl})`,
           }}
         >
-          {INVESTOR_PACKAGES.filter((p) => p.id !== 'promotion').map((pkg) => {
+          {FOUNDING_PARTNER_PACKAGES.filter((p) => p.id !== 'promotion').map((pkg) => {
             const IconComponent = pkg.icon;
             const accent = accentMap[pkg.color];
             return (
@@ -358,7 +393,7 @@ export default function InvestorsPage() {
                   <IconComponent size={24} color={accent} strokeWidth={2} />
                 </div>
                 <Typography variant="h3" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
-                  {pkg.name}
+                  {t(`interestOptions.${pkg.nameKey}`)}
                 </Typography>
                 <Typography
                   variant="h1"
@@ -389,7 +424,7 @@ export default function InvestorsPage() {
 
         {/* Promotion Investor - full-width banner */}
         {(() => {
-          const pkg = INVESTOR_PACKAGES.find((p) => p.id === 'promotion');
+          const pkg = FOUNDING_PARTNER_PACKAGES.find((p) => p.id === 'promotion');
           if (!pkg) return null;
           const IconComponent = pkg.icon;
           const accent = colors.accent.primary;
@@ -437,7 +472,7 @@ export default function InvestorsPage() {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <Typography variant="h4" style={{ color: colors.text.primary, marginBottom: spacing.xs }}>
-                  {pkg.name}
+                  {t(`interestOptions.${pkg.nameKey}`)}
                 </Typography>
                 <Typography
                   variant="h1"
@@ -1232,109 +1267,232 @@ export default function InvestorsPage() {
           {formState.status === 'success' ? (
             <div style={{ textAlign: 'center', padding: spacing.xl }}>
               <Typography variant="h4" style={{ color: colors.accent.primary, marginBottom: spacing.sm }}>
-                Message sent
+                {t('page.success')}
               </Typography>
-              <Typography variant="body" style={{ color: colors.text.secondary }}>
-                We&apos;ll get back to you soon.
+              <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg }}>
+                {t('page.successBody')}
+              </Typography>
+              <Typography variant="small" style={{ color: colors.text.tertiary, maxWidth: 400, margin: '0 auto' }}>
+                {t('page.successConfidential')}
               </Typography>
             </div>
           ) : (
-            <form onSubmit={handleContactSubmit} style={{ maxWidth: 480, margin: '0 auto' }}>
-              <div style={{ marginBottom: spacing.lg }}>
-                <Input
-                  label="Name"
-                  type="text"
-                  placeholder="Your name"
-                  value={formState.name}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, name: e.target.value }))}
-                  required
-                  disabled={formState.status === 'loading'}
-                />
-              </div>
-              <div style={{ marginBottom: spacing.lg }}>
-                <Input
-                  label="Email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={formState.email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, email: e.target.value }))}
-                  required
-                  disabled={formState.status === 'loading'}
-                />
-              </div>
-              <div style={{ marginBottom: spacing.lg }}>
-                <label>
-                  <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
-                    Interest
-                  </Typography>
-                  <select
-                    value={formState.interest}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormState((s) => ({ ...s, interest: e.target.value }))}
-                    disabled={formState.status === 'loading'}
+            <div style={{ maxWidth: 480, margin: '0 auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: spacing.xl }}>
+                {[0, 1, 2].map((i) => (
+                  <div
+                    key={i}
                     style={{
-                      width: '100%',
-                      padding: `${spacing.sm} ${spacing.md}`,
-                      minHeight: 48,
-                      borderRadius: borderRadius.md,
-                      border: `1px solid ${colors.glass.border}`,
-                      background: colors.glass.light,
-                      color: colors.text.primary,
-                      fontSize: 15,
-                    }}
-                  >
-                    <option value="">Select an option</option>
-                    <option value="seed">Seed Investor</option>
-                    <option value="production">Production Partner Investor</option>
-                    <option value="marketing">Marketing Partner Investor</option>
-                    <option value="promotion">Promotion Investor</option>
-                    <option value="influencer">Influencer</option>
-                    <option value="content-creator">Content Creator</option>
-                    <option value="other">Other</option>
-                  </select>
-                </label>
-              </div>
-              <div style={{ marginBottom: spacing.xl }}>
-                <label>
-                  <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
-                    Message
-                  </Typography>
-                  <textarea
-                    value={formState.message}
-                    onChange={(e) => setFormState((s) => ({ ...s, message: e.target.value }))}
-                    disabled={formState.status === 'loading'}
-                    placeholder="Tell us about your interest..."
-                    rows={4}
-                    style={{
-                      width: '100%',
-                      padding: `${spacing.sm} ${spacing.md}`,
-                      minHeight: 100,
-                      borderRadius: borderRadius.md,
-                      border: `1px solid ${colors.glass.border}`,
-                      background: colors.glass.light,
-                      color: colors.text.primary,
-                      fontSize: 15,
-                      resize: 'vertical',
-                      fontFamily: 'inherit',
+                      width: i === formStep ? 24 : 8,
+                      height: 8,
+                      borderRadius: 999,
+                      background: i === formStep ? colors.gradients.primary : i < formStep ? `${colors.accent.primary}80` : `${colors.text.primary}1f`,
+                      transition: 'all 0.3s ease',
                     }}
                   />
-                </label>
+                ))}
               </div>
-              {formState.error && (
-                <Typography variant="small" style={{ color: colors.error || colors.accent.secondary, marginBottom: spacing.md, display: 'block' }}>
+              <AnimatePresence mode="wait" custom={formDirection}>
+                {formStep === 0 && (
+                  <motion.div
+                    key={0}
+                    custom={formDirection}
+                    initial={{ x: formDirection > 0 ? 60 : -60, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: formDirection > 0 ? -60 : 60, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}>
+                      {t('page.joinTitle')}
+                    </Typography>
+                    <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xxl }}>
+                      {t('page.subtitle')}
+                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+                      <Input
+                        placeholder={t('form.namePlaceholder')}
+                        value={formState.name}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, name: e.target.value }))}
+                        autoComplete="name"
+                        disabled={formState.status === 'loading'}
+                      />
+                      <Input
+                        type="email"
+                        placeholder={t('form.emailPlaceholder')}
+                        value={formState.email}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, email: e.target.value }))}
+                        autoComplete="email"
+                        disabled={formState.status === 'loading'}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+                {formStep === 1 && (
+                  <motion.div
+                    key={1}
+                    custom={formDirection}
+                    initial={{ x: formDirection > 0 ? 60 : -60, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: formDirection > 0 ? -60 : 60, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}>
+                      {t('page.interestTitle')}
+                    </Typography>
+                    <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xl }}>
+                      {t('page.interestSubtitle')}
+                    </Typography>
+                    <label>
+                      <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
+                        {t('form.interestLabel')}
+                      </Typography>
+                      <select
+                        value={formState.interest}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormState((s) => ({ ...s, interest: e.target.value }))}
+                        disabled={formState.status === 'loading'}
+                        style={{
+                          width: '100%',
+                          padding: `${spacing.sm} ${spacing.md}`,
+                          minHeight: 44,
+                          borderRadius: borderRadius.md,
+                          border: `1px solid ${colors.glass.border}`,
+                          background: colors.glass.light,
+                          color: colors.text.primary,
+                          fontSize: 15,
+                        }}
+                      >
+                        <option value="">{t('page.selectOption', { default: 'Select an option' })}</option>
+                        <option value="seed">{t('interestOptions.seed')}</option>
+                        <option value="production">{t('interestOptions.production')}</option>
+                        <option value="marketing">{t('interestOptions.marketing')}</option>
+                        <option value="promotion">{t('interestOptions.promotion')}</option>
+                        <option value="influencer">{t('interestOptions.influencer')}</option>
+                        <option value="content-creator">{t('interestOptions.content-creator')}</option>
+                        <option value="other">{t('interestOptions.other')}</option>
+                      </select>
+                    </label>
+                  </motion.div>
+                )}
+                {formStep === 2 && (
+                  <motion.form
+                    key={2}
+                    onSubmit={handleContactSubmit}
+                    custom={formDirection}
+                    initial={{ x: formDirection > 0 ? 60 : -60, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: formDirection > 0 ? -60 : 60, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <Typography variant="h2" style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}>
+                      {t('page.detailsTitle')}
+                    </Typography>
+                    <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginBottom: spacing.xxl }}>
+                      {t('page.detailsSubtitle')}
+                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginBottom: spacing.xl }}>
+                      <Input
+                        type="tel"
+                        placeholder={t('form.phonePlaceholder')}
+                        value={formState.phone}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, phone: e.target.value }))}
+                        disabled={formState.status === 'loading'}
+                      />
+                      <Input
+                        placeholder={t('form.companyPlaceholder')}
+                        value={formState.company}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormState((s) => ({ ...s, company: e.target.value }))}
+                        disabled={formState.status === 'loading'}
+                      />
+                      <div>
+                        <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
+                          {t('form.referralLabel')} <span style={{ color: colors.text.tertiary }}>{t('form.optional')}</span>
+                        </Typography>
+                        <select
+                          value={formState.referral_source}
+                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormState((s) => ({ ...s, referral_source: e.target.value }))}
+                          disabled={formState.status === 'loading'}
+                          style={{
+                            width: '100%',
+                            padding: `${spacing.sm} ${spacing.md}`,
+                            minHeight: 44,
+                            borderRadius: borderRadius.md,
+                            border: `1px solid ${colors.glass.border}`,
+                            background: colors.glass.light,
+                            color: colors.text.primary,
+                            fontSize: 15,
+                          }}
+                        >
+                          <option value="">{t('page.selectOption', { default: 'Select an option' })}</option>
+                          {REFERRAL_OPTION_KEYS.map((key) => (
+                            <option key={key} value={key}>
+                              {t(`referralOptions.${key}`)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <Typography variant="caption" style={{ fontWeight: 500, marginBottom: spacing.sm, display: 'block', color: colors.text.secondary }}>
+                          {t('form.messagePlaceholder')} <span style={{ color: colors.text.tertiary }}>{t('form.optional')}</span>
+                        </Typography>
+                        <textarea
+                          value={formState.message}
+                          onChange={(e) => setFormState((s) => ({ ...s, message: e.target.value }))}
+                          disabled={formState.status === 'loading'}
+                          placeholder={t('form.messagePlaceholder')}
+                          rows={4}
+                          style={{
+                            width: '100%',
+                            padding: `${spacing.sm} ${spacing.md}`,
+                            minHeight: 100,
+                            borderRadius: borderRadius.md,
+                            border: `1px solid ${colors.glass.border}`,
+                            background: colors.glass.light,
+                            color: colors.text.primary,
+                            fontSize: 15,
+                            resize: 'vertical',
+                            fontFamily: 'inherit',
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {formState.error && (
+                      <Typography variant="small" style={{ color: colors.error || colors.accent.secondary, marginBottom: spacing.md, display: 'block' }}>
+                        {formState.error}
+                      </Typography>
+                    )}
+                    <Button type="submit" variant="primary" size="lg" fullWidth disabled={formState.status === 'loading'} style={{ minHeight: 44 }}>
+                      {formState.status === 'loading' ? t('page.submitting') : t('page.submit')}
+                    </Button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+              {formStep < 2 && (
+                <div style={{ display: 'flex', gap: spacing.sm, marginTop: spacing.xl, alignItems: 'center' }}>
+                  {formStep > 0 && (
+                    <Button variant="ghost" onClick={goBack} style={{ flexShrink: 0 }}>
+                      <ArrowLeft size={16} />
+                    </Button>
+                  )}
+                  <Button variant="primary" fullWidth size="lg" onClick={goNext} style={{ minHeight: 44 }}>
+                    {formStep === 0 ? t('page.continue') : t('page.next')} <ArrowRight size={16} style={{ marginLeft: 6 }} />
+                  </Button>
+                </div>
+              )}
+              {formStep === 2 && (
+                <button
+                  type="button"
+                  onClick={goBack}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: spacing.lg, background: 'none', border: 'none', cursor: 'pointer', color: colors.text.tertiary, fontSize: 13, padding: 0 }}
+                >
+                  <ArrowLeft size={13} /> {t('page.back', { default: 'Back' })}
+                </button>
+              )}
+              {formStep < 2 && formState.error && (
+                <Typography variant="small" style={{ color: colors.error, marginTop: spacing.md, textAlign: 'center', display: 'block' }}>
                   {formState.error}
                 </Typography>
               )}
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                fullWidth
-                disabled={formState.status === 'loading'}
-                style={{ padding: `${spacing.lg} ${spacing.xxl}` }}
-              >
-                {formState.status === 'loading' ? 'Sending...' : 'Talk to us'}
-              </Button>
-            </form>
+            </div>
           )}
           <Typography
             variant="small"

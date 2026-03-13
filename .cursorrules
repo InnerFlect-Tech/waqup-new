@@ -106,8 +106,7 @@ This is the **waQup multi-platform rebuild** - building Mobile (React Native + E
 #### 4. Reference Guides (`docs/04-reference/`)
 **Location**: `docs/04-reference/` (this project)
 
-- `02-context7-usage.md` - How to use Context7 for documentation queries
-- `02-cursor-rules-guide.md` - Cursor rules explained and how to use them
+- `02-developer-tooling.md` - Context7 + Cursor rules (how to query docs, rule files)
 
 #### 5. Roadmap & Planning (`rebuild-roadmap/`)
 **Location**: `rebuild-roadmap/` (this project)
@@ -1166,8 +1165,7 @@ const useAuthStore = create<AuthState>((set) => ({
 4. **Tech Stack**: `docs/02-mobile/01-technology-stack.md` - finalized decisions
 5. **Architecture**: `docs/02-mobile/02-architecture.md` - system structure
 6. **Implementation**: `docs/02-mobile/03-implementation.md` - patterns & guide
-7. **Context7 Guide**: `docs/04-reference/02-context7-usage.md` - Context7 usage
-8. **Cursor Rules Guide**: `docs/04-reference/02-cursor-rules-guide.md` - Rules guide
+7. **Developer Tooling**: `docs/04-reference/02-developer-tooling.md` - Context7 + Cursor rules
 9. **Multi-Platform Strategy**: `docs/03-platforms/01-multi-platform-strategy.md` - Platform strategy
 10. **Browser Optimization**: `docs/03-platforms/02-browser-optimization-strategy.md` - Browser strategy
 

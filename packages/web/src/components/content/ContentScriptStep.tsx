@@ -10,8 +10,10 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { ScienceInsight } from './ScienceInsight';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
+import type { ContentItemType } from '@waqup/shared/types';
 import { Sparkles, RefreshCw, Edit3, Check, ChevronLeft } from 'lucide-react';
-import { API_ROUTE_COSTS } from '@waqup/shared/constants';
+import { API_ROUTE_COSTS, CONTENT_CREDIT_COSTS, getTtsCreditsForScript, estimateDurationMinutes } from '@waqup/shared/constants';
+import { parseRitualSections, getRitualSectionsForDisplay } from '@waqup/shared/utils';
 import { generateScript } from '@/lib/api-client';
 
 const SCRIPT_COST = API_ROUTE_COSTS.generateScript;
@@ -54,9 +56,24 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
 
   const [state, setState] = useState<ScriptState>(script ? 'ready' : 'idle');
   const [editValue, setEditValue] = useState(script);
+  const [editLines, setEditLines] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
   const [showRegenerateConfirm, setShowRegenerateConfirm] = useState(false);
+
+  const displayScript = isEditing ? editValue : script;
+  const isAffirmation = contentType === 'affirmation';
+  const isRitual = contentType === 'ritual';
+  const ritualSections = isRitual && displayScript ? parseRitualSections(displayScript) : null;
+  const ritualSectionsForDisplay = ritualSections ? getRitualSectionsForDisplay(ritualSections) : [];
+  const hasRitualSections = ritualSectionsForDisplay.length > 0;
+  const displayLines = displayScript
+    ? displayScript
+        .split('\n')
+        .map((l) => l.trim())
+        .filter(Boolean)
+    : [];
+  const scriptForCost = displayScript ?? script ?? '';
 
   const generate = useCallback(async () => {
     if (!intent.trim()) {
@@ -80,17 +97,33 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
   }, [contentType, intent, context, personalization, locale, setScript]);
 
   const handleSaveEdit = () => {
-    setScript(editValue);
+    const toSave = isAffirmation && editLines.length > 0 ? editLines.join('\n') : editValue;
+    setScript(toSave ?? '');
+    setEditValue(toSave ?? '');
+    setEditLines([]);
     setIsEditing(false);
     setState('ready');
+  };
+
+  const handleStartEdit = () => {
+    setEditValue(script ?? '');
+    if (isAffirmation && displayLines.length > 0) setEditLines(displayLines);
+    setIsEditing(true);
+  };
+
+  const handleLineChange = (index: number, value: string) => {
+    setEditLines((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      setEditValue(next.join('\n'));
+      return next;
+    });
   };
 
   const handleContinue = () => {
     setCurrentStep('script');
     router.push(nextHref);
   };
-
-  const displayScript = isEditing ? editValue : script;
 
   return (
     <div style={{ maxWidth: '48rem', margin: '0 auto' }}>
@@ -106,7 +139,19 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
           {state === 'generating'
             ? 'AI is weaving your intent into language'
             : state === 'idle'
-            ? 'Ready to generate your personalised script'
+            ? isAffirmation
+              ? 'Ready to generate 5 short identity affirmations'
+              : isRitual
+              ? 'Ready to generate your daily conditioning sequence'
+              : contentType === 'meditation'
+              ? 'Ready to generate a short regulation meditation'
+              : 'Ready to generate your personalised script'
+            : isAffirmation
+            ? 'Edit each line, then record in your own voice'
+            : isRitual
+            ? 'Edit each section, then record. A repeatable daily practice.'
+            : contentType === 'meditation'
+            ? 'Edit, then record. Simple, embodied guidance for your nervous system.'
             : 'Read through, edit freely, then record in your own voice'}
         </Typography>
       </motion.div>
@@ -204,6 +249,26 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
             animate={{ opacity: 1, y: 0 }}
             style={{ marginBottom: spacing.xl }}
           >
+            {/* Cost estimator — when script exists */}
+            {scriptForCost.trim().length > 0 && (
+              <div
+                style={{
+                  padding: spacing.md,
+                  borderRadius: borderRadius.lg,
+                  background: colors.glass.light,
+                  border: `1px solid ${colors.glass.border}`,
+                  marginBottom: spacing.lg,
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: spacing.sm,
+                  alignItems: 'center',
+                }}
+              >
+                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
+                  ~{estimateDurationMinutes(scriptForCost.length)} min · Own voice: {CONTENT_CREDIT_COSTS[contentType].base} Q · AI voice: {getTtsCreditsForScript(scriptForCost)} Q
+                </Typography>
+              </div>
+            )}
             <div
               style={{
                 padding: spacing.xl,
@@ -215,7 +280,90 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
                 minHeight: 200,
               }}
             >
-              {!isEditing ? (
+              {isAffirmation && displayLines.length > 0 ? (
+                !isEditing ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4 }}
+                    style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}
+                  >
+                    {displayLines.map((line, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          padding: `${spacing.md} ${spacing.lg}`,
+                          borderRadius: borderRadius.lg,
+                          background: colors.glass.medium,
+                          border: `1px solid ${colors.glass.border}`,
+                        }}
+                      >
+                        <Typography variant="body" style={{ color: colors.text.primary, fontSize: 15 }}>
+                          {line}
+                        </Typography>
+                      </div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                    {(editLines.length > 0 ? editLines : displayLines).map((line, i) => (
+                      <input
+                        key={i}
+                        value={editLines[i] ?? line}
+                        onChange={(e) => handleLineChange(i, e.target.value)}
+                        placeholder={`Line ${i + 1}`}
+                        style={{
+                          width: '100%',
+                          padding: `${spacing.md} ${spacing.lg}`,
+                          borderRadius: borderRadius.lg,
+                          background: colors.glass.medium,
+                          border: `1px solid ${colors.glass.border}`,
+                          color: colors.text.primary,
+                          fontSize: 15,
+                          fontFamily: 'inherit',
+                          outline: 'none',
+                        }}
+                      />
+                    ))}
+                  </div>
+                )
+              ) : isRitual && hasRitualSections && !isEditing ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}
+                >
+                  {ritualSectionsForDisplay.map((section, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        padding: `${spacing.md} ${spacing.lg}`,
+                        borderRadius: borderRadius.lg,
+                        background: colors.glass.medium,
+                        border: `1px solid ${colors.glass.border}`,
+                      }}
+                    >
+                      <Typography
+                        variant="small"
+                        style={{
+                          color: colors.text.secondary,
+                          fontSize: 11,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          marginBottom: spacing.xs,
+                          display: 'block',
+                        }}
+                      >
+                        {section.label}
+                      </Typography>
+                      <Typography variant="body" style={{ color: colors.text.primary, fontSize: 15, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                        {section.content}
+                      </Typography>
+                    </div>
+                  ))}
+                </motion.div>
+              ) : !isEditing ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
                   <Typography
                     variant="body"
@@ -271,7 +419,7 @@ export function ContentScriptStep({ backHref, nextHref }: ContentScriptStepProps
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => { setEditValue(script); setIsEditing(true); }}
+                    onClick={handleStartEdit}
                     style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, color: colors.text.secondary }}
                   >
                     <Edit3 size={14} />

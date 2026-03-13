@@ -1,13 +1,18 @@
+/**
+ * @deprecated Replaced by Create tab -> CreateEntryScreen -> ContentCreate. No longer in stack.
+ */
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainStackParamList } from '@/navigation/types';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { ContentItemType } from '@waqup/shared/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
 import { Typography, Card, QCoin } from '@/components';
-import { CONTENT_CREDIT_COSTS, CONTENT_TYPE_COLORS, PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
-
-type Props = NativeStackScreenProps<MainStackParamList, 'CreateMode'>;
+import {
+  CONTENT_TYPE_COLORS,
+  PRACTICE_IS_FREE_ONE_LINER,
+  getCreditCost,
+} from '@waqup/shared/constants';
 
 type CreationMode = 'form' | 'chat' | 'agent';
 
@@ -33,12 +38,12 @@ const TYPE_LABELS: Record<string, string> = {
   ritual: 'Ritual',
 };
 
-export default function CreateModeScreen({ navigation, route }: Props) {
-  const { contentType } = route.params;
+export default function CreateModeScreen() {
+  const navigation = useNavigation();
+  const route = useRoute<RouteProp<{ CreateMode: { contentType: ContentItemType } }, 'CreateMode'>>();
+  const contentType = (route.params as { contentType: ContentItemType } | undefined)?.contentType ?? 'ritual';
   const { theme } = useTheme();
   const colors = theme.colors;
-
-  const costs = CONTENT_CREDIT_COSTS[contentType];
 
   const MODES: ModeConfig[] = [
     {
@@ -48,7 +53,7 @@ export default function CreateModeScreen({ navigation, route }: Props) {
       color: colors.text.tertiary,
       description:
         'Fill in structured fields to craft your practice. Full control, zero AI cost.',
-      creditCost: `${costs.base} Q`,
+      creditCost: `${getCreditCost(contentType, 'form', false)} Q`,
       tag: 'Free',
     },
     {
@@ -58,7 +63,7 @@ export default function CreateModeScreen({ navigation, route }: Props) {
       color: CONTENT_TYPE_COLORS.meditation,
       description:
         'Have a conversation with AI to shape your practice. GPT-4o-mini guides you step by step.',
-      creditCost: `${costs.withAi} Qs`,
+      creditCost: `${getCreditCost(contentType, 'chat', true)} Qs`,
       tag: 'GPT-4o-mini',
     },
     {
@@ -68,13 +73,13 @@ export default function CreateModeScreen({ navigation, route }: Props) {
       color: CONTENT_TYPE_COLORS.affirmation,
       description:
         'Let an autonomous AI agent draft your entire practice from a single goal statement. GPT-4o quality.',
-      creditCost: `${costs.withAi + Math.ceil(costs.withAi * 0.5)} Qs`,
+      creditCost: `${getCreditCost(contentType, 'agent', true)} Qs`,
       tag: 'GPT-4o',
     },
   ];
 
   const handleModeSelect = (mode: CreationMode) => {
-    navigation.navigate('ContentCreate', { contentType, mode });
+    (navigation as { navigate: (screen: string, params: object) => void }).navigate('ContentCreate', { contentType, mode });
   };
 
   return (

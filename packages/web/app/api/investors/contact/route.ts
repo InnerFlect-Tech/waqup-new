@@ -3,13 +3,26 @@ import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
+const VALID_INTERESTS = [
+  'seed',
+  'production',
+  'marketing',
+  'promotion',
+  'influencer',
+  'content-creator',
+  'other',
+] as const;
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const name = typeof body?.name === 'string' ? body.name.trim() : '';
-    const email = typeof body?.email === 'string' ? body.email.trim() : '';
+    const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
     const interest = typeof body?.interest === 'string' ? body.interest.trim() : null;
-    const message = typeof body?.message === 'string' ? body.message.trim() : null;
+    const phone = typeof body?.phone === 'string' ? body.phone.trim() : null;
+    const company = typeof body?.company === 'string' ? body.company.trim() : null;
+    const referral_source = typeof body?.referral_source === 'string' ? body.referral_source.trim() : null;
+    const message = typeof body?.message === 'string' ? body.message.trim().slice(0, 2000) : null;
 
     if (!name || !email) {
       return NextResponse.json(
@@ -25,11 +38,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (interest && !VALID_INTERESTS.includes(interest as (typeof VALID_INTERESTS)[number])) {
+      return NextResponse.json(
+        { error: 'Invalid interest selection' },
+        { status: 400 }
+      );
+    }
+
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.from('investor_inquiries').insert({
       name,
       email,
       interest: interest || null,
+      phone: phone || null,
+      company: company || null,
+      referral_source: referral_source || null,
       message: message || null,
     });
 

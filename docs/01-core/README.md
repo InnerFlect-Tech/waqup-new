@@ -44,4 +44,4 @@ Context7 Query: "What are the three content types in waQup?"
 Reference: docs/01-core/05-pipelines-overview.md
 ```
 
-See [../04-reference/02-context7-usage.md](../04-reference/02-context7-usage.md) for detailed guide.
+See [../04-reference/02-developer-tooling.md](../04-reference/02-developer-tooling.md) for Context7 and Cursor rules.

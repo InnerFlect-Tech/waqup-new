@@ -25,8 +25,8 @@ export const CONTENT_TYPE_COPY: Record<ContentItemType, ContentTypeCopy> = {
   },
   meditation: {
     label: 'Meditation',
-    shortDesc: 'Guided journeys. Set the scene, then relax.',
-    longDesc: 'State induction through guided visualization and relaxation. AI-scripted sessions designed for your emotional goals, voiced by you.',
+    shortDesc: 'Brief, embodied regulation. Breath, body, calm.',
+    longDesc: 'State regulation through breath and body awareness. Short, sensory practices that prepare your nervous system and attention — voiced by you.',
     duration: '10–30 min',
     depth: 'State induction',
     scienceTag: 'relaxed-states',

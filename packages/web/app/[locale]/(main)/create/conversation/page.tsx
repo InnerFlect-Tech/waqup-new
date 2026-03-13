@@ -292,7 +292,7 @@ function ConversationPageInner() {
   const selectedMeta = selectedType ? CONTENT_TYPE_META[selectedType] : null;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <div
         style={{
           maxWidth: 680,

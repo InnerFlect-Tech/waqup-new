@@ -586,4 +586,42 @@ User
 
 ---
 
+---
+
+## Environment Validation
+
+This section validates required env vars against the codebase.
+
+### Webhook handler (`packages/web/app/api/stripe/webhook/route.ts`)
+
+| Env var | Purpose |
+|---------|---------|
+| `STRIPE_WEBHOOK_SECRET` | Signature verification — 400 if missing |
+| `STRIPE_SECRET_KEY` | `getStripeClient()` — throws if unset |
+| `NEXT_PUBLIC_SUPABASE_URL` | `createSupabaseAdminClient()` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Admin client — throws if unset |
+
+### Checkout — credit packs
+
+| Env var | Pack |
+|---------|------|
+| `NEXT_PUBLIC_STRIPE_SPARK_PRICE_ID` | Spark |
+| `NEXT_PUBLIC_STRIPE_CREATOR_PRICE_ID` | Creator |
+| `NEXT_PUBLIC_STRIPE_FLOW_PRICE_ID` | Flow |
+| `NEXT_PUBLIC_STRIPE_DEVOTION_PACK_PRICE_ID` | Devotion |
+
+Missing pack price → 503 with message `Stripe price not configured for pack`.
+
+### Checkout — subscriptions
+
+| Env var | Plan |
+|---------|------|
+| `NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID` | Starter |
+| `NEXT_PUBLIC_STRIPE_GROWTH_PRICE_ID` | Growth |
+| `NEXT_PUBLIC_STRIPE_DEVOTION_PRICE_ID` | Devotion |
+
+Missing plan price → frontend shows "Checkout is not yet configured for this plan".
+
+---
+
 *For questions about this setup, contact india@waqup.app*

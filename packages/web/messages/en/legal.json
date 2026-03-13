@@ -1,0 +1,176 @@
+{
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: {lastUpdated} · Effective: {termsEffectiveDate}",
+    "s1": {
+      "title": "1. Welcome",
+      "p1": "These Terms of Service (“Terms”) govern your use of the waQup platform and services (“Service”) provided by {entityName} (“we”, “us”, “our”). By creating an account or using the Service, you agree to these Terms. Our <link>Privacy Policy</link> describes how we collect and use your data."
+    },
+    "s2": {
+      "title": "2. Wellness Disclaimer — Important",
+      "p1": "waQup is a wellness and personal growth tool. It does not provide medical, psychiatric, or psychological advice, diagnosis, or treatment.",
+      "p2": "The content (affirmations, meditations, rituals) is for informational and self-development purposes only. It is not a substitute for professional medical or mental health care. If you have a medical or mental health condition, consult a qualified healthcare provider.",
+      "p3": "Do not rely on waQup for self-diagnosis or self-treatment. If you are in crisis or have a medical emergency, contact emergency services or a mental health professional immediately.",
+      "p4": "By using waQup, you acknowledge that you assume responsibility for your own wellbeing and health decisions. We are not liable for any outcomes resulting from your use of the Service."
+    },
+    "s3": {
+      "title": "3. Eligibility",
+      "p1": "You must be at least 16 years old to use waQup. By using the Service, you represent that you meet this requirement and that you are not prohibited from using the Service under applicable law."
+    },
+    "s4": {
+      "title": "4. Account and Security",
+      "p1": "You are responsible for maintaining the confidentiality of your account credentials. You are responsible for all activity under your account. Notify us immediately at <email>{contactEmail}</email> if you suspect unauthorized access."
+    },
+    "s5": {
+      "title": "5. Subscriptions and Payments",
+      "p1": "Subscriptions: Some plans are billed on a recurring basis (monthly or annually). You will be charged at the start of each billing period. You may cancel before the next billing date; cancellation stops future charges but does not refund the current period.",
+      "p2": "Credits (Qs): Subscription plans include a monthly allocation of Qs. One-time credit packs may also be purchased. Qs are used when you create affirmations, meditations, or rituals. Practice (replaying content) is always free and does not consume Qs.",
+      "p3": "Payment methods: We accept credit cards and debit cards via Stripe. We may also accept Bitcoin and other cryptocurrencies through third-party processors. Payment processing is subject to our processors' terms.",
+      "p4": "Refunds: Refund policy varies by product. Contact us at <email>{contactEmail}</email> with your order details to request a refund. Refunds are at our discretion and may not be available for subscription periods already used."
+    },
+    "s6": {
+      "title": "6. Acceptable Use",
+      "p1": "You agree not to:",
+      "li1": "Violate any applicable law or regulation",
+      "li2": "Infringe the intellectual property or rights of others",
+      "li3": "Transmit harmful, abusive, or illegal content",
+      "li4": "Attempt to gain unauthorized access to our systems or user accounts",
+      "li5": "Use the Service for any purpose that could harm, disable, or overload it",
+      "p2": "We may suspend or terminate your account if you violate these Terms or engage in conduct we determine to be harmful."
+    },
+    "s7": {
+      "title": "7. Intellectual Property",
+      "p1": "waQup and its content (except user-created content) are owned by us or our licensors. You retain ownership of content you create. You grant us a license to store, display, and process your content to provide the Service."
+    },
+    "s8": {
+      "title": "8. Limitation of Liability",
+      "p1": "THE SERVICE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.",
+      "p2": "IN NO EVENT SHALL WE BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR LOSS OF PROFITS, DATA, OR GOODWILL. OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE 12 MONTHS PRECEDING THE CLAIM (OR $100, IF GREATER).",
+      "p3": "Some jurisdictions do not allow limitation of implied warranties or exclusion of certain damages; in such cases, the above limitations may not apply to you."
+    },
+    "s9": {
+      "title": "9. Indemnification",
+      "p1": "You agree to indemnify and hold us harmless from any claims, damages, or expenses arising from your use of the Service, your content, or your violation of these Terms."
+    },
+    "s10": {
+      "title": "10. Termination",
+      "p1": "You may close your account at any time. We may suspend or terminate your access for violation of these Terms or for operational reasons. Upon termination, your right to use the Service ends. We will handle your data in accordance with our <link>Privacy Policy</link>."
+    },
+    "s11": {
+      "title": "11. Dispute Resolution",
+      "p1": "These Terms are governed by the laws of {jurisdiction}, without regard to conflict of law principles. Any disputes shall be resolved through good-faith negotiation. If negotiation fails, disputes may be resolved through binding arbitration or in the courts of our jurisdiction, as applicable."
+    },
+    "s12": {
+      "title": "12. Changes",
+      "p1": "We may update these Terms from time to time. We will notify you of material changes by email or in-app notice. Continued use after changes constitutes acceptance. If you do not agree, you must stop using the Service and close your account."
+    },
+    "s13": {
+      "title": "13. Contact",
+      "p1": "For questions about these Terms, contact us at <email>{contactEmail}</email>."
+    },
+    "backToHome": "Back to Home",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: {lastUpdated} · Effective: {privacyEffectiveDate}",
+    "s1": {
+      "title": "1. Data Controller",
+      "p1": "{entityName} (“we”, “us”, “our”) operates the waQup platform. For privacy-related inquiries, contact us at <email>{contactEmail}</email>."
+    },
+    "s2": {
+      "title": "2. Data We Collect",
+      "p1": "Account data: Email, display name, and password (if you sign up with email). OAuth sign-in (Google, Apple) provides email and basic profile data.",
+      "p2": "Payment data: We use Stripe for subscriptions and credit purchases. We do not store card numbers; Stripe processes payments and stores payment details on our behalf.",
+      "p3": "Usage data: Content you create (affirmations, meditations, rituals), playback history, and general usage within the app.",
+      "p4": "Voice and audio data: When you record or clone your voice, we process this data through our voice providers (e.g. ElevenLabs) to create personalized audio. Voice recordings used for cloning are stored securely and used only to provide the service you requested.",
+      "p5": "Technical data: IP address, device type, browser, and similar data for security and analytics."
+    },
+    "s3": {
+      "title": "3. How We Use Your Data",
+      "p1": "We use your data to:",
+      "li1": "Provide and improve the waQup service",
+      "li2": "Process payments and manage subscriptions",
+      "li3": "Authenticate you and manage your account",
+      "li4": "Generate personalized content (scripts, voice, audio) via AI",
+      "li5": "Analyze usage (with your consent) to improve the product",
+      "li6": "Send transactional emails (e.g. password reset, order confirmations)",
+      "li7": "Comply with legal obligations"
+    },
+    "s4": {
+      "title": "4. Third-Party Processors",
+      "p1": "We share data only with trusted processors:",
+      "li1": "Supabase — Authentication, database, and hosting",
+      "li2": "Stripe — Payment processing",
+      "li3": "OpenAI — AI-generated scripts and conversational assistance",
+      "li4": "ElevenLabs — Text-to-speech and voice cloning",
+      "li5": "Google Analytics — Usage analytics (only after you accept cookies)",
+      "p2": "Each processor has appropriate safeguards and data processing agreements. We do not sell your personal data."
+    },
+    "s5": {
+      "title": "5. Cookies and Similar Technologies",
+      "p1": "We use cookies and local storage for: session management, authentication, and (with your consent) analytics. Essential cookies are required for the app to function. Analytics cookies are only set after you accept via our cookie banner.",
+      "p2": "You can change your cookie preferences at any time. Note: clearing cookies may affect your session and analytics settings."
+    },
+    "s6": {
+      "title": "6. Legal Basis (GDPR)",
+      "p1": "For users in the EEA/UK, we process data based on: (a) contract — to provide the service you requested; (b) consent — for analytics and optional features; (c) legitimate interests — security, fraud prevention, and service improvement where balanced with your rights."
+    },
+    "s7": {
+      "title": "7. Your Rights (including Data Deletion)",
+      "p1": "You have the right to:",
+      "li1": "Access — Request a copy of your data",
+      "li2": "Rectification — Correct inaccurate data",
+      "li3": "Erasure — Request deletion of your data",
+      "li4": "Portability — Receive your data in a structured, machine-readable format",
+      "li5": "Object — Object to processing based on legitimate interests",
+      "li6": "Withdraw consent — Where we rely on consent",
+      "p2": "To exercise these rights, contact us at <email>{contactEmail}</email>. We will respond within 30 days. You may also lodge a complaint with a supervisory authority.",
+      "p3": "California (CCPA/CPRA): We do not sell or share personal information. You have the right to know, delete, correct, and limit the use of your personal information."
+    },
+    "s8": {
+      "title": "8. Data Retention",
+      "p1": "We retain your data for as long as your account is active. After account deletion, we delete or anonymize data within 30 days, except where required for legal, tax, or fraud-prevention purposes."
+    },
+    "s9": {
+      "title": "9. International Transfers",
+      "p1": "Our servers and processors may be located outside your country. We rely on appropriate safeguards (e.g. adequacy decisions, standard contractual clauses) for transfers from the EEA/UK."
+    },
+    "s10": {
+      "title": "10. Children",
+      "p1": "waQup is not intended for users under 16. We do not knowingly collect data from children. If you believe we have collected data from a child, contact us at <email>{contactEmail}</email> and we will delete it."
+    },
+    "s11": {
+      "title": "11. Changes",
+      "p1": "We may update this policy. We will notify you of material changes by email or in-app notice. Continued use after changes constitutes acceptance."
+    },
+    "backToHome": "Back to Home",
+    "termsOfService": "Terms of Service"
+  },
+  "dataDeletion": {
+    "title": "User Data Deletion",
+    "intro": "{entityName} respects your right to delete your data. Here is how you can request deletion.",
+    "s1": {
+      "title": "Delete your waQup account",
+      "p1": "You can delete your account and all associated data at any time from the app:",
+      "li1": "Open waQup (web or mobile)",
+      "li2": "Go to Sanctuary → Settings",
+      "li3": "Select \"Delete account\"",
+      "li4": "Confirm the deletion",
+      "p2": "After deletion, we remove or anonymize your data within 30 days, except where we must retain it for legal, tax, or fraud-prevention purposes."
+    },
+    "s2": {
+      "title": "Revoke third‑party permissions",
+      "p1": "If you connected Facebook, Instagram, or Google to waQup, you can revoke access from your account settings on those platforms:",
+      "li1": "Facebook/Instagram: Settings → Apps and Websites → waQup → Remove",
+      "li2": "Google: Security → Third-party access → waQup → Revoke"
+    },
+    "s3": {
+      "title": "Request deletion by email",
+      "p1": "To request manual deletion of your data, contact us at <email>{contactEmail}</email>. Include the email address associated with your waQup account. We will respond within 30 days and delete your data in accordance with our <link>Privacy Policy</link>."
+    },
+    "backToHome": "Back to Home",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  }
+}

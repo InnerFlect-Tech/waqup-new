@@ -2,13 +2,15 @@
 
 import React, { useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { OnboardingStepLayout } from '@/components';
 import { Typography, Button, ContentIcon } from '@/components';
 import { useTheme, spacing, borderRadius, BLUR } from '@/theme';
 import { useAuthStore } from '@/stores';
 import { supabase } from '@/lib/supabase';
 import { Analytics } from '@waqup/shared/utils';
-import { Sparkles, ArrowRight, Play } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const QUICK_START_OPTIONS = [
   {
@@ -42,6 +44,7 @@ export default function OnboardingGuidePage() {
   const colors = theme.colors;
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
+  const t = useTranslations('onboarding.guide');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleEnter = async () => {
@@ -65,8 +68,8 @@ export default function OnboardingGuidePage() {
   return (
     <OnboardingStepLayout
       step={5}
-      title="Create your first practice now"
-      primaryLabel="Skip to Sanctuary →"
+      title={t('title')}
+      primaryLabel={t('primaryLabel')}
       onSubmit={handleEnter}
       loading={isSubmitting}
     >
@@ -156,6 +159,58 @@ export default function OnboardingGuidePage() {
           >
             Create by talking — no forms. Practice is free. Qs are only used when you create. You start with enough to try everything.
           </Typography>
+        </div>
+
+        {/* Learning teaser */}
+        <div
+          style={{
+            marginTop: spacing.md,
+            padding: `${spacing.md} ${spacing.lg}`,
+            borderRadius: borderRadius.md,
+            background: `${colors.accent.primary}0A`,
+            border: `1px solid ${colors.accent.primary}20`,
+          }}
+        >
+          <Typography
+            variant="small"
+            style={{ color: colors.text.secondary, fontSize: '13px', lineHeight: 1.6 }}
+          >
+            {t('learningTeaser')}{' '}
+            <Link href="/sanctuary/learn" style={{ color: colors.accent.tertiary, textDecoration: 'none', fontWeight: 600 }}>
+              Learn →
+            </Link>
+          </Typography>
+        </div>
+
+        {/* Community block */}
+        <div
+          style={{
+            marginTop: spacing.sm,
+            padding: `${spacing.md} ${spacing.lg}`,
+            borderRadius: borderRadius.md,
+            background: colors.glass.light,
+            backdropFilter: BLUR.sm,
+            WebkitBackdropFilter: BLUR.sm,
+            border: `1px solid ${colors.glass.border}`,
+          }}
+        >
+          <Typography
+            variant="small"
+            style={{ color: colors.text.secondary, fontSize: '13px', lineHeight: 1.6, marginBottom: spacing.xs }}
+          >
+            {t('communityBlock')}
+          </Typography>
+          <Link
+            href="/community"
+            style={{
+              color: colors.accent.tertiary,
+              fontSize: '13px',
+              fontWeight: 600,
+              textDecoration: 'none',
+            }}
+          >
+            {t('communityLink')}
+          </Link>
         </div>
       </div>
     </OnboardingStepLayout>

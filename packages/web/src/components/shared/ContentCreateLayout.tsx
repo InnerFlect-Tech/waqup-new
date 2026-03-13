@@ -11,7 +11,7 @@ import type { ContentItemType } from '@waqup/shared/types';
 const HORIZONTAL_PADDING = `clamp(${PAGE_PADDING}, 5vw, ${HEADER_PADDING_X})`;
 
 const LAYOUT_STYLE: React.CSSProperties = {
-  minHeight: '100vh',
+  minHeight: '100dvh',
   width: '100%',
   paddingTop: spacing.lg,
   paddingBottom: spacing.xl,

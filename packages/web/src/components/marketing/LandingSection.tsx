@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTheme } from '@/theme';
-import { CONTENT_MAX_WIDTH, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, SECTION_SUBTITLE_FONT_SIZE, spacing } from '@/theme';
+import { CONTENT_MAX_WIDTH, LANDING_SECTION_PADDING_Y, PAGE_HORIZONTAL_PADDING, SECTION_TITLE_FONT_SIZE, SECTION_SUBTITLE_FONT_SIZE, spacing } from '@/theme';
 
 export interface LandingSectionProps {
   children: React.ReactNode;
@@ -32,8 +32,8 @@ export function LandingSection({
       style={{
         paddingTop: LANDING_SECTION_PADDING_Y,
         paddingBottom: noBottomPadding ? 0 : LANDING_SECTION_PADDING_Y,
-        paddingLeft: 'clamp(16px, 4vw, 32px)',
-        paddingRight: 'clamp(16px, 4vw, 32px)',
+        paddingLeft: PAGE_HORIZONTAL_PADDING,
+        paddingRight: PAGE_HORIZONTAL_PADDING,
         maxWidth: CONTENT_MAX_WIDTH,
         margin: '0 auto',
         width: '100%',

@@ -217,7 +217,7 @@ export default function LibraryScreen() {
                   : 'Create your first practice and it will appear here'}
               </Typography>
               {!debouncedQuery && (
-                <Button variant="primary" size="md" onPress={() => navigation.navigate('CreateMode', { contentType: 'affirmation' })}>
+                <Button variant="primary" size="md" onPress={() => navigation.navigate('ContentCreate', { contentType: 'affirmation', mode: 'chat' })}>
                   Create Practice
                 </Button>
               )}
@@ -277,6 +277,7 @@ const styles = StyleSheet.create({
   filterChip: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
+    minHeight: 44,
     borderRadius: borderRadius.full,
     borderWidth: 1,
   },

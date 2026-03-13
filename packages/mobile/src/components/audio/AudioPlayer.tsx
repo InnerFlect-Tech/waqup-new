@@ -6,7 +6,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import { useTheme, spacing, borderRadius } from '@/theme';
-import { Typography, Loading } from '@/components';
+import { Typography, Loading } from '@/components/ui';
 import { useAudioPlayer } from './useAudioPlayer';
 import type { AudioLayers, AudioVolumes, PlaybackSpeed } from '@waqup/shared/types';
 import { PLAYBACK_SPEEDS } from '@waqup/shared/types';

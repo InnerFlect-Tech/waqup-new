@@ -1,3 +1,6 @@
+/**
+ * @deprecated Primary nav v1; removed from main tabs. May merge into Create or keep as secondary.
+ */
 import React, { useState, useCallback, useRef } from 'react';
 import {
   View,

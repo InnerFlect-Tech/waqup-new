@@ -111,6 +111,8 @@ export const NAV_TOP_OFFSET = `calc(${NAV_HEIGHT} + max(${spacing.md}, env(safe-
 export const GRID_CARD_MIN = px(layout.gridCardMin);
 export const SEARCH_INPUT_MAX_WIDTH = px(layout.searchInputMaxWidth);
 export const CONTENT_READABLE = px(layout.contentReadable);
+/** Script-read scroll area max height (px) — SSOT: layout.scriptReadMaxHeight */
+export const SCRIPT_READ_MAX_HEIGHT = layout.scriptReadMaxHeight;
 export const PAGE_TOP_PADDING = px(layout.pageTopPadding);
 /** Vertical padding (top + bottom) for full-height layouts - use in calc(100dvh - PAGE_VERTICAL_PADDING_PX) */
 export const PAGE_VERTICAL_PADDING_PX = layout.pageTopPadding + 32;
@@ -122,6 +124,8 @@ export const MAX_WIDTH_7XL = px(layout.maxWidth7xl);
 export const HEADER_PADDING_X = px(layout.headerPaddingX);
 /** Responsive header padding — clamp for mobile; matches CookieConsentBanner pattern at 640px. */
 export const HEADER_PADDING_X_RESPONSIVE = `clamp(${spacing.md}, 5vw, ${px(layout.headerPaddingX)})`;
+/** Page/marketing horizontal padding — matches header for alignment. Use for hero content and page sections (for-teachers, for-coaches, our-story, etc.). */
+export const PAGE_HORIZONTAL_PADDING = HEADER_PADDING_X_RESPONSIVE;
 /** Speak page bottom UI height — SSOT for orb centering area. Responsive: shrinks on small viewports to avoid trapping content. */
 export const SPEAK_BOTTOM_UI_HEIGHT = `min(${px(layout.speakBottomUiHeight)}, 35vh)`;
 export const PAGE_PADDING = spacing.xl;

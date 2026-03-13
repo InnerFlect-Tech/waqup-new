@@ -14,6 +14,7 @@ import { Analytics } from '@waqup/shared/utils';
 import { useRouter } from '@/i18n/navigation';
 import { Link } from '@/i18n/navigation';
 import { Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const STORAGE_KEY = 'waqup_notification_prefs';
 
@@ -94,6 +95,7 @@ export default function SettingsPage() {
   const { theme, themeName, setTheme, availableThemes } = useTheme();
   const colors = theme.colors;
   const router = useRouter();
+  const t = useTranslations('settings');
   const { user } = useAuthStore();
   const [prefs, setPrefs] = useState<NotificationPrefs>(DEFAULT_PREFS);
   const { colors: avatarColors, setColor: setAvatarColor } = useAvatarColors();
@@ -153,7 +155,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
 
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300, textAlign: 'center' }}>
@@ -401,6 +403,21 @@ export default function SettingsPage() {
               </Button>
             </Link>
           </div>
+        </motion.div>
+
+        {/* About & Acknowledgments — before Danger zone */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.27 }} style={sectionStyle}>
+          <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+            {t('about')}
+          </Typography>
+          <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.md }}>
+            {t('aboutDescription')}
+          </Typography>
+          <Link href="/sanctuary/settings/about" style={{ textDecoration: 'none' }}>
+            <Button variant="outline" size="md">
+              {t('about')} →
+            </Button>
+          </Link>
         </motion.div>
 
         {/* Danger zone */}

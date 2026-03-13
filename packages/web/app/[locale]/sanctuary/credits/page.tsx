@@ -75,7 +75,7 @@ export default function CreditsPage() {
   }, [searchParams, user?.id]);
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <div style={{ textAlign: 'center', marginBottom: spacing.md }}>
           <Typography variant="h3" style={{ color: colors.text.primary, fontWeight: 300, marginBottom: 4 }}>

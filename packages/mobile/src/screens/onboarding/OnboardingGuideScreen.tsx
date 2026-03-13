@@ -59,8 +59,7 @@ export default function OnboardingGuideScreen({ navigation }: Props) {
         .eq('id', user.id);
     }
     await completeOnboarding();
-    // User lands on Main; they can tap Create from there. Create-now options could open CreateMode
-    // via Main initialParams later.
+    // User lands on Main; they can tap Create tab from there.
   };
 
   return (

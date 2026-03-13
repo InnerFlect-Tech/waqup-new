@@ -68,7 +68,21 @@ Under **"Redirect URLs"**, add:
 http://localhost:3000/**
 ```
 
-The `**` wildcard matches any path including `/auth/callback?next=...`.
+The `**` wildcard matches any path including `/auth/callback?next=...` and `/auth/callback-mobile` (used by the mobile app for Google Sign-In).
+
+### 2a. Mobile OAuth (Google Sign-In from Expo app)
+
+The mobile app uses the **custom scheme** `waqup://auth/callback` as the OAuth redirect. Supabase redirects directly to the app — no web server reachable from the device is required. This keeps the flow in-app and avoids opening Safari.
+
+**Supabase Dashboard → Authentication → URL Configuration → Redirect URLs.** Add:
+
+```
+waqup://auth/callback
+https://waqup.app/auth/callback-mobile
+```
+
+- `waqup://auth/callback` — Primary for mobile; redirect stays in-app (ASWebAuthenticationSession).
+- `https://waqup.app/auth/callback-mobile` — Fallback if testing with web proxy (e.g. production web app).
 
 ### 3. Add localhost to Google Cloud Console (one-time, if using Google OAuth)
 
@@ -333,8 +347,18 @@ or an error if Supabase is unreachable. Use this to verify your env vars are cor
 Use test-mode keys (`pk_test_...`, `sk_test_...`) in `packages/web/.env.local`. For webhooks:
 
 ```bash
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
+cd packages/web && npm run stripe:webhook:listen
 ```
+
+Or: `stripe listen --forward-to localhost:3000/api/stripe/webhook`. Copy the `whsec_...` into `.env.local` as `STRIPE_WEBHOOK_SECRET`.
+
+---
+
+## Component Showcase (Dev)
+
+**Web**: `http://localhost:3000/showcase` — not in nav; use URL directly.
+
+**Mobile**: Deep link `waqup://showcase`. iOS Simulator: `xcrun simctl openurl booted "waqup://showcase"`. Android: `adb shell am start -W -a android.intent.action.VIEW -d "waqup://showcase" com.waqup.app`.
 
 ---
 

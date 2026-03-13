@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
+import { useTheme } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
+import { withOpacity } from '@waqup/shared/theme';
 
 export interface QCoinProps {
   size?: 'sm' | 'md' | 'lg';
@@ -16,9 +19,11 @@ const AMOUNT_FONT_MAP = { sm: 12, md: 14, lg: 20 } as const;
  * QCoin — waQup branded credit icon (mobile).
  *
  * Mirrors the waQup logo: a glowing purple orb with "Q" at its centre.
- * Pass `showAmount` to display a live credit balance inline beside the coin.
+ * Uses theme accent colors for brand consistency.
  */
 export const QCoin: React.FC<QCoinProps> = ({ size = 'md', showAmount, style }) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const px = SIZE_MAP[size];
   const fontSize = FONT_MAP[size];
   const r = px / 2;
@@ -27,11 +32,7 @@ export const QCoin: React.FC<QCoinProps> = ({ size = 'md', showAmount, style }) 
     <View
       style={[
         styles.glow,
-        {
-          width: px + 4,
-          height: px + 4,
-          borderRadius: (px + 4) / 2,
-        },
+        { shadowColor: colors.accent.primary, width: px + 4, height: px + 4, borderRadius: (px + 4) / 2 },
       ]}
     >
       {/* Outer dark rim */}
@@ -42,10 +43,11 @@ export const QCoin: React.FC<QCoinProps> = ({ size = 'md', showAmount, style }) 
             width: px,
             height: px,
             borderRadius: r,
+            backgroundColor: colors.background.tertiary,
           },
         ]}
       >
-        {/* Purple orb face */}
+        {/* Accent orb face */}
         <View
           style={[
             styles.face,
@@ -54,6 +56,7 @@ export const QCoin: React.FC<QCoinProps> = ({ size = 'md', showAmount, style }) 
               height: px - 3,
               borderRadius: (px - 3) / 2,
               overflow: 'hidden',
+              backgroundColor: colors.accent.primary,
             },
           ]}
         >
@@ -70,7 +73,7 @@ export const QCoin: React.FC<QCoinProps> = ({ size = 'md', showAmount, style }) 
               },
             ]}
           />
-          <Text style={[styles.q, { fontSize, lineHeight: px - 3 }]}>Q</Text>
+          <Text style={[styles.q, { fontSize, lineHeight: px - 3, color: colors.text.onDark, textShadowColor: withOpacity(colors.accent.primary, 0.6) }]}>Q</Text>
         </View>
       </View>
     </View>
@@ -80,7 +83,7 @@ export const QCoin: React.FC<QCoinProps> = ({ size = 'md', showAmount, style }) 
     return (
       <View style={[styles.row, style]}>
         {coin}
-        <Text style={[styles.amount, { fontSize: AMOUNT_FONT_MAP[size] }]}>{showAmount}</Text>
+        <Text style={[styles.amount, { fontSize: AMOUNT_FONT_MAP[size], color: colors.accent.primary }]}>{showAmount}</Text>
       </View>
     );
   }
@@ -97,19 +100,16 @@ const styles = StyleSheet.create({
   glow: {
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#9333EA',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 6,
     elevation: 6,
   },
   rim: {
-    backgroundColor: '#3B0764',
     alignItems: 'center',
     justifyContent: 'center',
   },
   face: {
-    backgroundColor: '#9333EA',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -118,15 +118,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.32)',
   },
   q: {
-    color: '#fff',
     fontWeight: '800',
     textAlign: 'center',
-    textShadowColor: 'rgba(74,0,148,0.6)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
   amount: {
-    color: '#A855F7',
     fontWeight: '700',
     letterSpacing: -0.3,
   },

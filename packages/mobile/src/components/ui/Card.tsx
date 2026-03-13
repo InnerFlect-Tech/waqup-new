@@ -5,7 +5,7 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, shadows } from '@/theme';
 
 export interface CardProps extends ViewProps {
-  variant?: 'default' | 'elevated' | 'flat';
+  variant?: 'default' | 'elevated' | 'flat' | 'auth';
   pressable?: boolean;
   onPress?: () => void;
   header?: React.ReactNode;
@@ -26,10 +26,22 @@ export const Card: React.FC<CardProps> = ({
   const { theme } = useTheme();
   const colors = theme.colors;
 
+  const authGlowShadow =
+    variant === 'auth'
+      ? {
+          shadowColor: colors.accent.primary,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.25,
+          shadowRadius: 24,
+          elevation: 12,
+        }
+      : {};
+
   const cardStyle = [
     styles.card,
     variant === 'elevated' && styles.elevated,
     variant === 'flat' && styles.flat,
+    variant === 'auth' && [styles.auth, authGlowShadow],
     style,
   ];
 
@@ -46,12 +58,17 @@ export const Card: React.FC<CardProps> = ({
     borderColor: colors.glass.border,
   };
 
+  const blurContainerStyle = [
+    styles.blurContainer,
+    glassStyle,
+    variant === 'auth' && styles.blurContainerAuth,
+  ];
+
   const innerBlur =
     Platform.OS === 'web' ? (
       <View
         style={[
-          styles.blurContainer,
-          glassStyle,
+          blurContainerStyle,
           {
             // @ts-ignore — web-only CSS properties
             backdropFilter: 'blur(20px)',
@@ -62,7 +79,7 @@ export const Card: React.FC<CardProps> = ({
         {content}
       </View>
     ) : (
-      <BlurView intensity={80} tint="dark" style={[styles.blurContainer, glassStyle]}>
+      <BlurView intensity={80} tint="dark" style={blurContainerStyle}>
         {content}
       </BlurView>
     );
@@ -98,6 +115,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: borderRadius.lg,
     padding: spacing.md,
+  },
+  blurContainerAuth: {
+    padding: spacing.xl,
+  },
+  auth: {
+    borderRadius: borderRadius.lg,
   },
   header: {
     marginBottom: spacing.md,

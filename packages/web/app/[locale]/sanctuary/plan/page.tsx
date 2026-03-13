@@ -168,7 +168,7 @@ export default function PlanPage() {
   const currentPlanId = (user?.user_metadata?.plan_id as string | undefined) ?? null;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xl }}>
           <ArrowLeft size={14} color={colors.text.secondary} />

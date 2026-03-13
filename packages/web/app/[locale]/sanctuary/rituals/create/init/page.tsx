@@ -28,7 +28,7 @@ const RITUAL_STEPS = [
   {
     icon: Sparkles,
     title: 'Generate Your Script',
-    description: 'AI crafts your ritual: grounding, affirmations, emotional anchoring, closure',
+    description: 'AI crafts your daily conditioning sequence: arrival, regulation, identity encoding, repetition, closure',
   },
   {
     icon: Mic,

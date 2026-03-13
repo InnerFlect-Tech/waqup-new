@@ -43,5 +43,22 @@
   },
   "save": "Save changes",
   "saved": "Changes saved.",
-  "errorSaving": "Error saving. Please try again."
+  "errorSaving": "Error saving. Please try again.",
+  "about": "About & Acknowledgments",
+  "aboutDescription": "Version, changelog, and credits",
+  "aboutBackToSettings": "Back to Settings",
+  "aboutTitle": "About waQup",
+  "aboutSubtitle": "Version, changelog, and credits for the people and services that make waQup possible.",
+  "version": "Version",
+  "betaLabel": "Beta",
+  "betaNote": "We're in beta. Your feedback helps us improve.",
+  "changelog": "Changelog",
+  "acknowledgments": "Acknowledgments",
+  "team": "Team & contributors",
+  "teamAndContributors": "Team & contributors",
+  "betaTesters": "Beta testers",
+  "services": "Services & technology",
+  "libraries": "Open-source libraries",
+  "whatsNew": "What's New",
+  "viewChangelog": "View changelog"
 }

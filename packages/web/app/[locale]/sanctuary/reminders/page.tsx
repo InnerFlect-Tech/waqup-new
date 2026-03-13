@@ -280,7 +280,7 @@ export default function SanctuaryRemindersPage() {
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         {/* Headline */}
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.xs, fontWeight: 300, textAlign: 'center' }}>

@@ -3,7 +3,12 @@ const withNextIntl = require('next-intl/plugin')('./i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Expose Vercel env to client so VercelAnalytics only loads when deployed (avoids 404 on /_vercel/insights/script.js locally)
+  env: {
+    NEXT_PUBLIC_IS_VERCEL: process.env.VERCEL ?? '0',
+  },
   reactStrictMode: true,
+  devIndicators: false, // Hide circular N dev indicator in bottom-left
   // Dev: keep more compiled pages in memory so navigation feels faster (default: 2 pages, 25s)
   onDemandEntries: {
     maxInactiveAge: 15 * 60 * 1000, // 15 minutes
@@ -24,6 +29,8 @@ const nextConfig = {
       { source: '/sanctuary/:path*', destination: '/en/sanctuary/:path*' },
       { source: '/speak', destination: '/en/speak' },
       { source: '/speak/:path*', destination: '/en/speak/:path*' },
+      { source: '/auth/callback', destination: '/en/auth/callback' },
+      { source: '/auth/callback-mobile', destination: '/en/auth/callback-mobile' },
       { source: '/login', destination: '/en/login' },
       { source: '/signup', destination: '/en/signup' },
       { source: '/forgot-password', destination: '/en/forgot-password' },

@@ -21,7 +21,7 @@ Vercel's built-in GitHub integration deploys automatically on every push.
    - **Root Directory**: `packages/web`
    - **Framework**: Next.js (auto-detected)
    - **Build Command**: Uses `packages/web/vercel.json` (builds shared first)
-3. **Environment variables**: Add in Vercel Project Settings → Environment Variables. Minimum: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`. For Stripe (checkout + webhook), see **[Vercel env & Stripe](02-vercel-env-stripe.md)** for the full checklist and production webhook setup.
+3. **Environment variables**: Add in Vercel Project Settings → Environment Variables. Minimum: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`. For Stripe (checkout + webhook), see **Vercel Environment Variables** section below.
 4. **Production branch**: `main` (default)
 
 GitHub Actions CI still runs for validation; Vercel handles deployment.
@@ -99,6 +99,18 @@ Runs only when `build` succeeds on `main`:
 ```
 
 Vercel project **Root Directory** must be `packages/web` for this to work.
+
+---
+
+## Vercel Environment Variables
+
+Set these in **Vercel** → **Settings** → **Environment Variables**. Apply to **Production** (and optionally Preview). **Important:** `NEXT_PUBLIC_APP_URL` must be your production URL (e.g. `https://waqup.app`), never `http://localhost:3000`.
+
+**Required:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`, Stripe keys, and all 7 Stripe price IDs. For production Stripe webhook: run `npm run stripe:webhook:create` from `packages/web` (with `NEXT_PUBLIC_APP_URL` set to production URL), then add the printed `whsec_...` to Vercel as `STRIPE_WEBHOOK_SECRET`.
+
+**Optional:** `OPENAI_API_KEY`, `ELEVENLABS_API_KEY`, `NEXT_PUBLIC_GA_MEASUREMENT_ID`. Do not set `OVERRIDE_LOGIN_*` or `NEXT_PUBLIC_ENABLE_TEST_LOGIN=true` in production.
+
+**Troubleshooting:** "Stripe price not configured" → add all four credit pack price IDs. "No such price" → ensure Stripe keys and price IDs use the same mode (test vs live). "Checkout not configured" → verify `GET /api/stripe/price-ids` route is deployed.
 
 ---
 

@@ -2,13 +2,13 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Typography, Button } from '@/components';
-import { SpeakingAnimation } from '@/components/audio';
+import { AudioWaveform } from '@/components/audio';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
-import { Play, Pause, SkipBack, SkipForward, Waves, Headphones } from 'lucide-react';
-import { useWebAudioPlayer, useBinauralEngine } from '@/hooks';
+import { Play, Pause, SkipBack, SkipForward, Waves, Headphones, Square } from 'lucide-react';
+import { useWebAudioPlayer, useBinauralEngine, useLayersPreview } from '@/hooks';
 import type { ContentItemType, AudioLayers, AudioVolumes, AudioSettings } from '@waqup/shared/types';
 import { PLAYBACK_SPEEDS } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS, getBinauralPreset, getAtmospherePreset } from '@waqup/shared/constants';
@@ -123,6 +123,14 @@ export function AudioPage({
     binauralGain,
     preset: selectedBinauralPreset,
     isPlaying: state === 'playing',
+  });
+
+  // ── Layers preview (binaural + atmosphere only, no voice) ─────────────────
+  const layersPreview = useLayersPreview({
+    binauralPreset: selectedBinauralPreset,
+    ambientUrl: resolvedLayers.ambientUrl ?? null,
+    volumeBinaural: volumes.binaural,
+    volumeAmbient: volumes.ambient,
   });
 
   // ── User preference persistence ─────────────────────────────────────────
@@ -242,7 +250,7 @@ export function AudioPage({
   const noAtmosphere = selectedAtmospherePreset.id === 'none' || !resolvedLayers.ambientUrl;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
           {title ?? `Sound mix — ${contentType}`}
@@ -263,7 +271,12 @@ export function AudioPage({
             border: `1px solid ${colors.glass.border}`,
           }}
         >
-          <SpeakingAnimation isSpeaking={isPlaying} frequencyData={freqData} style={{ minHeight: '200px' }} />
+          <AudioWaveform
+            isPlaying={isPlaying}
+            frequencyData={freqData}
+            accentColor={accent}
+            style={{ minHeight: '200px' }}
+          />
         </div>
 
         {/* Progress bar */}
@@ -317,7 +330,7 @@ export function AudioPage({
             variant="primary"
             size="md"
             onClick={isPlaying ? pause : play}
-            disabled={!isReady && !!resolvedLayers.voiceUrl}
+            disabled={!isReady || !resolvedLayers.voiceUrl}
             style={{ backgroundColor: accent, borderColor: accent, minWidth: 100 }}
           >
             {isPlaying
@@ -367,7 +380,7 @@ export function AudioPage({
             border: `1px solid ${colors.glass.border}`,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.lg }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.lg, flexWrap: 'wrap' }}>
             <Waves size={18} color={accent} />
             <Typography variant="h3" style={{ color: colors.text.primary }}>
               Volume mix
@@ -377,7 +390,36 @@ export function AudioPage({
                 Saved
               </Typography>
             )}
+            <Button
+              variant={layersPreview.isPlaying ? 'outline' : 'ghost'}
+              size="sm"
+              onClick={
+                layersPreview.isPlaying
+                  ? layersPreview.stop
+                  : () => layersPreview.play()
+              }
+              disabled={noBinaural && noAtmosphere}
+              style={{
+                marginLeft: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.xs,
+                opacity: noBinaural && noAtmosphere ? 0.5 : 1,
+                ...(layersPreview.isPlaying ? { borderColor: accent, color: accent } : { color: colors.text.secondary }),
+              }}
+            >
+              {layersPreview.isPlaying ? (
+                <><Square size={12} /> Stop</>
+              ) : (
+                <><Play size={12} /> Preview layers</>
+              )}
+            </Button>
           </div>
+          <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11, marginBottom: spacing.sm, opacity: 0.8 }}>
+            {noBinaural && noAtmosphere
+              ? 'Select a binaural or atmosphere preset to preview your mix (6s, no voice)'
+              : 'Preview binaural + atmosphere for 6s (no voice) — use headphones for best effect'}
+          </Typography>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
             {layerConfig.map(({ key, label, sublabel, icon, color, colorKey }) => {

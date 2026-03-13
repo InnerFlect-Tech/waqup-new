@@ -508,7 +508,7 @@ export default function LibraryPage() {
   }, [allContent, typeFilter, searchQuery, sortOrder]);
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
         {/* Header */}
         <div

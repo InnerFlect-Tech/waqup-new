@@ -3,12 +3,17 @@
  * Use these constants across web and mobile to ensure consistency.
  */
 
+/** Canonical definition: what practice/training means (for help, FAQ, onboarding) */
+export const PRACTICE_DEFINITION =
+  'Practice means listening to and replaying your affirmations, meditations, and rituals.';
+
 /** One-line practice-is-free message (for CTAs, tips, footers) */
 export const PRACTICE_IS_FREE_SHORT =
   'Practice is free. Replay your content as often as you like. Qs are only used when you create something new.';
 
-/** Shorter variant for tight spaces */
-export const PRACTICE_IS_FREE_ONE_LINER = 'Practice is always free — Qs only power creation.';
+/** Shorter variant — makes clear that listening/replay is free (for tight spaces) */
+export const PRACTICE_IS_FREE_ONE_LINER =
+  'Listening to your content is always free — Qs only power creation.';
 
 /** Qs explanations */
 export const QS_EXPLANATION = {

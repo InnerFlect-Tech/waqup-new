@@ -104,8 +104,43 @@ Recommended conversions: `sign_up`, `purchase`, `onboarding_step_completed` (ste
 
 ---
 
+## Validation
+
+How to verify analytics events fire correctly and reach GA4.
+
+### Manual Verification
+
+**Development mode**: In dev (`npm run dev`), GA4 scripts do not load. All events are logged to the console. Open DevTools → Console, filter by `[analytics]`, and perform flows to confirm expected events appear.
+
+**Production / Staging with GA4 DebugView**: Deploy to staging with `NEXT_PUBLIC_GA_MEASUREMENT_ID` set. Open GA4 → Admin → DebugView. Add `?gtm_debug=x` to the URL or use the GA4 DebugView extension. Run through flows and verify events appear in real time.
+
+### Playwright E2E
+
+Analytics specs live in `packages/web/e2e/specs/analytics/analytics-events.spec.ts`. Run: `npx playwright test specs/analytics/`. A mock `window.gtag` is injected; events are pushed to `window.__analyticsEvents` for assertions.
+
+### Event Checklist
+
+| Event | Trigger | Where to Verify |
+|-------|---------|-----------------|
+| `funnel_signup_started` | Visit /signup | E2E spec |
+| `sign_up` | Complete signup | Manual or E2E |
+| `login` | Complete login | Manual or E2E |
+| `content_played` | Press play on content | Manual |
+| `content_completed` | Audio finishes | Manual |
+| `content_shared` | Click Share | Manual |
+| `credits_purchased` | Stripe success return | Manual |
+| `subscription_started` | Stripe success return | Manual |
+| `funnel_paid_conversion` | First purchase | Manual |
+| `session_start` | Authenticated load | Manual |
+
+### GA4 Admin Setup
+
+1. **Mark conversions**: Admin → Events → toggle "Mark as conversion" for `sign_up`, `purchase`, `funnel_paid_conversion`.
+2. **Create funnel exploration**: Explore → Funnel exploration → add funnel events as steps.
+3. **Verify data**: Reports → Realtime → perform actions and confirm events within seconds.
+
+---
+
 ## Related Docs
 
-- [analytics-audit.md](./analytics-audit.md) — Current implementation audit
 - [analytics-events.md](./analytics-events.md) — Event taxonomy
-- [analytics-validation.md](./analytics-validation.md) — Validation steps

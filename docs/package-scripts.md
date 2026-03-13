@@ -101,4 +101,4 @@
 - **Workspaces**: `packages/web`, `packages/mobile`, `packages/shared`. Use `--workspace=packages/<pkg>` to target a specific package.
 - **Node**: Requires Node.js >= 24.0.0 (see `.nvmrc`).
 - **Mobile build**: `build:mobile` only runs type-check. For EAS builds, use `eas build` from packages/mobile.
-- **E2E**: Requires `NEXT_PUBLIC_ENABLE_TEST_LOGIN`, `OVERRIDE_LOGIN_EMAIL`, `OVERRIDE_LOGIN_PASSWORD` in `.env.local` for authenticated specs. See `docs/05-testing/01-playwright-e2e.md`.
+- **E2E**: Requires `NEXT_PUBLIC_ENABLE_TEST_LOGIN`, `OVERRIDE_LOGIN_EMAIL`, `OVERRIDE_LOGIN_PASSWORD` in `.env.local` for authenticated specs. See `docs/06-testing/01-playwright-e2e.md`.

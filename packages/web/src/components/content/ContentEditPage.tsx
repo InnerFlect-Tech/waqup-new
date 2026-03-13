@@ -46,7 +46,7 @@ export function ContentEditPage({
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="medium">
         <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
           Edit {contentType}

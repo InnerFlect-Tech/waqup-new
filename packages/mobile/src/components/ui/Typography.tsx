@@ -47,46 +47,39 @@ export const Typography: React.FC<TypographyProps> = memo(({
   );
 });
 
-// Convenience components
-export const H1: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h1" {...props} />
-);
+// Convenience components — function declarations avoid React 19 "Cannot call a class as a function"
+type TypographyOmitVariant = Omit<TypographyProps, 'variant'>;
 
-export const H2: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h2" {...props} />
-);
-
-export const H3: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h3" {...props} />
-);
-
-export const H4: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h4" {...props} />
-);
-
-export const Body: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="body" {...props} />
-);
-
-export const BodyBold: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="bodyBold" {...props} />
-);
-
-export const Caption: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="caption" {...props} />
-);
-
-export const CaptionBold: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="captionBold" {...props} />
-);
-
-export const Small: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="small" {...props} />
-);
-
-export const SmallBold: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="smallBold" {...props} />
-);
+export function H1(props: TypographyOmitVariant) {
+  return <Typography variant="h1" {...props} />;
+}
+export function H2(props: TypographyOmitVariant) {
+  return <Typography variant="h2" {...props} />;
+}
+export function H3(props: TypographyOmitVariant) {
+  return <Typography variant="h3" {...props} />;
+}
+export function H4(props: TypographyOmitVariant) {
+  return <Typography variant="h4" {...props} />;
+}
+export function Body(props: TypographyOmitVariant) {
+  return <Typography variant="body" {...props} />;
+}
+export function BodyBold(props: TypographyOmitVariant) {
+  return <Typography variant="bodyBold" {...props} />;
+}
+export function Caption(props: TypographyOmitVariant) {
+  return <Typography variant="caption" {...props} />;
+}
+export function CaptionBold(props: TypographyOmitVariant) {
+  return <Typography variant="captionBold" {...props} />;
+}
+export function Small(props: TypographyOmitVariant) {
+  return <Typography variant="small" {...props} />;
+}
+export function SmallBold(props: TypographyOmitVariant) {
+  return <Typography variant="smallBold" {...props} />;
+}
 
 const styles = StyleSheet.create({
   base: {

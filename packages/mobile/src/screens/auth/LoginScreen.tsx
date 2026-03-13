@@ -7,10 +7,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
 import { useTheme } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Button, Input, Typography, Card } from '@/components';
+import { Button, Input, Typography, Card, GoogleIcon } from '@/components';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores/authStore';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, layout, authTokens } from '@/theme';
 import type { LoginFormData } from '@waqup/shared/schemas';
 import { signInWithGoogle } from '@/services/googleAuth';
 
@@ -94,7 +94,7 @@ export default function LoginScreen({ navigation, route }: Props) {
             </View>
 
             {/* Login Form */}
-            <Card variant="elevated" style={styles.card}>
+            <Card variant="auth" style={styles.card}>
               {message && (
                 <View style={[styles.messageContainer, { backgroundColor: `${colors.success}20`, borderColor: colors.success }]}>
                   <Typography variant="body" style={{ color: colors.success }}>
@@ -202,9 +202,7 @@ export default function LoginScreen({ navigation, route }: Props) {
                 ]}
                 activeOpacity={0.75}
               >
-                <Typography variant="body" style={{ fontSize: 18, lineHeight: 22 }}>
-                  G
-                </Typography>
+                <GoogleIcon size={20} />
                 <Typography variant="bodyBold" style={{ color: colors.text.primary, marginLeft: spacing.sm }}>
                   {googleLoading ? t('login.connectingToGoogle') : t('login.continueWithGoogle')}
                 </Typography>
@@ -241,7 +239,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    maxWidth: 400,
+    maxWidth: layout.authCardMaxWidth,
     width: '100%',
     alignSelf: 'center',
   },
@@ -250,7 +248,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl,
   },
   logo: {
-    fontSize: 48,
+    fontSize: authTokens.logoFontSizeLogin,
     marginBottom: spacing.md,
     textAlign: 'center',
   },
@@ -259,7 +257,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
-    padding: spacing.xl,
     borderRadius: borderRadius.lg,
   },
   messageContainer: {
@@ -313,6 +310,6 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    minHeight: 52,
+    minHeight: authTokens.socialButtonMinHeight,
   },
 });

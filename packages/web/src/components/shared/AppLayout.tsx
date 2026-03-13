@@ -21,6 +21,7 @@ import {
   Check,
   Users,
   ListChecks,
+  Handshake,
   Cpu,
   FileText,
   Activity,
@@ -28,6 +29,8 @@ import {
   Map,
   Store,
   BarChart3,
+  Info,
+  RotateCcw,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher } from '@/components';
 import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, PAGE_PADDING, HEADER_PADDING_X_RESPONSIVE, BLUR } from '@/theme';
@@ -82,6 +85,7 @@ const USER_MENU_ITEMS_SECONDARY: UserMenuItem[] = [
 
 const ONBOARDING_ROUTES = [
   '/onboarding',
+  '/onboarding/voice',
   '/onboarding/profile',
   '/onboarding/preferences',
   '/onboarding/guide',
@@ -111,11 +115,22 @@ const VIEW_AS_OPTIONS: { value: ViewAsRole; label: string }[] = [
   { value: null, label: 'Superadmin' },
 ];
 
+const VIEW_AS_LABELS: Record<Exclude<ViewAsRole, null>, string> = {
+  user: 'User',
+  creator: 'Creator',
+  admin: 'Admin',
+};
+
+const VIEW_AS_BANNER_HEIGHT = 44;
+
 const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
   { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
+  { name: 'Restart onboarding', path: '/admin/onboarding/reset', icon: <RotateCcw className="w-4 h-4" /> },
+  { name: 'About & Acknowledgments', path: '/sanctuary/settings/about', icon: <Info className="w-4 h-4" /> },
   { name: 'Updates', path: '/updates', icon: <FileText className="w-4 h-4" /> },
   { name: 'Users', path: '/admin/users', icon: <Users className="w-4 h-4" /> },
   { name: 'Waitlist', path: '/admin/waitlist', icon: <ListChecks className="w-4 h-4" /> },
+  { name: 'Founding Partners', path: '/admin/founding-partners', icon: <Handshake className="w-4 h-4" /> },
   { name: 'Content Overview', path: '/admin/content', icon: <BarChart3 className="w-4 h-4" /> },
   { name: 'Oracle / AI', path: '/admin/oracle', icon: <Cpu className="w-4 h-4" /> },
   { name: 'System', path: '/system', icon: <Settings className="w-4 h-4" /> },
@@ -156,16 +171,25 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
-    ...(actualIsSuperAdmin
+    ...(isSuperAdmin
       ? [{ name: 'Admin', path: '/admin', icon: <Shield className="w-5 h-5" /> }]
       : []),
   ];
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 0);
-    window.addEventListener('scroll', handleScroll);
+    const container = scrollContainerRef.current;
+    const handleScroll = () => {
+      const scrollTop = container ? container.scrollTop : window.scrollY;
+      setIsScrolled(scrollTop > 0);
+    };
+    if (container) {
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -228,15 +252,40 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     setIsMobileMenuOpen(false);
     if (role !== null && isSuperadminRoute(pathname)) {
       router.replace('/sanctuary');
+      router.refresh();
     }
   };
+
+  /** Footer hidden on: landing, marketing pages with own footer, auth pages, coming-soon, onboarding, sanctuary create flows.
+   * See docs/04-reference/16-route-map.md (Footer section) for full page list. */
+  const showPublicFooter =
+    pathname !== '/' &&
+    !pathname?.includes('/for-teachers') &&
+    !pathname?.includes('/for-creators') &&
+    !pathname?.includes('/for-coaches') &&
+    !pathname?.includes('/for-studios') &&
+    !pathname?.includes('/community') &&
+    !pathname?.includes('/login') &&
+    !pathname?.includes('/signup') &&
+    !pathname?.includes('/forgot-password') &&
+    !pathname?.includes('/reset-password') &&
+    !pathname?.includes('/confirm-email') &&
+    !pathname?.includes('/coming-soon') &&
+    !pathname?.includes('/onboarding') &&
+    !pathname?.includes('/sanctuary/affirmations/create') &&
+    !pathname?.includes('/sanctuary/meditations/create') &&
+    !pathname?.includes('/sanctuary/rituals/create');
 
   if (user) {
     return (
       <div
         style={{
-          minHeight: '100vh',
+          height: '100dvh',
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
           background: colors.gradients.background,
+          overflow: 'hidden',
         }}
       >
         <motion.nav
@@ -257,6 +306,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             style={{
               maxWidth: MAX_WIDTH_7XL,
               width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
             <div
@@ -349,7 +400,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         style={{
                           top: profileMenuPosition.top,
                           right: profileMenuPosition.right,
-                          width: actualIsSuperAdmin ? 380 : 288,
+                          width: actualIsSuperAdmin && viewAsRole === null ? 380 : 288,
                           maxHeight: 'min(85vh, 560px)',
                           borderRadius: borderRadius.xl,
                           background: 'rgba(15,5,35,0.88)',
@@ -494,7 +545,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         ))}
                       </div>
 
-                      {actualIsSuperAdmin && (
+                      {actualIsSuperAdmin && viewAsRole === null && (
                         <>
                           <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
                           <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
@@ -540,13 +591,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             </div>
                           </div>
                           <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
-                          <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
-                            <p
-                              className="text-xs font-medium"
-                              style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                            >
-                              View as
-                            </p>
+                        </>
+                      )}
+                      {actualIsSuperAdmin && (
+                        <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
+                          <p
+                            className="text-xs font-medium"
+                            style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                          >
+                            View as
+                          </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                               {VIEW_AS_OPTIONS.map((opt) => {
                                 const isActive = viewAsRole === opt.value;
@@ -576,7 +630,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                               })}
                             </div>
                           </div>
-                        </>
                       )}
 
                       <div style={{ height: 1, background: 'rgba(168,85,247,0.12)', margin: `0 ${spacing.lg}` }} />
@@ -623,6 +676,42 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               </div>
             </div>
+
+            {viewAsRole !== null && actualIsSuperAdmin && (
+              <div
+                style={{
+                  width: '100%',
+                  padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE}`,
+                  background: 'rgba(147,51,234,0.12)',
+                  borderBottom: `1px solid ${colors.glass.border}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: spacing.md,
+                  flexWrap: 'wrap',
+                }}
+              >
+                <span style={{ fontSize: 13, color: colors.text.secondary }}>
+                  Viewing as <strong style={{ color: colors.accent.tertiary }}>{VIEW_AS_LABELS[viewAsRole]}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setViewAsRole(null)}
+                  style={{
+                    padding: `${spacing.xs} ${spacing.sm}`,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: colors.accent.tertiary,
+                    background: 'rgba(168,85,247,0.2)',
+                    border: `1px solid ${colors.accent.tertiary}40`,
+                    borderRadius: borderRadius.md,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Back to Superadmin
+                </button>
+              </div>
+            )}
           </div>
 
           <motion.div
@@ -746,7 +835,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </button>
               ))}
 
-              {actualIsSuperAdmin && (
+              {actualIsSuperAdmin && viewAsRole === null && (
                 <>
                   <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
                   <div>
@@ -786,37 +875,39 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                   <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
-                  <div>
-                    <p
-                      className="text-xs font-medium"
-                      style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                    >
-                      View as
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {VIEW_AS_OPTIONS.map((opt) => {
-                        const isActive = viewAsRole === opt.value;
-                        return (
-                          <button
-                            key={opt.label}
-                            type="button"
-                            className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer"
-                            style={{
-                              padding: `${spacing.sm} ${spacing.md}`,
-                              gap: spacing.md,
-                              color: isActive ? colors.accent.tertiary : colors.text.onDark,
-                              background: isActive ? 'rgba(168,85,247,0.12)' : 'transparent',
-                            }}
-                            onClick={() => handleViewAsSelect(opt.value)}
-                          >
-                            <span>{opt.label}</span>
-                            {isActive && <Check className="w-4 h-4" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
                 </>
+              )}
+              {actualIsSuperAdmin && (
+                <div>
+                  <p
+                    className="text-xs font-medium"
+                    style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                  >
+                    View as
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {VIEW_AS_OPTIONS.map((opt) => {
+                      const isActive = viewAsRole === opt.value;
+                      return (
+                        <button
+                          key={opt.label}
+                          type="button"
+                          className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer"
+                          style={{
+                            padding: `${spacing.sm} ${spacing.md}`,
+                            gap: spacing.md,
+                            color: isActive ? colors.accent.tertiary : colors.text.onDark,
+                            background: isActive ? 'rgba(168,85,247,0.12)' : 'transparent',
+                          }}
+                          onClick={() => handleViewAsSelect(opt.value)}
+                        >
+                          <span>{opt.label}</span>
+                          {isActive && <Check className="w-4 h-4" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
 
               <div style={{ height: 1, background: colors.glass.border, margin: `${spacing.sm} 0` }} />
@@ -848,9 +939,31 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </motion.div>
         </motion.nav>
 
-        <main style={{ paddingTop: NAV_TOP_OFFSET }}>
-          {children}
-        </main>
+        {/* Single scroll container — matches guest layout; prevents nested scroll / "scroll twice" bug */}
+        <div
+          ref={scrollContainerRef}
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          <main
+            style={{
+              paddingTop:
+                viewAsRole !== null && actualIsSuperAdmin
+                  ? `calc(${NAV_TOP_OFFSET} + ${VIEW_AS_BANNER_HEIGHT}px)`
+                  : NAV_TOP_OFFSET,
+              paddingBottom: `max(${spacing.xl}, env(safe-area-inset-bottom, 0px))`,
+              minWidth: 0,
+            }}
+          >
+            {children}
+          </main>
+          {showPublicFooter && <PublicFooter />}
+        </div>
       </div>
     );
   }
@@ -858,8 +971,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        height: '100vh',
-        minHeight: '100vh',
+        height: '100dvh',
+        minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
         background: colors.gradients.background,
@@ -884,6 +997,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             style={{
               maxWidth: MAX_WIDTH_7XL,
               width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
             }}
           >
           <div
@@ -1120,15 +1235,26 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           }),
         }}
       >
-        <main style={{ paddingTop: NAV_TOP_OFFSET, minWidth: 0 }}>
+        <main style={{ paddingTop: NAV_TOP_OFFSET, paddingBottom: `max(${spacing.xl}, env(safe-area-inset-bottom, 0px))`, minWidth: 0 }}>
           {children}
         </main>
-        {/* Footer — hidden on landing (/) and marketing pages with own footer */}
+        {/* Footer — hidden on landing, auth, coming-soon, onboarding, marketing (own footer), create flows */}
         {pathname !== '/' &&
+          !pathname?.includes('/login') &&
+          !pathname?.includes('/signup') &&
+          !pathname?.includes('/forgot-password') &&
+          !pathname?.includes('/reset-password') &&
+          !pathname?.includes('/confirm-email') &&
+          !pathname?.includes('/coming-soon') &&
+          !pathname?.includes('/onboarding') &&
           !pathname?.includes('/for-teachers') &&
           !pathname?.includes('/for-creators') &&
           !pathname?.includes('/for-coaches') &&
-          !pathname?.includes('/for-studios') && <PublicFooter />}
+          !pathname?.includes('/for-studios') &&
+          !pathname?.includes('/community') &&
+          !pathname?.includes('/sanctuary/affirmations/create') &&
+          !pathname?.includes('/sanctuary/meditations/create') &&
+          !pathname?.includes('/sanctuary/rituals/create') && <PublicFooter />}
       </div>
     </div>
   );

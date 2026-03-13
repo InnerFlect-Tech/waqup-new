@@ -190,7 +190,7 @@ export default function BuyQsPage() {
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Link
           href="/sanctuary/credits"

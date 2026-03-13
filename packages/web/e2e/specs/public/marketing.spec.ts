@@ -8,6 +8,7 @@ const MARKETING_PAGES = [
   { path: '/waitlist', name: 'Waitlist' },
   { path: '/explanation', name: 'The Science' },
   { path: '/our-story', name: 'Our Story' },
+  { path: '/get-qs', name: 'Get Qs' },
 ];
 
 for (const { path, name } of MARKETING_PAGES) {

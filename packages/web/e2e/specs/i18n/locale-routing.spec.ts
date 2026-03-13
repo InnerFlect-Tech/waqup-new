@@ -9,6 +9,7 @@
  *  - Switching language redirects to the correct locale URL
  *  - Login page renders in each locale without crashing
  *  - Pricing page renders in each locale without crashing
+ *  - Explanation, how-it-works, our-story pages render in each locale without crashing
  */
 
 import { test, expect } from '@playwright/test';
@@ -66,6 +67,24 @@ for (const locale of LOCALES) {
       await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
       await expect(page.locator('text=Application error')).not.toBeVisible();
     });
+
+    test(`explanation page /${locale}/explanation loads without crash`, async ({ page }) => {
+      await page.goto(`/${locale}/explanation`);
+      await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('text=Application error')).not.toBeVisible();
+    });
+
+    test(`how-it-works page /${locale}/how-it-works loads without crash`, async ({ page }) => {
+      await page.goto(`/${locale}/how-it-works`);
+      await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('text=Application error')).not.toBeVisible();
+    });
+
+    test(`our-story page /${locale}/our-story loads without crash`, async ({ page }) => {
+      await page.goto(`/${locale}/our-story`);
+      await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('text=Application error')).not.toBeVisible();
+    });
   });
 }
 
@@ -90,17 +109,17 @@ test.describe('Language switcher', () => {
     // Dropdown should list all 5 language options
     const listbox = page.locator('[role="listbox"]');
     await expect(listbox).toBeVisible({ timeout: 5_000 });
-    for (const name of ['English', 'Português (PT)', 'Español', 'Français', 'Deutsch']) {
+    for (const name of ['English', 'Português', 'Español', 'Français', 'Deutsch']) {
       await expect(listbox.locator(`text=${name}`)).toBeVisible();
     }
   });
 
-  test('switching to Português (PT) navigates to /pt/', async ({ page }) => {
+  test('switching to Português navigates to /pt/', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15_000 });
     const switcher = page.locator('button[aria-label="Switch language"]').first();
     await switcher.click();
-    await page.locator('[role="listbox"] button', { hasText: 'Português (PT)' }).click();
+    await page.locator('[role="listbox"] button', { hasText: 'Português' }).click();
     await page.waitForURL(/\/pt\//);
     const lang = await page.locator('html').getAttribute('lang');
     expect(lang).toBe('pt');

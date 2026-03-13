@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
@@ -8,7 +9,7 @@ import { ChevronDown, ArrowRight, Linkedin, Instagram, Github, Music } from 'luc
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { PageShell, GlassCard, Logo } from '@/components';
 import { Typography, Button } from '@/components';
-import { CONTENT_MEDIUM, CONTENT_MAX_WIDTH, PAGE_PADDING } from '@/theme';
+import { CONTENT_MEDIUM, CONTENT_MAX_WIDTH, PAGE_HORIZONTAL_PADDING } from '@/theme';
 import { Analytics } from '@waqup/shared/utils';
 
 const FOUNDER_SOCIALS = [
@@ -43,28 +44,22 @@ const revealVariants = {
 };
 
 export default function OurStoryPage() {
+  const t = useTranslations('marketing');
+  const tp = (key: string) => t(`ourStory.page.${key}`);
   const { theme } = useTheme();
   const colors = theme.colors;
 
   return (
     <PageShell intensity="strong" bare allowDocumentScroll>
-      <div
-        style={{
-          maxWidth: CONTENT_MAX_WIDTH,
-          margin: '0 auto',
-          padding: '0 clamp(16px, 4vw, 32px)',
-          width: '100%',
-          minWidth: 0,
-        }}
-      >
-        {/* Hero — full viewport, scroll cue */}
-        <motion.section
+      {/* Hero — full width, outside max-width wrapper (matches for-teachers, for-coaches pattern) */}
+      <motion.section
           className="our-story-hero"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
             position: 'relative',
+            width: '100%',
             minHeight: '100dvh',
             display: 'flex',
             flexDirection: 'column',
@@ -86,10 +81,36 @@ export default function OurStoryPage() {
             />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(6,2,20,0.88) 0%, rgba(6,2,20,0.7) 50%, rgba(6,2,20,0.92) 100%)' }} />
           </div>
-          <div style={{ position: 'relative', zIndex: 1, marginBottom: spacing.xxl }}>
-            <Logo size="lg" showIcon={false} href="/" />
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              width: '100%',
+              maxWidth: CONTENT_MAX_WIDTH,
+              margin: '0 auto',
+              padding: `0 ${PAGE_HORIZONTAL_PADDING}`,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ marginBottom: spacing.xxl }}>
+              <Logo size="lg" showIcon={false} href="/" />
+            </div>
           </div>
-          <div style={{ position: 'relative', zIndex: 1 }}>
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              width: '100%',
+              maxWidth: CONTENT_MAX_WIDTH,
+              margin: '0 auto',
+              padding: `0 ${PAGE_HORIZONTAL_PADDING}`,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
             <div
               style={{
                 display: 'inline-flex',
@@ -103,7 +124,7 @@ export default function OurStoryPage() {
               }}
             >
               <Typography variant="smallBold" style={{ color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: 11 }}>
-                Our Story
+                {tp('badge')}
               </Typography>
             </div>
             <h1
@@ -117,9 +138,9 @@ export default function OurStoryPage() {
               maxWidth: 520,
               }}
             >
-              This started as something{' '}
+              {tp('heroTitle')}{' '}
               <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                I needed myself.
+                {tp('heroTitleHighlight')}
               </span>
             </h1>
             <p
@@ -132,7 +153,7 @@ export default function OurStoryPage() {
                 fontWeight: 300,
               }}
             >
-              A scroll-down story about why waQup exists.
+              {tp('heroSubhead')}
             </p>
             <motion.div
               animate={{ y: [0, 6, 0] }}
@@ -140,13 +161,22 @@ export default function OurStoryPage() {
               style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: spacing.xs }}
             >
               <Typography variant="caption" style={{ color: colors.text.tertiary, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                Scroll to read
+                {tp('scrollCue')}
               </Typography>
               <ChevronDown size={20} color={colors.text.tertiary} strokeWidth={2} />
             </motion.div>
           </div>
         </motion.section>
 
+        <div
+          style={{
+            maxWidth: CONTENT_MAX_WIDTH,
+            margin: '0 auto',
+            padding: `0 ${PAGE_HORIZONTAL_PADDING}`,
+            width: '100%',
+            minWidth: 0,
+          }}
+        >
         {/* Section 1 — Personal Origin */}
         <motion.section
           initial="hidden"
@@ -172,7 +202,7 @@ export default function OurStoryPage() {
               marginBottom: PARAGRAPH_GAP,
             }}
           >
-            Most affirmation and meditation tools gave me someone else&apos;s voice telling me what to believe. It never landed. The words felt distant — like advice from a stranger, not truth from within.
+            {tp('section1P1')}
           </Typography>
           <Typography
             variant="body"
@@ -183,7 +213,7 @@ export default function OurStoryPage() {
               marginBottom: PARAGRAPH_GAP,
             }}
           >
-            I discovered something different when I started writing my own scripts, recording them in my voice, and listening every day. The manual process was tedious: scripting, recording, mixing in Ableton, structuring my practice. But it worked. My subconscious actually shifted.
+            {tp('section1P2')}
           </Typography>
           <Typography
             variant="body"
@@ -193,7 +223,7 @@ export default function OurStoryPage() {
               lineHeight: 1.8,
             }}
           >
-            That path was shaped by years of working with sound — as a DJ and music producer under <span style={{ color: colors.accent.tertiary, fontWeight: 500 }}>Nu Moksa</span> and <span style={{ color: colors.accent.tertiary, fontWeight: 500 }}>Cronaxy</span>. Sound has always been my medium: mixing, mastering, understanding frequencies. It taught me how deeply audio affects the subconscious — and why your own voice, speaking your intentions, is unmatched.
+            {t('ourStory.page.section1P3', { nuMoksa: 'Nu Moksa', cronaxy: 'Cronaxy' })}
           </Typography>
         </motion.section>
 
@@ -210,9 +240,9 @@ export default function OurStoryPage() {
             flexDirection: 'column',
             justifyContent: 'center',
             padding: `${spacing.xxxl} 0`,
-            margin: `0 calc(-1 * ${PAGE_PADDING})`,
-            paddingLeft: PAGE_PADDING,
-            paddingRight: PAGE_PADDING,
+            margin: `0 calc(-1 * ${PAGE_HORIZONTAL_PADDING})`,
+            paddingLeft: PAGE_HORIZONTAL_PADDING,
+            paddingRight: PAGE_HORIZONTAL_PADDING,
             overflow: 'hidden',
           }}
         >
@@ -236,7 +266,7 @@ export default function OurStoryPage() {
                 marginBottom: spacing.lg,
               }}
             >
-              The insight
+              {tp('insightLabel')}
             </div>
             <Typography
               variant="body"
@@ -249,7 +279,7 @@ export default function OurStoryPage() {
                 letterSpacing: '-0.3px',
               }}
             >
-              Transformation happens when you speak your own intentions.
+              {tp('insightTitle')}
             </Typography>
             <Typography
               variant="body"
@@ -260,7 +290,7 @@ export default function OurStoryPage() {
                 marginBottom: PARAGRAPH_GAP,
               }}
             >
-              Most tools tell you what to believe. waQup lets you encode your own beliefs — in your own voice, with your own words.
+              {tp('insightP1')}
             </Typography>
             <Typography
               variant="body"
@@ -270,7 +300,7 @@ export default function OurStoryPage() {
                 lineHeight: 1.8,
               }}
             >
-              Personal transformation requires personal language. The real power is hearing your own voice reinforcing your identity.
+              {tp('insightP2')}
             </Typography>
           </div>
         </motion.section>
@@ -301,7 +331,7 @@ export default function OurStoryPage() {
               marginBottom: spacing.lg,
             }}
           >
-            Why waQup exists
+            {tp('whyExistsLabel')}
           </div>
           <Typography
             variant="body"
@@ -312,7 +342,7 @@ export default function OurStoryPage() {
               marginBottom: PARAGRAPH_GAP,
             }}
           >
-            waQup exists to simplify that process. Instead of scripting, recording, and organizing manually, the system guides you. You focus on clarity of intention — what you want to become, what you want to strengthen — and waQup handles the rest.
+            {tp('whyExistsP1')}
           </Typography>
           <Typography
             variant="body"
@@ -322,7 +352,7 @@ export default function OurStoryPage() {
               lineHeight: 1.8,
             }}
           >
-            Your voice. Simplicity. Accessibility. What used to require dedication and technical setup is now available to anyone willing to do the inner work.
+            {tp('whyExistsP2')}
           </Typography>
         </motion.section>
 
@@ -339,9 +369,9 @@ export default function OurStoryPage() {
             justifyContent: 'center',
             padding: `${spacing.xxxl} 0`,
             background: `linear-gradient(to bottom, transparent, ${colors.accent.primary}04, transparent)`,
-            margin: `0 calc(-1 * ${PAGE_PADDING})`,
-            paddingLeft: PAGE_PADDING,
-            paddingRight: PAGE_PADDING,
+            margin: `0 calc(-1 * ${PAGE_HORIZONTAL_PADDING})`,
+            paddingLeft: PAGE_HORIZONTAL_PADDING,
+            paddingRight: PAGE_HORIZONTAL_PADDING,
           }}
         >
           <div style={{ maxWidth: PROSE_MAX_WIDTH, margin: '0 auto', width: '100%' }}>
@@ -355,7 +385,7 @@ export default function OurStoryPage() {
                 marginBottom: spacing.lg,
               }}
             >
-              What waQup represents
+              {tp('representsLabel')}
             </div>
             <Typography
               variant="body"
@@ -366,7 +396,7 @@ export default function OurStoryPage() {
                 marginBottom: PARAGRAPH_GAP,
               }}
             >
-              waQup is more than an app. It&apos;s a philosophy: tools should help people express themselves, not tell them what to think. Technology should empower inner clarity, not add noise. Identity can be shaped intentionally — and the most powerful tool for that is your own voice.
+              {tp('representsP1')}
             </Typography>
             <Typography
               variant="body"
@@ -376,7 +406,7 @@ export default function OurStoryPage() {
                 lineHeight: 1.8,
               }}
             >
-              I believe in building tools that empower people rather than control them. No manipulation. No pressure. Just access to something that actually works.
+              {tp('representsP2')}
             </Typography>
           </div>
         </motion.section>
@@ -414,7 +444,7 @@ export default function OurStoryPage() {
                     fontWeight: 400,
                   }}
                 >
-                  waQup exists because something simple changed my life, and I believe more people should have access to it.
+                  {tp('founderQuote')}
                 </Typography>
                 <Typography
                   variant="body"
@@ -425,7 +455,7 @@ export default function OurStoryPage() {
                     marginBottom: spacing.xl,
                   }}
                 >
-                  I spent years removing every barrier between that experience and anyone who needs it. The manual process I used — scripting, recording, mixing — is now a conversation, a few taps, and your voice. That&apos;s waQup.
+                  {tp('founderStory')}
                 </Typography>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
                   <Typography
@@ -436,7 +466,7 @@ export default function OurStoryPage() {
                       fontSize: '16px',
                     }}
                   >
-                    Daniel Indias Fernandes
+                    {tp('founderName')}
                   </Typography>
                   <Typography
                     variant="body"
@@ -447,7 +477,7 @@ export default function OurStoryPage() {
                       marginBottom: spacing.sm,
                     }}
                   >
-                    Founder, waQup. DJ and music producer — Nu Moksa, Cronaxy.
+                    {tp('founderRole')}
                   </Typography>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm, alignItems: 'center' }}>
                     {FOUNDER_SOCIALS.map(({ href, label, icon: Icon, destination }) => (
@@ -534,7 +564,7 @@ export default function OurStoryPage() {
                 letterSpacing: '-0.3px',
               }}
             >
-              Ready to hear yourself?
+              {tp('ctaHeadline')}
             </Typography>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, width: '100%', maxWidth: 360 }}>
               <Link href="/how-it-works" style={{ textDecoration: 'none', width: '100%' }}>
@@ -553,7 +583,7 @@ export default function OurStoryPage() {
                     gap: spacing.sm,
                   }}
                 >
-                  See how it works <ArrowRight size={18} color={colors.text.onDark} strokeWidth={2} />
+                  {tp('ctaPrimary')} <ArrowRight size={18} color={colors.text.onDark} strokeWidth={2} />
                 </Button>
               </Link>
               <Link href="/waitlist" style={{ textDecoration: 'none' }}>
@@ -567,7 +597,7 @@ export default function OurStoryPage() {
                     padding: spacing.sm,
                   }}
                 >
-                  Join the waitlist
+                  {tp('ctaSecondary')}
                 </Typography>
               </Link>
             </div>

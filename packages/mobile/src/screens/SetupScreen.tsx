@@ -1,60 +1,72 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, ViewStyle } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme';
-import { Screen } from '@/components/layout';
 import { Typography, Button, Card } from '@/components';
-import { spacing, borderRadius } from '@/theme';
-// Icons will be imported from @expo/vector-icons
-// For now, using emoji/text placeholders
+import { spacing, borderRadius, layout, authTokens } from '@/theme';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '@/navigation/types';
+
+type SetupNav = NativeStackNavigationProp<RootStackParamList, 'Setup'>;
 
 const { width } = Dimensions.get('window');
+
+/** Minimum touch target - Apple HIG / Android guidelines */
+const HIT_SLOP = { top: 12, bottom: 12, left: 12, right: 12 };
 
 export default function SetupScreen() {
   const { theme } = useTheme();
   const colors = theme.colors;
-  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation<SetupNav>();
 
   const features = [
     {
-      icon: '🧠',
+      icon: 'brain' as const,
       title: 'AI-Powered',
       description: 'Personalized content generation',
     },
     {
-      icon: '✨',
+      icon: 'microphone' as const,
       title: 'Voice Cloning',
       description: 'Create with your own voice',
     },
     {
-      icon: '❤️',
+      icon: 'heart' as const,
       title: 'Transform Your Mind',
       description: 'Science-backed practices',
     },
   ];
 
+  const handleGetStarted = () => {
+    navigation.navigate('Auth', { screen: 'Signup' });
+  };
+
+  const handleSignIn = () => {
+    navigation.navigate('Auth', { screen: 'Login' });
+  };
+
+  const containerStyle: ViewStyle = {
+    flex: 1,
+    backgroundColor: colors.background.primary,
+    paddingTop: insets.top,
+    paddingBottom: insets.bottom,
+  };
+
   return (
-    <Screen scrollable padding={false}>
+    <View style={containerStyle}>
       <ScrollView
+        style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero Section */}
-        <Animated.View
-          entering={FadeInUp.duration(600)}
-          style={styles.heroSection}
-        >
+        <Animated.View entering={FadeInUp.duration(600)} style={styles.heroSection}>
           <Typography
             variant="h1"
-            style={[
-              styles.logo,
-              {
-                color: colors.text.primary,
-                fontWeight: '300',
-                letterSpacing: -2,
-              },
-            ]}
+            style={[styles.logo, { color: colors.text.primary }]}
           >
             {'wa'}<Text style={{ color: colors.accent.tertiary }}>Q</Text>{'up'}
           </Typography>
@@ -66,106 +78,102 @@ export default function SetupScreen() {
           </Typography>
         </Animated.View>
 
-        {/* Features Grid */}
         <View style={styles.featuresSection}>
-          {features.map((feature, index) => {
-            return (
-              <Animated.View
-                key={feature.title}
-                entering={FadeInDown.delay(index * 100).duration(500)}
+          {features.map((feature, index) => (
+            <Animated.View
+              key={feature.title}
+              entering={FadeInDown.delay(index * 80).duration(450)}
+            >
+              <Card
+                variant="elevated"
+                style={[
+                  styles.featureCard,
+                  {
+                    backgroundColor: colors.glass.opaque,
+                    borderColor: colors.glass.border,
+                  },
+                ]}
               >
-                <Card
-                  variant="elevated"
+                <View
                   style={[
-                    styles.featureCard,
-                    {
-                      backgroundColor: colors.glass.opaque,
-                      borderColor: colors.glass.border,
-                    },
+                    styles.iconContainer,
+                    { backgroundColor: colors.accent.light },
                   ]}
                 >
-                  <View
-                    style={[
-                      styles.iconContainer,
-                      {
-                        backgroundColor: colors.accent.primary,
-                      },
-                    ]}
-                  >
-                    <Typography variant="h1" style={{ fontSize: 32 }}>
-                      {feature.icon}
-                    </Typography>
-                  </View>
-                  <Typography
-                    variant="h4"
-                    style={[styles.featureTitle, { color: colors.text.primary }]}
-                  >
-                    {feature.title}
-                  </Typography>
-                  <Typography
-                    variant="body"
-                    style={[styles.featureDescription, { color: colors.text.secondary }]}
-                  >
-                    {feature.description}
-                  </Typography>
-                </Card>
-              </Animated.View>
-            );
-          })}
+                  <MaterialCommunityIcons
+                    name={feature.icon}
+                    size={authTokens.featureIconGlyphSize}
+                    color={colors.accent.tertiary}
+                  />
+                </View>
+                <Typography variant="h4" style={[styles.featureTitle, { color: colors.text.primary }]}>
+                  {feature.title}
+                </Typography>
+                <Typography variant="body" style={[styles.featureDescription, { color: colors.text.secondary }]}>
+                  {feature.description}
+                </Typography>
+              </Card>
+            </Animated.View>
+          ))}
         </View>
-
-        {/* CTA Section */}
-        <Animated.View
-          entering={FadeInDown.delay(400).duration(500)}
-          style={styles.ctaSection}
-        >
-          <Button
-            variant="primary"
-            size="lg"
-            fullWidth
-            onPress={() => {
-              // Navigate to signup or main app
-              // @ts-ignore - navigation type will be handled by navigation setup
-              navigation.navigate('Auth', { screen: 'Signup' });
-            }}
-            style={styles.ctaButton}
-          >
-            Get Started →
-          </Button>
-          <Button
-            variant="ghost"
-            size="md"
-            fullWidth
-            onPress={() => {
-              // @ts-ignore
-              navigation.navigate('Auth', { screen: 'Login' });
-            }}
-            style={styles.secondaryButton}
-          >
-            Already have an account? Sign In
-          </Button>
-        </Animated.View>
       </ScrollView>
-    </Screen>
+
+      <Animated.View
+        entering={FadeInDown.delay(300).duration(450)}
+        style={[
+          styles.ctaSection,
+          {
+            paddingBottom: insets.bottom + spacing.md,
+            backgroundColor: colors.background.primary,
+            paddingHorizontal: spacing.xl,
+          },
+        ]}
+      >
+        <Button
+          variant="primary"
+          size="lg"
+          fullWidth
+          hitSlop={HIT_SLOP}
+          onPress={handleGetStarted}
+          style={styles.ctaButton}
+        >
+          Get Started →
+        </Button>
+        <Button
+          variant="ghost"
+          size="md"
+          fullWidth
+          hitSlop={HIT_SLOP}
+          onPress={handleSignIn}
+          style={styles.secondaryButton}
+        >
+          Already have an account? Sign In
+        </Button>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
   scrollContent: {
     padding: spacing.xl,
     paddingTop: spacing.xxl,
+    paddingBottom: spacing.xl,
   },
   heroSection: {
     alignItems: 'center',
     marginBottom: spacing.xxl,
   },
   logo: {
-    fontSize: 64,
+    fontSize: authTokens.logoFontSizeHero,
     marginBottom: spacing.md,
     textAlign: 'center',
   },
   tagline: {
-    fontSize: 18,
+    fontSize: layout.heroBodyFontSizeMin,
     textAlign: 'center',
     maxWidth: width - spacing.xl * 2,
     lineHeight: 24,
@@ -181,8 +189,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   iconContainer: {
-    width: 64,
-    height: 64,
+    width: authTokens.featureIconSize,
+    height: authTokens.featureIconSize,
     borderRadius: borderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
@@ -194,7 +202,7 @@ const styles = StyleSheet.create({
   },
   featureDescription: {
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: layout.heroBodyFontSizeMin,
   },
   ctaSection: {
     marginTop: spacing.xl,

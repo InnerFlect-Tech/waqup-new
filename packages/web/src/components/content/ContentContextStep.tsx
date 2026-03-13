@@ -21,21 +21,27 @@ const TIME_OPTIONS = [
   { id: 'anytime', label: 'Anytime', icon: MapPin, color: '#34d399' },
 ];
 
-const TYPE_COPY: Record<ContentItemType, { heading: string; placeholder: string; scienceTopic: ScienceTopic; scienceInsight: string }> = {
+const TYPE_COPY: Record<
+  ContentItemType,
+  { heading: string; detailLabel: string; placeholder: string; scienceTopic: ScienceTopic; scienceInsight: string }
+> = {
   affirmation: {
     heading: 'When will you practice this?',
+    detailLabel: 'More detail (optional)',
     placeholder: 'e.g. Every morning before I check my phone, while making coffee…',
     scienceTopic: 'habit-formation',
     scienceInsight: 'Consistent cues — time, place, sensation — train the brain to enter the practice state automatically.',
   },
   meditation: {
-    heading: 'When and where will you meditate?',
-    placeholder: 'e.g. In bed just before sleep with headphones, in a quiet corner of my office at lunch…',
-    scienceTopic: 'sleep-subconscious',
-    scienceInsight: 'Transitional states — waking and falling asleep — dramatically lower the critical mind\'s resistance. Timing is everything.',
+    heading: 'When will you practice?',
+    detailLabel: 'How are you arriving? (optional)',
+    placeholder: 'e.g. tired, wired, scattered, calm',
+    scienceTopic: 'habit-formation',
+    scienceInsight: 'Regulation practices work best with a consistent cue. When you practice shapes how your nervous system learns to settle.',
   },
   ritual: {
     heading: 'When will you perform this ritual?',
+    detailLabel: 'More detail (optional)',
     placeholder: 'e.g. Every morning after brushing my teeth, before I open any screens…',
     scienceTopic: 'habit-formation',
     scienceInsight: 'Rituals need a reliable cue. Anchoring to an existing habit ("habit stacking") makes the new pattern automatic within weeks.',
@@ -116,7 +122,7 @@ export function ContentContextStep({ backHref, nextHref }: ContentContextStepPro
 
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} style={{ marginBottom: spacing.xl }}>
         <Typography variant="h4" style={{ color: colors.text.secondary, marginBottom: spacing.sm, fontWeight: 400, fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-          More detail (optional)
+          {copy.detailLabel}
         </Typography>
         <div
           style={{

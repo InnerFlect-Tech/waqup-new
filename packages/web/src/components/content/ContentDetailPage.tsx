@@ -2,14 +2,15 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Typography, Button } from '@/components';
-import { SpeakingAnimation } from '@/components/audio';
+import { AudioWaveform } from '@/components/audio';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
 import { Play, Pause, Edit, Trash2, Share2, ChevronDown, ChevronUp, Mic } from 'lucide-react';
-import { formatDate, Analytics } from '@waqup/shared/utils';
+import { formatDate, Analytics, parseRitualSections, getRitualSectionsForDisplay } from '@waqup/shared/utils';
 import { useAuthStore } from '@/stores';
+import { useSignedRecordingsUrl } from '@/hooks';
 import type { ContentItemType } from './ContentItem';
 
 export interface ContentDetailPageProps {
@@ -51,10 +52,12 @@ export function ContentDetailPage({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const { url: resolvedAudioUrl } = useSignedRecordingsUrl(audioUrl ?? null);
   const hasAudio = Boolean(audioUrl);
+  const canPlay = hasAudio && Boolean(resolvedAudioUrl);
 
   const handlePlayPause = async () => {
-    if (hasAudio && audioRef.current) {
+    if (canPlay && audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
@@ -70,7 +73,7 @@ export function ContentDetailPage({
 
   useEffect(() => {
     const el = audioRef.current;
-    if (!el || !hasAudio) return;
+    if (!el || !canPlay) return;
     const onPlay = () => {
       setIsPlaying(true);
       Analytics.contentPlayed(id, contentType, user?.id);
@@ -89,7 +92,7 @@ export function ContentDetailPage({
       el.removeEventListener('pause', onPause);
       el.removeEventListener('ended', onEnded);
     };
-  }, [hasAudio, id, contentType, user?.id]);
+  }, [canPlay, id, contentType, user?.id]);
 
   const handleDelete = () => {
     if (showDeleteConfirm) {
@@ -109,7 +112,7 @@ export function ContentDetailPage({
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Typography variant="h1" style={{ marginBottom: spacing.xs, color: colors.text.primary }}>
           {title}
@@ -119,10 +122,10 @@ export function ContentDetailPage({
         </Typography>
 
         {/* Hidden audio element for playback */}
-        {hasAudio && (
+        {canPlay && (
           <audio
             ref={audioRef}
-            src={audioUrl}
+            src={resolvedAudioUrl!}
             style={{ display: 'none' }}
             preload="metadata"
           />
@@ -130,7 +133,7 @@ export function ContentDetailPage({
 
         {/* Audio visualization */}
         <div style={{ marginBottom: spacing.xl, borderRadius: borderRadius.lg, overflow: 'hidden' }}>
-          <SpeakingAnimation isSpeaking={isPlaying} style={{ minHeight: '320px' }} />
+          <AudioWaveform isPlaying={isPlaying} frequencyData={[]} style={{ minHeight: '320px' }} />
         </div>
 
         {/* Playback controls */}
@@ -141,6 +144,7 @@ export function ContentDetailPage({
               size="md"
               style={{ background: theme.colors.gradients.primary }}
               onClick={handlePlayPause}
+              disabled={!canPlay}
             >
               {isPlaying ? (
                 <>
@@ -236,19 +240,68 @@ export function ContentDetailPage({
               {scriptExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
               Script
             </button>
-            {scriptExpanded && (
-              <Typography
-                variant="body"
-                style={{
-                  marginTop: spacing.sm,
-                  color: colors.text.secondary,
-                  whiteSpace: 'pre-wrap',
-                  lineHeight: 1.6,
-                }}
-              >
-                {script}
-              </Typography>
-            )}
+            {scriptExpanded &&
+              (contentType === 'ritual' ? (() => {
+                const parsed = parseRitualSections(script);
+                const sectionsForDisplay = getRitualSectionsForDisplay(parsed);
+                if (sectionsForDisplay.length > 0) {
+                  return (
+                    <div style={{ marginTop: spacing.sm, display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+                      {sectionsForDisplay.map((section, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            padding: spacing.md,
+                            borderRadius: borderRadius.md,
+                            background: colors.glass.medium,
+                            border: `1px solid ${colors.glass.border}`,
+                          }}
+                        >
+                          <Typography
+                            variant="small"
+                            style={{
+                              color: colors.text.secondary,
+                              fontSize: 11,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.08em',
+                              marginBottom: spacing.xs,
+                              display: 'block',
+                            }}
+                          >
+                            {section.label}
+                          </Typography>
+                          <Typography
+                            variant="body"
+                            style={{ color: colors.text.secondary, whiteSpace: 'pre-wrap', lineHeight: 1.6, fontSize: 14 }}
+                          >
+                            {section.content}
+                          </Typography>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }
+                return (
+                  <Typography
+                    variant="body"
+                    style={{ marginTop: spacing.sm, color: colors.text.secondary, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}
+                  >
+                    {script}
+                  </Typography>
+                );
+              })() : (
+                <Typography
+                  variant="body"
+                  style={{
+                    marginTop: spacing.sm,
+                    color: colors.text.secondary,
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {script}
+                </Typography>
+              ))}
           </div>
         )}
       </PageContent>

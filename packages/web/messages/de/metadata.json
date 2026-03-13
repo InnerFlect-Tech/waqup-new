@@ -34,7 +34,7 @@
     "explanation": "Die Wissenschaft",
     "ourStory": "Unsere Geschichte",
     "theScience": "Die Wissenschaft",
-    "investors": "Investoren",
+    "investors": "Gründungspartner",
     "privacy": "Datenschutzerklärung",
     "terms": "Nutzungsbedingungen",
     "comingSoon": "Demnächst",
@@ -45,7 +45,8 @@
     "forStudios": "Für Studios",
     "funnels": "Verkaufs-Funnels",
     "launch": "Launch",
-    "getQs": "Qs erhalten"
+    "getQs": "Qs erhalten",
+    "about": "Über uns & Danksagungen"
   },
   "auth": {
     "login": "Anmelden",
@@ -53,5 +54,31 @@
     "forgotPassword": "Passwort vergessen",
     "resetPassword": "Passwort zurücksetzen",
     "confirmEmail": "E-Mail bestätigen"
+  },
+  "descriptions": {
+    "home": "waQup — Erstelle personalisierte Affirmationen, Meditationen und Rituale in deiner eigenen Stimme. Übe für immer kostenlos.",
+    "howItWorks": "So funktioniert waQup: Erzähl der KI deine Absicht, erstelle in deiner Stimme und transformiere durch tägliche Praxis. Drei Schritte. Kein Abo zum Wiederabspielen.",
+    "investors": "waQup für Gründungspartner — Umsatzbeteiligung, keine Aktienverwässerung. Plattform für Stimmen-Transformation mit klarer Unit-Economy.",
+    "ourStory": "Warum wir waQup gebaut haben — die Gründergeschichte hinter stimmenbasierten Affirmationen, Meditationen und Ritualen.",
+    "theScience": "Die Wissenschaft hinter waQup: Neuroplastizität, Stimmengedächtnis und Unterbewusstseins-Reprogrammierung.",
+    "forTeachers": "waQup für Lehrer und Coaches — bringe personalisierte Stimmübungen zu deinen Schülern und Klienten.",
+    "forCoaches": "waQup für Coaches — teile private Stimmübungen mit Klienten. Erstelle in Minuten, nicht Stunden.",
+    "forCreators": "waQup für Creator — verdiene mit deinem Content. Deine Stimme, deine Marke, Umsatzbeteiligung.",
+    "forStudios": "waQup für Studios — skaliere stimmenbasierte Praxis. QR-Codes, Zugang im Unterricht, Empfehlungs-Credits.",
+    "pricing": "Einfache, transparente Preise. Üben ist immer kostenlos. Credits nur für die Erstellung.",
+    "funnels": "waQup Verkaufs-Funnels und Konversionsflüsse für Marketing.",
+    "launch": "waQup ist live. Deine Stimme. Deine Praxis. Deine Transformation.",
+    "getQs": "Qs erhalten — Credit-Pakete für deine Erstellungsreise. Übe für immer kostenlos.",
+    "join": "Werde Gründungsmitglied. Frühzeitiger Zugang, beste Konditionen, hilf waQup zu gestalten.",
+    "waitlist": "Tritt der waQup-Warteliste bei. Frühzeitiger Zugang, keine Karte nötig, übe immer kostenlos.",
+    "comingSoon": "waQup kommt demnächst. Tritt der Warteliste für frühen Zugang bei.",
+    "terms": "Nutzungsbedingungen für die Nutzung von waQup. Lies unsere rechtlichen Bedingungen.",
+    "privacy": "Wie waQup deine Daten erhebt, nutzt und schützt. Datenschutzerklärung.",
+    "dataDeletion": "So forderst du die Löschung deiner Daten von waQup an.",
+    "login": "Melde dich bei deinem waQup-Konto an.",
+    "signup": "Erstelle dein waQup-Konto und beginne zu transformieren.",
+    "forgotPassword": "Setze dein waQup-Passwort zurück.",
+    "resetPassword": "Erstelle ein neues Passwort für dein waQup-Konto.",
+    "confirmEmail": "Bestätige deine E-Mail-Adresse für waQup."
   }
 }

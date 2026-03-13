@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/theme';
 import { ErrorBoundary, ToastProvider } from '@/components/ui';
 import { initAnalytics } from '@waqup/shared/utils';
 import { initRevenueCat } from '@/services/iap';
+import { useOAuthDeepLink } from '@/hooks/useOAuthDeepLink';
 
 // ── Sentry crash reporting ────────────────────────────────────────────────────
 // Set EXPO_PUBLIC_SENTRY_DSN in packages/mobile/.env (get DSN from sentry.io)
@@ -20,8 +21,8 @@ if (SENTRY_DSN) {
     debug: __DEV__,
     environment: process.env.APP_ENV ?? 'development',
     tracesSampleRate: __DEV__ ? 0 : 0.2,
-    // Disable Sentry in development to avoid noise
-    enabled: !__DEV__,
+    // Disable Sentry in dev unless EXPO_PUBLIC_SENTRY_DEV_TEST=1 (for testing)
+    enabled: __DEV__ ? process.env.EXPO_PUBLIC_SENTRY_DEV_TEST === '1' : true,
   });
 }
 
@@ -55,6 +56,7 @@ const asyncStoragePersister = createAsyncStoragePersister({
 });
 
 function AppRoot() {
+  useOAuthDeepLink();
   return (
     <SafeAreaProvider>
       <ErrorBoundary>

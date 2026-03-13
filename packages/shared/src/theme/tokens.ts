@@ -60,15 +60,50 @@ export const buttonTokens = {
   iconOnlySize: 44,
 } as const;
 
+/** Auth/onboarding screen tokens - SSOT for login, signup, setup screens */
+export const authTokens = {
+  /** Logo font size on login/signup form screens */
+  logoFontSizeLogin: 48,
+  /** Hero logo font size on setup/landing screens */
+  logoFontSizeHero: 64,
+  /** Feature card icon container (setup screen) */
+  featureIconSize: 56,
+  /** Feature card icon glyph size */
+  featureIconGlyphSize: 28,
+  /** Social (Google) button min height - matches buttonTokens.minHeight.lg */
+  socialButtonMinHeight: 52,
+} as const;
+
+/** Home/dashboard tokens - SSOT for RitualHomeScreen, main tab UI */
+export const homeTokens = {
+  /** Headline line height (h2 variant with extra breathing room) */
+  headlineLineHeight: 34,
+  /** Greeting label letter spacing */
+  greetingLetterSpacing: 0.5,
+  /** Primary CTA min height — touch-friendly, prominent */
+  ctaMinHeight: 56,
+  /** Tip card icon size */
+  tipIconSize: 18,
+} as const;
+
 /** Layout constants (px) - Web uses as CSS, Mobile may scale */
 export const layout = {
+  /** Tab bar height — bottom navigation */
+  tabBarHeight: 60,
+  /** Tab bar vertical padding */
+  tabBarPaddingY: 8,
+  /** Header right element margin (e.g. Q balance badge) */
+  headerRightMargin: 16,
   /** Reserved for wide layouts; primary content uses maxWidth7xl (1280) */
   contentMaxWidth: 1400,
+  /** Auth screens (login, signup) - max width for card */
   authCardMaxWidth: 480,
   contentNarrow: 800,
   contentMedium: 600,
   /** Max width for readable text blocks and narrow modals */
   contentReadable: 400,
+  /** Max height for script-read scroll area (idle + recording) — enough lines visible, stable scroll */
+  scriptReadMaxHeight: 280,
   navHeight: 64,
   gridCardMin: 300,
   searchInputMaxWidth: 400,

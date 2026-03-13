@@ -9,11 +9,16 @@ import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
 import { getFeedbackContext } from '@/lib/feedback-context';
 import { Link } from '@/i18n/navigation';
+import { PRACTICE_DEFINITION } from '@waqup/shared/constants';
 
 const FAQS = [
   {
+    q: 'What is practice? Is it really free?',
+    a: `${PRACTICE_DEFINITION} It's always free — unlimited replays, no credits, no limits. Qs are only used when you create something new.`,
+  },
+  {
     q: 'What are Qs and how do I use them?',
-    a: 'Qs are waQup credits. You spend them when you create content — affirmations, meditations, and rituals. Practice (listening back to your content) is always free. You can earn Qs by referring friends, maintaining streaks, or by getting a plan.',
+    a: 'Qs are waQup credits. You spend them when you create content — affirmations, meditations, and rituals. Listening to your content is always free. You can earn Qs by referring friends, maintaining streaks, or by getting a plan.',
   },
   {
     q: 'Does my voice get cloned? How does that work?',
@@ -160,7 +165,7 @@ export default function HelpPage() {
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Link href="/sanctuary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xl }}>
           <ArrowLeft size={14} color={colors.text.secondary} />

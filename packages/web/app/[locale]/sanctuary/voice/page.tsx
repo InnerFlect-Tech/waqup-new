@@ -143,7 +143,7 @@ export default function VoiceSetupPage() {
 
   return (
     <VoiceGate>
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <AnimatePresence>
           {loading && (

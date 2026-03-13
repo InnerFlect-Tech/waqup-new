@@ -76,20 +76,35 @@ export interface RenderInsufficientCreditsError {
   balance: number;
 }
 
+export interface RenderOptions {
+  voiceId?: string;
+  ownVoiceUrl?: string;
+}
+
 /**
- * Renders a content item's script to audio using ElevenLabs TTS via the web server.
- * Deducts 1Q server-side. Returns the audio URL on success.
+ * Renders a content item's script to audio via the web server.
+ * - AI voice: voiceId provided → ElevenLabs TTS, deducts credits
+ * - Own voice: ownVoiceUrl provided → uses recording directly, no credits
  */
 export async function renderContentAudio(
   contentId: string,
   text: string,
-  voiceId: string,
+  options: string | RenderOptions,
   getSession: () => Promise<{ data: { session: { access_token: string } | null } }>
 ): Promise<RenderResponse | RenderInsufficientCreditsError> {
+  const opts: RenderOptions = typeof options === 'string' ? { voiceId: options } : options;
+  if (!opts.voiceId && !opts.ownVoiceUrl) {
+    throw new Error('Either voiceId or ownVoiceUrl must be provided');
+  }
+
+  const body = opts.ownVoiceUrl
+    ? { contentId, text, ownVoiceUrl: opts.ownVoiceUrl }
+    : { contentId, text, voiceId: opts.voiceId };
+
   const res = await fetch(`${API_BASE_URL}/api/ai/render`, {
     method: 'POST',
     headers: await authHeaders(getSession),
-    body: JSON.stringify({ contentId, text, voiceId }),
+    body: JSON.stringify(body),
   });
 
   if (res.status === 402) {

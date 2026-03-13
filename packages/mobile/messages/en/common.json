@@ -70,5 +70,19 @@
   "off": "Off",
   "enabled": "Enabled",
   "disabled": "Disabled",
-  "practiceIsFreeOneLiner": "Practice is always free — Qs only power creation."
+  "practiceIsFreeOneLiner": "Listening to your content is always free — Qs only power creation.",
+  "practiceDefinition": "Practice means listening to and replaying your affirmations, meditations, and rituals.",
+
+  "addYourVoice": "Add Your Voice",
+  "recordMyVoice": "Record my voice",
+  "useAIVoice": "Use AI voice",
+  "recordYourVoice": "Record Your Voice",
+  "recordMyVoiceDesc": "Read the script aloud — most powerful for subconscious programming",
+  "useAIVoiceDesc": "Generated with your cloned voice (costs Qs)",
+  "yourScript": "Your script",
+  "howDoYouWantToVoice": "How do you want to voice it?",
+  "uploadingRecording": "Uploading your recording…",
+  "generatingAudio": "Generating audio…",
+  "noVoiceSetUp": "No Voice Set Up",
+  "noVoiceSetUpMessage": "Your content has been saved. Set up your voice in Profile → Voice Settings to generate audio."
 }

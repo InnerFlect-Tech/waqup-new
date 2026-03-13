@@ -5,11 +5,13 @@ import { useParams } from 'next/navigation';
 import { AudioPage } from '@/components/audio';
 import { createContentService } from '@waqup/shared/services';
 import { supabase } from '@/lib/supabase';
+import { useSignedRecordingsUrl } from '@/hooks';
 import type { ContentItem } from '@waqup/shared/types';
 import type { AudioLayers } from '@waqup/shared/types';
-import { Typography } from '@/components';
+import { Typography, Button } from '@/components';
 import { PageShell, PageContent } from '@/components';
 import { useTheme } from '@/theme';
+import { spacing } from '@/theme';
 
 export default function MeditationEditAudioPage() {
   const { theme } = useTheme();
@@ -19,6 +21,9 @@ export default function MeditationEditAudioPage() {
   const [content, setContent] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const rawVoiceUrl = content?.voiceUrl ?? content?.audioUrl ?? null;
+  const { url: resolvedVoiceUrl, isLoading: voiceUrlLoading, error: voiceUrlError, retry: retryVoiceUrl } = useSignedRecordingsUrl(rawVoiceUrl);
 
   useEffect(() => {
     if (!id) return;
@@ -37,7 +42,7 @@ export default function MeditationEditAudioPage() {
 
   if (loading) {
     return (
-      <PageShell intensity="medium">
+      <PageShell intensity="medium" allowDocumentScroll>
         <PageContent width="narrow">
           <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', paddingTop: 80 }}>
             Loading…
@@ -49,7 +54,7 @@ export default function MeditationEditAudioPage() {
 
   if (error || !content) {
     return (
-      <PageShell intensity="medium">
+      <PageShell intensity="medium" allowDocumentScroll>
         <PageContent width="narrow">
           <Typography variant="body" style={{ color: colors.error, textAlign: 'center', paddingTop: 80 }}>
             {error ?? 'Content not found'}
@@ -59,8 +64,60 @@ export default function MeditationEditAudioPage() {
     );
   }
 
+  const isRecordingsUrl = rawVoiceUrl?.includes('/object/public/audio/recordings/');
+  const voiceUrl = isRecordingsUrl ? resolvedVoiceUrl : rawVoiceUrl;
+
+  // Show loading/error placeholder when resolving recordings URL (don't render player with null voiceUrl)
+  if (isRecordingsUrl && !voiceUrl) {
+    return (
+      <PageShell intensity="medium" allowDocumentScroll>
+        <PageContent width="narrow">
+          <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.lg, fontWeight: 300 }}>
+            {content.title}
+          </Typography>
+          <div
+            style={{
+              padding: spacing.xl,
+              borderRadius: 12,
+              background: colors.glass.light,
+              border: `1px solid ${colors.glass.border}`,
+              textAlign: 'center',
+              minHeight: 200,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.md,
+            }}
+          >
+            {voiceUrlLoading ? (
+              <>
+                <div style={{ width: 32, height: 32, border: `3px solid ${colors.glass.border}`, borderTopColor: colors.accent.primary, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <Typography variant="body" style={{ color: colors.text.secondary }}>
+                  Loading audio…
+                </Typography>
+              </>
+            ) : voiceUrlError ? (
+              <>
+                <Typography variant="body" style={{ color: colors.error }}>
+                  {voiceUrlError}
+                </Typography>
+                <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
+                  Make sure the migration <code>20260324000001_audio_system_buckets.sql</code> has been applied.
+                </Typography>
+                <Button variant="primary" size="md" onClick={retryVoiceUrl}>
+                  Retry
+                </Button>
+              </>
+            ) : null}
+          </div>
+        </PageContent>
+      </PageShell>
+    );
+  }
+
   const layers: AudioLayers = {
-    voiceUrl: content.voiceUrl ?? content.audioUrl ?? null,
+    voiceUrl,
     ambientUrl: content.ambientUrl ?? null,
     binauralUrl: null,
   };

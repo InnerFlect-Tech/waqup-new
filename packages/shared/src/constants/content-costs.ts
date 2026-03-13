@@ -54,10 +54,47 @@ export const API_ROUTE_COSTS = {
   aiAgent: 7,
   /** POST /api/oracle/session — 1Q per session bundle (each Q = 3 oracle replies) */
   oracleSession: 1,
-  /** POST /api/ai/tts — 1Q per ElevenLabs TTS render */
+  /** POST /api/ai/tts — fallback; TTS uses getTtsCreditsForScript for variable cost */
   aiTts: 1,
   /** POST /api/voices — 50Q per new voice slot (ElevenLabs IVC for a person you care about) */
   voiceSlot: 50,
 } as const;
 
 export type ApiRouteCostKey = keyof typeof API_ROUTE_COSTS;
+
+/**
+ * Max recording duration (seconds) per content type.
+ * User records full script; auto-stop when limit reached.
+ */
+export const RECORDING_LIMITS_SEC: Record<ContentItemType, number> = {
+  affirmation: 120,  // 2 min — short scripts
+  meditation: 300,   // 5 min — guided, slower pace
+  ritual: 600,       // 10 min — longer rituals
+} as const;
+
+/**
+ * Tiered credits for TTS render by script length (~5x profit on ElevenLabs at €0.10/Q).
+ * Own-voice recording uses base credits only (no TTS cost).
+ */
+const TTS_CREDIT_BANDS: Array<{ maxChars: number; credits: number }> = [
+  { maxChars: 500, credits: 4 },
+  { maxChars: 1500, credits: 10 },
+  { maxChars: 3500, credits: 22 },
+  { maxChars: 8000, credits: 50 },
+  { maxChars: Infinity, credits: 72 },
+];
+
+/**
+ * Credits for TTS render based on script length.
+ * Use for AI voice and Library voice (ElevenLabs).
+ */
+export function getTtsCreditsForScript(script: string): number {
+  const chars = script.length;
+  const band = TTS_CREDIT_BANDS.find((b) => chars <= b.maxChars);
+  return band?.credits ?? 72;
+}
+
+/** Estimate duration in minutes from character count (~800 chars/min speech rate). */
+export function estimateDurationMinutes(chars: number): number {
+  return Math.round((chars / 800) * 10) / 10;
+}

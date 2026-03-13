@@ -93,6 +93,6 @@ Implemented:
 
 ## See also
 
-- [00-product-overview.md](../00-product-overview.md) — Principles, practice vs creation
+- [00-current-context.md](../00-current-context.md) — Principles, practice vs creation
 - [05-pipelines-overview.md](./05-pipelines-overview.md) — Content pipelines
 - [07-marketplace-summary.md](./07-marketplace-summary.md) — Creator, discovery

@@ -3,7 +3,7 @@
 import React from 'react';
 import { useTheme } from '@/theme';
 import { AnimatedBackground } from './AnimatedBackground';
-import { CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING, HEADER_PADDING_X } from '@/theme';
+import { CONTENT_MAX_WIDTH, PAGE_PADDING, PAGE_TOP_PADDING, PAGE_HORIZONTAL_PADDING, HEADER_PADDING_X } from '@/theme';
 
 export interface PageShellProps {
   children: React.ReactNode;
@@ -43,7 +43,7 @@ export const PageShell: React.FC<PageShellProps> = ({
     : {
         position: 'relative',
         zIndex: 1,
-        minHeight: '100vh',
+        minHeight: '100dvh',
         paddingTop: centered ? PAGE_PADDING : PAGE_TOP_PADDING,
         paddingLeft: horizontalPadding,
         paddingRight: horizontalPadding,
@@ -75,8 +75,8 @@ export const PageShell: React.FC<PageShellProps> = ({
     ? { position: 'relative', minWidth: 0, overflowX: 'hidden' as const }
     : {
         position: 'relative',
-        minHeight: '100vh',
-        height: '100vh',
+        minHeight: '100dvh',
+        height: '100dvh',
         width: '100%',
         minWidth: 0,
         overflowX: 'hidden',

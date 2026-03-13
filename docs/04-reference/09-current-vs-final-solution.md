@@ -138,7 +138,7 @@ From roadmap, product constitution, and pipeline docs:
 - **Shared**: `packages/shared/src/theme/` (colors, tokens, types, themes)
 - **Web**: `format.ts` (px, shadow CSS), `glass.ts` (backdrop-filter)
 - **Mobile**: `format.ts` (RN numbers/objects), `glass.ts` (fallback styles)
-- **Ref**: `docs/04-reference/07-design-system-cross-platform.md`
+- **Ref**: `docs/04-reference/07-design-system.md`
 
 ### 4.2 Final
 

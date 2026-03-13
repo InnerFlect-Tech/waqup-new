@@ -60,7 +60,7 @@ export default function RitualCreateGoalsPage() {
         style={{ marginBottom: spacing.xl, textAlign: 'center' }}
       >
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
-          Set Your Goals
+          Transformation Focus
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary }}>
           Choose up to 3 areas you want your ritual to address

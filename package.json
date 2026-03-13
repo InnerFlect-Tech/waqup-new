@@ -1,6 +1,6 @@
 {
   "name": "waqup",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "private": true,
   "description": "waQup multi-platform application - Mobile (React Native + Expo for Android/iOS) and Web (Next.js for desktop browsers)",
   "workspaces": [
@@ -10,10 +10,11 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "rimraf": "^5.0.0",
-    "glob": "13.0.6"
+    "glob": "13.0.6",
+    "react-native-safe-area-context": "5.6.2"
   },
   "engines": {
-    "node": ">=24.0.0",
+    "node": ">=22.0.0",
     "npm": ">=10.0.0"
   },
   "scripts": {
@@ -27,6 +28,7 @@
     "verify:db": "bash supabase/scripts/run_verify.sh",
     "dev:local": "supabase start && npm run dev:web",
     "dev:mobile": "npm run start --workspace=packages/mobile",
+    "dev:mobile:tunnel": "npm run start:tunnel --workspace=packages/mobile",
     "dev:web": "npm run dev --workspace=packages/web",
     "warmup:dev": "npm run warmup:dev --workspace=packages/web",
     "dev:web:clean": "rm -rf packages/web/.next 2>/dev/null; (lsof -ti:3000 2>/dev/null|xargs kill -9) || true; (lsof -ti:3002 2>/dev/null|xargs kill -9) || true; npm run dev:web",
@@ -38,7 +40,9 @@
     "build:web": "npm run build --workspace=packages/web",
     "build:web:clean": "rm -rf packages/web/.next && npm run build:web",
     "start:web": "npm run start --workspace=packages/web",
+    "start:web:standalone": "npm run start:standalone --workspace=packages/web",
     "prod:web": "npm run build:web && npm run start:web",
+    "prod:web:standalone": "npm run build:web && npm run start:web:standalone",
     "build:all": "npm run build:shared && npm run build:mobile && npm run build:web",
     "test": "npm run test --workspaces",
     "test:unit": "npm run test --workspace=@waqup/shared && npm run test --workspace=packages/mobile",
@@ -52,8 +56,15 @@
     "test:e2e:ui": "npm run test:e2e:ui --workspace=packages/web",
     "test:e2e:report": "npm run test:e2e:report --workspace=packages/web",
     "test:e2e:install": "npm run test:e2e:install --workspace=packages/web",
+    "test:e2e:public": "npm run test:e2e:public --workspace=packages/web",
+    "test:e2e:public:batch1": "npm run test:e2e:public:batch1 --workspace=packages/web",
+    "test:e2e:public:batch2": "npm run test:e2e:public:batch2 --workspace=packages/web",
+    "test:e2e:public:batch3": "npm run test:e2e:public:batch3 --workspace=packages/web",
+    "test:e2e:public:batch4": "npm run test:e2e:public:batch4 --workspace=packages/web",
+    "test:e2e:public:batch5": "npm run test:e2e:public:batch5 --workspace=packages/web",
     "lint": "npm run lint --workspaces",
-    "type-check": "npm run type-check --workspaces"
+    "type-check": "npm run type-check --workspaces",
+    "postinstall": "node scripts/postinstall-dedupe-safe-area.js"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

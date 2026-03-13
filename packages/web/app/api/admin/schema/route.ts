@@ -56,6 +56,7 @@ export async function GET(): Promise<NextResponse> {
       { name: 'credit_transactions', detail: 'public.credit_transactions' },
       { name: 'subscriptions', detail: 'public.subscriptions' },
       { name: 'waitlist_signups', detail: 'public.waitlist_signups' },
+      { name: 'investor_inquiries', detail: 'Founding partner inquiries' },
       { name: 'user_voices', detail: 'public.user_voices' },
       { name: 'iap_purchases', detail: 'Apple IAP receipt tracking (iOS)' },
       { name: 'iap_products', detail: 'Product ID → Qs mapping (iOS)' },

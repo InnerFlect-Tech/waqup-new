@@ -86,7 +86,7 @@ npm run dev:all
 |-----|---------|
 | [03-start-here.md](04-reference/03-start-here.md) | Quick start, current phase |
 | [00-architecture-overview.md](00-architecture-overview.md) | Monorepo, backend, data flows |
-| [00-product-overview.md](00-product-overview.md) | What waQup is, principles |
+| [00-current-context.md](00-current-context.md) | What waQup is, principles, business context |
 | [01-roadmap.md](../rebuild-roadmap/01-planning/01-roadmap.md) | Phase roadmap |
 | [09-current-vs-final-solution.md](04-reference/09-current-vs-final-solution.md) | What's done vs target |
 | [01-changelog.md](../rebuild-roadmap/03-tracking/01-changelog.md) | Step completion tracking |

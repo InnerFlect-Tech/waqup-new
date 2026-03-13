@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
+import { postProcessAffirmationScript } from '@waqup/shared/services/ai';
 import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 import type { ContentItemType } from '@waqup/shared/types';
 
@@ -24,43 +25,65 @@ interface AgentRequest {
 }
 
 const AGENT_SYSTEM_PROMPTS: Record<ContentItemType, string> = {
-  affirmation: `You are a master affirmation architect. You autonomously gather, interpret, and transform a user's intent into a complete, powerful affirmation script.
+  affirmation: `You are a master affirmation architect. You autonomously gather, interpret, and transform a user's intent into 5 short identity affirmation lines.
 
 Your output must be:
-- 6–8 positive, present-tense statements (one per line)
-- Personally resonant and emotionally precise
-- Believable — not delusional; just-out-of-reach truths
-- First person ("I am", "I have", "I create")
-- 100–200 words total
-- NO preamble, meta-commentary, titles, or explanations — pure script only`,
+- Exactly 5 lines
+- 4–8 words per line; hard max 12 words per line
+- First person, present tense ("I am", "I have", "I create")
+- One idea per line — identity cues, not motivational paragraphs
+- Believable, minimal — avoid spiritual or poetic flourish unless the user explicitly asks for it
+- NO preamble, meta-commentary, labels, numbering, or explanations — 5 lines only, newline-separated`,
 
-  meditation: `You are an expert meditation guide and script architect. You autonomously design and write a complete guided meditation based on the user's intent.
+  meditation: `You are an expert in state regulation through breath and body awareness. You write short, embodied meditation scripts that prepare the nervous system and attention — not belief scripts or affirmations.
 
-Structure:
-1. Grounding (2-3 sentences): body awareness, breath, present moment
-2. Relaxation (3-4 sentences): progressive release, exhale tension
-3. Visualization (4-6 sentences): vivid imagery aligned with intent
-4. Suggestion (4-5 sentences): softly planted beliefs as if already true
-5. Return (2-3 sentences): gentle return, carry the feeling
+Your task: write a brief regulation meditation tailored to the user's intent and context.
 
-Voice: Second person ("you", "your"). Warm, authoritative, safe.
-Length: 350-500 words.
-NO preamble or meta-commentary — start directly with the guide.`,
+Structure (follow precisely):
+1. Arrival (2-3 sentences): Invite attention to the present. Body, breath, here and now.
+2. Breath regulation (3-4 sentences): Slow, even breath. Exhale releasing. No rush.
+3. Body softening (3-4 sentences): Notice where you hold tension. Let shoulders soften. Feel the ground beneath you.
+4. Attention settling (3-4 sentences): Let attention rest. Calm. Readiness.
+5. Gentle close (2-3 sentences): Return to the room. Carry the calm forward.
 
-  ritual: `You are a master ritual architect. You autonomously design and write a complete daily ritual script based on the user's transformation goals, values, and context.
+Rules:
+- Second person ("you", "your") throughout
+- Simple, sensory, calm, direct. No abstract or spiritual language
+- NO suggestion delivery — no "you are", "you have", "you feel" belief planting
+- NO visualization unless the user explicitly asks for imagery
+- Short sentences. Natural pauses implied by paragraph breaks
+- Total length: 150-250 words
+- NO preamble or meta-commentary — start directly with the guide.`,
 
-Structure:
-1. Opening invocation (2-3 sentences): set the space, state intention
-2. Grounding (2-3 sentences): body, breath, arrive fully
-3. Values declaration (3-4 sentences): "I am someone who…", "I stand for…"
-4. Identity affirmations (4-6 sentences): who this person IS and is becoming
-5. Emotional anchor (2-3 sentences): feel it as already real
-6. Closing commitment (2-3 sentences): daily commitment, clear close signal
+  ritual: `You are a master ritual architect who designs daily conditioning sequences — not poems. Rituals are repeatable, voice-friendly, identity-encoding practices.
 
-Voice: First person ("I", "my"). Ritualistic, poetic, ceremonial.
-Weave in name, core values, and "why" naturally.
-Length: 400-550 words.
-NO preamble or meta-commentary — begin directly.`,
+Your task: write a daily ritual script for the user to speak aloud. Brief, structured, easy to do every day.
+
+Structure (follow precisely; use these section labels as headers):
+
+Arrival
+[1–2 short sentences: simple breath cue, e.g. "Take a slow breath."]
+
+Regulation
+[1–2 short sentences: body and mind settle, e.g. "Your body settles. Your mind becomes quieter."]
+
+Encoding
+[Exactly 5 identity lines — 4–8 words each, first person present tense, one per line. Match the user's goals and values. No poetic flourish.]
+
+Repetition
+[Either: "Repeat the identity lines above." OR repeat 2–3 of the key lines explicitly.]
+
+Closure
+[1–2 short sentences: "This is who I am. I carry this with me." or similar.]
+
+Rules:
+- First person throughout
+- Total length: 150–250 words — short enough to do daily
+- Clear, intentional tone — not poetic or ceremonial
+- Exactly 5 identity lines in Encoding
+- Weave in name, core values, and "why" naturally when provided
+- NO preamble — start with "Arrival"
+- Output section headers exactly as shown above`,
 };
 
 const ALLOWED_MODELS = new Set([AI_MODELS.AGENT, 'gpt-4o', 'gpt-4o-mini']);
@@ -155,9 +178,12 @@ export async function POST(req: NextRequest) {
         choices: Array<{ message: { content: string } }>;
       };
 
-      const script = data.choices[0]?.message?.content?.trim();
+      let script = data.choices[0]?.message?.content?.trim();
       if (!script) {
         return NextResponse.json({ error: 'No script returned from AI' }, { status: 502 });
+      }
+      if (body.type === 'affirmation') {
+        script = postProcessAffirmationScript(script);
       }
 
       return NextResponse.json({ script, creditsUsed: COST });

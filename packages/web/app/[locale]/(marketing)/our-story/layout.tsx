@@ -1,18 +1,10 @@
-import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { createMarketingMetadata } from '@/lib/marketing-metadata';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'metadata' });
-  return {
-    title: t('pages.ourStory'),
-  };
+  return createMarketingMetadata({ locale, pageKey: 'ourStory', path: '/our-story' });
 }
 
-export default function OurStoryLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function OurStoryLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

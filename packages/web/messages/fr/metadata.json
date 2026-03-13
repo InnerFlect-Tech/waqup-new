@@ -34,7 +34,7 @@
     "explanation": "La Science",
     "ourStory": "Notre Histoire",
     "theScience": "La Science",
-    "investors": "Investisseurs",
+    "investors": "Partenaires fondateurs",
     "privacy": "Politique de confidentialité",
     "terms": "Conditions d'utilisation",
     "comingSoon": "Bientôt disponible",
@@ -45,7 +45,8 @@
     "forStudios": "Pour les Studios",
     "funnels": "Funnels de Vente",
     "launch": "Lancement",
-    "getQs": "Obtenir des Qs"
+    "getQs": "Obtenir des Qs",
+    "about": "À propos et Remerciements"
   },
   "auth": {
     "login": "Connexion",
@@ -53,5 +54,31 @@
     "forgotPassword": "Mot de passe oublié",
     "resetPassword": "Réinitialiser le mot de passe",
     "confirmEmail": "Confirmez votre email"
+  },
+  "descriptions": {
+    "home": "waQup — Créez des affirmations, méditations et rituels personnalisés dans votre propre voix. Pratiquez gratuitement pour toujours.",
+    "howItWorks": "Découvrez comment waQup fonctionne : dites votre intention à l'IA, créez avec votre voix et transformez-vous par la pratique quotidienne. Trois étapes. Pas d'abonnement pour réécouter.",
+    "investors": "waQup pour partenaires fondateurs — partage des revenus, pas de dilution. Plateforme de transformation par la voix à l'économie claire.",
+    "ourStory": "Pourquoi nous avons créé waQup — l'histoire du fondateur derrière les affirmations, méditations et rituels par la voix.",
+    "theScience": "La science derrière waQup : neuroplasticité, mémoire vocale et reprogrammation subconsciente.",
+    "forTeachers": "waQup pour enseignants et coaches — apportez des pratiques vocales personnalisées à vos élèves et clients.",
+    "forCoaches": "waQup pour coaches — partagez des pratiques vocales privées avec les clients. Créez en minutes, pas en heures.",
+    "forCreators": "waQup pour créateurs — gagnez avec votre contenu. Votre voix, votre marque, partage des revenus.",
+    "forStudios": "waQup pour studios — développez les pratiques par la voix. QR codes, accès en classe, crédits de parrainage.",
+    "pricing": "Tarifs simples et transparents. La pratique est toujours gratuite. Crédits uniquement pour la création.",
+    "funnels": "Tunnels de vente et flux de conversion waQup pour le marketing.",
+    "launch": "waQup est en ligne. Votre voix. Votre pratique. Votre transformation.",
+    "getQs": "Obtenir des Qs — packs de crédits pour alimenter votre parcours de création. Pratiquez gratuitement pour toujours.",
+    "join": "Rejoignez en tant que Membre fondateur. Accès anticipé, meilleures conditions, participez à façonner waQup.",
+    "waitlist": "Rejoignez la liste d'attente waQup. Accès anticipé, pas de carte requise, pratiquez gratuitement.",
+    "comingSoon": "waQup bientôt disponible. Rejoignez la liste d'attente pour un accès anticipé.",
+    "terms": "Conditions d'utilisation régissant l'utilisation de waQup. Lisez nos conditions légales.",
+    "privacy": "Comment waQup collecte, utilise et protège vos données. Politique de confidentialité.",
+    "dataDeletion": "Comment demander la suppression de vos données de waQup.",
+    "login": "Connectez-vous à votre compte waQup.",
+    "signup": "Créez votre compte waQup et commencez à vous transformer.",
+    "forgotPassword": "Réinitialisez votre mot de passe waQup.",
+    "resetPassword": "Créez un nouveau mot de passe pour votre compte waQup.",
+    "confirmEmail": "Confirmez votre adresse email pour waQup."
   }
 }

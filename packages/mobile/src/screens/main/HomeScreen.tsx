@@ -1,3 +1,6 @@
+/**
+ * @deprecated Replaced by RitualHomeScreen as the default home tab. Kept for reference.
+ */
 import React from 'react';
 import {
   View,
@@ -60,7 +63,7 @@ export default function HomeScreen() {
   const firstName = user?.user_metadata?.full_name?.split(' ')[0] ?? user?.email?.split('@')[0] ?? '';
 
   const handleTypePress = (contentType: 'affirmation' | 'meditation' | 'ritual') => {
-    navigation.navigate('CreateMode', { contentType });
+    navigation.navigate('ContentCreate', { contentType, mode: 'chat' });
   };
 
   return (

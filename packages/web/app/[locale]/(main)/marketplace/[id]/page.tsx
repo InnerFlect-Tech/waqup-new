@@ -10,7 +10,7 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { getContentTypeIcon } from '@/lib';
 import { ElevatedBadge, ShareModal } from '@/components/marketplace';
-import { SpeakingAnimation } from '@/components/audio';
+import { AudioWaveform } from '@/components/audio';
 import { useWebAudioPlayer } from '@/hooks';
 import type { AudioLayers } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
@@ -166,7 +166,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
 
   if (isLoading) {
     return (
-      <PageShell intensity="medium">
+      <PageShell intensity="medium" allowDocumentScroll>
         <PageContent width="narrow">
           <div style={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Loading variant="spinner" size="lg" />
@@ -178,7 +178,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
 
   if (!item) {
     return (
-      <PageShell intensity="medium">
+      <PageShell intensity="medium" allowDocumentScroll>
         <PageContent width="narrow">
           <Link href="/marketplace" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.xs, marginBottom: spacing.lg }}>
             <ArrowLeft size={16} color={colors.text.secondary} />
@@ -197,7 +197,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Link href="/marketplace" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.xs, marginBottom: spacing.xl }}>
           <ArrowLeft size={16} color={colors.text.secondary} />
@@ -259,7 +259,7 @@ export default function MarketplaceDetailPage({ params }: { params: { id: string
           }}
         >
           {/* Waveform */}
-          <SpeakingAnimation isSpeaking={isPlaying} frequencyData={freqData} style={{ minHeight: 160 }} />
+          <AudioWaveform isPlaying={isPlaying} frequencyData={freqData} style={{ minHeight: 160 }} />
 
           {/* Progress */}
           <div style={{ padding: `0 ${spacing.xl}` }}>

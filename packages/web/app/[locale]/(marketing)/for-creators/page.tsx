@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import {
   TrendingUp,
   DollarSign,
@@ -18,73 +19,22 @@ import {
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, SECTION_SUBTITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
 import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
-const TIERS = [
-  {
-    label: 'Micro',
-    range: 'Under 500 plays',
-    earn: '1 Q per share',
-    perk: 'Marketplace listing + shareable player',
-    color: '#c084fc',
-  },
-  {
-    label: 'Creator',
-    range: '500–5,000 plays',
-    earn: '2 Qs per share + monthly bonus',
-    perk: 'Elevated marketplace placement',
-    color: '#818cf8',
-    highlighted: true,
-  },
-  {
-    label: 'Partner',
-    range: '5,000+ plays',
-    earn: 'Revenue share on attributed subscriptions',
-    perk: 'Co-branded experience + dedicated support',
-    color: '#34d399',
-  },
-];
-
-const BENEFITS = [
-  {
-    icon: Mic,
-    title: 'Your voice, your brand',
-    body: 'Create audio in your voice — your tone, your energy, your words. Not a generic AI voice. ElevenLabs voice cloning makes it yours.',
-  },
-  {
-    icon: Layers,
-    title: 'Drop series to your audience',
-    body: '5-Day Reset. 7-Day Abundance Shift. 21-Day Rewire. Group your sessions into series and release as drops your followers actually collect.',
-  },
-  {
-    icon: Share2,
-    title: 'Every share earns you more',
-    body: "Your followers share your practice. You earn credits and revenue. The more reach your content gets, the more waQup gives back to you.",
-  },
-  {
-    icon: BarChart3,
-    title: 'Analytics for every session',
-    body: "See exactly where plays and shares come from. Know which content resonates. Optimise your drops like you optimise your posts.",
-  },
-  {
-    icon: Zap,
-    title: 'Link-in-bio audio that converts',
-    body: "One link to your practice series. A beautiful immersive player. An email capture that builds your list even when followers don't sign up immediately.",
-  },
-  {
-    icon: TrendingUp,
-    title: 'Real revenue, not just credits',
-    body: "Partner-tier creators earn a percentage of subscriptions attributed to their audience. As you grow, waQup grows with you.",
-  },
-];
-
-const DROPS_EXAMPLES = [
-  { title: '5-Day Morning Reset', type: 'Ritual Series', sessions: 5, plays: '2.4k' },
-  { title: 'Identity Shift Affirmations', type: 'Affirmation Pack', sessions: 7, plays: '1.8k' },
-  { title: 'Nervous System Nidra', type: 'Meditation Series', sessions: 4, plays: '3.1k' },
-];
+const TIER_COLORS = ['#c084fc', '#818cf8', '#34d399'] as const;
+const TIER_HIGHLIGHTED_INDEX = 1; // Creator tier
+const TIER_KEYS = [1, 2, 3] as const;
+const BENEFIT_ICONS = [Mic, Layers, Share2, BarChart3, Zap, TrendingUp] as const;
+const DROP_KEYS = [1, 2, 3] as const;
+const BENEFIT_KEYS = [1, 2, 3, 4, 5, 6] as const;
 
 export default function ForCreatorsPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const t = useTranslations('marketing.forCreators.page');
+  const BENEFITS = BENEFIT_KEYS.map((i) => ({
+    title: t(`benefit${i}Title`),
+    body: t(`benefit${i}Body`),
+    icon: BENEFIT_ICONS[i - 1],
+  }));
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -168,7 +118,7 @@ export default function ForCreatorsPage() {
           >
             <Star size={14} color={gold} />
             <Typography variant="smallBold" style={{ color: gold, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
-              For Creators & Influencers
+              {t('heroBadge')}
             </Typography>
           </div>
 
@@ -183,7 +133,7 @@ export default function ForCreatorsPage() {
               maxWidth: 820,
             }}
           >
-            A premium freebie your audience{' '}
+            {t('heroH1Prefix')}{' '}
             <span
               style={{
                 background: `linear-gradient(to right, ${gold}, ${colors.accent.primary})`,
@@ -192,7 +142,7 @@ export default function ForCreatorsPage() {
                 backgroundClip: 'text',
               }}
             >
-              will keep
+              {t('heroH1Highlight')}
             </span>
           </h1>
 
@@ -206,7 +156,7 @@ export default function ForCreatorsPage() {
               marginBottom: spacing.xxl,
             }}
           >
-            Create audio in your voice. Drop series to your followers. Earn revenue when they subscribe. waQup is the link-in-bio audio studio built for creators who care about depth.
+            {t('heroBody')}
           </Typography>
 
           {/* Example drops */}
@@ -219,9 +169,9 @@ export default function ForCreatorsPage() {
               marginBottom: spacing.xxl,
             }}
           >
-            {DROPS_EXAMPLES.map((d) => (
+            {DROP_KEYS.map((i) => (
               <div
-                key={d.title}
+                key={i}
                 style={{
                   padding: `${spacing.sm} ${spacing.lg}`,
                   borderRadius: borderRadius.lg,
@@ -237,17 +187,17 @@ export default function ForCreatorsPage() {
                 }}
               >
                 <Typography variant="small" style={{ color: colors.accent.primary, fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
-                  {d.type}
+                  {t(`drop${i}Type`)}
                 </Typography>
                 <Typography variant="body" style={{ color: colors.text.primary, fontWeight: 600, fontSize: 13 }}>
-                  {d.title}
+                  {t(`drop${i}Title`)}
                 </Typography>
                 <div style={{ display: 'flex', gap: spacing.md }}>
                   <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11 }}>
-                    {d.sessions} sessions
+                    {t(`drop${i}Sessions`)} {t('sessionsLabel')}
                   </Typography>
                   <Typography variant="small" style={{ color: colors.accent.tertiary, fontSize: 11, fontWeight: 600 }}>
-                    {d.plays} plays
+                    {t(`drop${i}Plays`)} {t('playsLabel')}
                   </Typography>
                 </div>
               </div>
@@ -313,7 +263,7 @@ export default function ForCreatorsPage() {
                 color: colors.text.primary,
               }}
             >
-              Grow with your audience
+              {t('tiersTitle')}
             </h2>
             <p
               style={{
@@ -324,7 +274,7 @@ export default function ForCreatorsPage() {
                 maxWidth: 560,
               }}
             >
-              As your content reaches more people, your earning tier rises automatically. No applications, no waiting periods.
+              {t('tiersSubtitle')}
             </p>
           </div>
 
@@ -350,67 +300,71 @@ export default function ForCreatorsPage() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: spacing.xl }}>
-            {TIERS.map((t) => (
-              <div
-                key={t.label}
-                style={{
-                  padding: spacing.xl,
-                  borderRadius: borderRadius.xl,
-                  background: t.highlighted ? `linear-gradient(145deg, ${t.color}15, ${colors.accent.secondary}08)` : colors.glass.light,
-                  backdropFilter: BLUR.lg,
-                  WebkitBackdropFilter: BLUR.lg,
-                  border: `1px solid ${t.highlighted ? t.color + '50' : colors.glass.border}`,
-                  boxShadow: t.highlighted ? `0 16px 48px ${t.color}20` : undefined,
-                  position: 'relative',
-                }}
-              >
-                {t.highlighted && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: -1,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      padding: '2px 12px',
-                      borderRadius: '0 0 8px 8px',
-                      background: t.color,
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: '#000',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
-                    }}
-                  >
-                    Most active
-                  </div>
-                )}
-                <div style={{ fontSize: 24, fontWeight: 200, color: t.color, marginBottom: spacing.sm, letterSpacing: '-0.02em' }}>
-                  {t.label}
-                </div>
-                <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, marginBottom: spacing.md }}>
-                  {t.range}
-                </Typography>
+            {TIER_KEYS.map((i, idx) => {
+              const tierColor = TIER_COLORS[idx];
+              const highlighted = idx === TIER_HIGHLIGHTED_INDEX;
+              return (
                 <div
+                  key={i}
                   style={{
-                    padding: `${spacing.sm} ${spacing.md}`,
-                    borderRadius: borderRadius.md,
-                    background: `${t.color}12`,
-                    border: `1px solid ${t.color}25`,
-                    marginBottom: spacing.md,
+                    padding: spacing.xl,
+                    borderRadius: borderRadius.xl,
+                    background: highlighted ? `linear-gradient(145deg, ${tierColor}15, ${colors.accent.secondary}08)` : colors.glass.light,
+                    backdropFilter: BLUR.lg,
+                    WebkitBackdropFilter: BLUR.lg,
+                    border: `1px solid ${highlighted ? tierColor + '50' : colors.glass.border}`,
+                    boxShadow: highlighted ? `0 16px 48px ${tierColor}20` : undefined,
+                    position: 'relative',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                    <DollarSign size={14} color={t.color} />
-                    <Typography variant="body" style={{ color: t.color, fontWeight: 700, fontSize: 14 }}>
-                      {t.earn}
-                    </Typography>
+                  {highlighted && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: -1,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        padding: '2px 12px',
+                        borderRadius: '0 0 8px 8px',
+                        background: tierColor,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: '#000',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                      }}
+                    >
+                      {t('tiersHighlight')}
+                    </div>
+                  )}
+                  <div style={{ fontSize: 24, fontWeight: 200, color: tierColor, marginBottom: spacing.sm, letterSpacing: '-0.02em' }}>
+                    {t(`tier${i}Label`)}
                   </div>
+                  <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, marginBottom: spacing.md }}>
+                    {t(`tier${i}Range`)}
+                  </Typography>
+                  <div
+                    style={{
+                      padding: `${spacing.sm} ${spacing.md}`,
+                      borderRadius: borderRadius.md,
+                      background: `${tierColor}12`,
+                      border: `1px solid ${tierColor}25`,
+                      marginBottom: spacing.md,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+                      <DollarSign size={14} color={tierColor} />
+                      <Typography variant="body" style={{ color: tierColor, fontWeight: 700, fontSize: 14 }}>
+                        {t(`tier${i}Earn`)}
+                      </Typography>
+                    </div>
+                  </div>
+                  <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, lineHeight: 1.5 }}>
+                    {t(`tier${i}Perk`)}
+                  </Typography>
                 </div>
-                <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 12, lineHeight: 1.5 }}>
-                  {t.perk}
-                </Typography>
-            </div>
-          ))}
+              );
+            })}
           </div>
         </motion.section>
 

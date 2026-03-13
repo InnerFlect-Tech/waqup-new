@@ -206,7 +206,7 @@ function CreatorDashboard() {
   ];
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
         {/* Header */}
         <div style={{ marginBottom: spacing.xl }}>

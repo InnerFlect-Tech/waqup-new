@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
+import { OnboardingSuperAdminLink } from '@/components';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -15,5 +16,10 @@ export default function OnboardingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <OnboardingSuperAdminLink />
+      {children}
+    </>
+  );
 }

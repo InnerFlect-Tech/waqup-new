@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
@@ -35,19 +36,46 @@ import { ContentIcon } from '@/components';
 
 type ThemeColors = ReturnType<typeof useTheme>['theme']['colors'];
 
-function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
+type LaunchPageStrings = {
+  mockGreeting: string;
+  mockReadyText: string;
+  mockAffirmations: string;
+  mockAffirmationsSub: string;
+  mockMeditations: string;
+  mockMeditationsSub: string;
+  mockRituals: string;
+  mockRitualsSub: string;
+  mockNavHome: string;
+  mockNavLibrary: string;
+  mockNavSpeak: string;
+  mockCreatingTitle: string;
+  mockCreatingQuestion: string;
+  mockCreatingReply: string;
+  mockCreatingAi: string;
+  mockCreatingProgress: string;
+  mockNowPlaying: string;
+  mockTrackTitle: string;
+  mockTrackMeta: string;
+  mockTabSanctuary: string;
+  mockTabCreate: string;
+  mockTabListen: string;
+};
+
+function SanctuaryScreen({ colors, s }: { colors: ThemeColors; s: LaunchPageStrings }) {
+  const items = [
+    { iconSrc: '/images/icon-affirmations.png', label: s.mockAffirmations, sub: s.mockAffirmationsSub, color: CONTENT_TYPE_COLORS.affirmation },
+    { iconSrc: '/images/icon-meditations.png', label: s.mockMeditations, sub: s.mockMeditationsSub, color: CONTENT_TYPE_COLORS.meditation },
+    { iconSrc: '/images/icon-rituals.png', label: s.mockRituals, sub: s.mockRitualsSub, color: CONTENT_TYPE_COLORS.ritual },
+  ];
+  const navItems = [s.mockNavHome, s.mockNavLibrary, s.mockNavSpeak];
   return (
     <div style={{ height: '100%', background: '#060606', padding: '18px 16px', display: 'flex', flexDirection: 'column' }}>
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 3 }}>Good morning</div>
-        <div style={{ fontSize: 16, fontWeight: 300, color: '#fff', letterSpacing: -0.5 }}>Ready to transform? ✨</div>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 3 }}>{s.mockGreeting}</div>
+        <div style={{ fontSize: 16, fontWeight: 300, color: '#fff', letterSpacing: -0.5 }}>{s.mockReadyText}</div>
       </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 9 }}>
-        {[
-          { iconSrc: '/images/icon-affirmations.png', label: 'Affirmations', sub: 'Rewire your beliefs', color: CONTENT_TYPE_COLORS.affirmation },
-          { iconSrc: '/images/icon-meditations.png', label: 'Meditations', sub: 'Induce calm states', color: CONTENT_TYPE_COLORS.meditation },
-          { iconSrc: '/images/icon-rituals.png', label: 'Rituals', sub: 'Encode identity', color: CONTENT_TYPE_COLORS.ritual },
-        ].map(({ iconSrc, label, sub, color }) => (
+        {items.map(({ iconSrc, label, sub, color }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 13, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
             <ContentIcon src={iconSrc} size={34} borderRadius={9} style={{ background: `${color}20`, border: `1px solid ${color}40`, flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
@@ -58,10 +86,10 @@ function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
         ))}
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        {['Home', 'Library', 'Speak'].map((item) => (
+        {navItems.map((item) => (
           <div key={item} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <div style={{ width: 4, height: 4, borderRadius: '50%', background: item === 'Home' ? colors.accent.primary : 'transparent' }} />
-            <div style={{ fontSize: 9, color: item === 'Home' ? colors.accent.tertiary : 'rgba(255,255,255,0.3)' }}>{item}</div>
+            <div style={{ width: 4, height: 4, borderRadius: '50%', background: item === s.mockNavHome ? colors.accent.primary : 'transparent' }} />
+            <div style={{ fontSize: 9, color: item === s.mockNavHome ? colors.accent.tertiary : 'rgba(255,255,255,0.3)' }}>{item}</div>
           </div>
         ))}
       </div>
@@ -69,14 +97,14 @@ function SanctuaryScreen({ colors }: { colors: ThemeColors }) {
   );
 }
 
-function CreationScreen({ colors }: { colors: ThemeColors }) {
+function CreationScreen({ colors, s }: { colors: ThemeColors; s: LaunchPageStrings }) {
   return (
     <div style={{ height: '100%', background: '#060606', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '14px 16px 11px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'linear-gradient(135deg, #9333EA, #4F46E5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Sparkles size={11} color="#fff" />
         </div>
-        <div style={{ fontSize: 11, fontWeight: 500, color: '#fff' }}>Creating Your Affirmation</div>
+        <div style={{ fontSize: 11, fontWeight: 500, color: '#fff' }}>{s.mockCreatingTitle}</div>
       </div>
       <div style={{ flex: 1, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 11, overflow: 'hidden' }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
@@ -84,12 +112,12 @@ function CreationScreen({ colors }: { colors: ThemeColors }) {
             <Sparkles size={9} color="#fff" />
           </div>
           <div style={{ background: 'rgba(147,51,234,0.15)', border: '1px solid rgba(147,51,234,0.3)', borderRadius: '0 10px 10px 10px', padding: '8px 11px', maxWidth: 160 }}>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', lineHeight: 1.45 }}>What&apos;s your biggest challenge right now?</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', lineHeight: 1.45 }}>{s.mockCreatingQuestion}</div>
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px 0 10px 10px', padding: '8px 11px', maxWidth: 150 }}>
-            <div style={{ fontSize: 10, color: '#fff', lineHeight: 1.45 }}>Self-doubt when I speak up at work</div>
+            <div style={{ fontSize: 10, color: '#fff', lineHeight: 1.45 }}>{s.mockCreatingReply}</div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
@@ -97,29 +125,29 @@ function CreationScreen({ colors }: { colors: ThemeColors }) {
             <Sparkles size={9} color="#fff" />
           </div>
           <div style={{ background: 'rgba(147,51,234,0.15)', border: '1px solid rgba(147,51,234,0.3)', borderRadius: '0 10px 10px 10px', padding: '8px 11px', maxWidth: 160 }}>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', lineHeight: 1.45 }}>Perfect. Crafting your voice affirmation...</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', lineHeight: 1.45 }}>{s.mockCreatingAi}</div>
           </div>
         </div>
         <div style={{ marginTop: 'auto', padding: '9px 11px', borderRadius: 10, background: 'rgba(147,51,234,0.08)', border: '1px solid rgba(147,51,234,0.2)', display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ flex: 1, height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
             <div style={{ width: '72%', height: '100%', background: 'linear-gradient(to right, #9333EA, #A855F7)', borderRadius: 2, animation: 'wqProgressFill 2s ease-in-out infinite alternate' }} />
           </div>
-          <div style={{ fontSize: 9, color: '#A855F7', fontWeight: 500 }}>Creating...</div>
+          <div style={{ fontSize: 9, color: '#A855F7', fontWeight: 500 }}>{s.mockCreatingProgress}</div>
         </div>
       </div>
     </div>
   );
 }
 
-function PlayerScreen({ colors }: { colors: ThemeColors }) {
+function PlayerScreen({ colors, s }: { colors: ThemeColors; s: LaunchPageStrings }) {
   return (
     <div style={{ height: '100%', background: '#060606', padding: '18px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>Now Playing</div>
+      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>{s.mockNowPlaying}</div>
       <div style={{ width: 96, height: 96, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #C084FC, #9333EA 55%, #4C1D95)', boxShadow: '0 0 50px rgba(147,51,234,0.55)', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'wqSpin 8s linear infinite' }}>
         <div style={{ width: 26, height: 26, borderRadius: '50%', background: '#060606', border: '3px solid rgba(255,255,255,0.08)' }} />
       </div>
-      <div style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 3 }}>Morning Confidence</div>
-      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>Your Voice · 3:42</div>
+      <div style={{ fontSize: 13, fontWeight: 500, color: '#fff', marginBottom: 3 }}>{s.mockTrackTitle}</div>
+      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>{s.mockTrackMeta}</div>
       <div style={{ width: '100%', display: 'flex', alignItems: 'flex-end', gap: 2, height: 34, marginBottom: 16 }}>
         {[5,9,14,20,28,24,18,30,22,16,26,20,12,24,18,10,22,28,16,20,25,14,18,22,16,12,8,14,10,6].map((h, i) => (
           <div key={i} style={{ flex: 1, height: h, background: i < 18 ? 'linear-gradient(to top, #9333EA, #A855F7)' : 'rgba(255,255,255,0.1)', borderRadius: 1, animation: `wqWaveBar ${0.5 + (i % 5) * 0.1}s ease-in-out infinite alternate` }} />
@@ -140,7 +168,7 @@ function PlayerScreen({ colors }: { colors: ThemeColors }) {
   );
 }
 
-function AppMockup({ colors }: { colors: ThemeColors }) {
+function AppMockup({ colors, strings }: { colors: ThemeColors; strings: LaunchPageStrings }) {
   const [screen, setScreen] = useState(0);
   const [visible, setVisible] = useState(true);
 
@@ -160,11 +188,11 @@ function AppMockup({ colors }: { colors: ThemeColors }) {
   }, []);
 
   const screens = [
-    <SanctuaryScreen key="s1" colors={colors} />,
-    <CreationScreen key="s2" colors={colors} />,
-    <PlayerScreen key="s3" colors={colors} />,
+    <SanctuaryScreen key="s1" colors={colors} s={strings} />,
+    <CreationScreen key="s2" colors={colors} s={strings} />,
+    <PlayerScreen key="s3" colors={colors} s={strings} />,
   ];
-  const labels = ['Sanctuary', 'Create', 'Listen'];
+  const labels = [strings.mockTabSanctuary, strings.mockTabCreate, strings.mockTabListen];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
@@ -196,15 +224,6 @@ function AppMockup({ colors }: { colors: ThemeColors }) {
 }
 
 // ─── FAQ Accordion ────────────────────────────────────────────────────────────
-
-const faqs = [
-  { q: 'How is waQup different from Headspace or Calm?', a: 'Headspace and Calm give you generic content made by strangers. waQup creates personalized content based on YOUR specific goals, challenges, and context, voiced in your own cloned voice. Nothing is generic. Everything is yours.' },
-  { q: 'Do I need to record my own voice?', a: 'No. Voice cloning is optional. You can choose from our curated library of professional voices, or clone your own with just a 1-minute recording. Most people find hearing their own voice the most powerful, but both options work beautifully.' },
-  { q: 'How do credits (Qs) work?', a: 'Qs are the credits used to create new content. You earn Qs when you sign up and can purchase more. One thing worth knowing: listening to and practicing your existing content is always 100% free. Qs are only spent during creation.' },
-  { q: 'Is practice really free forever?', a: 'Yes. Once your affirmations, meditations, or rituals are created, you can replay them as many times as you want, forever, for free. We believe daily practice should never be gated behind a paywall.' },
-  { q: 'What are the three content types?', a: 'Affirmations are short 2–5 min cognitive re-patterning statements for morning routines. Guided Meditations are 10–30 min AI-scripted sessions for state induction. Rituals are 20–60 min multi-part practices for the deepest identity transformation.' },
-  { q: 'What is the science behind this?', a: 'waQup is built on neuroplasticity research: the brain\'s ability to rewire itself through repeated exposure. Hearing positive self-statements in your own voice activates deeper neural pathways than reading or hearing a stranger\'s voice.' },
-];
 
 function FAQItem({ q, a, colors }: { q: string; a: string; colors: ThemeColors }) {
   const [open, setOpen] = useState(false);
@@ -258,6 +277,41 @@ export default function LaunchPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
   const instagramFollowers = useInstagramFollowers();
+  const t = useTranslations('marketing.launch.page');
+
+  const launchStrings: LaunchPageStrings = {
+    mockGreeting: t('mockGreeting'),
+    mockReadyText: t('mockReadyText'),
+    mockAffirmations: t('mockAffirmations'),
+    mockAffirmationsSub: t('mockAffirmationsSub'),
+    mockMeditations: t('mockMeditations'),
+    mockMeditationsSub: t('mockMeditationsSub'),
+    mockRituals: t('mockRituals'),
+    mockRitualsSub: t('mockRitualsSub'),
+    mockNavHome: t('mockNavHome'),
+    mockNavLibrary: t('mockNavLibrary'),
+    mockNavSpeak: t('mockNavSpeak'),
+    mockCreatingTitle: t('mockCreatingTitle'),
+    mockCreatingQuestion: t('mockCreatingQuestion'),
+    mockCreatingReply: t('mockCreatingReply'),
+    mockCreatingAi: t('mockCreatingAi'),
+    mockCreatingProgress: t('mockCreatingProgress'),
+    mockNowPlaying: t('mockNowPlaying'),
+    mockTrackTitle: t('mockTrackTitle'),
+    mockTrackMeta: t('mockTrackMeta'),
+    mockTabSanctuary: t('mockTabSanctuary'),
+    mockTabCreate: t('mockTabCreate'),
+    mockTabListen: t('mockTabListen'),
+  };
+
+  const faqs = [
+    { q: t('faq1Q'), a: t('faq1A') },
+    { q: t('faq2Q'), a: t('faq2A') },
+    { q: t('faq3Q'), a: t('faq3A') },
+    { q: t('faq4Q'), a: t('faq4A') },
+    { q: t('faq5Q'), a: t('faq5A') },
+    { q: t('faq6Q'), a: t('faq6A') },
+  ];
 
   return (
     <PageShell intensity="high" bare allowDocumentScroll>
@@ -306,7 +360,7 @@ export default function LaunchPage() {
         </div>
 
         <div className="wq-hero-mockup">
-          <AppMockup colors={colors} />
+          <AppMockup colors={colors} strings={launchStrings} />
         </div>
       </section>
 

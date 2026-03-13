@@ -97,7 +97,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
         {/* Avatar + name card */}
         <motion.div

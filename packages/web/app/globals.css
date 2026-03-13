@@ -88,6 +88,21 @@ a {
   background: var(--theme-text-tertiary, rgba(255, 255, 255, 0.25));
 }
 
+/* Script-read area — prominent scrollbar for better discoverability (tokens: layout.scriptReadMaxHeight) */
+.script-read-scroll {
+  scrollbar-gutter: stable;
+}
+.script-read-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+.script-read-scroll::-webkit-scrollbar-thumb {
+  background: var(--theme-glass-border, rgba(255, 255, 255, 0.25));
+  border-radius: 9999px;
+}
+.script-read-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-text-tertiary, rgba(255, 255, 255, 0.4));
+}
+
 /* Gradient text utility — uses theme gradient (SSOT) */
 .gradient-text {
   background: var(--theme-gradient-primary, linear-gradient(to right, #c084fc, #a78bfa, #818cf8));

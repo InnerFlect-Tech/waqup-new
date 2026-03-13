@@ -3,13 +3,14 @@
  * Defines all navigation routes and their parameters
  */
 
+import type { NavigatorScreenParams } from '@react-navigation/native';
 import type { ContentItemType } from '@waqup/shared/types';
 
 export type { ContentItemType };
 
 export type RootStackParamList = {
   Setup: undefined;
-  Auth: undefined;
+  Auth: NavigatorScreenParams<AuthStackParamList>;
   Onboarding: undefined;
   Main: undefined;
   Showcase: undefined;
@@ -31,10 +32,9 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-  Home: undefined;
+  Ritual: undefined;
   Library: undefined;
-  Marketplace: undefined;
-  Speak: undefined;
+  Create: undefined;
   Profile: undefined;
 };
 
@@ -42,8 +42,8 @@ export type MainStackParamList = {
   Tabs: undefined;
   ContentDetail: { contentId: string; contentType: ContentItemType };
   ContentEdit: { contentId: string; contentType: ContentItemType };
-  CreateMode: { contentType: ContentItemType };
   ContentCreate: { contentType: ContentItemType; mode: 'form' | 'chat' | 'agent' };
+  CreateVoiceStep: { contentId: string; contentType: ContentItemType; script: string; title?: string };
   Credits: undefined;
   Progress: undefined;
   Settings: undefined;

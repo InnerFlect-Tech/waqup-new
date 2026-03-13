@@ -83,7 +83,7 @@ export default function SanctuaryHomePage() {
   ];
 
   return (
-    <PageShell intensity="medium" centerVertically>
+    <PageShell intensity="medium" centerVertically allowDocumentScroll>
       <PageContent>
         {/* Welcome — Qs badge is in header only */}
         <motion.div

@@ -65,7 +65,7 @@ export default function MarketplacePage() {
   const uniqueCreators = new Set(items.map((i) => i.creatorId)).size;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
         {/* Hero */}
         <div style={{ marginBottom: spacing.xxl }}>

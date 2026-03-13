@@ -75,6 +75,7 @@ All user-facing routes live under `app/[locale]/` with `next-intl` (locales: en,
 | `/coming-soon` | `app/[locale]/coming-soon/page.tsx` | ✅ | Live | Access gate for waitlist-pending users |
 | `/auth/beta-signup` | — | ✅ | Redirect | Redirects to `/waitlist` |
 | `/auth/callback` | `app/[locale]/auth/callback/route.ts` | ✅ | Live | Supabase OAuth code exchange handler |
+| `/auth/callback-mobile` | `app/[locale]/auth/callback-mobile/route.ts` | ✅ | Live | Mobile OAuth proxy — returns 200 so in-app browser receives code; add to Supabase Redirect URLs |
 
 ---
 
@@ -104,6 +105,7 @@ All routes below require an authenticated Supabase session. Unauthenticated requ
 |-------|------|------|--------|-------|
 | `/sanctuary` | `app/[locale]/sanctuary/page.tsx` | 🔒 | Live | Quick actions + menu |
 | `/sanctuary/settings` | `app/[locale]/sanctuary/settings/page.tsx` | 🔒 | Wired | Profile, theme, notifications |
+| `/sanctuary/settings/about` | `app/[locale]/sanctuary/settings/about/page.tsx` | 🔒 | Live | About — version, changelog link, acknowledgments |
 | `/sanctuary/progress` | `app/[locale]/sanctuary/progress/page.tsx` | 🔒 | Wired | Heatmap, sessions, get_progress_stats |
 | `/sanctuary/referral` | `app/[locale]/sanctuary/referral/page.tsx` | 🔒 | Stub | Referral link; backend ready |
 | `/sanctuary/reminders` | `app/[locale]/sanctuary/reminders/page.tsx` | 🔒 | Wired | user_reminders CRUD |
@@ -236,6 +238,18 @@ Auth is enforced at two layers:
 ```
 /, /login, /signup, /forgot-password, /reset-password, /confirm-email, /auth/*, /how-it-works, /pricing, /terms, /privacy, /_next, /favicon, /api
 ```
+
+---
+
+---
+
+## Footer Logic
+
+The public footer (links, share, wellness disclaimer, payment note) is rendered by `AppLayout` unless the pathname is excluded. Some pages render `PublicFooter` themselves; for those, AppLayout does not render it (to avoid duplicates).
+
+**Excluded from AppLayout footer:** `/`, `/for-teachers`, `/for-coaches`, `/for-creators`, `/for-studios`, `/community`, `/sanctuary/*/create/*`, auth routes, `/coming-soon`, `/onboarding/*`.
+
+Most marketing routes show the footer via AppLayout. Create flows, auth, and onboarding are excluded for focused UX.
 
 ---
 

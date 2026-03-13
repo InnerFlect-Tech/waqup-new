@@ -6,7 +6,7 @@ import { Play, Pause, Share2, LogIn, Check, ArrowRight, Users } from 'lucide-rea
 
 import { Link } from '@/i18n/navigation';
 import { useWebAudioPlayer } from '@/hooks';
-import { SpeakingAnimation } from '@/components/audio';
+import { AudioWaveform } from '@/components/audio';
 import { ShareModal } from '@/components/marketplace';
 import type { AudioLayers } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS, CONTENT_TYPE_GRADIENT_DARK } from '@waqup/shared/constants';
@@ -192,7 +192,7 @@ export function PublicPlayerClient({ item, contentId }: Props) {
             }}
           >
             {/* Waveform */}
-            <SpeakingAnimation isSpeaking={isPlaying} frequencyData={freqData} style={{ minHeight: 200 }} />
+            <AudioWaveform isPlaying={isPlaying} frequencyData={freqData} style={{ minHeight: 200 }} />
 
             {/* Content info */}
             <div style={{ padding: '24px 28px' }}>

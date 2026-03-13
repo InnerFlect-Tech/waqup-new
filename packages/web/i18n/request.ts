@@ -23,6 +23,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     'errors',
     'metadata',
     'marketing',
+    'legal',
   ];
 
   const messages: Record<string, unknown> = {};

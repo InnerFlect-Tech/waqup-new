@@ -5,37 +5,41 @@ import { Link } from '@/i18n/navigation';
 import { useTheme } from '@/theme';
 import { spacing } from '@/theme';
 
-/**
- * Compact wellness disclaimer for sanctuary and create flows.
- * Links to full disclaimer in Terms of Service.
- */
-export function WellnessDisclaimer() {
+/** 'inline' = no block spacing, for footer flex rows; 'default' = standalone with top padding */
+export function WellnessDisclaimer({ variant = 'default' }: { variant?: 'default' | 'inline' }) {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const Tag = variant === 'inline' ? 'span' : 'p';
 
   return (
-    <p
+    <Tag
       style={{
-        fontSize: 12,
+        fontSize: 10,
         color: colors.text.tertiary,
-        lineHeight: 1.5,
+        lineHeight: 1.4,
         margin: 0,
-        marginTop: spacing.md,
-        maxWidth: 480,
+        ...(variant === 'default' && { paddingTop: spacing.sm }),
+        opacity: 0.85,
       }}
     >
-      waQup is a wellness tool, not a substitute for professional medical or
-      mental health care.{' '}
+      Wellness tool, not medical advice.{' '}
       <Link
         href="/terms"
         style={{
-          color: colors.accent.tertiary,
-          textDecoration: 'underline',
-          textUnderlineOffset: 2,
+          color: colors.text.tertiary,
+          textDecoration: 'none',
+          fontSize: 'inherit',
+          opacity: 0.9,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.textDecoration = 'underline';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.textDecoration = 'none';
         }}
       >
-        Full disclaimer
+        Full disclaimer →
       </Link>
-    </p>
+    </Tag>
   );
 }

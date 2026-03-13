@@ -55,7 +55,7 @@ export default function TransactionsPage() {
   };
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
         <Link href="/sanctuary/credits" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xl }}>
           <ArrowLeft size={14} color={colors.text.secondary} />

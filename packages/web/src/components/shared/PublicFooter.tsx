@@ -4,9 +4,10 @@ import React from 'react';
 import { useTheme } from '@/theme';
 import { spacing, BLUR, HEADER_PADDING_X_RESPONSIVE } from '@/theme';
 import { LEGAL_CONFIG } from '@/config/legal';
+import { WellnessDisclaimer } from '@/components/legal/WellnessDisclaimer';
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
 import { PageShareButtons } from './PageShareButtons';
+import { useTranslations } from 'next-intl';
 
 export function PublicFooter() {
   const { theme } = useTheme();
@@ -123,6 +124,7 @@ export function PublicFooter() {
             </div>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               {internalLinks('/our-story', t('footerOurStory'))}
+              {internalLinks('/community', t('footerCommunity'))}
               {internalLinks('/investors', t('footerInvestors'))}
               {internalLinks('/join', t('footerFoundingMembers'))}
             </nav>
@@ -149,57 +151,60 @@ export function PublicFooter() {
           </div>
         </div>
 
-        {/* Share — centered row above the lower footer */}
-        <div
-          className="footer-share"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            paddingTop: spacing.md,
-            paddingBottom: spacing.lg,
-            borderTop: `1px solid ${colors.glass.border}`,
-          }}
-        >
-          <div style={{ fontSize: 11, fontWeight: 700, color: colors.text.tertiary, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: spacing.xs }}>
-            {tc('share')}
-          </div>
-          <PageShareButtons />
-        </div>
-
-        {/* Bottom bar */}
+        {/* Bottom bar — Row 1: centered share; Row 2: text (UX: share prominent, centered per best practices) */}
         <div
           className="footer-bottom"
           style={{
-            paddingTop: spacing.lg,
-            borderTop: `1px solid ${colors.glass.border}`,
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: spacing.sm,
+            flexDirection: 'column',
+            gap: spacing.md,
+            paddingTop: spacing.md,
+            paddingBottom: spacing.xs,
+            borderTop: `1px solid ${colors.glass.border}`,
           }}
         >
-          <span style={{ fontSize: 13, color: colors.text.tertiary }}>
-            © {new Date().getFullYear()} waQup · {tc('allRightsReserved')}
-          </span>
-          <span style={{ fontSize: 13, color: colors.text.tertiary }}>
-            {t('footerPaymentNote')}
-          </span>
-          <a
-            href="https://innerflect.tech"
-            target="_blank"
-            rel="noopener noreferrer"
+          <div
+            className="footer-share-row"
             style={{
-              fontSize: 13,
-              color: colors.text.tertiary,
-              textDecoration: 'none',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = colors.text.secondary; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = colors.text.tertiary; }}
           >
-            Developed by Innerflect
-          </a>
+            <PageShareButtons />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: spacing.sm,
+              fontSize: 11,
+              color: colors.text.tertiary,
+            }}
+          >
+            <WellnessDisclaimer variant="inline" />
+            <span style={{ opacity: 0.5 }}>·</span>
+            <span style={{ opacity: 0.9 }}>{t('footerPaymentNote')}</span>
+            <span style={{ opacity: 0.5 }}>·</span>
+            <a
+              href="https://innerflect.tech"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: 11,
+                color: colors.text.tertiary,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                opacity: 0.9,
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = colors.text.secondary; e.currentTarget.style.opacity = '1'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = colors.text.tertiary; e.currentTarget.style.opacity = '0.9'; }}
+            >
+              Developed by Innerflect
+            </a>
+          </div>
         </div>
       </div>
 

@@ -4,11 +4,32 @@ import { Link } from '@/i18n/navigation';
 import { PageShell, PageContent, Typography, Button } from '@/components';
 import { spacing, useTheme } from '@/theme';
 import { LEGAL_CONFIG } from '@/config/legal';
+import { useTranslations } from 'next-intl';
 
 export function DataDeletionContent() {
   const { theme } = useTheme();
   const accentColor = theme.colors.accent.tertiary;
+  const t = useTranslations('legal.dataDeletion');
   const { entityName, contactEmail } = LEGAL_CONFIG;
+
+  const rich = (key: string) =>
+    t.rich(key, {
+      email: (chunks) => (
+        <a
+          href={`mailto:${contactEmail}`}
+          style={{ color: accentColor, textDecoration: 'underline' }}
+        >
+          {chunks}
+        </a>
+      ),
+      link: (chunks) => (
+        <Link href="/privacy" style={{ color: accentColor, textDecoration: 'underline' }}>
+          {chunks}
+        </Link>
+      ),
+      entityName,
+      contactEmail,
+    });
 
   return (
     <PageShell intensity="medium">
@@ -21,14 +42,13 @@ export function DataDeletionContent() {
             fontWeight: 300,
           }}
         >
-          User Data Deletion
+          {t('title')}
         </Typography>
         <Typography
           variant="body"
           style={{ marginBottom: spacing.xl, opacity: 0.75 }}
         >
-          {entityName} respects your right to delete your data. Here is how you
-          can request deletion.
+          {t('intro', { entityName })}
         </Typography>
 
         <section style={{ marginBottom: spacing.xl }}>
@@ -40,22 +60,17 @@ export function DataDeletionContent() {
               marginTop: 0,
             }}
           >
-            Delete your waQup account
+            {t('s1.title')}
           </h2>
-          <p style={{ fontSize: 14, lineHeight: 1.7 }}>
-            You can delete your account and all associated data at any time from
-            the app:
-          </p>
+          <p style={{ fontSize: 14, lineHeight: 1.7 }}>{t('s1.p1')}</p>
           <ol style={{ paddingLeft: 20, marginTop: 8, fontSize: 14, lineHeight: 1.7 }}>
-            <li>Open waQup (web or mobile)</li>
-            <li>Go to Sanctuary → Settings</li>
-            <li>Select &quot;Delete account&quot;</li>
-            <li>Confirm the deletion</li>
+            <li>{t('s1.li1')}</li>
+            <li>{t('s1.li2')}</li>
+            <li>{t('s1.li3')}</li>
+            <li>{t('s1.li4')}</li>
           </ol>
           <p style={{ fontSize: 14, lineHeight: 1.7, marginTop: 12 }}>
-            After deletion, we remove or anonymize your data within 30 days,
-            except where we must retain it for legal, tax, or fraud-prevention
-            purposes.
+            {t('s1.p2')}
           </p>
         </section>
 
@@ -68,21 +83,12 @@ export function DataDeletionContent() {
               marginTop: 0,
             }}
           >
-            Revoke third‑party permissions
+            {t('s2.title')}
           </h2>
-          <p style={{ fontSize: 14, lineHeight: 1.7 }}>
-            If you connected Facebook, Instagram, or Google to waQup, you can
-            revoke access from your account settings on those platforms:
-          </p>
+          <p style={{ fontSize: 14, lineHeight: 1.7 }}>{t('s2.p1')}</p>
           <ul style={{ paddingLeft: 20, marginTop: 8, fontSize: 14, lineHeight: 1.7 }}>
-            <li>
-              <strong>Facebook/Instagram:</strong> Settings → Apps and Websites →
-              waQup → Remove
-            </li>
-            <li>
-              <strong>Google:</strong> Security → Third-party access → waQup →
-              Revoke
-            </li>
+            <li>{t('s2.li1')}</li>
+            <li>{t('s2.li2')}</li>
           </ul>
         </section>
 
@@ -95,24 +101,9 @@ export function DataDeletionContent() {
               marginTop: 0,
             }}
           >
-            Request deletion by email
+            {t('s3.title')}
           </h2>
-          <p style={{ fontSize: 14, lineHeight: 1.7 }}>
-            To request manual deletion of your data, contact us at{' '}
-            <a
-              href={`mailto:${contactEmail}`}
-              style={{ color: accentColor, textDecoration: 'underline' }}
-            >
-              {contactEmail}
-            </a>
-            . Include the email address associated with your waQup account. We
-            will respond within 30 days and delete your data in accordance with
-            our{' '}
-            <Link href="/privacy" style={{ color: accentColor, textDecoration: 'underline' }}>
-              Privacy Policy
-            </Link>
-            .
-          </p>
+          <p style={{ fontSize: 14, lineHeight: 1.7 }}>{rich('s3.p1')}</p>
         </section>
 
         <div
@@ -125,17 +116,17 @@ export function DataDeletionContent() {
         >
           <Link href="/" style={{ textDecoration: 'none' }}>
             <Button variant="ghost" size="md">
-              Back to Home
+              {t('backToHome')}
             </Button>
           </Link>
           <Link href="/privacy" style={{ textDecoration: 'none' }}>
             <Button variant="ghost" size="md">
-              Privacy Policy
+              {t('privacyPolicy')}
             </Button>
           </Link>
           <Link href="/terms" style={{ textDecoration: 'none' }}>
             <Button variant="ghost" size="md">
-              Terms of Service
+              {t('termsOfService')}
             </Button>
           </Link>
         </div>

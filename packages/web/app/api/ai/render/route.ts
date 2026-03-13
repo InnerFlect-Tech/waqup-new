@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { API_ROUTE_COSTS, AI_MODELS } from '@waqup/shared/constants';
+import { AI_MODELS, getTtsCreditsForScript } from '@waqup/shared/constants';
+// TTS cost is variable by script length; no fixed COST constant
 import { textToSpeech } from '@waqup/shared/services';
 import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 
@@ -23,7 +24,6 @@ export const dynamic = 'force-dynamic';
  * Returns: { audioUrl, storagePath, creditsUsed }
  */
 
-const COST = API_ROUTE_COSTS.aiTts;
 const MAX_TEXT_LENGTH = 5000;
 
 const renderRequestSchema = z.object({
@@ -99,10 +99,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'voiceId is required for AI voice rendering' }, { status: 400 });
     }
 
+    const cost = getTtsCreditsForScript(body.text);
+
     // ─── Credit deduction ─────────────────────────────────────────────────────
     const { error: deductError } = await supabase.rpc('deduct_credits', {
       p_user_id:     user.id,
-      p_amount:      COST,
+      p_amount:      cost,
       p_description: 'tts_render',
     });
 
@@ -112,8 +114,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
           {
             error: 'insufficient_credits',
-            message: `Rendering audio costs ${COST}Q but you have ${(balance as number) ?? 0}. Get more Qs to continue.`,
-            required: COST,
+            message: `Rendering audio costs ${cost}Q but you have ${(balance as number) ?? 0}. Get more Qs to continue.`,
+            required: cost,
             balance: (balance as number) ?? 0,
           },
           { status: 402 },
@@ -159,11 +161,18 @@ export async function POST(req: NextRequest) {
           audioUrl = signedData?.signedUrl ?? null;
         }
       } else {
-        // Bucket may not exist yet — log but don't fail the request
-        console.warn('[ai/render] storage upload skipped:', uploadError.message);
+        console.error('[ai/render] storage upload failed:', uploadError.message);
+        return NextResponse.json(
+          { error: 'Storage upload failed', message: 'Audio was generated but could not be saved. Please try again.' },
+          { status: 503 },
+        );
       }
     } catch (storageErr) {
-      console.warn('[ai/render] storage error (non-fatal):', storageErr);
+      console.error('[ai/render] storage error:', storageErr);
+      return NextResponse.json(
+        { error: 'Storage upload failed', message: 'Audio was generated but could not be saved. Please try again.' },
+        { status: 503 },
+      );
     }
 
     // ─── Update content_items ─────────────────────────────────────────────────
@@ -179,7 +188,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       audioUrl,
       storagePath: audioUrl ? storagePath : null,
-      creditsUsed: COST,
+      creditsUsed: cost,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

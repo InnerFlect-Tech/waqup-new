@@ -6,6 +6,18 @@
 
 ---
 
+## Mobile usability and error fixes (2026-03-13)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-13
+- **Notes**:
+  - **SetupScreen**: Restructured so CTA (Get Started / Sign In) is always visible at bottom; removed nested ScrollViews; added hitSlop for touch targets; solid CTA background.
+  - **Navigation types**: Auth route now uses `NavigatorScreenParams<AuthStackParamList>` so `navigation.navigate('Auth', { screen: 'Signup' })` is correctly typed.
+  - **Require cycles**: AudioPlayer, AudioRecorder, MiniPlayer already import from `@/components/ui` (breaks cycle with `@/components`).
+- **Updated**: 2026-03-13
+
+---
+
 ## E2E (Playwright) CI fixes (2026-03-11)
 
 - **Status**: ✅ Complete
@@ -868,7 +880,7 @@
   - Web: `format.ts` (px, shadow CSS), `glass.ts` (backdrop-filter)
   - Mobile: `format.ts` (RN numbers/objects), `glass.ts` (fallback)
   - Removed: platform-level `borders.ts`, `colors.ts`, `shadows.ts`, `spacing.ts`, `typography.ts`, `themes.ts`
-  - Ref: `docs/04-reference/07-design-system-cross-platform.md`
+  - Ref: `docs/04-reference/07-design-system.md`
 - **Updated**: 2026-02-16
 
 ---

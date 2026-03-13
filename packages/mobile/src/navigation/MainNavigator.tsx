@@ -1,22 +1,22 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
-import { useTheme } from '@/theme';
+import { useTheme, layout, spacing, typography } from '@/theme';
 import { MainTabParamList, MainStackParamList } from './types';
-import { HomeScreen, LibraryScreen } from '@/screens';
-import SpeakScreen from '@/screens/main/SpeakScreen';
-import MarketplaceScreen from '@/screens/main/MarketplaceScreen';
+import { LibraryScreen, RitualHomeScreen } from '@/screens';
 import ContentDetailScreen from '@/screens/content/ContentDetailScreen';
 import ContentEditScreen from '@/screens/content/ContentEditScreen';
-import CreateModeScreen from '@/screens/content/CreateModeScreen';
 import ContentCreateScreen from '@/screens/content/ContentCreateScreen';
+import CreateEntryScreen from '@/screens/content/CreateEntryScreen';
+import CreateVoiceStepScreen from '@/screens/content/CreateVoiceStepScreen';
 import { CreditsScreen, ProgressScreen, SettingsScreen, RemindersScreen } from '@/screens/sanctuary';
 import ProfileScreen from '@/screens/main/ProfileScreen';
 import { QCoin } from '@/components';
+import { MiniPlayer, PlaybackEngineProvider } from '@/components/audio';
 import { useCreditBalance } from '@/hooks';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -33,7 +33,7 @@ function QBalanceBadge() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (navigation as any).navigate('Credits');
       }}
-      style={{ marginRight: 16 }}
+      style={{ marginRight: layout.headerRightMargin }}
       activeOpacity={0.75}
     >
       <QCoin size="sm" showAmount={balance} />
@@ -54,25 +54,24 @@ function MainTabs() {
           backgroundColor: colors.glass.opaque,
           borderTopWidth: 1,
           borderTopColor: colors.glass.border,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: layout.tabBarHeight,
+          paddingBottom: layout.tabBarPaddingY,
+          paddingTop: layout.tabBarPaddingY,
         },
         tabBarActiveTintColor: colors.accent.tertiary,
         tabBarInactiveTintColor: colors.text.secondary,
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
+          fontSize: typography.label.fontSize,
+          fontWeight: String(typography.label.fontWeight) as '500',
         },
         tabBarBackground: () => (
           <BlurView intensity={80} style={{ flex: 1 }} tint="dark" />
         ),
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: t('home') }} />
+      <Tab.Screen name="Ritual" component={RitualHomeScreen} options={{ tabBarLabel: t('ritual') }} />
       <Tab.Screen name="Library" component={LibraryScreen} options={{ tabBarLabel: t('library') }} />
-      <Tab.Screen name="Marketplace" component={MarketplaceScreen} options={{ tabBarLabel: t('discover') }} />
-      <Tab.Screen name="Speak" component={SpeakScreen} options={{ tabBarLabel: t('speak') }} />
+      <Tab.Screen name="Create" component={CreateEntryScreen} options={{ tabBarLabel: t('create') }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: t('profile') }} />
     </Tab.Navigator>
   );
@@ -83,7 +82,9 @@ export default function MainNavigator() {
   const colors = theme.colors;
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <PlaybackEngineProvider>
+      <View style={{ flex: 1 }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Tabs"
         component={MainTabs}
@@ -110,13 +111,13 @@ export default function MainNavigator() {
         options={{ animation: 'slide_from_right' }}
       />
       <Stack.Screen
-        name="CreateMode"
-        component={CreateModeScreen}
-        options={{ animation: 'slide_from_bottom', presentation: 'modal' }}
-      />
-      <Stack.Screen
         name="ContentCreate"
         component={ContentCreateScreen}
+        options={{ animation: 'slide_from_right' }}
+      />
+      <Stack.Screen
+        name="CreateVoiceStep"
+        component={CreateVoiceStepScreen}
         options={{ animation: 'slide_from_right' }}
       />
       <Stack.Screen
@@ -140,5 +141,8 @@ export default function MainNavigator() {
         options={{ animation: 'slide_from_right' }}
       />
     </Stack.Navigator>
+        <MiniPlayer />
+      </View>
+    </PlaybackEngineProvider>
   );
 }

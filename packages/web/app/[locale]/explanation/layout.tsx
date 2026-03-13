@@ -1,18 +1,10 @@
-import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { createMarketingMetadata } from '@/lib/marketing-metadata';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'metadata' });
-  return {
-    title: t('pages.theScience'),
-  };
+  return createMarketingMetadata({ locale, pageKey: 'theScience', path: '/explanation' });
 }
 
-export default function ExplanationLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ExplanationLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

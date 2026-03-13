@@ -44,7 +44,7 @@ This doc is the entry point for developers: quick start, current phase, essentia
 ### Before starting
 
 1. **Architecture** – [docs/00-architecture-overview.md](../00-architecture-overview.md)
-2. **Product overview** – [docs/00-product-overview.md](../00-product-overview.md)
+2. **Product overview** – [docs/00-current-context.md](../00-current-context.md)
 3. **Developer onboarding** – [docs/00-developer-onboarding.md](../00-developer-onboarding.md)
 4. **Roadmap** – [rebuild-roadmap/01-planning/01-roadmap.md](../../rebuild-roadmap/01-planning/01-roadmap.md)
 5. **Tech stack** – [docs/02-mobile/01-technology-stack.md](../02-mobile/01-technology-stack.md)
@@ -57,7 +57,7 @@ This doc is the entry point for developers: quick start, current phase, essentia
 - **Browser strategy** – [docs/03-platforms/02-browser-optimization-strategy.md](../03-platforms/02-browser-optimization-strategy.md)
 - **Pages (what exists / missing)** – [docs/04-reference/04-pages-comparison.md](./04-pages-comparison.md)
 - **Schema** – [rebuild-roadmap/01-planning/02-schema-verification.md](../../rebuild-roadmap/01-planning/02-schema-verification.md)
-- **Context7** – [docs/04-reference/02-context7-usage.md](./02-context7-usage.md)
+- **Context7 / Cursor rules** – [docs/04-reference/02-developer-tooling.md](./02-developer-tooling.md)
 
 ### Product docs (external)
 

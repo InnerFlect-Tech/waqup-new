@@ -88,7 +88,11 @@ export function ContentReviewStep({
     {
       icon: FileText,
       label: 'Script',
-      value: script ? script.slice(0, 300) + (script.length > 300 ? '…' : '') : null,
+      value: script
+        ? contentType === 'affirmation'
+          ? script
+          : script.slice(0, 300) + (script.length > 300 ? '…' : '')
+        : null,
       editHref: scriptEditHref,
     },
     {
@@ -142,8 +146,9 @@ export function ContentReviewStep({
       }
       const savedId = result.data.id;
 
-      // Kick off render: AI voice → TTS generation; own voice → use uploaded recording URL directly
-      if (voiceType === 'ai' && voiceId && script) {
+      // Kick off render: AI or Library voice (voiceId) → TTS; own recorded voice (ownVoiceUrl) → no TTS
+      if (voiceId && script) {
+        // AI voice OR Library voice (IVC) — both use ElevenLabs TTS
         fetch('/api/ai/render', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -151,7 +156,8 @@ export function ContentReviewStep({
         }).catch(() => {
           // Render failure is non-fatal — user can retry from Audio Studio
         });
-      } else if (voiceType === 'own' && ownVoiceUrl && script) {
+      } else if (ownVoiceUrl && script) {
+        // Own recorded voice — use uploaded recording URL directly, no TTS
         fetch('/api/ai/render', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -193,10 +199,22 @@ export function ContentReviewStep({
           <Eye size={24} color={meta.color} />
         </div>
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300 }}>
-          Review your {contentType}
+          {contentType === 'affirmation'
+            ? 'Review your identity affirmations'
+            : contentType === 'meditation'
+            ? 'Review your meditation'
+            : contentType === 'ritual'
+            ? 'Review your daily conditioning sequence'
+            : `Review your ${contentType}`}
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary }}>
-          Everything looks good? Save it to your sanctuary.
+          {contentType === 'affirmation'
+            ? 'These lines will deepen your identity loop. Save when ready.'
+            : contentType === 'meditation'
+            ? 'A short practice for state regulation. Save when ready.'
+            : contentType === 'ritual'
+            ? 'Your repeatable daily practice. Save when ready.'
+            : 'Everything looks good? Save it to your sanctuary.'}
         </Typography>
       </motion.div>
 

@@ -16,9 +16,11 @@ import {
   ListChecks,
   BarChart3,
   BookOpen,
+  Handshake,
   Database,
   Wrench,
   Smartphone,
+  RotateCcw,
 } from 'lucide-react';
 import { PageShell, SuperAdminGate } from '@/components';
 import { Typography } from '@/components';
@@ -38,6 +40,7 @@ const ADMIN_CARDS: AdminCard[] = [
   { title: 'iOS App Store Release', description: 'Implementation log, setup checklist, DB migration, marketing prompts.', href: '/admin/ios-release', icon: <Smartphone />, category: 'ops' },
   { title: 'User Management', description: 'Users, credit balances, subscriptions, transactions.', href: '/admin/users', icon: <Users />, category: 'ops' },
   { title: 'Waitlist & Access', description: 'Review signups, approve or revoke app access.', href: '/admin/waitlist', icon: <ListChecks />, category: 'ops' },
+  { title: 'Founding Partners', description: 'Manage founding partner inquiries and status.', href: '/admin/founding-partners', icon: <Handshake />, category: 'ops' },
   { title: 'Content Overview', description: 'Counts by type/status, recent activity.', href: '/admin/content', icon: <BarChart3 />, category: 'ops' },
   // Configuration
   { title: 'Oracle / AI Config', description: 'System prompt, ElevenLabs voices, live test.', href: '/admin/oracle', icon: <Cpu />, category: 'config' },
@@ -52,6 +55,7 @@ const ADMIN_CARDS: AdminCard[] = [
   { title: 'Schema Live Status', description: 'Live DB checks — tables, columns.', href: '/system/schema', icon: <Database />, category: 'system' },
   { title: 'API Health', description: 'Supabase, OpenAI, ElevenLabs, Stripe status.', href: '/health', icon: <Activity />, category: 'system' },
   // Tools & shortcuts
+  { title: 'Restart Onboarding', description: 'Reset onboarding_completed_at and re-run the flow for testing.', href: '/admin/onboarding/reset', icon: <RotateCcw />, category: 'tools' },
   { title: 'All Pages', description: 'Full route index — status, auth, notes.', href: '/pages', icon: <FileText />, category: 'tools' },
   { title: 'Sitemap', description: 'Visual sitemap of all routes.', href: '/sitemap-view', icon: <Map />, category: 'tools' },
   { title: 'Design Showcase', description: 'Component library and design system.', href: '/showcase', icon: <Layout />, category: 'tools' },

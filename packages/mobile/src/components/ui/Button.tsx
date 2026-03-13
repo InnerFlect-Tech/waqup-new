@@ -114,7 +114,7 @@ export const Button: React.FC<ButtonProps> = ({
       Platform.OS === 'web' && variant === 'primary'
         ? ({
             // @ts-ignore — web-only CSS property
-            background: 'linear-gradient(to right, #9333EA, #4F46E5)',
+            background: `linear-gradient(to right, ${colors.accent.primary}, ${colors.accent.secondary})`,
             backgroundColor: undefined,
           } as ViewStyle)
         : {};

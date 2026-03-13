@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import {
   Mic,
   Share2,
@@ -14,62 +15,39 @@ import {
   ArrowRight,
   Play,
   Globe,
-  Zap,
 } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
-import { Typography, Button, PageShell, WaitlistCTA, PublicFooter } from '@/components';
+import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
-const BENEFITS = [
-  {
-    icon: Mic,
-    title: 'Create in minutes, not hours',
-    body: 'Speak your intention once. waQup turns your words into a polished guided meditation — in your voice, with ambient layers and binaural tones.',
-  },
-  {
-    icon: Globe,
-    title: 'Publish to the marketplace',
-    body: 'One-click publish. Your sessions become discoverable by thousands of practitioners actively looking for new guided content.',
-  },
-  {
-    icon: Share2,
-    title: 'Earn every time students share',
-    body: 'Every share earns you Qs. The more your students spread your work, the more creation power you accumulate — automatically.',
-  },
-  {
-    icon: Users,
-    title: 'Build a library, not just a class',
-    body: 'Group your sessions into themed series — 7-Day Nervous System Reset, Morning Ritual Pack, Sleep Deepening Series. Your students get a complete experience.',
-  },
-  {
-    icon: Sparkles,
-    title: 'AI-assisted script generation',
-    body: 'Describe your intention. waQup writes the script, you approve or edit it, then render audio with your voice. No recording sessions, no editing software.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Analytics that matter',
-    body: 'See play counts, share counts, and credits earned per session. Understand what resonates so you can create more of what works.',
-  },
-];
-
-const STEPS = [
-  { step: '01', label: 'Describe your session', sub: 'Speak or type your intention — theme, duration, tone, focus.' },
-  { step: '02', label: 'waQup builds the audio', sub: 'AI writes the script. Your voice (or a professional voice) renders it with ambient and binaural layers.' },
-  { step: '03', label: 'Publish to marketplace', sub: 'One tap. Your session appears in the waQup marketplace and gets a shareable public link.' },
-  { step: '04', label: 'Students share, you earn', sub: 'Every share of your content earns you Qs. More students, more credits, more sessions.' },
-];
-
-const COMPARISON_ROWS = [
-  { label: 'Create content', other: 'Record → Edit → Export → Upload', waQup: 'Describe → Approve → Publish' },
-  { label: 'Reach students', other: 'Your existing channels only', waQup: 'Marketplace discovery + share loops' },
-  { label: 'Earn from sharing', other: 'No mechanism', waQup: 'Qs per share, auto-credited' },
-  { label: 'Personalisation', other: 'One recording for everyone', waQup: 'Students can customise for their practice' },
-  { label: 'Series / courses', other: 'Manual playlist curation', waQup: 'Built-in series publishing' },
-];
+const BENEFIT_ICONS = [Mic, Globe, Share2, Users, Sparkles, TrendingUp] as const;
+const STEPS_CONFIG = [
+  { step: '01', labelKey: 'step1Label', subKey: 'step1Sub' },
+  { step: '02', labelKey: 'step2Label', subKey: 'step2Sub' },
+  { step: '03', labelKey: 'step3Label', subKey: 'step3Sub' },
+  { step: '04', labelKey: 'step4Label', subKey: 'step4Sub' },
+] as const;
+const COMPARISON_ROW_KEYS = [1, 2, 3, 4, 5] as const;
+const BENEFIT_KEYS = [1, 2, 3, 4, 5, 6] as const;
 
 export default function ForTeachersPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const t = useTranslations('marketing.forTeachers.page');
+  const BENEFITS = BENEFIT_KEYS.map((i) => ({
+    title: t(`benefit${i}Title`),
+    body: t(`benefit${i}Body`),
+    icon: BENEFIT_ICONS[i - 1],
+  }));
+  const STEPS = STEPS_CONFIG.map((c) => ({
+    step: c.step,
+    label: t(c.labelKey),
+    sub: t(c.subKey),
+  }));
+  const COMPARISON_ROWS = COMPARISON_ROW_KEYS.map((i) => ({
+    label: t(`comparisonRow${i}Label`),
+    other: t(`comparisonRow${i}Other`),
+    waQup: t(`comparisonRow${i}WaQup`),
+  }));
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);

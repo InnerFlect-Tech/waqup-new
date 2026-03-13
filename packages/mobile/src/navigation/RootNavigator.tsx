@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './types';
@@ -11,8 +12,26 @@ import SetupScreen from '@/screens/SetupScreen';
 import { useAuthStore } from '@/stores';
 import { useOnboardingStatus } from '@/hooks/useOnboardingStatus';
 import OnboardingWrapper from './OnboardingWrapper';
+import { useTheme } from '@/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+function AuthLoadingView() {
+  const { theme } = useTheme();
+  return (
+    <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background.primary }]}>
+      <ActivityIndicator size="large" color={theme.colors.accent.primary} />
+    </View>
+  );
+}
 
 // Deep linking configuration
 // waqup://auth/callback is used as the OAuth redirect URI for Google (and future providers)
@@ -54,7 +73,7 @@ export default function RootNavigator() {
   }, [initializeAuth]);
 
   if (!isReady || !isInitialized) {
-    return null;
+    return <AuthLoadingView />;
   }
 
   const isAuthenticated = !!user;
@@ -65,7 +84,7 @@ export default function RootNavigator() {
   const onboardingLoading = isAuthenticated && isOnboardingLoading;
 
   if (onboardingLoading) {
-    return null; // Brief loading while checking onboarding status
+    return <AuthLoadingView />;
   }
 
   return (

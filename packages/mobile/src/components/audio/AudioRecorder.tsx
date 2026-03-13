@@ -15,7 +15,7 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 import { useTheme, spacing, borderRadius } from '@/theme';
-import { Typography, Button } from '@/components';
+import { Typography, Button } from '@/components/ui';
 import { logError } from '@waqup/shared/utils';
 
 type RecordState = 'idle' | 'recording' | 'recorded' | 'playing' | 'uploading';
@@ -191,19 +191,19 @@ export function AudioRecorder({ onConfirm, onCancel }: AudioRecorderProps) {
       {/* State: recording — pulsing button */}
       {state === 'recording' && (
         <View style={styles.center}>
-          <Typography variant="h2" style={{ color: '#ef4444', marginBottom: spacing.lg, fontWeight: '200' }}>
+          <Typography variant="h2" style={{ color: colors.error, marginBottom: spacing.lg, fontWeight: '200' }}>
             {formatDuration(duration)}
           </Typography>
-          <Animated.View style={[styles.pulseRing, pulseStyle, { borderColor: '#ef4444' }]}>
+          <Animated.View style={[styles.pulseRing, pulseStyle, { borderColor: colors.error }]}>
             <TouchableOpacity
               onPress={stopRecording}
               activeOpacity={0.8}
-              style={[styles.recordBtn, { backgroundColor: '#ef4444' }]}
+              style={[styles.recordBtn, { backgroundColor: colors.error }]}
             >
-              <View style={[styles.stopSquare, { backgroundColor: '#fff' }]} />
+              <View style={[styles.stopSquare, { backgroundColor: colors.text.onDark }]} />
             </TouchableOpacity>
           </Animated.View>
-          <Typography variant="captionBold" style={{ color: '#ef4444', marginTop: spacing.md }}>
+          <Typography variant="captionBold" style={{ color: colors.error, marginTop: spacing.md }}>
             Recording… tap to stop
           </Typography>
         </View>

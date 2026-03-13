@@ -652,16 +652,30 @@ export default function SpeakPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // ── Cleanup on unmount ───────────────────────────────────────────────────
+  // ── Cleanup on unmount: stop TTS, recognition, and release audio resources ─
   useEffect(() => {
     return () => {
       streamAbortRef.current?.abort();
       recognitionRef.current?.abort();
+      recognitionActive.current = false;
       cancelAnimationFrame(micRafRef.current);
       cancelAnimationFrame(ttsRafRef.current);
       micStreamRef.current?.getTracks().forEach(t => t.stop());
       if (sendTimerRef.current) clearTimeout(sendTimerRef.current);
       window.speechSynthesis?.cancel();
+      // Stop Web Audio TTS and release resources
+      if (currentSourceRef.current) {
+        try { currentSourceRef.current.stop(); } catch { /* ignore */ }
+        currentSourceRef.current = null;
+      }
+      audioQueueRef.current = [];
+      pendingChunksRef.current = [];
+      isPlayingRef.current = false;
+      masterFreqRef.current = null;
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close().catch(() => {});
+        audioCtxRef.current = null;
+      }
     };
   }, []);
 

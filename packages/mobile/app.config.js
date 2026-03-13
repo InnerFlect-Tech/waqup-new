@@ -25,6 +25,11 @@ module.exports = {
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
   scheme: 'waqup',
+  plugins: [
+    '@sentry/react-native',
+    'expo-localization',
+    'expo-web-browser',
+  ],
   extra: {
     supabaseUrl: env.EXPO_PUBLIC_SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL,
     supabasePublishableKey: env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,

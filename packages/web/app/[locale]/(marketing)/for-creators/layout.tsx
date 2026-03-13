@@ -1,14 +1,9 @@
-import { getTranslations } from 'next-intl/server';
+import { createMarketingMetadata } from '@/lib/marketing-metadata';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'metadata' });
-  return {
-    title: t('pages.forCreators'),
-  };
+  return createMarketingMetadata({ locale, pageKey: 'forCreators', path: '/for-creators' });
 }
-
-
 
 export default function ForCreatorsLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;

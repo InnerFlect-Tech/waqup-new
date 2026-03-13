@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import {
   BrainCircuit,
   Clock,
@@ -12,62 +13,30 @@ import {
   TrendingUp,
   MessageSquare,
   ArrowRight,
-  Check,
   Users,
 } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
 import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
-const PAIN_POINTS = [
-  'Clients forget insights between sessions',
-  'Manual voice notes feel unprofessional',
-  'No scalable way to personalise audio homework',
-  'Recording takes longer than the session itself',
-];
-
-const BENEFITS = [
-  {
-    icon: MessageSquare,
-    title: 'Create from your session notes',
-    body: "Type or speak the key themes from a session. waQup generates a full script — affirmation set, grounding meditation, or identity-based ritual — instantly.",
-  },
-  {
-    icon: Clock,
-    title: 'One client = 5 minutes of creation',
-    body: 'Each personalised audio takes minutes to create, not hours. Batch multiple clients in a single sitting. Your time stays in sessions, not production.',
-  },
-  {
-    icon: Lock,
-    title: 'Private sharing protects your IP',
-    body: "Share via private link — unlisted from the public marketplace. Your client gets their homework; your methodology stays yours.",
-  },
-  {
-    icon: Repeat2,
-    title: 'Clients practice 10× more often',
-    body: "Audio they can replay freely. No credit needed to listen. Clients come back to sessions with more progress because they actually practiced.",
-  },
-  {
-    icon: TrendingUp,
-    title: 'Scale across cohorts',
-    body: 'Running a group programme? Create one foundational ritual, then personalise it for each participant. Series publishing makes cohort delivery seamless.',
-  },
-  {
-    icon: BrainCircuit,
-    title: 'Three types for every modality',
-    body: 'Affirmations for belief-level work. Meditations for nervous system regulation. Rituals for identity encoding. The right format for the right coaching objective.',
-  },
-];
-
-const WORKFLOW = [
-  { label: 'Session ends', sub: 'You identify the core belief or state to reinforce' },
-  { label: 'Create in 5 min', sub: 'Describe the client\'s context. waQup generates the script.' },
-  { label: 'Share privately', sub: 'Client gets an unlisted link — their personal audio homework.' },
-  { label: 'They practice daily', sub: 'Unlimited free replays. You see usage signals. Next session, they\'re ahead.' },
-];
+const BENEFIT_ICONS = [MessageSquare, Clock, Lock, Repeat2, TrendingUp, BrainCircuit] as const;
+const PAIN_KEYS = ['pain1', 'pain2', 'pain3', 'pain4'] as const;
+const WORKFLOW_KEYS = [1, 2, 3, 4] as const;
+const BENEFIT_KEYS = [1, 2, 3, 4, 5, 6] as const;
 
 export default function ForCoachesPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const t = useTranslations('marketing.forCoaches.page');
+  const PAIN_POINTS = PAIN_KEYS.map((k) => t(k));
+  const WORKFLOW = WORKFLOW_KEYS.map((i) => ({
+    label: t(`workflow${i}Label`),
+    sub: t(`workflow${i}Sub`),
+  }));
+  const BENEFITS = [1, 2, 3, 4, 5, 6].map((i) => ({
+    title: t(`benefit${i}Title`),
+    body: t(`benefit${i}Body`),
+    icon: BENEFIT_ICONS[i - 1],
+  }));
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);

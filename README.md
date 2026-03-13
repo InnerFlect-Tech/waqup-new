@@ -248,7 +248,7 @@ npm run dev:all
 
 - **[Start Here](docs/04-reference/03-start-here.md)** - Getting started guide
 - **[Architecture](docs/00-architecture-overview.md)** - Monorepo structure, backend, data flows
-- **[Product Overview](docs/00-product-overview.md)** - What waQup is, principles
+- **[Current Context](docs/00-current-context.md)** - Business, pricing, product principles, full app context
 - **[Developer Onboarding](docs/00-developer-onboarding.md)** - Full onboarding guide
 - **[docs/](./docs/)** - Complete documentation
 - **[rebuild-roadmap/](./rebuild-roadmap/)** - Development roadmap

@@ -16,8 +16,14 @@ waQup is a **voice-first** wellness app for creating and practicing personalized
 
 | Principle | Description |
 |-----------|-------------|
-| **Voice-first** | Audio is primary. Background playback, orb interface, own-voice recording. |
+| **Voice-first** | Audio is primary. Background playback, orb interface, own-voice recording (bypasses skepticism). |
 | **Three content types** | Affirmations, Meditations, Rituals — non-interchangeable, distinct pipelines. |
+
+| Type | Depth | Purpose |
+|------|-------|---------|
+| **Affirmation** | Shallow → medium | Cognitive re-patterning |
+| **Meditation** | Medium | State induction |
+| **Ritual** | Deepest | Identity encoding |
 | **Conversation over forms** | Chat-like UI preferred; forms also available on mobile. |
 | **Practice is free** | Unlimited replay. Credits consumed only for creation. |
 | **User autonomy** | No manipulation, no pressure, easy exit. |

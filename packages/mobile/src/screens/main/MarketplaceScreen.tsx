@@ -1,3 +1,6 @@
+/**
+ * @deprecated Primary nav v1; moved to Profile/discover or future. Removed from main tabs.
+ */
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
@@ -173,8 +176,8 @@ export default function MarketplaceScreen() {
         >
           <Card variant="default" style={[styles.itemCard, { backgroundColor: colors.glass.opaque, borderColor: tc + '30' }]}>
             {item.isElevated && (
-              <View style={[styles.elevatedBadge, { backgroundColor: '#F59E0B22', borderColor: '#F59E0B40' }]}>
-                <Typography variant="small" style={{ color: '#F59E0B', fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+              <View style={[styles.elevatedBadge, { backgroundColor: colors.warning + '22', borderColor: colors.warning + '40' }]}>
+                <Typography variant="small" style={{ color: colors.warning, fontSize: 9, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                   Curated
                 </Typography>
               </View>

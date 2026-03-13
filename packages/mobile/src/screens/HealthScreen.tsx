@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import { Screen } from '@/components/layout';
 import { Typography } from '@/components';
 import { spacing, borderRadius } from '@/theme';
@@ -279,6 +280,27 @@ export default function HealthScreen() {
         })}
       </View>
 
+      {/* Sentry test — dev only when EXPO_PUBLIC_SENTRY_DEV_TEST=1 */}
+      {__DEV__ && process.env.EXPO_PUBLIC_SENTRY_DEV_TEST === '1' && (
+        <View style={[styles.sentrySection, { borderColor: colors.glass.border }]}>
+          <Typography variant="captionBold" style={{ color: colors.text.primary, marginBottom: spacing.sm }}>
+            Test Sentry
+          </Typography>
+          <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.sm }}>
+            Tap below to send a test error. Check your Sentry dashboard.
+          </Typography>
+          <TouchableOpacity
+            onPress={() => {
+              Sentry.captureException(new Error('waQup Sentry dev test — safe to ignore'));
+              Alert.alert('Sent', 'Test error sent to Sentry. Check your dashboard.');
+            }}
+            style={[styles.refreshBtn, { backgroundColor: colors.accent.primary }]}
+          >
+            <Typography variant="captionBold" style={{ color: colors.text.onDark }}>Send Test Error</Typography>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <View style={styles.footer}>
         <Typography variant="small" style={{ color: colors.text.secondary, fontSize: 11 }}>
           API Base: {API_BASE_URL}
@@ -402,5 +424,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     paddingTop: spacing.md,
     gap: spacing.xs,
+  },
+  sentrySection: {
+    marginTop: spacing.lg,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
   },
 });

@@ -1,4 +1,40 @@
 {
+  "why": {
+    "founderStory": "I was depressed. Nothing was working. I applied these rules — my own voice, repetition, language aligned with how the subconscious works — and it changed my life. I built waQup so others can have the same access.",
+    "rulesTitle": "The rules that make it work — backed by scientific perspectives. Full details on The Science:",
+    "ruleRepetition": "Repetition: Daily practice rewires the brain.",
+    "rulePositive": "Positive framing: The subconscious doesn't process \"no.\" \"No smoking\" → weak. \"I choose vitality\" → constructive, aligned.",
+    "rulePresent": "Present tense: \"I am confident\" not \"I will be.\"",
+    "ruleBelievable": "Believable, gradual: Avoid grandiose claims that trigger rejection.",
+    "ruleOwnVoice": "Own voice: Your brain encodes your voice 30–40% more strongly than strangers'.",
+    "identityShift": "All of this — aligned. Identity shift is the outcome. Not scientifically proven, but backed by research.",
+    "cta": "I'm ready →",
+    "scienceLink": "The Science"
+  },
+  "intention": {
+    "headline": "What matters most to you right now?",
+    "subhead": "Clarity of intention activates the prefrontal cortex — the part of your brain responsible for planning and change.",
+    "cta": "Start creating →",
+    "skip": "Skip — go straight to the orb →"
+  },
+  "voice": {
+    "headline": "Your voice for your affirmations",
+    "subhead": "Your brain trusts your own voice more. (One of the rules.)",
+    "optionFree": "Use your own voice for free: Record directly when creating — no clone, no extra cost. Just base creation credits. Best for getting started.",
+    "optionClone": "Clone your voice: One-time cost (50 Q) to create your clone. When you use it for AI-voiced content, cost per creation depends on script length — longer scripts = more Qs.",
+    "costNote": "Own recording = free. Clone = 50 Q one-time + per-creation cost by length.",
+    "voiceName": "Voice name",
+    "audioSamples": "Audio samples",
+    "audioHint": "Upload one or more recordings (MP3, WAV, M4A). 30+ seconds total recommended.",
+    "uploadCta": "Click to upload audio files",
+    "removeNoise": "Remove background noise from samples",
+    "tipsTitle": "Tips for best results",
+    "createCta": "Create voice",
+    "continueCta": "Continue →",
+    "readyMessage": "Your voice is ready.",
+    "processingMessage": "Your voice is being created. You can continue and use it once ready.",
+    "skipLabel": "Skip for now"
+  },
   "welcome": {
     "title": "Welcome to waQup",
     "subtitle": "Let's personalize your experience",
@@ -9,7 +45,15 @@
     "subtitle": "We'll use this when we speak to you in your rituals. You can change it anytime.",
     "placeholder": "e.g. Alex",
     "primaryLabel": "Continue →",
-    "skipLabel": "Skip for now"
+    "skipLabel": "Skip for now",
+    "applicationsTitle": "Where does this apply? waQup works for:",
+    "applicationsNote": "Personal practice, teaching, coaching, creating, or running a space — same tools, your voice, your intention.",
+    "applications": {
+      "teachers": "Teachers & Professors",
+      "coaches": "Coaches & Consultations",
+      "creators": "Creators & Influencers",
+      "studios": "Studios & Spaces"
+    }
   },
   "preferences": {
     "title": "What brings you here?",
@@ -28,10 +72,13 @@
     }
   },
   "guide": {
-    "title": "Your practice guide",
+    "title": "Create your first practice now",
     "subtitle": "Here's how waQup works",
-    "primaryLabel": "Start my journey →",
+    "primaryLabel": "Skip to Sanctuary →",
     "skipLabel": "Skip",
+    "learningTeaser": "As you practice and level up, more learning content unlocks — deeper science, advanced techniques, level-specific insights. Visit Learn in Sanctuary.",
+    "communityBlock": "Join others on the path — when we each shift, we shape what's possible.",
+    "communityLink": "Explore the community →",
     "steps": {
       "create": {
         "title": "Create",

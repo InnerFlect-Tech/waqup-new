@@ -13,7 +13,7 @@ export default function VoiceLibraryPage() {
   const colors = theme.colors;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="medium">
         <VoiceLibrary />
       </PageContent>

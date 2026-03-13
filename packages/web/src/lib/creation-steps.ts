@@ -153,9 +153,9 @@ export const CONVERSATION_STEP_PROMPTS: Record<ContentItemType, Array<{ step: Co
     { step: 'script', question: 'Let me generate your affirmation script now.' },
   ],
   meditation: [
-    { step: 'intent', question: 'What state are you looking to access — sleep, calm, focus, or something else?' },
-    { step: 'context', question: 'When and where will you practice this meditation?' },
-    { step: 'script', question: 'Let me create your guided meditation now.' },
+    { step: 'intent', question: 'What state do you want to regulate — calm, focus, sleep, or reset?' },
+    { step: 'context', question: 'When will you practice? How are you arriving?' },
+    { step: 'script', question: 'Let me create your regulation meditation now.' },
   ],
   ritual: [
     { step: 'intent', question: 'What transformation are you working toward?' },

@@ -4,53 +4,35 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import {
   QrCode,
   Music,
   Moon,
   Wind,
   Sunrise,
-  Share2,
   ArrowRight,
-  Users,
-  Sparkles,
 } from 'lucide-react';
 import { useTheme, spacing, borderRadius, BLUR, CONTENT_MAX_WIDTH, PAGE_TOP_PADDING, HEADER_PADDING_X, LANDING_SECTION_PADDING_Y, SECTION_TITLE_FONT_SIZE, HERO_H1_FONT_SIZE, HERO_BODY_FONT_SIZE, HERO_MIN_HEIGHT } from '@/theme';
 import { Typography, Button, PageShell, PublicFooter } from '@/components';
 
-const MOMENTS = [
-  {
-    icon: Sunrise,
-    label: 'Pre-class grounding',
-    sub: 'Students arrive anxious. A 3-minute QR-accessible breathwork sets the tone before class starts.',
-  },
-  {
-    icon: Moon,
-    label: 'Savasana & yoga nidra',
-    sub: "Your voice guides the final integration. Students scan the QR on their way out and take it home.",
-  },
-  {
-    icon: Wind,
-    label: 'Breathwork protocols',
-    sub: "Box breathing, 4-7-8, coherence breathing — create a library of your signature protocols students can access anywhere.",
-  },
-  {
-    icon: Music,
-    label: 'Retreat take-home rituals',
-    sub: "Every retreat should end with a practice students can maintain. waQup makes the continuation frictionless.",
-  },
-];
-
-const LOOP = [
-  { step: '01', label: 'You create the practice', sub: 'A savasana script, grounding ritual, or breathwork guide — in your voice, with ambient layers.' },
-  { step: '02', label: 'Generate a QR code', sub: 'waQup creates a QR code for any published session. Print it, post it, put it on cards.' },
-  { step: '03', label: 'Student scans in class', sub: 'QR → immersive audio player. No app required. Plays directly in the browser.' },
-  { step: '04', label: 'They join waQup, you earn', sub: "Every student who signs up from your QR loop earns you referral credits. Their first session is free to listen, always." },
-];
+const MOMENT_ICONS = [Sunrise, Moon, Wind, Music] as const;
+const LOOP_KEYS = [1, 2, 3, 4] as const;
 
 export default function ForStudiosPage() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const t = useTranslations('marketing.forStudios.page');
+  const MOMENTS = [1, 2, 3, 4].map((i) => ({
+    label: t(`moment${i}Label`),
+    sub: t(`moment${i}Sub`),
+    icon: MOMENT_ICONS[i - 1],
+  }));
+  const LOOP = LOOP_KEYS.map((i) => ({
+    step: String(i).padStart(2, '0'),
+    label: t(`loop${i}Label`),
+    sub: t(`loop${i}Sub`),
+  }));
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);

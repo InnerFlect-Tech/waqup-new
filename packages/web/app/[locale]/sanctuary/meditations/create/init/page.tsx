@@ -11,17 +11,17 @@ const MEDITATION_STEPS = [
   {
     icon: Target,
     title: 'Set Your Intent',
-    description: 'What state or outcome are you seeking? (sleep, focus, calm)',
+    description: 'What state do you want to regulate? (calm, focus, sleep, reset)',
   },
   {
     icon: MapPin,
     title: 'Add Context',
-    description: 'When and where will you practice? (morning, before sleep, commute)',
+    description: 'When will you practice? How are you arriving? (morning, before sleep, present state)',
   },
   {
     icon: Sparkles,
     title: 'Generate Your Script',
-    description: 'AI creates grounding, visualization, and relaxation induction',
+    description: 'AI creates a short regulation meditation — breath, body, attention',
   },
   {
     icon: Mic,
@@ -59,7 +59,7 @@ export default function MeditationCreateInitPage() {
   return (
     <CreateFlowInitStep
       title="Create Your Meditation"
-      description="State induction through guided visualization and relaxation"
+      description="State regulation through breath and body awareness"
       steps={MEDITATION_STEPS}
       tips={TIPS}
       creditRange={creditRange}

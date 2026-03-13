@@ -273,14 +273,38 @@
       "backToHome": "Retour à l'accueil"
     },
     "intentions": {
-      "create": { "label": "Créer", "description": "Construire des expériences audio personnalisées" },
-      "practice": { "label": "Pratiquer", "description": "Établir une routine quotidienne de pleine conscience" },
-      "share": { "label": "Partager", "description": "Partager des sessions avec famille ou communauté" },
-      "monetise": { "label": "Monétiser", "description": "Construire un business autour du contenu waQup" },
-      "gift": { "label": "Offrir", "description": "Créer quelque chose de significatif pour un proche" },
-      "research": { "label": "Rechercher", "description": "Explorer les outils IA et neurosciences" },
-      "reflect": { "label": "Réfléchir", "description": "Utiliser pour le journaling et l'auto-questionnement profond" },
-      "curious": { "label": "Juste curieux", "description": "Voir de quoi il s'agit" }
+      "create": {
+        "label": "Créer",
+        "description": "Construire des expériences audio personnalisées"
+      },
+      "practice": {
+        "label": "Pratiquer",
+        "description": "Établir une routine quotidienne de pleine conscience"
+      },
+      "share": {
+        "label": "Partager",
+        "description": "Partager des sessions avec famille ou communauté"
+      },
+      "monetise": {
+        "label": "Monétiser",
+        "description": "Construire un business autour du contenu waQup"
+      },
+      "gift": {
+        "label": "Offrir",
+        "description": "Créer quelque chose de significatif pour un proche"
+      },
+      "research": {
+        "label": "Rechercher",
+        "description": "Explorer les outils IA et neurosciences"
+      },
+      "reflect": {
+        "label": "Réfléchir",
+        "description": "Utiliser pour le journaling et l'auto-questionnement profond"
+      },
+      "curious": {
+        "label": "Juste curieux",
+        "description": "Voir de quoi il s'agit"
+      }
     },
     "referralOptions": {
       "socialMedia": "Réseaux sociaux",
@@ -309,24 +333,257 @@
     "cta": "Rejoindre la liste d'attente"
   },
   "launch": {
-    "title": "Nous sommes en ligne."
+    "title": "Nous sommes en ligne.",
+    "page": {
+      "mockGreeting": "Bonjour",
+      "mockReadyText": "Prêt à vous transformer ? ✨",
+      "mockAffirmations": "Affirmations",
+      "mockAffirmationsSub": "Réécrivez vos croyances",
+      "mockMeditations": "Méditations",
+      "mockMeditationsSub": "Induire des états de calme",
+      "mockRituals": "Rituels",
+      "mockRitualsSub": "Encoder l'identité",
+      "mockNavHome": "Accueil",
+      "mockNavLibrary": "Bibliothèque",
+      "mockNavSpeak": "Parler",
+      "mockCreatingTitle": "Création de votre affirmation",
+      "mockCreatingQuestion": "Quel est votre plus grand défi en ce moment ?",
+      "mockCreatingReply": "Le doute de soi quand je prends la parole au travail",
+      "mockCreatingAi": "Parfait. Préparation de votre affirmation vocale...",
+      "mockCreatingProgress": "Création en cours...",
+      "mockNowPlaying": "Lecture",
+      "mockTrackTitle": "Confiance matinale",
+      "mockTrackMeta": "Votre voix · 3:42",
+      "mockTabSanctuary": "Sanctuaire",
+      "mockTabCreate": "Créer",
+      "mockTabListen": "Écouter",
+      "faq1Q": "En quoi waQup est-il différent de Headspace ou Calm ?",
+      "faq1A": "Headspace et Calm vous proposent du contenu générique fait par des inconnus. waQup crée du contenu personnalisé basé sur VOS objectifs, défis et contexte spécifiques, avec votre propre voix clonée. Rien n'est générique. Tout est à vous.",
+      "faq2Q": "Dois-je enregistrer ma propre voix ?",
+      "faq2A": "Non. Le clonage vocal est optionnel. Vous pouvez choisir dans notre bibliothèque de voix professionnelles ou cloner la vôtre avec un enregistrement d'une minute. La plupart des gens trouvent qu'écouter leur propre voix est le plus puissant, mais les deux options fonctionnent bien.",
+      "faq3Q": "Comment fonctionnent les crédits (Qs) ?",
+      "faq3A": "Les Qs sont les crédits utilisés pour créer du nouveau contenu. Vous gagnez des Qs à l'inscription et pouvez en acheter plus. Une chose à savoir : écouter et pratiquer votre contenu existant est toujours 100 % gratuit. Les Qs ne sont dépensés qu'à la création.",
+      "faq4Q": "La pratique est-elle vraiment gratuite pour toujours ?",
+      "faq4A": "Oui. Une fois vos affirmations, méditations ou rituels créés, vous pouvez les réécouter autant de fois que vous voulez, pour toujours, gratuitement. Nous croyons que la pratique quotidienne ne doit jamais être derrière une paywall.",
+      "faq5Q": "Quels sont les trois types de contenu ?",
+      "faq5A": "Les affirmations sont des déclarations courtes de 2–5 min de repatronisation cognitive pour les routines matinales. Les méditations guidées sont des sessions de 10–30 min scriptées par l'IA pour l'induction d'état. Les rituels sont des pratiques en plusieurs parties de 20–60 min pour la transformation d'identité la plus profonde.",
+      "faq6Q": "Quelle est la science derrière tout cela ?",
+      "faq6A": "waQup est construit sur la recherche en neuroplasticité : la capacité du cerveau à se reprogrammer grâce à une exposition répétée. Entendre des auto-affirmations positives dans votre propre voix active des voies neurales plus profondes que lire ou entendre la voix d'un inconnu."
+    }
   },
   "funnels": {
     "title": "Transformez votre esprit"
   },
   "explanation": {
-    "title": "La Science"
+    "title": "La Science",
+    "page": {
+      "badge": "Neurosciences",
+      "heroTitle1": "La science derrière la",
+      "heroTitle2": "transformation par la voix.",
+      "heroParagraph": "Neuroplasticité, encodage de la voix propre et répétition espacée — les mécanismes qui expliquent pourquoi entendre sa propre voix dire des affirmations fonctionne quand lire ou entendre un inconnu ne fonctionne pas (Rogers, Kuiper & Kirker, 1977 ; Lally et al., 2010).",
+      "ctaStart": "Commencer gratuitement",
+      "ctaHowItWorks": "Comment ça marche",
+      "stat1N": "21 jours",
+      "stat1L": "premier changement mesurable",
+      "stat2N": "66 jours",
+      "stat2L": "les schémas deviennent automatiques",
+      "stat3N": "Votre voix",
+      "stat3L": "activation neuronale la plus profonde",
+      "pillar1Label": "Neuroplasticité",
+      "pillar2Label": "Mémoire vocale",
+      "pillar3Label": "Timing et répétition",
+      "neuroLabel": "Neuroplasticité",
+      "neuroTag1": "Neuroplasticité",
+      "neuroTag2": "Reprogrammation neuronale",
+      "neuroTag3": "Résonance émotionnelle",
+      "neuroTag4": "Exposition répétée",
+      "neuroTitle": "Votre cerveau se reprogramme. De façon mesurable.",
+      "neuroP1": "Le cerveau change par l'exposition répétée à des stimuli émotionnellement résonants. Aucun stimulus n'est plus résonant pour votre cerveau que votre propre voix.",
+      "neuroP2": "Entendez-vous dire « je suis capable » quotidiennement et vos voies neurales changent littéralement. Lally et al. (2010) ont montré que la formation des habitudes prend 18–254 jours (moyenne 66), pas les 21 souvent cités — la constance compte plus que l'intensité.",
+      "neuroBullet1Label": "21 jours",
+      "neuroBullet1Desc": "premier changement notable pour beaucoup",
+      "neuroBullet2Label": "66 jours",
+      "neuroBullet2Desc": "moyenne pour que les schémas deviennent automatiques (Lally et al., 2010)",
+      "neuroBullet3Label": "Constance",
+      "neuroBullet3Desc": "5–10 min quotidiens battent des sessions longues occasionnelles",
+      "quoteDivider": "Votre subconscient filtre les inconnus. Il vous répond à vous.",
+      "pillarsTitle": "Pourquoi votre propre voix change tout",
+      "pillarsSubtitle": "Trois mécanismes expliquent pourquoi waQup fonctionne quand les affirmations génériques et les apps de méditation échouent.",
+      "pillar1Name": "Neuroplasticité",
+      "pillar1Tagline": "Les cerveaux se reprogramment par la répétition",
+      "pillar1Desc": "Loi de Hebb (1949) : les neurones qui s'activent ensemble se connectent. L'exposition répétée à des stimuli émotionnellement résonants remodèle physiquement les voies neurales. Les affirmations entendues dans votre propre voix activent des circuits plus profonds que lire ou entendre un inconnu.",
+      "pillar1Science": "Lally et al. (2010, Eur. J. Soc. Psychol.) : 18–254 jours pour former des habitudes, moyenne 66 jours. La constance compte plus que l'intensité.",
+      "pillar2Name": "Mémoire vocale",
+      "pillar2Tagline": "Votre cerveau fait le plus confiance à votre voix",
+      "pillar2Desc": "Rogers, Kuiper & Kirker (1977) : le traitement autoréférentiel encode 30–40 % plus fortement. Théorie de l'auto-affirmation de Steele (1988) : réfléchir aux valeurs par la parole réduit la résistance défensive. Le subconscient répond à votre voix différemment qu'aux inconnus.",
+      "pillar2Science": "La voix propre contourne l'esprit critique et atteint directement les circuits qui façonnent l'identité.",
+      "pillar3Name": "Timing et thêta",
+      "pillar3Tagline": "Le réveil et l'endormissement sont des portes",
+      "pillar3Desc": "Les états hypnagogiques (pré-sommeil) et hypnopompiques (post-réveil) montrent une dominance thêta (4–8 Hz) et un engagement réduit de l'esprit critique. Stickgold et al. (2000) : le sommeil consolide et retraite les souvenirs. Pratiquer à ces moments amplifie l'encodage.",
+      "pillar3Science": "Les états riches en thêta réduisent la résistance analytique — idéal pour la reprogrammation subconsciente.",
+      "timingLabel": "Le timing compte",
+      "timingTitle": "Pourquoi le matin et le soir fonctionnent le mieux",
+      "timingSubtitle": "La science des états de transition : ondes thêta, endormissement et résistance réduite de l'esprit critique.",
+      "timeline1Label": "Matin",
+      "timeline1Sub": "6–8 h",
+      "timeline1Desc": "État hypnopompique : le thêta persiste après le réveil. L'esprit critique ne s'est pas encore pleinement engagé. Les affirmations entendues contournent la résistance et encodent directement (Stickgold, 2000).",
+      "timeline2Label": "Soir",
+      "timeline2Sub": "Avant le coucher",
+      "timeline2Desc": "État hypnagogique : le thêta (4–8 Hz) domine en vous endormant. La consolidation dépendante du sommeil renforce ce que vous pratiquez (Stickgold et al., 2000).",
+      "timeline3Label": "Constance",
+      "timeline3Sub": "5 min × 2",
+      "timeline3Desc": "Lally et al. (2010) : les pratiques quotidiennes courtes plus efficaces que les sessions longues occasionnelles. Deux blocs de 5 minutes qui se cumulent sur les semaines.",
+      "voiceCloningLabel": "Clonage vocal",
+      "voiceCloningTitle1": "Entendez-vous le dire.",
+      "voiceCloningTitle2": "Quelque chose change définitivement.",
+      "voiceCloningParagraph": "Enregistrez 60 secondes de votre voix naturelle. waQup la clone et vocalise tout ce que vous créez. Votre propre voix vous rappelant qui vous êtes déjà.",
+      "voiceCloningBadge1": "60 s d'enregistrement",
+      "voiceCloningBadge2": "Optionnel",
+      "ctaHeadline": "Prêt à reprogrammer votre esprit ?",
+      "ctaSubtext": "Rejoignez la liste et soyez le premier à accéder à waQup. Sans carte. La pratique est toujours gratuite — les Qs n'alimentent que la création."
+    }
   },
   "ourStory": {
-    "title": "Notre Histoire"
+    "title": "Notre Histoire",
+    "page": {
+      "badge": "Notre Histoire",
+      "heroTitle": "Tout a commencé par quelque chose",
+      "heroTitleHighlight": "dont j'avais moi-même besoin.",
+      "heroSubhead": "Une histoire à parcourir sur pourquoi waQup existe.",
+      "scrollCue": "Faites défiler pour lire",
+      "section1P1": "La plupart des outils d'affirmations et de méditation me donnaient la voix d'un autre pour me dire quoi croire. Ça ne prenait jamais. Les mots semblaient distants — comme des conseils d'un inconnu, pas une vérité venue de l'intérieur.",
+      "section1P2": "J'ai découvert quelque chose de différent en écrivant mes propres scripts, en les enregistrant avec ma voix et en les écoutant chaque jour. Le processus manuel était fastidieux : écrire, enregistrer, mixer dans Ableton, structurer ma pratique. Mais ça marchait. Mon subconscient a vraiment changé.",
+      "section1P3": "Ce chemin a été façonné par des années de travail avec le son — en tant que DJ et producteur de musique sous {nuMoksa} et {cronaxy}. Le son a toujours été mon médium : mixer, masteriser, comprendre les fréquences. Ça m'a appris à quel point l'audio affecte le subconscient — et pourquoi votre propre voix, exprimant vos intentions, est inégalée.",
+      "insightLabel": "L'insight",
+      "insightTitle": "La transformation arrive quand vous exprimez vos propres intentions.",
+      "insightP1": "La plupart des outils vous disent quoi croire. waQup vous permet d'encoder vos propres croyances — avec votre propre voix, avec vos propres mots.",
+      "insightP2": "La transformation personnelle requiert un langage personnel. Le vrai pouvoir est d'entendre votre propre voix renforcer votre identité.",
+      "whyExistsLabel": "Pourquoi waQup existe",
+      "whyExistsP1": "waQup existe pour simplifier ce processus. Au lieu d'écrire, enregistrer et organiser manuellement, le système vous guide. Vous vous concentrez sur la clarté de l'intention — ce que vous voulez devenir, ce que vous voulez renforcer — et waQup s'occupe du reste.",
+      "whyExistsP2": "Votre voix. Simplicité. Accessibilité. Ce qui exigeait dévouement et configuration technique est maintenant disponible à quiconque veut faire le travail intérieur.",
+      "representsLabel": "Ce que waQup représente",
+      "representsP1": "waQup est plus qu'une app. C'est une philosophie : les outils doivent aider les gens à s'exprimer, pas leur dire quoi penser. La technologie doit favoriser la clarté intérieure, pas ajouter du bruit. L'identité peut être façonnée intentionnellement — et l'outil le plus puissant pour cela est votre propre voix.",
+      "representsP2": "Je crois en la construction d'outils qui autonomisent les gens plutôt que de les contrôler. Pas de manipulation. Pas de pression. Juste l'accès à quelque chose qui fonctionne vraiment.",
+      "founderQuote": "waQup existe parce qu'une chose simple a changé ma vie, et je crois que plus de gens devraient y avoir accès.",
+      "founderStory": "J'ai passé des années à supprimer chaque barrière entre cette expérience et ceux qui en ont besoin. Le processus manuel que j'ai utilisé — écrire, enregistrer, mixer — est devenu une conversation, quelques tapotements et votre voix. C'est waQup.",
+      "founderName": "Daniel Indias Fernandes",
+      "founderRole": "Fondateur, waQup. DJ et producteur de musique — Nu Moksa, Cronaxy.",
+      "ctaHeadline": "Prêt à vous entendre ?",
+      "ctaPrimary": "Découvrir comment ça marche",
+      "ctaSecondary": "Rejoindre la liste d'attente"
+    }
   },
   "investors": {
-    "title": "Investisseurs",
-    "contactCta": "Nous contacter"
+    "title": "Partenaires fondateurs",
+    "contactCta": "Nous contacter",
+    "page": {
+      "joinTitle": "Contactez-nous",
+      "subtitle": "Nous aimerions avoir de vos nouvelles. Partagez votre nom et email pour commencer la conversation.",
+      "interestTitle": "Qu'est-ce qui vous intéresse ?",
+      "interestSubtitle": "Sélectionnez l'option qui correspond le mieux à vos objectifs de partenariat.",
+      "detailsTitle": "Quelques détails supplémentaires",
+      "detailsSubtitle": "Optionnel — aidez-nous à personnaliser notre réponse.",
+      "continue": "Continuer",
+      "next": "Suivant",
+      "submit": "Contactez-nous",
+      "submitting": "Envoi en cours...",
+      "success": "Message envoyé",
+      "successBody": "Nous vous répondrons bientôt.",
+      "successConfidential": "Nous vous contacterons sous 1 à 2 jours ouvrés et partagerons de manière confidentielle : conditions complètes, scénarios ROI, pitch deck et prochaines étapes."
+    },
+    "form": {
+      "namePlaceholder": "Votre nom",
+      "emailPlaceholder": "vous@exemple.com",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "companyPlaceholder": "Entreprise ou organisation",
+      "interestLabel": "Type de partenariat",
+      "referralLabel": "Comment nous avez-vous connu ?",
+      "messagePlaceholder": "Parlez-nous de votre intérêt...",
+      "optional": "(optionnel)"
+    },
+    "interestOptions": {
+      "seed": "Partenaire fondateur Seed",
+      "production": "Partenaire production",
+      "marketing": "Partenaire marketing",
+      "promotion": "Partenaire fondateur promotion",
+      "influencer": "Influenceur",
+      "content-creator": "Créateur de contenu",
+      "other": "Autre"
+    },
+    "referralOptions": {
+      "socialMedia": "Réseaux sociaux",
+      "friendFamily": "Ami ou famille",
+      "newsletter": "Newsletter",
+      "podcast": "Podcast",
+      "search": "Recherche",
+      "other": "Autre"
+    },
+    "errors": {
+      "nameRequired": "Veuillez entrer votre nom.",
+      "emailInvalid": "Veuillez entrer un email valide.",
+      "interestRequired": "Veuillez sélectionner un type de partenariat.",
+      "generic": "Une erreur s'est produite. Veuillez réessayer.",
+      "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez."
+    }
   },
   "forTeachers": {
-    "title": "Pour enseignants et coaches",
-    "subtitle": "Offrez à vos clients des pratiques vocales personnalisées."
+    "title": "For Teachers & Coaches",
+    "subtitle": "Give your clients personalized voice practices.",
+    "page": {
+      "heroBadge": "For Meditation & Breathwork Teachers",
+      "heroH1Prefix": "Turn your guidance into",
+      "heroH1Highlight": "scalable audio",
+      "heroBody": "Create a growing library of guided meditations, breathwork, and rituals — without audio editing software. Publish to the marketplace. Earn credits every time a student shares.",
+      "placeholder": "your@email.com",
+      "submit": "Get Teacher Access",
+      "submitted": "You're on the list. We'll reach out with your Teacher Starter Kit.",
+      "disclaimer": "Free to join · Teacher Starter Kit included · No credit card",
+      "stepsTitle": "From intention to published session in 4 steps",
+      "step1Label": "Describe your session",
+      "step1Sub": "Speak or type your intention — theme, duration, tone, focus.",
+      "step2Label": "waQup builds the audio",
+      "step2Sub": "AI writes the script. Your voice (or a professional voice) renders it with ambient and binaural layers.",
+      "step3Label": "Publish to marketplace",
+      "step3Sub": "One tap. Your session appears in the waQup marketplace and gets a shareable public link.",
+      "step4Label": "Students share, you earn",
+      "step4Sub": "Every share of your content earns you Qs. More students, more credits, more sessions.",
+      "benefitsTitle": "Everything a teacher needs",
+      "benefit1Title": "Create in minutes, not hours",
+      "benefit1Body": "Speak your intention once. waQup turns your words into a polished guided meditation — in your voice, with ambient layers and binaural tones.",
+      "benefit2Title": "Publish to the marketplace",
+      "benefit2Body": "One-click publish. Your sessions become discoverable by thousands of practitioners actively looking for new guided content.",
+      "benefit3Title": "Earn every time students share",
+      "benefit3Body": "Every share earns you Qs. The more your students spread your work, the more creation power you accumulate — automatically.",
+      "benefit4Title": "Build a library, not just a class",
+      "benefit4Body": "Group your sessions into themed series — 7-Day Nervous System Reset, Morning Ritual Pack, Sleep Deepening Series. Your students get a complete experience.",
+      "benefit5Title": "AI-assisted script generation",
+      "benefit5Body": "Describe your intention. waQup writes the script, you approve or edit it, then render audio with your voice. No recording sessions, no editing software.",
+      "benefit6Title": "Analytics that matter",
+      "benefit6Body": "See play counts, share counts, and credits earned per session. Understand what resonates so you can create more of what works.",
+      "comparisonTitle": "Your current workflow vs waQup",
+      "comparisonTask": "Task",
+      "comparisonOldWay": "Old way",
+      "comparisonWaQup": "waQup",
+      "comparisonRow1Label": "Create content",
+      "comparisonRow1Other": "Record → Edit → Export → Upload",
+      "comparisonRow1WaQup": "Describe → Approve → Publish",
+      "comparisonRow2Label": "Reach students",
+      "comparisonRow2Other": "Your existing channels only",
+      "comparisonRow2WaQup": "Marketplace discovery + share loops",
+      "comparisonRow3Label": "Earn from sharing",
+      "comparisonRow3Other": "No mechanism",
+      "comparisonRow3WaQup": "Qs per share, auto-credited",
+      "comparisonRow4Label": "Personalisation",
+      "comparisonRow4Other": "One recording for everyone",
+      "comparisonRow4WaQup": "Students can customise for their practice",
+      "comparisonRow5Label": "Series / courses",
+      "comparisonRow5Other": "Manual playlist curation",
+      "comparisonRow5WaQup": "Built-in series publishing",
+      "ctaTitle": "Ready to build your audio library?",
+      "ctaBody": "Join waQup as a teacher and get your Teacher Starter Kit — pre-loaded credits, themed templates, and early marketplace listing access.",
+      "ctaJoin": "Join as a Teacher",
+      "ctaBrowse": "Browse the marketplace"
+    }
   },
   "footerTagline": "Votre voix. Votre transformation. Scientifiquement conçu pour reprogrammer les schémas subconscients qui vous définissent.",
   "joinWaitlist": "Rejoindre",
@@ -344,7 +601,8 @@
   "footerMarketplace": "Marché",
   "footerBuyCredits": "Acheter des crédits",
   "footerOurStory": "Notre histoire",
-  "footerInvestors": "Investisseurs",
+  "footerCommunity": "Communauté",
+  "footerInvestors": "Partenaires fondateurs",
   "footerFoundingMembers": "Membres fondateurs",
   "footerPrivacyPolicy": "Politique de confidentialité",
   "footerTerms": "Conditions d'utilisation",
@@ -362,7 +620,7 @@
     "forCreators": "Pour créateurs — gagnez avec votre contenu. Rejoignez waQup :",
     "forStudios": "Pour studios — développez la pratique par la voix. Découvrez waQup :",
     "ourStory": "L'histoire de waQup — pourquoi nous construisons la transformation par la voix :",
-    "investors": "waQup pour investisseurs — partage des revenus, pas de dilution :",
+    "investors": "waQup pour partenaires fondateurs — partage des revenus, pas de dilution :",
     "join": "Membres fondateurs — places limitées pour les premiers soutiens waQup :",
     "launch": "waQup est en ligne. Votre voix. Votre pratique. Votre transformation :",
     "funnels": "waQup — transformez votre esprit par la voix :",
@@ -370,9 +628,9 @@
     "referral": "Partagez mon lien waQup — rejoignez et nous gagnons tous les deux 10 Qs :"
   },
   "landing": {
-    "badge": "Studio de pratique personnelle",
-    "headline": "Votre pratique, dans votre voix.",
-    "subheadline": "Créez des affirmations, méditations et rituels personnalisés par la conversation — puis pratiquez gratuitement, pour toujours.",
+    "badge": "Personnalisé pour toi",
+    "headline": "Votre voix. Votre identité. Votre transformation.",
+    "subheadline": "Enregistrez en direct ou clonez en 60 secondes — votre voix, dans tous les cas. Créez des affirmations, méditations et rituels personnalisés qui reprogramment votre subconscient. Écoutez le matin et le soir, quand ça prend. Basé sur les neurosciences. Pratiquez gratuitement pour toujours.",
     "earlyAccess": "Accès anticipé · Sans carte · Pratiquez gratuitement toujours",
     "waitlistCount": "{count} sur la liste d'attente",
     "practiceInYourVoice": "Pratiquez dans votre propre voix",
@@ -391,19 +649,44 @@
     "sectionTitle": "La seule pratique qui parle vraiment de votre vie",
     "sectionSubtitle": "Vous l'avez créé. C'est dans votre voix. Ça reflète votre intention exacte. C'est pourquoi ça marche.",
     "coreValue": {
-      "title": "Conçu pour la transformation",
-      "subtitle": "Pas une autre app de méditation. Un studio de pratique personnel qui fonctionne comme vous.",
-      "yourVoice": { "title": "Votre voix, pas de l'audio générique", "desc": "Enregistrez une fois. Chaque pratique sonne comme vous, vous parlant à vous-même.", "benefit1": "60 secondes pour enregistrer", "benefit2": "Pratiques illimitées dans votre voix", "cta": "Créer ma première pratique" },
-      "aiHelps": { "title": "L'IA vous aide à créer, ne vous remplace pas", "desc": "Dites à l'orbe votre intention. Révisez, ajustez et possédez chaque mot." },
-      "replay": { "title": "Des pratiques que vous rejouez vraiment", "desc": "Faites pour vous. Dans votre voix. Conçues pour un usage quotidien." },
-      "minutes": { "title": "Des minutes, pas des heures", "desc": "Créez en moins de 5 minutes. Pratiquez gratuitement pour toujours.", "badge": "5 min" }
+      "title": "Devenez qui vous voulez être",
+      "subtitle": "Votre voix dans chaque pratique — enregistrée ou clonée en 60 secondes. Matin et soir, quand ça prend le mieux. Gratuit pour toujours.",
+      "yourVoice": {
+        "title": "Votre voix, pas de l'audio générique",
+        "desc": "Enregistrez une fois. Chaque pratique sonne comme vous, vous parlant à vous-même.",
+        "benefit1": "60 secondes pour enregistrer",
+        "benefit2": "Pratiques illimitées dans votre voix",
+        "cta": "Créer ma première pratique"
+      },
+      "aiHelps": {
+        "title": "L'IA vous aide à créer, ne vous remplace pas",
+        "desc": "Dites à l'orbe votre intention. Révisez, ajustez et possédez chaque mot."
+      },
+      "replay": {
+        "title": "Des pratiques que vous rejouez vraiment",
+        "desc": "Faites pour vous. Dans votre voix. Conçues pour un usage quotidien."
+      },
+      "minutes": {
+        "title": "5 min au réveil. 20 min avant le sommeil.",
+        "desc": "Sans effort. Écoutez et laissez le subconscient absorber — le cerveau fait le travail.",
+        "badge": "Sans effort"
+      }
     },
     "howItWorks": {
       "title": "Comment ça marche",
       "subtitle": "Trois étapes. Votre voix. Votre transformation.",
-      "step1": { "title": "Dites à l'orbe sur quoi vous travaillez", "desc": "Une courte conversation façonne votre intention en un script personnalisé." },
-      "step2": { "title": "Révisez et enregistrez dans votre propre voix", "desc": "Ajustez les mots, puis enregistrez. Ou utilisez le clonage vocal IA. Dans tous les cas, c'est à vous." },
-      "step3": { "title": "Rejouez quotidiennement", "desc": "Écoutez quand vous en avez besoin. La pratique est toujours gratuite." }
+      "step1": {
+        "title": "Dites à l'orbe sur quoi vous travaillez",
+        "desc": "Une courte conversation façonne votre intention en un script personnalisé."
+      },
+      "step2": {
+        "title": "Révisez et enregistrez dans votre propre voix",
+        "desc": "Ajustez les mots, puis enregistrez. Ou utilisez le clonage vocal IA. Dans tous les cas, c'est à vous."
+      },
+      "step3": {
+        "title": "Rejouez quotidiennement",
+        "desc": "Écoutez quand vous en avez besoin. La pratique est toujours gratuite."
+      }
     },
     "differentiation": {
       "title": "Pas une autre app de méditation",
@@ -416,9 +699,18 @@
     "pillars": {
       "title": "Trois pratiques, trois profondeurs",
       "subtitle": "Chacune fait quelque chose de différent. Utilisez ce dont vous avez besoin, quand vous en avez besoin.",
-      "affirmations": { "title": "Affirmations", "desc": "Déclarations brèves qui reprogramment les croyances. Change l'image de soi — pour motivation matinale, confiance, croyances limitantes." },
-      "meditations": { "title": "Méditations", "desc": "Voyages guidés vers des états de calme. Induit relaxation et concentration — pour gestion du stress, sommeil, clarté." },
-      "rituals": { "title": "Rituels", "desc": "Cérémonies structurées d'encodage d'identité. Ancre valeurs et nouvelle identité — pour transitions majeures et changements de vie." }
+      "affirmations": {
+        "title": "Affirmations",
+        "desc": "Déclarations brèves qui reprogramment les croyances. Change l'image de soi — pour motivation matinale, confiance, croyances limitantes."
+      },
+      "meditations": {
+        "title": "Méditations",
+        "desc": "Voyages guidés vers des états de calme. Induit relaxation et concentration — pour gestion du stress, sommeil, clarté."
+      },
+      "rituals": {
+        "title": "Rituels",
+        "desc": "Cérémonies structurées d'encodage d'identité. Ancre valeurs et nouvelle identité — pour transitions majeures et changements de vie."
+      }
     },
     "benefitsSection": {
       "title": "Pourquoi waQup fonctionne",
@@ -526,5 +818,143 @@
     "saveVsSpark": "Économisez {percent}% · {amount} € vs Spark",
     "wantMonthlyAllocation": "Vous voulez une allocation mensuelle récurrente ?",
     "viewSubscriptionPlans": "Voir les abonnements"
+  },
+  "forCoaches": {
+    "title": "For Coaches",
+    "page": {
+      "heroBadge": "For Coaches & Facilitators",
+      "heroH1Prefix": "Turn your coaching into",
+      "heroH1Highlight": "daily practice assets",
+      "heroH1Suffix": "clients actually use",
+      "heroBody": "Create personalised affirmations, meditations, and rituals as client homework — in minutes. Private sharing, unlimited free replays, and cohort publishing for group programmes.",
+      "placeholder": "your@email.com",
+      "submit": "Get Coach Access",
+      "submitted": "You're on the list. We'll reach out with your Coach Starter Kit.",
+      "disclaimer": "Free to start · Client homework in 5 minutes · No recording equipment needed",
+      "pain1": "Clients forget insights between sessions",
+      "pain2": "Manual voice notes feel unprofessional",
+      "pain3": "No scalable way to personalise audio homework",
+      "pain4": "Recording takes longer than the session itself",
+      "workflowTitle": "A workflow that fits after every session",
+      "workflow1Label": "Session ends",
+      "workflow1Sub": "You identify the core belief or state to reinforce",
+      "workflow2Label": "Create in 5 min",
+      "workflow2Sub": "Describe the client's context. waQup generates the script.",
+      "workflow3Label": "Share privately",
+      "workflow3Sub": "Client gets an unlisted link — their personal audio homework.",
+      "workflow4Label": "They practice daily",
+      "workflow4Sub": "Unlimited free replays. You see usage signals. Next session, they're ahead.",
+      "benefitsTitle": "Built for 1:1 and cohort work",
+      "benefit1Title": "Create from your session notes",
+      "benefit1Body": "Type or speak the key themes from a session. waQup generates a full script — affirmation set, grounding meditation, or identity-based ritual — instantly.",
+      "benefit2Title": "One client = 5 minutes of creation",
+      "benefit2Body": "Each personalised audio takes minutes to create, not hours. Batch multiple clients in a single sitting. Your time stays in sessions, not production.",
+      "benefit3Title": "Private sharing protects your IP",
+      "benefit3Body": "Share via private link — unlisted from the public marketplace. Your client gets their homework; your methodology stays yours.",
+      "benefit4Title": "Clients practice 10× more often",
+      "benefit4Body": "Audio they can replay freely. No credit needed to listen. Clients come back to sessions with more progress because they actually practiced.",
+      "benefit5Title": "Scale across cohorts",
+      "benefit5Body": "Running a group programme? Create one foundational ritual, then personalise it for each participant. Series publishing makes cohort delivery seamless.",
+      "benefit6Title": "Three types for every modality",
+      "benefit6Body": "Affirmations for belief-level work. Meditations for nervous system regulation. Rituals for identity encoding. The right format for the right coaching objective.",
+      "ctaTitle": "Ready to give every client personalised audio?",
+      "ctaBody": "Join waQup as a coach and get your Coach Starter Kit — pre-loaded credits, private sharing, and cohort-ready features.",
+      "ctaJoin": "Join as a Coach",
+      "ctaBrowse": "Browse the marketplace"
+    }
+  },
+  "forCreators": {
+    "title": "For Creators",
+    "page": {
+      "heroBadge": "For Content Creators & Influencers",
+      "heroH1Prefix": "Your voice.",
+      "heroH1Highlight": "Your audience. Your revenue.",
+      "heroBody": "Turn your content into shareable audio. Earn Qs when followers share. Scale from micro to partner tier with real revenue share.",
+      "placeholder": "your@email.com",
+      "submit": "Get Creator Access",
+      "submitted": "You're on the list. We'll reach out with your Creator Starter Kit.",
+      "disclaimer": "Free to join · Creator Starter Kit included · No credit card",
+      "tier1Label": "Micro",
+      "tier1Range": "Under 500 plays",
+      "tier1Earn": "1 Q per share",
+      "tier1Perk": "Marketplace listing + shareable player",
+      "tier2Label": "Creator",
+      "tier2Range": "500–5,000 plays",
+      "tier2Earn": "2 Qs per share + monthly bonus",
+      "tier2Perk": "Elevated marketplace placement",
+      "tier3Label": "Partner",
+      "tier3Range": "5,000+ plays",
+      "tier3Earn": "Revenue share on attributed subscriptions",
+      "tier3Perk": "Co-branded experience + dedicated support",
+      "dropsTitle": "Example creator drops",
+      "drop1Title": "5-Day Morning Reset",
+      "drop1Type": "Ritual Series",
+      "drop2Title": "Identity Shift Affirmations",
+      "drop2Type": "Affirmation Pack",
+      "drop3Title": "Nervous System Nidra",
+      "drop3Type": "Meditation Series",
+      "drop1Sessions": "5",
+      "drop1Plays": "2.4k",
+      "drop2Sessions": "7",
+      "drop2Plays": "1.8k",
+      "drop3Sessions": "4",
+      "drop3Plays": "3.1k",
+      "benefit1Title": "Your voice, your brand",
+      "benefit1Body": "Create audio in your voice — your tone, your energy, your words. Not a generic AI voice. ElevenLabs voice cloning makes it yours.",
+      "benefit2Title": "Drop series to your audience",
+      "benefit2Body": "5-Day Reset. 7-Day Abundance Shift. 21-Day Rewire. Group your sessions into series and release as drops your followers actually collect.",
+      "benefit3Title": "Every share earns you more",
+      "benefit3Body": "Your followers share your practice. You earn credits and revenue. The more reach your content gets, the more waQup gives back to you.",
+      "benefit4Title": "Analytics for every session",
+      "benefit4Body": "See exactly where plays and shares come from. Know which content resonates. Optimise your drops like you optimise your posts.",
+      "benefit5Title": "Link-in-bio audio that converts",
+      "benefit5Body": "One link to your practice series. A beautiful immersive player. An email capture that builds your list even when followers don't sign up immediately.",
+      "benefit6Title": "Real revenue, not just credits",
+      "benefit6Body": "Partner-tier creators earn a percentage of subscriptions attributed to their audience. As you grow, waQup grows with you.",
+      "tiersTitle": "Grow with your audience",
+      "tiersSubtitle": "As your content reaches more people, your earning tier rises automatically. No applications, no waiting periods.",
+      "tiersHighlight": "Most active",
+      "benefitsTitle": "Built for how creators think",
+      "ctaTitle": "Ready to turn your audience into recurring revenue?",
+      "ctaBody": "Join waQup as a creator and get your Creator Starter Kit — voice cloning, series drops, and analytics that matter.",
+      "ctaJoin": "Join as a Creator",
+      "ctaBrowse": "Browse the marketplace"
+    }
+  },
+  "forStudios": {
+    "title": "For Studios",
+    "page": {
+      "heroBadge": "For Yoga Studios & Retreat Facilitators",
+      "heroH1Prefix": "QR-linked practices",
+      "heroH1Highlight": "for every class",
+      "heroBody": "Create savasana, breathwork, and rituals in your voice. Generate QR codes. Students scan in class and take it home — or join waQup. You earn referral credits.",
+      "placeholder": "your@email.com",
+      "submit": "Get Studio Access",
+      "submitted": "You're on the list. We'll reach out with your Studio Starter Kit.",
+      "disclaimer": "Free to join · Studio Starter Kit included · No credit card",
+      "momentsTitle": "Use waQup in every class moment",
+      "moment1Label": "Pre-class grounding",
+      "moment1Sub": "Students arrive anxious. A 3-minute QR-accessible breathwork sets the tone before class starts.",
+      "moment2Label": "Savasana & yoga nidra",
+      "moment2Sub": "Your voice guides the final integration. Students scan the QR on their way out and take it home.",
+      "moment3Label": "Breathwork protocols",
+      "moment3Sub": "Box breathing, 4-7-8, coherence breathing — create a library of your signature protocols students can access anywhere.",
+      "moment4Label": "Retreat take-home rituals",
+      "moment4Sub": "Every retreat should end with a practice students can maintain. waQup makes the continuation frictionless.",
+      "loopTitle": "The QR loop",
+      "loop1Label": "You create the practice",
+      "loop1Sub": "A savasana script, grounding ritual, or breathwork guide — in your voice, with ambient layers.",
+      "loop2Label": "Generate a QR code",
+      "loop2Sub": "waQup creates a QR code for any published session. Print it, post it, put it on cards.",
+      "loop3Label": "Student scans in class",
+      "loop3Sub": "QR → immersive audio player. No app required. Plays directly in the browser.",
+      "loop4Label": "They join waQup, you earn",
+      "loop4Sub": "Every student who signs up from your QR loop earns you referral credits. Their first session is free to listen, always.",
+      "qrGeneratorNote": "The QR generator is built into every published session — print it, display it on screen, add it to your studio cards, or embed it on your website.",
+      "ctaTitle": "Ready to put your voice in every student's pocket?",
+      "ctaBody": "Join waQup as a studio and get your Studio Starter Kit — QR codes, in-class access, and referral credits.",
+      "ctaJoin": "Join as a Studio",
+      "ctaBrowse": "Browse the marketplace"
+    }
   }
 }

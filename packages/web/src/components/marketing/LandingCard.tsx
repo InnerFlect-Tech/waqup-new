@@ -239,7 +239,26 @@ export function LandingCard({
           {children}
         </div>
       ) : null}
-      {badge && (
+      {isBanner && badge ? (
+        <div
+          data-badge
+          style={{
+            flexShrink: 0,
+            alignSelf: 'center',
+            padding: `4px ${spacing.sm}`,
+            borderRadius: borderRadius.full,
+            background: colors.gradients.primary,
+            boxShadow: `0 2px 12px ${accent}50`,
+            fontSize: 12,
+            fontWeight: 600,
+            color: colors.text.onDark,
+            letterSpacing: '0.3px',
+          }}
+        >
+          {badge}
+        </div>
+      ) : null}
+      {badge && !isBanner && (
         <div
           data-badge
           style={{

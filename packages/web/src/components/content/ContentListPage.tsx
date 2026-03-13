@@ -295,7 +295,7 @@ export function ContentListPage({
   );
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
         {/* Back */}
         <Link

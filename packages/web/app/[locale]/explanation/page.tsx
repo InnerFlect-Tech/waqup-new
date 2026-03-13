@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
 import { PageShell, WaitlistCTA } from '@/components';
 import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades, LANDING_SECTION_PADDING_Y } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
-import { PRACTICE_IS_FREE_ONE_LINER } from '@waqup/shared/constants';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import {
@@ -36,6 +36,8 @@ type ThemeColors = ReturnType<typeof useTheme>['theme']['colors'];
  * glass cards, badge/label patterns, research-backed copy.
  */
 export default function SciencePage() {
+  const t = useTranslations('marketing');
+  const tp = (key: string) => t(`explanation.page.${key}`);
   const { theme } = useTheme();
   const colors = theme.colors;
 
@@ -61,6 +63,7 @@ export default function SciencePage() {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
+            alignSelf: 'flex-start',
             gap: 8,
             padding: '6px 16px',
             borderRadius: borderRadius.full,
@@ -87,7 +90,7 @@ export default function SciencePage() {
               fontSize: 11,
             }}
           >
-            Neuroscience
+            {tp('badge')}
           </Typography>
         </div>
 
@@ -101,7 +104,7 @@ export default function SciencePage() {
             margin: '0 0 28px',
           }}
         >
-          The science behind
+          {tp('heroTitle1')}
           <br />
           <span
             style={{
@@ -111,7 +114,7 @@ export default function SciencePage() {
               backgroundClip: 'text',
             }}
           >
-            voice transformation.
+            {tp('heroTitle2')}
           </span>
         </h1>
 
@@ -125,7 +128,7 @@ export default function SciencePage() {
             fontWeight: 300,
           }}
         >
-          Neuroplasticity, self-voice encoding, and spaced repetition — the mechanisms that explain why hearing your own voice say affirmations works when reading or hearing a stranger does not (Rogers, Kuiper & Kirker, 1977; Lally et al., 2010).
+          {tp('heroParagraph')}
         </p>
 
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 36 }}>
@@ -142,22 +145,22 @@ export default function SciencePage() {
                 boxShadow: `0 8px 48px ${colors.accent.primary}50`,
               }}
             >
-              Start Free Today
+              {tp('ctaStart')}
               <ArrowRight size={18} color={colors.text.onDark} />
             </Button>
           </Link>
           <Link href="/how-it-works" style={{ textDecoration: 'none' }}>
             <Button variant="outline" size="lg" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, fontSize: '17px' }}>
-              How It Works
+              {tp('ctaHowItWorks')}
             </Button>
           </Link>
         </div>
 
         <div style={{ display: 'flex', gap: 28 }}>
           {[
-            { n: '21 days', l: 'first measurable shift' },
-            { n: '66 days', l: 'patterns become automatic' },
-            { n: 'Your voice', l: 'deepest neural activation' },
+            { n: tp('stat1N'), l: tp('stat1L') },
+            { n: tp('stat2N'), l: tp('stat2L') },
+            { n: tp('stat3N'), l: tp('stat3L') },
           ].map(({ n, l }) => (
             <div key={l}>
               <div style={{ fontSize: 20, fontWeight: 500, color: colors.text.primary, letterSpacing: '-0.5px' }}>
@@ -183,9 +186,9 @@ export default function SciencePage() {
           }}
         >
           {[
-            { n: '01', label: 'Neuroplasticity', icon: Brain },
-            { n: '02', label: 'Voice memory', icon: Volume2 },
-            { n: '03', label: 'Timing & repetition', icon: Clock },
+            { n: '01', label: tp('pillar1Label'), icon: Brain },
+            { n: '02', label: tp('pillar2Label'), icon: Volume2 },
+            { n: '03', label: tp('pillar3Label'), icon: Clock },
           ].map(({ n, label, icon: Icon }, i) => (
             <div
               key={n}
@@ -276,10 +279,10 @@ export default function SciencePage() {
               }}
             >
               {[
-                { label: 'Neuroplasticity', color: colors.accent.primary },
-                { label: 'Neural rewiring', color: colors.accent.secondary },
-                { label: 'Emotional resonance', color: colors.accent.tertiary },
-                { label: 'Repeated exposure', color: colors.accent.primary },
+                { label: tp('neuroTag1'), color: colors.accent.primary },
+                { label: tp('neuroTag2'), color: colors.accent.secondary },
+                { label: tp('neuroTag3'), color: colors.accent.tertiary },
+                { label: tp('neuroTag4'), color: colors.accent.primary },
               ].map(({ label, color }) => (
                 <div
                   key={label}
@@ -314,7 +317,7 @@ export default function SciencePage() {
                 marginBottom: 16,
               }}
             >
-              Neuroplasticity
+              {tp('neuroLabel')}
             </div>
             <h2
               style={{
@@ -326,19 +329,19 @@ export default function SciencePage() {
                 lineHeight: 1.15,
               }}
             >
-              Your brain rewires itself. Measurably.
+              {tp('neuroTitle')}
             </h2>
             <p style={{ fontSize: 17, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 24px' }}>
-              The brain changes through repeated exposure to emotionally resonant stimuli. No stimulus is more resonant to your brain than your own voice.
+              {tp('neuroP1')}
             </p>
             <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 40px' }}>
-              Hear yourself say &ldquo;I am confident&rdquo; daily and your neural pathways literally change. Lally et al. (2010) found habit formation takes 18–254 days (average 66), not the often-cited 21 — consistency over intensity.
+              {tp('neuroP2')}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { label: '21 days', desc: 'first noticeable shift for many' },
-                { label: '66 days', desc: 'average for patterns to become automatic (Lally et al., 2010)' },
-                { label: 'Consistency', desc: 'daily 5–10 min beats occasional long sessions' },
+                { label: tp('neuroBullet1Label'), desc: tp('neuroBullet1Desc') },
+                { label: tp('neuroBullet2Label'), desc: tp('neuroBullet2Desc') },
+                { label: tp('neuroBullet3Label'), desc: tp('neuroBullet3Desc') },
               ].map(({ label, desc }) => (
                 <div key={label} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <div
@@ -408,7 +411,7 @@ export default function SciencePage() {
                 textShadow: '0 2px 20px rgba(0,0,0,0.4)',
               }}
             >
-              &ldquo;Your subconscious filters out strangers. It responds to you.&rdquo;
+              {tp('quoteDivider')}
             </p>
           </div>
         </div>
@@ -426,10 +429,10 @@ export default function SciencePage() {
       >
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
           <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>
-            Why your own voice changes everything
+            {tp('pillarsTitle')}
           </h2>
           <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>
-            Three mechanisms explain why waQup works when generic affirmations and meditation apps fall short.
+            {tp('pillarsSubtitle')}
           </p>
         </div>
 
@@ -437,30 +440,30 @@ export default function SciencePage() {
           {[
             {
               icon: Brain,
-              name: 'Neuroplasticity',
-              tagline: 'Brains rewire through repetition',
-              desc: 'Hebb\'s law (1949): neurons that fire together wire together. Repeated exposure to emotionally resonant stimuli physically reshapes neural pathways. Affirmations heard in your own voice activate deeper circuits than reading or hearing a stranger.',
+              name: tp('pillar1Name'),
+              tagline: tp('pillar1Tagline'),
+              desc: tp('pillar1Desc'),
               color: colors.accent.primary,
               gradient: `linear-gradient(160deg, ${colors.accent.primary}18, ${colors.accent.secondary}06)`,
-              science: 'Lally et al. (2010, Eur. J. Soc. Psychol.): 18–254 days to form habits, avg 66 days. Consistency matters more than intensity.',
+              science: tp('pillar1Science'),
             },
             {
               icon: Volume2,
-              name: 'Voice Memory',
-              tagline: 'Your brain trusts your voice most',
-              desc: 'Rogers, Kuiper & Kirker (1977): self-referential processing encodes 30–40% more strongly. Steele\'s self-affirmation theory (1988): reflecting on values through speech reduces defensive resistance. The subconscious responds to your voice differently than to strangers.',
+              name: tp('pillar2Name'),
+              tagline: tp('pillar2Tagline'),
+              desc: tp('pillar2Desc'),
               color: colors.accent.secondary,
               gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
-              science: 'Self-voice bypasses the critical mind and reaches identity-shaping circuits directly.',
+              science: tp('pillar2Science'),
             },
             {
               icon: Mic,
-              name: 'Timing & Theta',
-              tagline: 'Waking and sleep onset are gateways',
-              desc: 'Hypnagogic (pre-sleep) and hypnopompic (post-wake) states show theta dominance (4–8 Hz) and reduced critical-mind engagement. Stickgold et al. (2000): sleep consolidates and reprocesses memories. Practice at these moments amplifies encoding.',
+              name: tp('pillar3Name'),
+              tagline: tp('pillar3Tagline'),
+              desc: tp('pillar3Desc'),
               color: colors.accent.tertiary,
               gradient: `linear-gradient(160deg, ${colors.accent.tertiary}18, ${colors.accent.primary}06)`,
-              science: 'Theta-rich states lower analytical resistance — ideal for subconscious rewiring.',
+              science: tp('pillar3Science'),
             },
           ].map(({ icon: Icon, name, tagline, desc, color, gradient, science }) => (
             <div
@@ -549,13 +552,13 @@ export default function SciencePage() {
         <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 16 }}>
-              Timing Matters
+              {tp('timingLabel')}
             </div>
             <h2 style={{ fontSize: 'clamp(32px, 4vw, 56px)', fontWeight: 300, letterSpacing: '-1.5px', color: colors.text.primary, margin: '0 0 20px' }}>
-              Why morning and night work best
+              {tp('timingTitle')}
             </h2>
             <p style={{ fontSize: 19, color: colors.text.secondary, maxWidth: 560, margin: '0 auto', lineHeight: 1.6, fontWeight: 300 }}>
-              The science of transitional states: theta waves, sleep onset, and the critical mind&apos;s lowered resistance.
+              {tp('timingSubtitle')}
             </p>
           </div>
 
@@ -570,9 +573,9 @@ export default function SciencePage() {
             }}
           >
             {[
-              { icon: Sun, label: 'Morning', sub: '6–8 AM', desc: 'Hypnopompic state: theta lingers after waking. The critical mind hasn\'t fully engaged. Affirmations heard then bypass resistance and encode directly (Stickgold, 2000).', color: colors.accent.primary },
-              { icon: Moon, label: 'Night', sub: 'Before sleep', desc: 'Hypnagogic state: theta (4–8 Hz) dominates as you drift off. Sleep-dependent consolidation strengthens what you practice (Stickgold et al., 2000).', color: colors.accent.secondary },
-              { icon: Clock, label: 'Consistency', sub: '5 min × 2', desc: 'Lally et al. (2010): short daily practices more effective than occasional long sessions. Two 5‑minute bookends that compound over weeks.', color: colors.accent.tertiary },
+              { icon: Sun, label: tp('timeline1Label'), sub: tp('timeline1Sub'), desc: tp('timeline1Desc'), color: colors.accent.primary },
+              { icon: Moon, label: tp('timeline2Label'), sub: tp('timeline2Sub'), desc: tp('timeline2Desc'), color: colors.accent.secondary },
+              { icon: Clock, label: tp('timeline3Label'), sub: tp('timeline3Sub'), desc: tp('timeline3Desc'), color: colors.accent.tertiary },
             ].map(({ icon: Icon, label, sub, desc, color }) => (
               <div
                 key={label}
@@ -641,7 +644,7 @@ export default function SciencePage() {
                   marginBottom: 20,
                 }}
               >
-                Voice Cloning
+                {tp('voiceCloningLabel')}
               </div>
               <h3
                 style={{
@@ -654,7 +657,7 @@ export default function SciencePage() {
                   textShadow: '0 2px 20px rgba(0,0,0,0.4)',
                 }}
               >
-                Hear yourself say it.
+                {tp('voiceCloningTitle1')}
                 <br />
                 <span
                   style={{
@@ -664,7 +667,7 @@ export default function SciencePage() {
                     backgroundClip: 'text',
                   }}
                 >
-                  Something shifts permanently.
+                  {tp('voiceCloningTitle2')}
                 </span>
               </h3>
               <p
@@ -676,7 +679,7 @@ export default function SciencePage() {
                   fontWeight: 300,
                 }}
               >
-                Record 60 seconds of your natural voice. waQup clones it, then voices everything you create. Your own voice reminding you who you already are.
+                {tp('voiceCloningParagraph')}
               </p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                 <div
@@ -690,7 +693,7 @@ export default function SciencePage() {
                     fontWeight: 500,
                   }}
                 >
-                  60 sec recording
+                  {tp('voiceCloningBadge1')}
                 </div>
                 <div
                   style={{
@@ -702,7 +705,7 @@ export default function SciencePage() {
                     color: 'rgba(255,255,255,0.7)',
                   }}
                 >
-                  Optional
+                  {tp('voiceCloningBadge2')}
                 </div>
               </div>
             </div>
@@ -728,8 +731,8 @@ export default function SciencePage() {
         <div style={{ maxWidth: CONTENT_MEDIUM, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <WaitlistCTA
             variant="banner"
-            headline="Ready to rewire your mind?"
-            subtext={`Join the waitlist and be first to access waQup. No credit card required. ${PRACTICE_IS_FREE_ONE_LINER}`}
+            headline={tp('ctaHeadline')}
+            subtext={tp('ctaSubtext')}
           />
         </div>
       </section>

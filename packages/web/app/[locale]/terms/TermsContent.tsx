@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { PageShell, PageContent, Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
@@ -51,8 +52,20 @@ function LegalLink({ href, children }: { href: string; children: ReactNode }) {
 export function TermsContent() {
   const { theme } = useTheme();
   const colors = theme.colors;
+  const t = useTranslations('legal.terms');
   const { entityName, contactEmail, lastUpdated, termsEffectiveDate, jurisdiction } =
     LEGAL_CONFIG;
+
+  const rich = (key: string) =>
+    t.rich(key, {
+      link: (chunks) => <LegalLink href="/privacy">{chunks}</LegalLink>,
+      email: (chunks) => <LegalLink href={`mailto:${contactEmail}`}>{chunks}</LegalLink>,
+      entityName,
+      contactEmail,
+      jurisdiction,
+      lastUpdated,
+      termsEffectiveDate,
+    });
 
   return (
     <PageShell intensity="medium">
@@ -65,194 +78,92 @@ export function TermsContent() {
             fontWeight: 300,
           }}
         >
-          Terms of Service
+          {t('title')}
         </Typography>
         <Typography
           variant="body"
           style={{ marginBottom: spacing.xl, color: colors.text.tertiary ?? 'rgba(255,255,255,0.55)' }}
         >
-          Last updated: {lastUpdated} · Effective: {termsEffectiveDate}
+          {t('lastUpdated', { lastUpdated, termsEffectiveDate })}
         </Typography>
 
-        <LegalSection title="1. Welcome">
-          <p>
-            These Terms of Service (“Terms”) govern your use of the waQup
-            platform and services (“Service”) provided by {entityName} (“we”,
-            “us”, “our”). By creating an account or using the Service, you agree
-            to these Terms. Our <LegalLink href="/privacy">Privacy Policy</LegalLink> describes how we collect and use your data.
-          </p>
+        <LegalSection title={t('s1.title')}>
+          <p>{rich('s1.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="2. Wellness Disclaimer — Important">
-          <p style={{ fontWeight: 600, color: colors.text.primary }}>
-            waQup is a wellness and personal growth tool. It does not provide
-            medical, psychiatric, or psychological advice, diagnosis, or
-            treatment.
-          </p>
-          <p>
-            The content (affirmations, meditations, rituals) is for informational
-            and self-development purposes only. It is not a substitute for
-            professional medical or mental health care. If you have a medical or
-            mental health condition, consult a qualified healthcare provider.
-          </p>
-          <p>
-            Do not rely on waQup for self-diagnosis or self-treatment. If you are
-            in crisis or have a medical emergency, contact emergency services or
-            a mental health professional immediately.
-          </p>
-          <p>
-            By using waQup, you acknowledge that you assume responsibility for
-            your own wellbeing and health decisions. We are not liable for any
-            outcomes resulting from your use of the Service.
-          </p>
+        <LegalSection title={t('s2.title')}>
+          <p style={{ fontWeight: 600, color: colors.text.primary }}>{t('s2.p1')}</p>
+          <p>{t('s2.p2')}</p>
+          <p>{t('s2.p3')}</p>
+          <p>{t('s2.p4')}</p>
         </LegalSection>
 
-        <LegalSection title="3. Eligibility">
-          <p>
-            You must be at least 16 years old to use waQup. By using the
-            Service, you represent that you meet this requirement and that you
-            are not prohibited from using the Service under applicable law.
-          </p>
+        <LegalSection title={t('s3.title')}>
+          <p>{t('s3.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="4. Account and Security">
-          <p>
-            You are responsible for maintaining the confidentiality of your
-            account credentials. You are responsible for all activity under
-            your account. Notify us immediately at{' '}
-            <LegalLink href={`mailto:${contactEmail}`}>{contactEmail}</LegalLink> if you
-            suspect unauthorized access.
-          </p>
+        <LegalSection title={t('s4.title')}>
+          <p>{rich('s4.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="5. Subscriptions and Payments">
-          <p>
-            <strong>Subscriptions:</strong> Some plans are billed on a recurring
-            basis (monthly or annually). You will be charged at the start of
-            each billing period. You may cancel before the next billing date;
-            cancellation stops future charges but does not refund the current
-            period.
-          </p>
-          <p>
-            <strong>Credits (Qs):</strong> Subscription plans include a monthly
-            allocation of Qs. One-time credit packs may also be purchased. Qs are
-            used when you create affirmations, meditations, or rituals. Practice
-            (replaying content) is always free and does not consume Qs.
-          </p>
-          <p>
-            <strong>Payment methods:</strong> We accept credit cards and debit
-            cards via Stripe. We may also accept Bitcoin and other
-            cryptocurrencies through third-party processors. Payment processing
-            is subject to our processors’ terms.
-          </p>
-          <p>
-            <strong>Refunds:</strong> Refund policy varies by product. Contact us
-            at <LegalLink href={`mailto:${contactEmail}`}>{contactEmail}</LegalLink> with your order details to request a refund.
-            Refunds are at our discretion and may not be available for
-            subscription periods already used.
-          </p>
+        <LegalSection title={t('s5.title')}>
+          <p>{t('s5.p1')}</p>
+          <p>{t('s5.p2')}</p>
+          <p>{t('s5.p3')}</p>
+          <p>{rich('s5.p4')}</p>
         </LegalSection>
 
-        <LegalSection title="6. Acceptable Use">
-          <p>You agree not to:</p>
+        <LegalSection title={t('s6.title')}>
+          <p>{t('s6.p1')}</p>
           <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-            <li>Violate any applicable law or regulation</li>
-            <li>Infringe the intellectual property or rights of others</li>
-            <li>Transmit harmful, abusive, or illegal content</li>
-            <li>Attempt to gain unauthorized access to our systems or user
-              accounts</li>
-            <li>Use the Service for any purpose that could harm, disable, or
-              overload it</li>
+            <li>{t('s6.li1')}</li>
+            <li>{t('s6.li2')}</li>
+            <li>{t('s6.li3')}</li>
+            <li>{t('s6.li4')}</li>
+            <li>{t('s6.li5')}</li>
           </ul>
-          <p>
-            We may suspend or terminate your account if you violate these
-            Terms or engage in conduct we determine to be harmful.
-          </p>
+          <p>{t('s6.p2')}</p>
         </LegalSection>
 
-        <LegalSection title="7. Intellectual Property">
-          <p>
-            waQup and its content (except user-created content) are owned by us
-            or our licensors. You retain ownership of content you create. You
-            grant us a license to store, display, and process your content to
-            provide the Service.
-          </p>
+        <LegalSection title={t('s7.title')}>
+          <p>{t('s7.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="8. Limitation of Liability">
-          <p>
-            THE SERVICE IS PROVIDED “AS IS” AND “AS AVAILABLE” WITHOUT
-            WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. TO THE MAXIMUM EXTENT
-            PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES INCLUDING
-            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
-            NON-INFRINGEMENT.
-          </p>
-          <p>
-            IN NO EVENT SHALL WE BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
-            SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR LOSS OF PROFITS,
-            DATA, OR GOODWILL. OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT
-            YOU PAID US IN THE 12 MONTHS PRECEDING THE CLAIM (OR $100, IF
-            GREATER).
-          </p>
-          <p>
-            Some jurisdictions do not allow limitation of implied warranties or
-            exclusion of certain damages; in such cases, the above limitations may
-            not apply to you.
-          </p>
+        <LegalSection title={t('s8.title')}>
+          <p>{t('s8.p1')}</p>
+          <p>{t('s8.p2')}</p>
+          <p>{t('s8.p3')}</p>
         </LegalSection>
 
-        <LegalSection title="9. Indemnification">
-          <p>
-            You agree to indemnify and hold us harmless from any claims, damages,
-            or expenses arising from your use of the Service, your content, or
-            your violation of these Terms.
-          </p>
+        <LegalSection title={t('s9.title')}>
+          <p>{t('s9.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="10. Termination">
-          <p>
-            You may close your account at any time. We may suspend or terminate
-            your access for violation of these Terms or for operational
-            reasons. Upon termination, your right to use the Service ends. We will
-            handle your data in accordance with our <LegalLink href="/privacy">Privacy Policy</LegalLink>.
-          </p>
+        <LegalSection title={t('s10.title')}>
+          <p>{rich('s10.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="11. Dispute Resolution">
-          <p>
-            These Terms are governed by the laws of {jurisdiction}, without
-            regard to conflict of law principles. Any disputes shall be resolved
-            through good-faith negotiation. If negotiation fails, disputes may be
-            resolved through binding arbitration or in the courts of our
-            jurisdiction, as applicable.
-          </p>
+        <LegalSection title={t('s11.title')}>
+          <p>{t('s11.p1', { jurisdiction })}</p>
         </LegalSection>
 
-        <LegalSection title="12. Changes">
-          <p>
-            We may update these Terms from time to time. We will notify you of
-            material changes by email or in-app notice. Continued use after
-            changes constitutes acceptance. If you do not agree, you must stop
-            using the Service and close your account.
-          </p>
+        <LegalSection title={t('s12.title')}>
+          <p>{t('s12.p1')}</p>
         </LegalSection>
 
-        <LegalSection title="13. Contact">
-          <p>
-            For questions about these Terms, contact us at{' '}
-            <LegalLink href={`mailto:${contactEmail}`}>{contactEmail}</LegalLink>.
-          </p>
+        <LegalSection title={t('s13.title')}>
+          <p>{rich('s13.p1')}</p>
         </LegalSection>
 
         <div style={{ marginTop: spacing.xl, display: 'flex', gap: spacing.md, flexWrap: 'wrap' }}>
           <Link href="/" style={{ textDecoration: 'none' }}>
             <Button variant="ghost" size="md">
-              Back to Home
+              {t('backToHome')}
             </Button>
           </Link>
           <Link href="/privacy" style={{ textDecoration: 'none' }}>
             <Button variant="ghost" size="md">
-              Privacy Policy
+              {t('privacyPolicy')}
             </Button>
           </Link>
         </div>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getAuthenticatedUserForApi } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -8,10 +8,11 @@ export const runtime = 'nodejs';
  * POST /api/audio/upload-recording
  *
  * Uploads a user-recorded audio blob to Supabase Storage and returns its URL.
- * Called from ContentVoiceStep when the user records their own voice.
+ * Called from ContentVoiceStep (web) or CreateVoiceStepScreen (mobile).
+ * Supports cookie auth (web) and Bearer token (mobile).
  *
  * Body: multipart/form-data
- *   file      — audio blob (audio/webm or audio/mp4)
+ *   file      — audio blob (audio/webm, audio/mp4, audio/m4a)
  *   contentId — (optional) content item ID for namespacing; falls back to timestamp
  *
  * Returns: { url: string; storagePath: string }
@@ -22,15 +23,11 @@ export const runtime = 'nodejs';
  */
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const auth = await getAuthenticatedUserForApi(req);
+    if (!auth) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const { supabase, user } = auth;
 
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
@@ -40,9 +37,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Derive extension from MIME type — webm on Chrome, mp4 on Safari
-    const mimeType = file.type || 'audio/webm';
-    const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
+    // Normalize MIME type — bucket allows audio/webm and audio/mp4; m4a is mp4 container
+    const rawType = file.type || 'audio/webm';
+    const mimeType = rawType.includes('mp4') || rawType.includes('m4a') ? 'audio/mp4' : 'audio/webm';
+    const ext = mimeType === 'audio/mp4' ? 'mp4' : 'webm';
     const storagePath = `recordings/${user.id}/${contentId}.${ext}`;
 
     const arrayBuffer = await file.arrayBuffer();
@@ -59,12 +57,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    // Try public URL first; fall back to 7-day signed URL
-    const { data: urlData } = supabase.storage.from('audio').getPublicUrl(storagePath);
-    if (urlData?.publicUrl) {
-      return NextResponse.json({ url: urlData.publicUrl, storagePath });
-    }
-
+    // Audio bucket is private — always use signed URLs (public URL returns 400)
     const { data: signedData } = await supabase.storage
       .from('audio')
       .createSignedUrl(storagePath, 7 * 24 * 60 * 60);
