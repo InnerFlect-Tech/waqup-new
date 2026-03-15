@@ -98,16 +98,16 @@ test.describe('Signup flow', () => {
 
 test.describe('hasAccess gate', () => {
   test('authenticated user without access_granted is sent to /coming-soon', async ({ page }) => {
-    // Mock profile queries (Supabase REST: /rest/v1/profiles or /rest/v1/profiles?select=...)
-    const profilesMock = async (route: { request: () => { url: () => string }; fulfill: (opts: object) => Promise<void> }) => {
+    // Mock profile queries. Supabase .single() expects object response, not array.
+    // useSuperAdmin fetches profiles and redirects when access_granted is false.
+    const profileNoAccess = { role: 'user', access_granted: false };
+    await page.route('**/rest/v1/profiles*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify([{ id: 'test-no-access-id', access_granted: false, role: 'user' }]),
+        body: JSON.stringify(profileNoAccess),
       });
-    };
-    await page.route('**/rest/v1/profiles*', profilesMock);
-    await page.route('**/profiles*', profilesMock);
+    });
 
     // Load a public page first so we can set cookie + localStorage before requesting /sanctuary
     await page.goto('/login', { waitUntil: 'domcontentloaded', timeout: 20000 });
@@ -124,9 +124,9 @@ test.describe('hasAccess gate', () => {
       document.cookie = 'waqup-override-auth=1; path=/; max-age=60; SameSite=Lax';
     });
 
-    await page.goto('/sanctuary', { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.goto('/sanctuary', { waitUntil: 'networkidle', timeout: 20000 });
 
-    // Should be redirected to /coming-soon, not stay on /sanctuary
+    // AuthProvider fetches profile, sees access_granted=false, redirects to /coming-soon
     await expect(page).toHaveURL(/\/coming-soon/, { timeout: 15000 });
   });
 
