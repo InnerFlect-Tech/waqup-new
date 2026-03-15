@@ -33,28 +33,6 @@ export default function ForStudiosPage() {
     label: t(`loop${i}Label`),
     sub: t(`loop${i}Sub`),
   }));
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    try {
-      await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role: 'studio', source: 'for-studios' }),
-      });
-      setSubmitted(true);
-    } catch {
-      setSubmitted(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const green = '#34d399';
 
   return (
@@ -132,31 +110,11 @@ export default function ForStudiosPage() {
             QR codes in your studio link to beautiful audio experiences — savasana, nidra, breathwork — created in your voice. Students scan, listen, and discover their own practice.
           </Typography>
 
-          {submitted ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              style={{ padding: `${spacing.lg} ${spacing.xxl}`, borderRadius: borderRadius.lg, background: `${green}18`, border: `1px solid ${green}40` }}
-            >
-              <Typography variant="body" style={{ color: green, fontWeight: 600 }}>
-                You&apos;re on the list. We&apos;ll reach out with your Studio QR Bundle.
-              </Typography>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: 480 }}>
-              <input
-                type="email"
-                placeholder="studio@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{ flex: 1, minWidth: 200, padding: `${spacing.md} ${spacing.lg}`, borderRadius: borderRadius.lg, background: colors.glass.light, border: `1px solid ${colors.glass.border}`, color: colors.text.primary, fontSize: 15, outline: 'none' }}
-              />
-              <Button type="submit" variant="primary" size="md" loading={loading} style={{ whiteSpace: 'nowrap', background: `linear-gradient(to right, ${green}, ${colors.accent.primary})`, border: 'none' }}>
-                Get Studio Access
-              </Button>
-            </form>
-          )}
+          <Link href="/waitlist?source=for-studios" style={{ textDecoration: 'none' }}>
+            <Button variant="primary" size="md" style={{ display: 'inline-flex', alignItems: 'center', gap: spacing.sm, background: `linear-gradient(to right, ${green}, ${colors.accent.primary})`, border: 'none' }}>
+              Get Studio Access <ArrowRight size={16} />
+            </Button>
+          </Link>
 
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to start · QR bundle included · Zero paid ads needed

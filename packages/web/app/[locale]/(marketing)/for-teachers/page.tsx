@@ -48,28 +48,6 @@ export default function ForTeachersPage() {
     other: t(`comparisonRow${i}Other`),
     waQup: t(`comparisonRow${i}WaQup`),
   }));
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    try {
-      await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role: 'teacher', source: 'for-teachers' }),
-      });
-      setSubmitted(true);
-    } catch {
-      setSubmitted(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
       {/* Hero — full width, outside max-width wrapper */}
@@ -171,46 +149,11 @@ export default function ForTeachersPage() {
             Create a growing library of guided meditations, breathwork, and rituals — without audio editing software. Publish to the marketplace. Earn credits every time a student shares.
           </Typography>
 
-          {submitted ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              style={{
-                padding: `${spacing.lg} ${spacing.xxl}`,
-                borderRadius: borderRadius.lg,
-                background: `${colors.accent.primary}18`,
-                border: `1px solid ${colors.accent.primary}40`,
-              }}
-            >
-              <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 600 }}>
-                You&apos;re on the list. We&apos;ll reach out with your Teacher Starter Kit.
-              </Typography>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: 480 }}>
-              <input
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{
-                  flex: 1,
-                  minWidth: 200,
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  borderRadius: borderRadius.lg,
-                  background: colors.glass.light,
-                  border: `1px solid ${colors.glass.border}`,
-                  color: colors.text.primary,
-                  fontSize: 15,
-                  outline: 'none',
-                }}
-              />
-              <Button type="submit" variant="primary" size="md" loading={loading} style={{ whiteSpace: 'nowrap' }}>
-                Get Teacher Access
-              </Button>
-            </form>
-          )}
+          <Link href="/waitlist?source=for-teachers" style={{ textDecoration: 'none' }}>
+            <Button variant="primary" size="md" style={{ display: 'inline-flex', alignItems: 'center', gap: spacing.sm }}>
+              Get Teacher Access <ArrowRight size={16} />
+            </Button>
+          </Link>
 
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to join · Teacher Starter Kit included · No credit card

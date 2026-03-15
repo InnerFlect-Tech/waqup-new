@@ -172,7 +172,8 @@ export default function WaitlistPage() {
   const [direction, setDirection] = useState(1);
 
   // Step 1
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
 
   // Step 2
@@ -207,7 +208,8 @@ export default function WaitlistPage() {
   const goNext = () => {
     setError('');
     if (step === 0) {
-      if (!name.trim()) { setError(t('errors.nameRequired')); return; }
+      if (!firstName.trim()) { setError(t('errors.firstNameRequired')); return; }
+      if (!lastName.trim()) { setError(t('errors.lastNameRequired')); return; }
       if (!email.trim() || !email.includes('@')) { setError(t('errors.emailInvalid')); return; }
     }
     if (step === 1 && selectedIntentions.length === 0) {
@@ -232,7 +234,7 @@ export default function WaitlistPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: name.trim(),
+          name: `${firstName.trim()} ${lastName.trim()}`.trim(),
           email: email.trim().toLowerCase(),
           intentions: selectedIntentions,
           is_beta_tester: isBetaTester,
@@ -373,10 +375,17 @@ export default function WaitlistPage() {
                       </Typography>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
                         <Input
-                          placeholder={t('namePlaceholder')}
-                          value={name}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-                          autoComplete="name"
+                          placeholder={t('firstNamePlaceholder')}
+                          value={firstName}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
+                          autoComplete="given-name"
+                          style={{ width: '100%' }}
+                        />
+                        <Input
+                          placeholder={t('lastNamePlaceholder')}
+                          value={lastName}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
+                          autoComplete="family-name"
                           style={{ width: '100%' }}
                         />
                         <Input

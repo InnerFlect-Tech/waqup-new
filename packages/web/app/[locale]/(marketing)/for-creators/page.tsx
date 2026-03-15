@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { motion } from 'framer-motion';
@@ -35,29 +35,7 @@ export default function ForCreatorsPage() {
     body: t(`benefit${i}Body`),
     icon: BENEFIT_ICONS[i - 1],
   }));
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const gold = '#F59E0B';
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    try {
-      await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role: 'creator', source: 'for-creators' }),
-      });
-      setSubmitted(true);
-    } catch {
-      setSubmitted(true);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <PageShell intensity="medium" bare allowDocumentScroll>
@@ -204,31 +182,11 @@ export default function ForCreatorsPage() {
             ))}
           </div>
 
-          {submitted ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              style={{ padding: `${spacing.lg} ${spacing.xxl}`, borderRadius: borderRadius.lg, background: `${gold}18`, border: `1px solid ${gold}40` }}
-            >
-              <Typography variant="body" style={{ color: gold, fontWeight: 600 }}>
-                You&apos;re on the Creator list. We&apos;ll reach out about your Creator Pack.
-              </Typography>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: 480 }}>
-              <input
-                type="email"
-                placeholder="creator@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{ flex: 1, minWidth: 200, padding: `${spacing.md} ${spacing.lg}`, borderRadius: borderRadius.lg, background: colors.glass.light, border: `1px solid ${colors.glass.border}`, color: colors.text.primary, fontSize: 15, outline: 'none' }}
-              />
-              <Button type="submit" variant="primary" size="md" loading={loading} style={{ whiteSpace: 'nowrap', background: `linear-gradient(to right, ${gold}, ${colors.accent.primary})`, border: 'none' }}>
-                Apply as Creator
-              </Button>
-            </form>
-          )}
+          <Link href="/waitlist?source=for-creators" style={{ textDecoration: 'none' }}>
+            <Button variant="primary" size="md" style={{ display: 'inline-flex', alignItems: 'center', gap: spacing.sm, background: `linear-gradient(to right, ${gold}, ${colors.accent.primary})`, border: 'none' }}>
+              Apply as Creator <ArrowRight size={16} />
+            </Button>
+          </Link>
 
           <Typography variant="small" style={{ color: colors.text.secondary, marginTop: spacing.md, fontSize: 13, opacity: 0.7 }}>
             Free to start · Earn from day one · Revenue share at Partner tier

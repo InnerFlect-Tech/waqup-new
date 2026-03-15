@@ -719,7 +719,7 @@ export default function LandingPage() {
         title={t('landing.benefitsSection.title')}
       >
         <div
-          className="benefits-grid"
+          className="landing-benefits-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -734,7 +734,7 @@ export default function LandingPage() {
             return (
               <div
                 key={index}
-                className="benefit-card"
+                className="landing-benefit-card"
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -782,22 +782,22 @@ export default function LandingPage() {
             );
           })}
         </div>
-        <style jsx>{`
+        <style dangerouslySetInnerHTML={{ __html: `
           @media (max-width: 768px) {
-            .benefits-grid {
+            .landing-benefits-grid {
               grid-template-columns: repeat(2, 1fr) !important;
             }
           }
           @media (max-width: 480px) {
-            .benefits-grid {
+            .landing-benefits-grid {
               grid-template-columns: 1fr !important;
             }
           }
-          .benefit-card:hover {
+          .landing-benefit-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
           }
-        `}</style>
+        `}} />
       </LandingSection>
 
       {/* Final CTA */}
