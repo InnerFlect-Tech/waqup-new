@@ -39,18 +39,20 @@ export default function OnboardingProfilePage() {
 
   useEffect(() => {
     if (!user?.id) return;
-    supabase
+    void supabase
       .from('profiles')
       .select('preferred_name, onboarding_applications')
       .eq('id', user.id)
       .single()
-      .then(({ data }) => {
-        setPreferredName((prev) => (data?.preferred_name && !prev ? data.preferred_name : prev));
-        setSelectedApplications((prev) =>
-          data?.onboarding_applications?.length && prev.length === 0 ? data.onboarding_applications : prev
-        );
-      })
-      .catch(() => {});
+      .then(
+        ({ data }) => {
+          setPreferredName((prev) => (data?.preferred_name && !prev ? data.preferred_name : prev));
+          setSelectedApplications((prev) =>
+            data?.onboarding_applications?.length && prev.length === 0 ? data.onboarding_applications : prev
+          );
+        },
+        () => {}
+      );
   }, [user?.id]);
 
   const toggleApplication = (key: string) => {

@@ -211,7 +211,7 @@ export function VoiceSampleRecorder({
           <Typography variant="body" style={{ color: colors.text.primary }}>
             {formatDuration(duration)}
             {duration < MIN_RECORDING_SEC && (
-              <Typography variant="small" component="span" style={{ color: colors.text.secondary, marginLeft: spacing.sm }}>
+              <Typography variant="small" as="span" style={{ color: colors.text.secondary, marginLeft: spacing.sm }}>
                 (record at least {MIN_RECORDING_SEC}s for best results)
               </Typography>
             )}
@@ -250,7 +250,7 @@ export function VoiceSampleRecorder({
         <Typography variant="body" style={{ color: colors.text.primary }}>
           {formatDuration(duration)}
           {!meetsMinDuration && (
-            <Typography variant="small" component="span" style={{ color: colors.accent.primary, marginLeft: spacing.sm }}>
+            <Typography variant="small" as="span" style={{ color: colors.accent.primary, marginLeft: spacing.sm }}>
               (record at least {MIN_RECORDING_SEC}s for best results)
             </Typography>
           )}
