@@ -341,7 +341,14 @@ function WaitlistDashboard() {
     setFetchError('');
     try {
       const res = await fetch('/api/waitlist', { credentials: 'same-origin' });
-      const data = await res.json();
+      const text = await res.text();
+      let data: { signups?: WaitlistSignup[]; error?: string } = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        setFetchError('Invalid response from server.');
+        return;
+      }
       if (!res.ok) {
         setFetchError(data.error ?? 'Failed to load waitlist.');
         return;
@@ -396,7 +403,7 @@ function WaitlistDashboard() {
     });
 
   return (
-    <PageShell intensity="light" maxWidth={1100}>
+    <PageShell intensity="light" maxWidth={1100} allowDocumentScroll>
       <div style={{ paddingTop: spacing.xxxl, paddingBottom: spacing.xxxl }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xxl, flexWrap: 'wrap', gap: spacing.md }}>
@@ -599,30 +606,32 @@ function WaitlistDashboard() {
             {signups.length === 0 ? 'No signups yet.' : 'No results match your search.'}
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Column headers */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '2fr 2fr 3fr 80px 100px 90px 180px',
-                gap: spacing.md,
-                padding: '8px 16px',
-                fontSize: 10,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.25)',
-              }}
-            >
-              <span>Name</span>
-              <span>Email</span>
-              <span>Intentions</span>
-              <span>Beta</span>
-              <span>Source</span>
-              <span>Date</span>
-              <span>Actions</span>
-            </div>
+          <>
+            {/* Desktop: table layout (hidden on phone) */}
+            <div className="waitlist-table-desktop" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {/* Column headers */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '2fr 2fr 3fr 80px 100px 90px 180px',
+                  gap: spacing.md,
+                  padding: '8px 16px',
+                  fontSize: 10,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.25)',
+                }}
+              >
+                <span>Name</span>
+                <span>Email</span>
+                <span>Intentions</span>
+                <span>Beta</span>
+                <span>Source</span>
+                <span>Date</span>
+                <span>Actions</span>
+              </div>
 
-            {filtered.map((signup) => (
+              {filtered.map((signup) => (
               <motion.div
                 key={signup.id}
                 initial={{ opacity: 0 }}
@@ -748,7 +757,80 @@ function WaitlistDashboard() {
                 </AnimatePresence>
               </motion.div>
             ))}
-          </div>
+            </div>
+
+            {/* Mobile: card layout (visible only on phone) */}
+            <div className="waitlist-table-mobile" style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
+              {filtered.map((signup) => (
+                <motion.div
+                  key={signup.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  style={{
+                    padding: spacing.md,
+                    borderRadius: borderRadius.md,
+                    background: expandedId === signup.id ? 'rgba(147,51,234,0.07)' : 'rgba(255,255,255,0.025)',
+                    border: `1px solid ${expandedId === signup.id ? 'rgba(147,51,234,0.25)' : 'rgba(255,255,255,0.05)'}`,
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setExpandedId(expandedId === signup.id ? null : signup.id)}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: spacing.sm, flexWrap: 'wrap' }}>
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontSize: 15, fontWeight: 600, color: '#fff', marginBottom: 2 }}>{signup.name}</div>
+                        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{signup.email}</div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                        {signup.is_beta_tester && (
+                          <span style={{ fontSize: 11, color: '#60a5fa', background: 'rgba(96,165,250,0.1)', padding: '2px 8px', borderRadius: 999, border: '1px solid rgba(96,165,250,0.2)' }}>
+                            Beta
+                          </span>
+                        )}
+                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', whiteSpace: 'nowrap' }}>{formatDateRelative(signup.created_at, { compact: true })}</span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+                      {signup.intentions.slice(0, 4).map((i) => (
+                        <IntentionTag key={i} label={INTENTION_LABELS[i] ?? i} />
+                      ))}
+                      {signup.intentions.length > 4 && (
+                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>+{signup.intentions.length - 4}</span>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: spacing.sm, justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }} title={signup.referral_source ?? undefined}>
+                        {signup.referral_source ?? '—'}
+                      </span>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <ActionButton signupId={signup.id} currentStatus={signup.status} onStatusChange={handleStatusChange} />
+                      </div>
+                    </div>
+                  </div>
+                  <AnimatePresence>
+                    {expandedId === signup.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        style={{ overflow: 'hidden' }}
+                      >
+                        <div style={{ marginTop: spacing.md, paddingTop: spacing.md, borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                            {signup.intentions.map((i) => <IntentionTag key={i} label={INTENTION_LABELS[i] ?? i} />)}
+                          </div>
+                          {signup.message && (
+                            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>{signup.message}</div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </div>
+          </>
         )}
 
         <div style={{ marginTop: spacing.xl, fontSize: 12, color: 'rgba(255,255,255,0.2)', textAlign: 'right' }}>
@@ -760,6 +842,12 @@ function WaitlistDashboard() {
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        .waitlist-table-desktop { display: flex !important; }
+        .waitlist-table-mobile { display: none !important; }
+        @media (max-width: 767px) {
+          .waitlist-table-desktop { display: none !important; }
+          .waitlist-table-mobile { display: flex !important; flex-direction: column; gap: 12px; }
         }
       `}</style>
     </PageShell>
