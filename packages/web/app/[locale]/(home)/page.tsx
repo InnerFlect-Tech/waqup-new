@@ -223,7 +223,6 @@ export default function LandingPage() {
             <WaitlistCTA
               variant="inline"
               subtext={t('landing.earlyAccess')}
-              compact
             />
           </div>
 
