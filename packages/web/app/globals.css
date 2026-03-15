@@ -12,6 +12,21 @@ body {
   overflow-x: hidden;
 }
 
+/* Viewport height with 100dvh fallback for older iOS Safari (< 15.4) */
+.u-h-dvh {
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Glass card fallback when backdrop-filter is unsupported (older iOS) */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-card {
+    background: rgba(15, 5, 35, 0.92) !important;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   font-size: 16px;
@@ -112,6 +127,21 @@ a {
 }
 .script-read-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--theme-text-tertiary, rgba(255, 255, 255, 0.4));
+}
+
+/* Mobile menu scroll — themed scrollbar for authenticated mobile dropdown */
+.mobile-menu-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.mobile-menu-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mobile-menu-scroll::-webkit-scrollbar-thumb {
+  background: var(--theme-glass-border, rgba(255, 255, 255, 0.15));
+  border-radius: 9999px;
+}
+.mobile-menu-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-text-tertiary, rgba(255, 255, 255, 0.25));
 }
 
 /* Gradient text utility — uses theme gradient (SSOT) */

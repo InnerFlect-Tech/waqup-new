@@ -79,6 +79,8 @@ export const Input: React.FC<InputProps> = ({
     border: 'none',
     outline: 'none',
     fontFamily: 'inherit',
+    appearance: 'none',
+    WebkitAppearance: 'none',
     ...(style as React.CSSProperties),
   };
 

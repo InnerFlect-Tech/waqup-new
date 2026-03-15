@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
+import { cn } from '@/lib/utils';
 import { useTheme } from '@/theme';
-import { borderRadius } from '@/theme';
 import { GLASS_CARD_STYLES, CARD_PADDING_AUTH, CARD_PADDING_CONTENT } from '@/theme';
 
 export interface GlassCardProps {
@@ -24,7 +24,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   const padding = variant === 'auth' ? CARD_PADDING_AUTH : CARD_PADDING_CONTENT;
   return (
     <div
-      className={className}
+      className={cn('glass-card', className)}
       style={{
         padding,
         borderRadius: GLASS_CARD_STYLES.borderRadius,

@@ -37,17 +37,23 @@ export const PageShell: React.FC<PageShellProps> = ({
       ? PAGE_PADDING
       : `clamp(${PAGE_PADDING}, 5vw, ${HEADER_PADDING_X})`;
 
+  /** Safe-area aware padding — required for notched iPhones when viewport-fit=cover. */
+  const safePaddingTop = centered
+    ? `max(${PAGE_PADDING}, env(safe-area-inset-top, 0px))`
+    : `max(${PAGE_TOP_PADDING}, env(safe-area-inset-top, 0px))`;
+  const safePaddingBottom = `max(${PAGE_PADDING}, env(safe-area-inset-bottom, 0px))`;
+
   /** When bare + allowDocumentScroll: page controls layout; minimal wrapper only for stacking. */
   const contentStyle: React.CSSProperties = bare && allowDocumentScroll
     ? { position: 'relative', zIndex: 1, minWidth: 0 }
     : {
         position: 'relative',
         zIndex: 1,
-        minHeight: '100dvh',
-        paddingTop: centered ? PAGE_PADDING : PAGE_TOP_PADDING,
+        minHeight: '100%',
+        paddingTop: safePaddingTop,
         paddingLeft: horizontalPadding,
         paddingRight: horizontalPadding,
-        paddingBottom: PAGE_PADDING,
+        paddingBottom: safePaddingBottom,
         ...(centered && {
           display: 'flex',
           alignItems: 'center',
@@ -75,8 +81,6 @@ export const PageShell: React.FC<PageShellProps> = ({
     ? { position: 'relative', minWidth: 0, overflowX: 'hidden' as const }
     : {
         position: 'relative',
-        minHeight: '100dvh',
-        height: '100dvh',
         width: '100%',
         minWidth: 0,
         overflowX: 'hidden',
@@ -89,7 +93,10 @@ export const PageShell: React.FC<PageShellProps> = ({
       };
 
   return (
-    <div style={wrapperStyle}>
+    <div
+      className={!allowDocumentScroll ? 'u-h-dvh' : undefined}
+      style={wrapperStyle}
+    >
       {!plain && <AnimatedBackground intensity={intensity} color="primary" />}
       <div
         style={{

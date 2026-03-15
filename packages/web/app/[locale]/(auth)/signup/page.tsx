@@ -204,6 +204,8 @@ export default function SignupPage() {
                           display: 'flex',
                           alignItems: 'center',
                           padding: spacing.xs,
+                          appearance: 'none',
+                          WebkitAppearance: 'none',
                         }}
                       >
                         {showPassword ? (
@@ -246,6 +248,8 @@ export default function SignupPage() {
                           display: 'flex',
                           alignItems: 'center',
                           padding: spacing.xs,
+                          appearance: 'none',
+                          WebkitAppearance: 'none',
                         }}
                       >
                         {showConfirmPassword ? (

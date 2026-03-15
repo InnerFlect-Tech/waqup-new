@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { useAuthStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
+import { useTheme } from '@/theme';
 import { OVERRIDE_STORAGE_KEY } from '@/lib/override-auth';
 import { pathWithoutLocale, isProtectedRoute } from '@/lib/route-utils';
 
@@ -13,6 +14,7 @@ import { pathWithoutLocale, isProtectedRoute } from '@/lib/route-utils';
  * access to the app based on profiles.access_granted.
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
   const { user, isInitialized, initializeAuth, setUser, setSession, setInitialized } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
@@ -135,12 +137,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   if (showBootstrapSpinner) {
     return (
       <div
+        className="u-h-dvh"
         style={{
-          minHeight: '100dvh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#0a0a0f',
+          background: theme.colors.background.primary,
         }}
       >
         <div

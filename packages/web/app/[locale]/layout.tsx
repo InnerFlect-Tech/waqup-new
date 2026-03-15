@@ -92,6 +92,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: DEFAULT_BRAND_COLORS.background,
+  viewportFit: 'cover',
 };
 
 export default async function LocaleLayout({ children, params }: Props) {

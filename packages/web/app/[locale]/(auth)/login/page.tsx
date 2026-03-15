@@ -8,8 +8,9 @@ import { useTranslations } from 'next-intl';
 import { Typography, Button, Input, Loading } from '@/components';
 import { useTheme } from '@/theme';
 import { Logo, PageShell, GlassCard } from '@/components';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, borderRadius, typography } from '@/theme';
 import { AUTH_CARD_MAX_WIDTH } from '@/theme';
+import { authTokens } from '@waqup/shared/theme';
 import { loginSchema } from '@waqup/shared/schemas';
 import { useAuthStore } from '@/stores';
 import { Analytics } from '@waqup/shared/utils';
@@ -129,7 +130,7 @@ export default function LoginPage() {
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
             <Logo size="lg" showIcon={false} href={undefined} />
           </Link>
-          <Typography variant="body" style={{ color: colors.text.secondary, fontSize: '18px', marginTop: spacing.md }}>
+          <Typography variant="body" style={{ color: colors.text.secondary, fontSize: typography.h4.fontSize, marginTop: spacing.md }}>
             {t('title')}
           </Typography>
         </div>
@@ -191,7 +192,7 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: spacing.xs }}
+                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: spacing.xs, appearance: 'none', WebkitAppearance: 'none' }}
                     >
                       {showPassword ? <EyeOff size={20} color={colors.text.secondary} /> : <Eye size={20} color={colors.text.secondary} />}
                     </button>
@@ -237,7 +238,7 @@ export default function LoginPage() {
               fullWidth
               disabled={isLoading || googleLoading}
               onClick={handleGoogleSignIn}
-              style={{ background: colors.glass.transparent, border: `1px solid ${colors.glass.border}`, marginBottom: spacing.lg, height: '52px', transform: 'translateZ(0)' }}
+              style={{ background: colors.glass.transparent, border: `1px solid ${colors.glass.border}`, marginBottom: spacing.lg, minHeight: authTokens.socialButtonMinHeight, transform: 'translateZ(0)' }}
             >
               {googleLoading ? (
                 <><Loading variant="spinner" size="sm" color="primary" />{t('connectingToGoogle')}</>
