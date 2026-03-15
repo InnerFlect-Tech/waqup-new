@@ -13,6 +13,7 @@ interface ContentStats {
   total: number;
   byType: Record<string, number>;
   byStatus: Record<string, number>;
+  byUser?: { user_id: string; email: string | null; count: number }[];
   last7Days: number;
   last30Days: number;
 }
@@ -30,7 +31,7 @@ export default function ContentOverviewPage() {
         if (body.error && !body.stats) {
           setError(body.error);
         } else {
-          setData({ stats: body.stats ?? { total: 0, byType: {}, byStatus: {}, last7Days: 0, last30Days: 0 }, timestamp: body.timestamp ?? '' });
+          setData({ stats: body.stats ?? { total: 0, byType: {}, byStatus: {}, byUser: [], last7Days: 0, last30Days: 0 }, timestamp: body.timestamp ?? '' });
         }
       })
       .catch((e) => setError(e.message));
@@ -45,8 +46,8 @@ export default function ContentOverviewPage() {
 
   return (
     <SuperAdminGate>
-      <PageShell intensity="medium" bare>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: spacing.xl }}>
+      <PageShell intensity="medium" bare allowDocumentScroll>
+        <div style={{ maxWidth: 900, margin: '0 auto', paddingTop: spacing.xxl, paddingBottom: spacing.xxl }}>
           <div style={{ marginBottom: spacing.xl }}>
             <Link href="/admin" style={{ color: colors.accent.tertiary, fontSize: 14, textDecoration: 'none', marginBottom: spacing.sm, display: 'inline-block' }}>
               ← Admin
@@ -132,6 +133,33 @@ export default function ContentOverviewPage() {
                   )}
                 </div>
               </GlassCard>
+
+              {stats.byUser && stats.byUser.length > 0 && (
+                <GlassCard variant="content" style={{ marginBottom: spacing.xl }}>
+                  <Typography variant="h4" style={{ marginBottom: spacing.md, color: colors.text.primary }}>Creations by user</Typography>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                    {stats.byUser.map((u) => (
+                      <div
+                        key={u.user_id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: `${spacing.sm} ${spacing.md}`,
+                          borderRadius: borderRadius.sm,
+                          background: colors.glass.light,
+                          border: `1px solid ${colors.glass.border}`,
+                        }}
+                      >
+                        <Typography variant="body" style={{ color: colors.text.primary }}>
+                          {u.email ?? `User ${u.user_id.slice(0, 8)}…`}
+                        </Typography>
+                        <Typography variant="body" style={{ color: colors.accent.primary, fontWeight: 600 }}>{u.count} items</Typography>
+                      </div>
+                    ))}
+                  </div>
+                </GlassCard>
+              )}
 
               <Typography variant="small" style={{ color: colors.text.tertiary }}>
                 Last updated: {formatDate(data?.timestamp ?? null, { fallback: '—' })}

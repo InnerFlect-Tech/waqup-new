@@ -11,16 +11,16 @@ export const dynamic = 'force-dynamic';
 export async function GET(): Promise<NextResponse> {
   try {
     const serverClient = await createSupabaseServerClient();
-    const { data: { session } } = await serverClient.auth.getSession();
+    const { data: { user }, error: authError } = await serverClient.auth.getUser();
 
-    if (!session) {
+    if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { data: profile } = await serverClient
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
 
     if (!profile || profile.role !== 'superadmin') {
@@ -31,7 +31,7 @@ export async function GET(): Promise<NextResponse> {
 
     const { data: all, error } = await db
       .from('content_items')
-      .select('id, type, status, created_at');
+      .select('id, type, status, user_id, created_at');
 
     if (error) {
       return NextResponse.json(
@@ -47,6 +47,7 @@ export async function GET(): Promise<NextResponse> {
 
     const byType: Record<string, number> = { affirmation: 0, meditation: 0, ritual: 0 };
     const byStatus: Record<string, number> = {};
+    const byUserCount: Record<string, number> = {};
     let last7 = 0;
     let last30 = 0;
 
@@ -57,6 +58,11 @@ export async function GET(): Promise<NextResponse> {
       const status = (item.status as string) ?? 'draft';
       byStatus[status] = (byStatus[status] ?? 0) + 1;
 
+      const userId = item.user_id as string | undefined;
+      if (userId) {
+        byUserCount[userId] = (byUserCount[userId] ?? 0) + 1;
+      }
+
       const created = item.created_at ? new Date(item.created_at as string) : null;
       if (created) {
         if (created >= day7) last7++;
@@ -64,11 +70,32 @@ export async function GET(): Promise<NextResponse> {
       }
     }
 
+    // Resolve creator emails from auth.users (admin only)
+    const creatorIds = Object.keys(byUserCount);
+    const emailMap = new Map<string, string>();
+    if (creatorIds.length > 0) {
+      const { data: authData } = await db.auth.admin.listUsers({ perPage: 1000 });
+      for (const u of authData?.users ?? []) {
+        if (creatorIds.includes(u.id)) {
+          emailMap.set(u.id, u.email ?? '—');
+        }
+      }
+    }
+
+    const byUser = creatorIds
+      .map((id) => ({
+        user_id: id,
+        email: emailMap.get(id) ?? null,
+        count: byUserCount[id] ?? 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+
     return NextResponse.json({
       stats: {
         total: items.length,
         byType,
         byStatus,
+        byUser,
         last7Days: last7,
         last30Days: last30,
       },
