@@ -5,6 +5,7 @@ import { useRouter, usePathname } from '@/i18n/navigation';
 import { useAuthStore } from '@/stores';
 import { useSuperAdmin } from '@/hooks';
 import { OVERRIDE_STORAGE_KEY } from '@/lib/override-auth';
+import { pathWithoutLocale, isProtectedRoute } from '@/lib/route-utils';
 
 /**
  * Auth Provider Component
@@ -62,16 +63,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [initializeAuth, setUser, setSession, setInitialized]);
 
-  // Strip locale prefix for route matching (pathname can be /pt/coming-soon with localePrefix: 'as-needed')
-  const pathWithoutLocale = pathname?.replace(/^\/(en|pt|es|fr|de)(?=\/|$)/, '') || '/';
-
-  const isProtectedRoute =
-    pathWithoutLocale.startsWith('/library') ||
-    pathWithoutLocale.startsWith('/create') ||
-    pathWithoutLocale.startsWith('/profile') ||
-    pathWithoutLocale.startsWith('/sanctuary') ||
-    pathWithoutLocale.startsWith('/speak') ||
-    pathWithoutLocale.startsWith('/marketplace');
+  const pathWithoutLocaleVal = pathWithoutLocale(pathname);
+  const isProtectedRouteVal = isProtectedRoute(pathname);
 
   useEffect(() => {
     if (!isReady || !isInitialized) return;
@@ -102,46 +95,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/data-deletion',
     ];
     const isPublicRoute =
-      publicRoutes.includes(pathWithoutLocale) ||
-      pathWithoutLocale === '/' ||
-      pathWithoutLocale.startsWith('/showcase') ||
-      pathWithoutLocale.startsWith('/onboarding') ||
-      pathWithoutLocale.startsWith('/explanation') ||
-      pathWithoutLocale.startsWith('/our-story') ||
-      pathWithoutLocale.startsWith('/play') || // Public audio player for sharing
-      pathWithoutLocale.includes('/for-teachers') ||
-      pathWithoutLocale.includes('/for-coaches') ||
-      pathWithoutLocale.includes('/for-studios') ||
-      pathWithoutLocale.includes('/for-creators');
+      publicRoutes.includes(pathWithoutLocaleVal) ||
+      pathWithoutLocaleVal === '/' ||
+      pathWithoutLocaleVal.startsWith('/showcase') ||
+      pathWithoutLocaleVal.startsWith('/onboarding') ||
+      pathWithoutLocaleVal.startsWith('/explanation') ||
+      pathWithoutLocaleVal.startsWith('/our-story') ||
+      pathWithoutLocaleVal.startsWith('/play') || // Public audio player for sharing
+      pathWithoutLocaleVal.includes('/for-teachers') ||
+      pathWithoutLocaleVal.includes('/for-coaches') ||
+      pathWithoutLocaleVal.includes('/for-studios') ||
+      pathWithoutLocaleVal.includes('/for-creators');
 
-    if (isProtectedRoute && !user) {
+    if (isProtectedRouteVal && !user) {
       router.replace('/');
       return;
     }
 
     // Authenticated but profile not yet loaded — wait before access check.
-    if (isProtectedRoute && user && isProfileLoading) return;
+    if (isProtectedRouteVal && user && isProfileLoading) return;
 
     // Authenticated but no access granted — send to coming soon.
-    if (isProtectedRoute && user && !hasAccess) {
+    if (isProtectedRouteVal && user && !hasAccess) {
       router.replace('/coming-soon');
       return;
     }
 
-    if (!isPublicRoute && !isProtectedRoute && pathWithoutLocale !== '/') {
+    if (!isPublicRoute && !isProtectedRouteVal && pathWithoutLocaleVal !== '/') {
       if (!user) {
         router.replace('/');
       }
     }
-  }, [user, isReady, isInitialized, pathname, pathWithoutLocale, router, isProtectedRoute, hasAccess, isProfileLoading]);
+  }, [user, isReady, isInitialized, pathname, pathWithoutLocaleVal, router, isProtectedRouteVal, hasAccess, isProfileLoading]);
 
-  const showSpinner =
-    !isReady ||
-    !isInitialized ||
-    (isProtectedRoute && !user) ||
-    (isProtectedRoute && user && isProfileLoading);
+  // Only block with full-screen spinner during initial auth bootstrap.
+  // Do NOT block when profile is loading — layout (with header) must always render.
+  const showBootstrapSpinner = !isReady || !isInitialized;
 
-  if (showSpinner) {
+  if (showBootstrapSpinner) {
     return (
       <div
         style={{

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores';
 import { useRoleOverrideStore } from '@/stores';
@@ -14,8 +14,23 @@ export interface UseSuperAdminResult {
   actualIsSuperAdmin: boolean;
 }
 
+async function fetchProfile(userId: string) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('role, access_granted')
+    .eq('id', userId)
+    .single();
+
+  if (!error && data) {
+    const profile = data as { role: string; access_granted: boolean };
+    return { role: profile.role, accessGranted: profile.access_granted };
+  }
+  return { role: null, accessGranted: false };
+}
+
 /**
  * Returns the current user's profile role and access state.
+ * Uses React Query with 5min staleTime to avoid redundant fetches on navigation.
  * When viewAsRole is set (superadmin only), returns *effective* values as if the user had that role.
  * - `isSuperAdmin`: effective role === 'superadmin'
  * - `hasAccess`: effective access (true for user/creator/admin view-as)
@@ -24,55 +39,37 @@ export interface UseSuperAdminResult {
 export function useSuperAdmin(): UseSuperAdminResult {
   const user = useAuthStore((s) => s.user);
   const viewAsRole = useRoleOverrideStore((s) => s.viewAsRole);
-  const [role, setRole] = useState<string | null>(null);
-  const [accessGranted, setAccessGranted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
+  const { data, isLoading } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: () => fetchProfile(user!.id),
+    enabled: !!user && !user.id?.startsWith('override-'),
+    staleTime: 5 * 60 * 1000, // 5 minutes — reduce refetch on navigation
+  });
 
-    const fetchProfile = async () => {
-      if (!user) {
-        setRole(null);
-        setAccessGranted(false);
-        setIsLoading(false);
-        return;
-      }
-
-      // E2E / dev: override user has no profile in DB; grant access so tests can reach protected routes
-      if (user.id?.startsWith('override-')) {
-        setRole('user');
-        setAccessGranted(true);
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role, access_granted')
-        .eq('id', user.id)
-        .single();
-
-      if (!cancelled) {
-        if (!error && data) {
-          const profile = data as { role: string; access_granted: boolean };
-          setRole(profile.role);
-          setAccessGranted(profile.access_granted);
-        } else {
-          setRole(null);
-          setAccessGranted(false);
-        }
-        setIsLoading(false);
-      }
+  // E2E / dev: override user has no profile in DB; grant access so tests can reach protected routes
+  if (user?.id?.startsWith('override-')) {
+    return {
+      isSuperAdmin: false,
+      hasAccess: true,
+      role: 'user',
+      isLoading: false,
+      actualIsSuperAdmin: false,
     };
+  }
 
-    void fetchProfile();
-    return () => {
-      cancelled = true;
+  if (!user) {
+    return {
+      isSuperAdmin: false,
+      hasAccess: false,
+      role: null,
+      isLoading: false,
+      actualIsSuperAdmin: false,
     };
-  }, [user]);
+  }
 
+  const role = data?.role ?? null;
+  const accessGranted = data?.accessGranted ?? false;
   const realIsAdminRole = role === 'admin' || role === 'superadmin';
   const realIsSuperAdmin = role === 'superadmin';
 

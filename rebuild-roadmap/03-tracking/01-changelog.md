@@ -6,6 +6,22 @@
 
 ---
 
+## Header/Navigation System Production Refactor (2026-03-15)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-15
+- **Notes**:
+  - **Root cause fixed**: AuthProvider no longer blocks AppLayout during profile load. Spinner only during initial auth bootstrap (`!isReady || !isInitialized`). Header now always visible when layout renders — resolves "header disappears on mobile when logged in."
+  - **Profile-loading gate**: When authenticated on protected route and profile is loading, content area shows inline spinner; header stays visible.
+  - **Route utils**: Created `packages/web/src/lib/route-utils.ts` — `pathWithoutLocale`, `isAuthRoute`, `isOnboardingRoute`, `isProtectedRoute`, `isSuperadminRoute`, `shouldShowPublicFooter`. Single source of truth for path matching.
+  - **AppLayout**: Uses route utils; removed inline `AUTH_ROUTES`, `ONBOARDING_ROUTES`; consolidated footer logic with `shouldShowPublicFooter(pathname)`; softened nav animation (`initial={{ y: 0 }}`).
+  - **useSuperAdmin**: Migrated to React Query with 5min `staleTime` — reduces profile refetch on navigation; caching avoids redundant fetches.
+  - **AuthProvider**: Uses `pathWithoutLocale`, `isProtectedRoute` from route-utils for redirect logic.
+- **Affected**: `AuthProvider.tsx`, `AppLayout.tsx`, `useSuperAdmin.ts`, new `route-utils.ts`.
+- **Updated**: 2026-03-15
+
+---
+
 ## Playwright E2E CI — Skip authenticated tests (2026-03-13)
 
 - **Status**: ✅ Complete

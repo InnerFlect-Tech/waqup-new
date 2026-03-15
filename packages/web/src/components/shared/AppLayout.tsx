@@ -38,6 +38,13 @@ import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFF
 import { withOpacity } from '@waqup/shared/theme';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
+import {
+  isAuthRoute,
+  isOnboardingRoute,
+  isProtectedRoute,
+  isSuperadminRoute,
+  shouldShowPublicFooter,
+} from '@/lib/route-utils';
 import type { ViewAsRole } from '@/stores';
 import { createProgressService } from '@waqup/shared/services';
 import { xpToLevel, LEVEL_COLORS } from '@waqup/shared/types';
@@ -84,31 +91,6 @@ const USER_MENU_ITEMS_SECONDARY: UserMenuItem[] = [
   },
   { name: 'Help & Feedback', path: '/sanctuary/help', icon: <HelpCircle className="w-4 h-4" /> },
 ];
-
-const ONBOARDING_ROUTES = [
-  '/onboarding',
-  '/onboarding/voice',
-  '/onboarding/profile',
-  '/onboarding/preferences',
-  '/onboarding/guide',
-];
-const AUTH_ROUTES = [
-  '/login',
-  '/signup',
-  '/forgot-password',
-  '/reset-password',
-  '/confirm-email',
-  '/auth/',
-];
-
-const SUPERADMIN_ROUTE_PREFIXES = ['/admin', '/system', '/updates', '/health', '/showcase', '/pages', '/sitemap-view'];
-
-function isSuperadminRoute(pathname: string | null): boolean {
-  if (!pathname) return false;
-  return SUPERADMIN_ROUTE_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + '/')
-  );
-}
 
 const VIEW_AS_OPTIONS: { value: ViewAsRole; label: string }[] = [
   { value: 'user', label: 'User' },
@@ -160,7 +142,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { balance: creditsBalance } = useCreditBalance();
   const { colors: avatarColors } = useAvatarColors();
-  const { isSuperAdmin, actualIsSuperAdmin } = useSuperAdmin();
+  const { isSuperAdmin, actualIsSuperAdmin, isLoading: isProfileLoading } = useSuperAdmin();
   const viewAsRole = useRoleOverrideStore((s) => s.viewAsRole);
   const setViewAsRole = useRoleOverrideStore((s) => s.setViewAsRole);
 
@@ -240,13 +222,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     return () => cancelAnimationFrame(rafId);
   }, [pathname]);
 
-  const isOnboardingRoute =
-    pathname && ONBOARDING_ROUTES.some((route) => pathname.startsWith(route));
+  const hideNav = isAuthRoute(pathname) || isOnboardingRoute(pathname);
 
-  const isAuthRoute =
-    pathname && AUTH_ROUTES.some((r) => pathname === r || pathname.startsWith(r));
-
-  if (isAuthRoute || isOnboardingRoute) {
+  if (hideNav) {
     return <main>{children}</main>;
   }
 
@@ -269,25 +247,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     }
   };
 
-  /** Footer hidden on: landing, marketing pages with own footer, auth pages, coming-soon, onboarding, sanctuary create flows.
-   * See docs/04-reference/16-route-map.md (Footer section) for full page list. */
-  const showPublicFooter =
-    pathname !== '/' &&
-    !pathname?.includes('/for-teachers') &&
-    !pathname?.includes('/for-creators') &&
-    !pathname?.includes('/for-coaches') &&
-    !pathname?.includes('/for-studios') &&
-    !pathname?.includes('/community') &&
-    !pathname?.includes('/login') &&
-    !pathname?.includes('/signup') &&
-    !pathname?.includes('/forgot-password') &&
-    !pathname?.includes('/reset-password') &&
-    !pathname?.includes('/confirm-email') &&
-    !pathname?.includes('/coming-soon') &&
-    !pathname?.includes('/onboarding') &&
-    !pathname?.includes('/sanctuary/affirmations/create') &&
-    !pathname?.includes('/sanctuary/meditations/create') &&
-    !pathname?.includes('/sanctuary/rituals/create');
+  const showPublicFooter = shouldShowPublicFooter(pathname);
 
   if (user) {
     return (
@@ -302,7 +262,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         }}
       >
         <motion.nav
-          initial={{ y: -100 }}
+          initial={{ y: 0 }}
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
@@ -973,7 +933,30 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               minWidth: 0,
             }}
           >
-            {children}
+            {isProtectedRoute(pathname) && isProfileLoading ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 200,
+                }}
+              >
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    border: '2px solid rgba(168,85,247,0.2)',
+                    borderTopColor: '#a855f7',
+                    animation: 'spin 0.8s linear infinite',
+                  }}
+                />
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </div>
+            ) : (
+              children
+            )}
           </main>
           {showPublicFooter && <PublicFooter />}
         </div>
@@ -993,7 +976,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       }}
     >
         <motion.nav
-          initial={{ y: -100 }}
+          initial={{ y: 0 }}
           animate={{ y: 0 }}
           className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
           style={{
@@ -1249,23 +1232,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <main style={{ paddingTop: NAV_TOP_OFFSET, paddingBottom: `max(${spacing.xl}, env(safe-area-inset-bottom, 0px))`, minWidth: 0 }}>
           {children}
         </main>
-        {/* Footer — hidden on landing, auth, coming-soon, onboarding, marketing (own footer), create flows */}
-        {pathname !== '/' &&
-          !pathname?.includes('/login') &&
-          !pathname?.includes('/signup') &&
-          !pathname?.includes('/forgot-password') &&
-          !pathname?.includes('/reset-password') &&
-          !pathname?.includes('/confirm-email') &&
-          !pathname?.includes('/coming-soon') &&
-          !pathname?.includes('/onboarding') &&
-          !pathname?.includes('/for-teachers') &&
-          !pathname?.includes('/for-creators') &&
-          !pathname?.includes('/for-coaches') &&
-          !pathname?.includes('/for-studios') &&
-          !pathname?.includes('/community') &&
-          !pathname?.includes('/sanctuary/affirmations/create') &&
-          !pathname?.includes('/sanctuary/meditations/create') &&
-          !pathname?.includes('/sanctuary/rituals/create') && <PublicFooter />}
+        {shouldShowPublicFooter(pathname) && <PublicFooter />}
       </div>
     </div>
   );
