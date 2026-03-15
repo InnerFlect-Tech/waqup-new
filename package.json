@@ -26,6 +26,7 @@
     "supabase:migrate": "bash supabase/scripts/run_migrations.sh",
     "supabase:diff": "supabase db diff",
     "verify:db": "bash supabase/scripts/run_verify.sh",
+    "seed:daniel": "bash supabase/scripts/run_seed_daniel.sh",
     "dev:local": "supabase start && npm run dev:web",
     "dev:mobile": "npm run start --workspace=packages/mobile",
     "dev:mobile:tunnel": "npm run start:tunnel --workspace=packages/mobile",

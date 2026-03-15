@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { useRouter } from '@/i18n/navigation';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius, BLUR } from '@/theme';
+import { spacing, borderRadius, BLUR, CONTENT_NARROW } from '@/theme';
 import { Link } from '@/i18n/navigation';
-import { Heart, Brain, Zap, Users, Shield, Sun, Leaf, Star, Check, ChevronLeft } from 'lucide-react';
+import { Heart, Brain, Zap, Users, Shield, Sun, Leaf, Star, Sparkles, Check, ChevronLeft } from 'lucide-react';
 import { useContentCreation } from '@/lib/contexts/ContentCreationContext';
 
 interface Goal {
@@ -27,6 +27,7 @@ const GOALS: Goal[] = [
   { id: 'peace', icon: Leaf, label: 'Inner Peace', description: 'Cultivate calm and equanimity', color: '#34d399' },
   { id: 'resilience', icon: Shield, label: 'Resilience', description: 'Bounce back stronger', color: '#a78bfa' },
   { id: 'purpose', icon: Sun, label: 'Purpose & Meaning', description: 'Align with what matters most', color: '#fbbf24' },
+  { id: 'gratitude', icon: Sparkles, label: 'Gratitude', description: 'Cultivate appreciation and joy', color: '#fcd34d' },
 ];
 
 export default function RitualCreateGoalsPage() {
@@ -53,7 +54,7 @@ export default function RitualCreateGoalsPage() {
   };
 
   return (
-    <div style={{ maxWidth: '48rem', margin: '0 auto' }}>
+    <div style={{ maxWidth: `min(${CONTENT_NARROW}, 100%)`, margin: '0 auto', width: '100%' }}>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}

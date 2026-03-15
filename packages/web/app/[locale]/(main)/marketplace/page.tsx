@@ -62,6 +62,11 @@ export default function MarketplacePage() {
     : items;
 
   const showElevated = filter === 'all' && !searchQuery && elevatedItems.length > 0;
+  // Exclude elevated items from main grid to avoid duplication (they appear in Curated section)
+  const elevatedIds = new Set(elevatedItems.map((i) => i.contentItemId));
+  const gridItems = showElevated
+    ? filteredItems.filter((i) => !elevatedIds.has(i.contentItemId))
+    : filteredItems;
   const uniqueCreators = new Set(items.map((i) => i.creatorId)).size;
 
   return (
@@ -270,7 +275,7 @@ export default function MarketplacePage() {
               />
             ))}
           </div>
-        ) : filteredItems.length > 0 ? (
+        ) : gridItems.length > 0 ? (
           <div
             style={{
               display: 'grid',
@@ -279,7 +284,7 @@ export default function MarketplacePage() {
               gap: spacing.lg,
             }}
           >
-            {filteredItems.map((item, index) => {
+            {gridItems.map((item, index) => {
               const accent = TYPE_COLORS[item.type] ?? colors.accent.primary;
               return (
                 <Link key={item.id} href={`/marketplace/${item.contentItemId}`} style={{ textDecoration: 'none' }}>

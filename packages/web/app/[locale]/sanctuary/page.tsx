@@ -50,6 +50,15 @@ function getGreetingKey(): 'greetingMorning' | 'greetingAfternoon' | 'greetingEv
   return 'greetingNight';
 }
 
+/** Prefix-only key for greeting (phrase before name) — enables gradient name treatment */
+function getGreetingPrefixKey(): 'greetingMorningPrefix' | 'greetingAfternoonPrefix' | 'greetingEveningPrefix' | 'greetingNightPrefix' {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'greetingMorningPrefix';
+  if (h >= 12 && h < 17) return 'greetingAfternoonPrefix';
+  if (h >= 17 && h < 21) return 'greetingEveningPrefix';
+  return 'greetingNightPrefix';
+}
+
 /** Contextual "best for" label for featured track */
 function getBestForKey(): 'bestForMorning' | 'bestForEvening' | 'bestForTonight' | null {
   const h = new Date().getHours();
@@ -207,13 +216,24 @@ export default function SanctuaryHomePage() {
         >
           <Typography
             variant="h1"
+            component="p"
             style={{
               marginBottom: spacing.xs,
               color: colors.text.primary,
               fontWeight: 300,
             }}
           >
-            {t(getGreetingKey(), { name: displayName })}
+            {t(getGreetingPrefixKey())}{' '}
+            <span
+              style={{
+                background: colors.gradients.primary,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {displayName}
+            </span>
           </Typography>
           <Typography variant="body" style={{ color: colors.text.secondary, fontSize: 14 }}>
             {t('subline')}
@@ -395,21 +415,22 @@ export default function SanctuaryHomePage() {
           </Link>
         )}
 
-        {/* Secondary actions — Create new track, Open library */}
+        {/* Secondary actions — hierarchy: Create dominates when has tracks, Library lighter. Hide Create when no tracks (primary is Create first). */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+            display: 'flex',
+            flexDirection: 'column',
             gap: spacing.md,
             marginBottom: spacing.xxl,
           }}
         >
+          {primaryTrack && (
           <Link href="/create" style={{ textDecoration: 'none' }}>
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12, duration: 0.35 }}
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ scale: 1.01, y: -1 }}
               style={{
                 padding: spacing.lg,
                 borderRadius: borderRadius.xl,
@@ -423,240 +444,245 @@ export default function SanctuaryHomePage() {
                 gap: spacing.md,
               }}
             >
-              <Plus size={22} color={colors.accent.primary} strokeWidth={2.5} />
-              <div>
+              <Plus size={20} color={colors.accent.primary} strokeWidth={2.5} style={{ flexShrink: 0 }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, fontSize: 15 }}>
-                  {t('createNewTrack')}
+                  {libraryCount > 0 ? t('createNextTrack') : t('createNewTrack')}
                 </Typography>
                 <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 12 }}>
-                  {t('createNewTrackDesc')}
+                  {libraryCount > 0 ? t('createNextTrackDesc') : t('createNewTrackDesc')}
                 </Typography>
               </div>
+              <ChevronRight size={18} color={colors.text.secondary} style={{ opacity: 0.6, flexShrink: 0 }} />
             </motion.div>
           </Link>
+          )}
           <Link href="/library" style={{ textDecoration: 'none' }}>
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.35 }}
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ opacity: 0.95 }}
               style={{
-                padding: spacing.lg,
-                borderRadius: borderRadius.xl,
-                background: `linear-gradient(145deg, ${LIBRARY_COLOR}12, ${LIBRARY_COLOR}06)`,
-                backdropFilter: BLUR.lg,
-                WebkitBackdropFilter: BLUR.lg,
-                border: `1px solid ${LIBRARY_COLOR}30`,
+                padding: `${spacing.md} ${spacing.lg}`,
+                borderRadius: borderRadius.lg,
+                background: 'transparent',
+                border: `1px solid ${colors.glass.border}`,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: spacing.md,
+                opacity: 0.85,
               }}
             >
-              <Library size={22} color={LIBRARY_COLOR} strokeWidth={2} />
-              <div>
-                <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, fontSize: 15 }}>
-                  {t('libraryTitle')}
-                </Typography>
-                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 12 }}>
-                  {t('librarySub', { count: libraryCount })}
-                </Typography>
-              </div>
+              <Library size={18} color={LIBRARY_COLOR} strokeWidth={2} style={{ flexShrink: 0 }} />
+              <Typography variant="small" style={{ color: colors.text.secondary, margin: 0, fontSize: 13 }}>
+                {t('browseLibrary')} · {libraryCount} {libraryCount === 1 ? 'track' : 'tracks'}
+              </Typography>
             </motion.div>
           </Link>
         </div>
 
-        {/* Supporting section — Streak, Replays this week, Next reminder */}
-        <div
+        {/* Practice status strip — unified, lighter, consistent alignment */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.18, duration: 0.35 }}
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: spacing.lg,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 0,
             marginBottom: spacing.xxl,
+            borderRadius: borderRadius.lg,
+            background: `${colors.glass.light}80`,
+            backdropFilter: BLUR.md,
+            WebkitBackdropFilter: BLUR.md,
+            border: `1px solid ${colors.glass.border}`,
+            overflow: 'hidden',
           }}
         >
-          <Link href="/sanctuary/progress" style={{ textDecoration: 'none' }}>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.18, duration: 0.35 }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.sm,
-                padding: `${spacing.md} ${spacing.lg}`,
-                borderRadius: borderRadius.lg,
-                background: `linear-gradient(145deg, ${STREAK_COLOR}15, ${STREAK_COLOR}06)`,
-                border: `1px solid ${STREAK_COLOR}30`,
-                cursor: 'pointer',
-              }}
-            >
-              <Flame
-                size={20}
-                color={STREAK_COLOR}
-                strokeWidth={2.5}
-                fill={displayStreak > 0 ? STREAK_COLOR : 'none'}
-              />
-              <div>
-                {progressError ? (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      fetchProgress();
-                    }}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      padding: 0,
-                      cursor: 'pointer',
-                      color: colors.error,
-                      fontSize: 12,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Retry
-                  </button>
-                ) : (
-                  <>
-                    <Typography variant="small" style={{ color: colors.text.primary, margin: 0, fontWeight: 600 }}>
-                      {displayStreak === 0
-                        ? t('startYourStreak')
-                        : t('streakIdentity', { count: displayStreak })}
-                    </Typography>
-                    <Typography variant="captionBold" style={{ color: STREAK_COLOR, fontSize: 11 }}>
-                      {t('viewProgress')}
-                    </Typography>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </Link>
-
-          <div
+          <Link
+            href="/sanctuary/progress"
             style={{
+              textDecoration: 'none',
               display: 'flex',
               flexDirection: 'column',
-              gap: 2,
+              alignItems: 'flex-start',
+              justifyContent: 'center',
               padding: `${spacing.md} ${spacing.lg}`,
-              borderRadius: borderRadius.lg,
-              background: colors.glass.light,
-              border: `1px solid ${colors.glass.border}`,
+              minHeight: 72,
+              borderRight: `1px solid ${colors.glass.border}`,
             }}
           >
-            <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-              {t('thisWeek')}
+            <Typography variant="micro" style={{ color: colors.text.secondary, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {t('practiceRhythm')}
             </Typography>
-            <Typography variant="h4" style={{ color: colors.text.primary, margin: 0, fontSize: 18, fontWeight: 500 }}>
-              {t('replaysCount', { count: replaysThisWeek })}
+            {progressError ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  fetchProgress();
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  color: colors.error,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  margin: 0,
+                  textAlign: 'left',
+                }}
+              >
+                Retry
+              </button>
+            ) : (
+              <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500, fontSize: 15 }}>
+                {displayStreak === 0 ? t('stayWithPractice') : t('practiceRhythmActive', { count: displayStreak })}
+              </Typography>
+            )}
+          </Link>
+
+          <Link
+            href="/sanctuary/progress"
+            style={{
+              textDecoration: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              padding: `${spacing.md} ${spacing.lg}`,
+              minHeight: 72,
+              borderRight: `1px solid ${colors.glass.border}`,
+            }}
+          >
+            <Typography variant="micro" style={{ color: colors.text.secondary, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {replaysThisWeek === 0 ? t('thisWeekOpen') : t('thisWeek')}
             </Typography>
-          </div>
+            <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500, fontSize: 15 }}>
+              {replaysThisWeek === 0 ? t('startOneToday') : t('replaysCount', { count: replaysThisWeek })}
+            </Typography>
+          </Link>
 
           {nextReminder ? (
-            <Link href={nextReminder.href} style={{ textDecoration: 'none' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.sm,
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  borderRadius: borderRadius.lg,
-                  background: colors.glass.light,
-                  border: `1px solid ${colors.glass.border}`,
-                  cursor: 'pointer',
-                }}
-              >
-                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                  {t('nextRitual')}
-                </Typography>
-                <Typography variant="small" style={{ color: colors.text.primary, margin: 0, fontWeight: 500 }}>
-                  {nextReminder.label}
-                </Typography>
-              </div>
+            <Link
+              href={nextReminder.href}
+              style={{
+                textDecoration: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                padding: `${spacing.md} ${spacing.lg}`,
+                minHeight: 72,
+              }}
+            >
+              <Typography variant="micro" style={{ color: colors.text.secondary, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {t('nextReminder')}
+              </Typography>
+              <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500, fontSize: 15 }}>
+                {nextReminder.label}
+              </Typography>
             </Link>
           ) : (
-            <Link href="/sanctuary/reminders" style={{ textDecoration: 'none' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.sm,
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  borderRadius: borderRadius.lg,
-                  background: colors.glass.light,
-                  border: `1px solid ${colors.glass.border}`,
-                  cursor: 'pointer',
-                }}
-              >
-                <Typography variant="small" style={{ color: colors.text.secondary, margin: 0 }}>
-                  {t('setReminder')}
-                </Typography>
-              </div>
+            <Link
+              href="/sanctuary/reminders"
+              style={{
+                textDecoration: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                padding: `${spacing.md} ${spacing.lg}`,
+                minHeight: 72,
+              }}
+            >
+              <Typography variant="micro" style={{ color: colors.text.secondary, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {t('whenToPractice')}
+              </Typography>
+              <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500, fontSize: 15 }}>
+                {t('schedulePractice')}
+              </Typography>
             </Link>
           )}
-        </div>
+        </motion.div>
 
-        {/* Utilities — subtle, intentional footer */}
-        <div
+        {/* Secondary nav strip — intentional, integrated */}
+        <nav
           style={{
             display: 'flex',
-            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
             gap: spacing.lg,
-            paddingTop: spacing.xl,
-            marginTop: spacing.lg,
-            borderTop: `1px solid ${colors.glass.border}`,
-            opacity: 0.85,
+            padding: `${spacing.md} ${spacing.lg}`,
+            marginTop: spacing.xl,
+            borderRadius: borderRadius.lg,
+            background: `${colors.glass.light}40`,
+            backdropFilter: BLUR.sm,
+            WebkitBackdropFilter: BLUR.sm,
+            border: `1px solid ${colors.glass.border}`,
           }}
         >
           <Link
             href="/sanctuary/voice"
             style={{
               color: colors.text.secondary,
-              fontSize: 12,
+              fontSize: 13,
               textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
-              gap: spacing.xs,
+              gap: spacing.sm,
               fontWeight: 500,
+              padding: `${spacing.xs} ${spacing.sm}`,
+              borderRadius: borderRadius.md,
+              transition: 'color 0.2s, background 0.2s',
             }}
           >
-            <Mic size={13} />
-            {t('yourVoice')}
+            <Mic size={14} strokeWidth={2} />
+            {t('myVoice')}
           </Link>
-          <span style={{ color: colors.glass.border, fontSize: 12 }}>·</span>
+          <span style={{ width: 1, height: 14, background: colors.glass.border, borderRadius: 1 }} aria-hidden />
           <Link
             href="/sanctuary/learn"
             style={{
               color: colors.text.secondary,
-              fontSize: 12,
+              fontSize: 13,
               textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
-              gap: spacing.xs,
+              gap: spacing.sm,
               fontWeight: 500,
+              padding: `${spacing.xs} ${spacing.sm}`,
+              borderRadius: borderRadius.md,
+              transition: 'color 0.2s, background 0.2s',
             }}
           >
-            <BookOpen size={13} />
-            {t('whyItWorks')}
+            <BookOpen size={14} strokeWidth={2} />
+            {t('theMethod')}
           </Link>
-          <span style={{ color: colors.glass.border, fontSize: 12 }}>·</span>
+          <span style={{ width: 1, height: 14, background: colors.glass.border, borderRadius: 1 }} aria-hidden />
           <Link
             href="/sanctuary/settings"
             style={{
               color: colors.text.secondary,
-              fontSize: 12,
+              fontSize: 13,
               textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
-              gap: spacing.xs,
+              gap: spacing.sm,
               fontWeight: 500,
+              padding: `${spacing.xs} ${spacing.sm}`,
+              borderRadius: borderRadius.md,
+              transition: 'color 0.2s, background 0.2s',
             }}
           >
-            <Settings size={13} />
+            <Settings size={14} strokeWidth={2} />
             Settings
           </Link>
-        </div>
+        </nav>
       </PageContent>
     </PageShell>
   );
