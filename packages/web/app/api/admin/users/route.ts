@@ -12,16 +12,16 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(): Promise<NextResponse> {
   const serverClient = await createSupabaseServerClient();
-  const { data: { session } } = await serverClient.auth.getSession();
+  const { data: { user }, error: authError } = await serverClient.auth.getUser();
 
-  if (!session) {
+  if (authError || !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { data: profile } = await serverClient
     .from('profiles')
     .select('role')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single();
 
   if (!profile || profile.role !== 'superadmin') {
@@ -29,18 +29,45 @@ export async function GET(): Promise<NextResponse> {
   }
 
   try {
-    const supabase = createSupabaseAdminClient();
+    let supabase;
+    try {
+      supabase = createSupabaseAdminClient();
+    } catch (envErr) {
+      return NextResponse.json(
+        { error: 'Admin client not configured. Set SUPABASE_SERVICE_ROLE_KEY in env.' },
+        { status: 503 },
+      );
+    }
 
-    // Fetch all auth users (admin API)
+    // Fetch auth users — try admin API first, fallback to direct DB when it fails
+    // (Supabase Auth can return "Database error finding users" under load or schema issues)
+    type AuthUser = { id: string; email: string | null; created_at: string; last_sign_in_at: string | null };
+    let authUsers: AuthUser[];
+
     const { data: authData, error: authError } = await supabase.auth.admin.listUsers({
       perPage: 200,
     });
 
     if (authError) {
-      throw authError;
+      console.warn('[admin/users] auth.admin.listUsers failed, using DB fallback:', authError.message);
+      const { data: rpcData, error: rpcError } = await supabase.rpc('get_auth_users_for_admin', {
+        p_limit: 200,
+      });
+      if (rpcError) {
+        console.error('[admin/users] DB fallback also failed:', rpcError);
+        throw authError; // Throw original error for client
+      }
+      authUsers = (rpcData ?? []) as AuthUser[];
+    } else {
+      authUsers = authData.users.map((u) => ({
+        id: u.id,
+        email: u.email ?? null,
+        created_at: u.created_at,
+        last_sign_in_at: u.last_sign_in_at ?? null,
+      }));
     }
 
-    const userIds = authData.users.map((u) => u.id);
+    const userIds = authUsers.map((u) => u.id);
 
     // Early return if no users — avoids invalid .in('id', []) SQL
     if (userIds.length === 0) {
@@ -90,8 +117,8 @@ export async function GET(): Promise<NextResponse> {
       txByUser.get(tx.user_id)!.push(tx);
     }
 
-    // Shape the response
-    const users = authData.users.map((u) => {
+    // Shape the response — use authUsers (works for both listUsers and DB fallback)
+    const users = authUsers.map((u) => {
       const sub = subMap.get(u.id);
       const userTxs = (txByUser.get(u.id) ?? []).slice(0, 10);
       return {

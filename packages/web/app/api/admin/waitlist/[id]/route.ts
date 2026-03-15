@@ -23,18 +23,16 @@ export async function PATCH(
   // Verify the caller is a superadmin using their session cookie.
   try {
     const serverClient = await createSupabaseServerClient();
-    const {
-      data: { session },
-    } = await serverClient.auth.getSession();
+    const { data: { user }, error: authError } = await serverClient.auth.getUser();
 
-    if (!session) {
+    if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { data: profile } = await serverClient
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
 
     if (!profile || profile.role !== 'superadmin') {

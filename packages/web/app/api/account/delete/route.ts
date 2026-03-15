@@ -16,16 +16,14 @@ export const dynamic = 'force-dynamic';
 export async function DELETE(): Promise<NextResponse> {
   try {
     const supabase = await createSupabaseServerClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    if (!session?.user?.id) {
+    if (authError || !user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const admin = createSupabaseAdminClient();
-    const { error } = await admin.auth.admin.deleteUser(session.user.id);
+    const { error } = await admin.auth.admin.deleteUser(user.id);
 
     if (error) {
       console.error('[account/delete]', error.message);
