@@ -10,6 +10,8 @@ export interface CardProps extends ViewProps {
   onPress?: () => void;
   header?: React.ReactNode;
   footer?: React.ReactNode;
+  /** When true, removes inner padding (e.g. for ListRow content) */
+  noPadding?: boolean;
   children: React.ReactNode;
 }
 
@@ -19,6 +21,7 @@ export const Card: React.FC<CardProps> = ({
   onPress,
   header,
   footer,
+  noPadding = false,
   children,
   style,
   ...props
@@ -60,8 +63,8 @@ export const Card: React.FC<CardProps> = ({
 
   const blurContainerStyle = [
     styles.blurContainer,
+    !noPadding && (variant === 'auth' ? styles.blurContainerAuth : { padding: spacing.md }),
     glassStyle,
-    variant === 'auth' && styles.blurContainerAuth,
   ];
 
   const innerBlur =
@@ -114,7 +117,6 @@ const styles = StyleSheet.create({
   blurContainer: {
     borderWidth: 1,
     borderRadius: borderRadius.lg,
-    padding: spacing.md,
   },
   blurContainerAuth: {
     padding: spacing.xl,

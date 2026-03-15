@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -10,6 +10,8 @@ import Animated, {
   Easing,
   interpolate,
 } from 'react-native-reanimated';
+import { useTheme } from '@/theme';
+import { withOpacity } from '@waqup/shared/theme';
 
 export type OrbState =
   | 'idle'
@@ -29,16 +31,53 @@ const SIZE_MAP: Record<OrbSize, number> = {
   lg: 200,
 };
 
-const STATE_COLORS: Record<OrbState, { inner: string[]; rim: string; glow: string }> = {
-  idle:         { inner: ['#3b0764', '#1e0438', '#0a0014'], rim: '#7c3aed', glow: '#6d28d9' },
-  listening:    { inner: ['#4c1d95', '#2e0f6b', '#0d0030'], rim: '#a855f7', glow: '#a855f7' },
-  hearing:      { inner: ['#5b21b6', '#3b0d82', '#120040'], rim: '#c084fc', glow: '#c084fc' },
-  transcribing: { inner: ['#4338ca', '#1e1b6b', '#06052a'], rim: '#818cf8', glow: '#6366f1' },
-  thinking:     { inner: ['#1e0438', '#0d0025', '#000010'], rim: '#4c1d95', glow: '#4c1d95' },
-  speaking:     { inner: ['#1e3a8a', '#0c1f5c', '#000620'], rim: '#60a5fa', glow: '#3b82f6' },
-  complete:     { inner: ['#3b0764', '#1e0438', '#0a0014'], rim: '#7c3aed', glow: '#6d28d9' },
-  error:        { inner: ['#450a0a', '#1c0404', '#050000'], rim: '#ef4444', glow: '#dc2626' },
-};
+function getOrbColors(
+  accent: { primary: string; secondary: string; tertiary: string },
+  error: string
+): Record<OrbState, { inner: string[]; rim: string; glow: string }> {
+  return {
+    idle: {
+      inner: [withOpacity(accent.primary, 0.6), withOpacity(accent.primary, 0.35), withOpacity(accent.primary, 0.1)],
+      rim: accent.tertiary,
+      glow: accent.secondary,
+    },
+    listening: {
+      inner: [withOpacity(accent.primary, 0.7), withOpacity(accent.primary, 0.45), withOpacity(accent.primary, 0.15)],
+      rim: accent.tertiary,
+      glow: accent.tertiary,
+    },
+    hearing: {
+      inner: [withOpacity(accent.primary, 0.8), withOpacity(accent.primary, 0.55), withOpacity(accent.primary, 0.2)],
+      rim: accent.tertiary,
+      glow: accent.tertiary,
+    },
+    transcribing: {
+      inner: [withOpacity(accent.secondary, 0.7), withOpacity(accent.secondary, 0.4), withOpacity(accent.secondary, 0.1)],
+      rim: accent.secondary,
+      glow: accent.secondary,
+    },
+    thinking: {
+      inner: [withOpacity(accent.primary, 0.35), withOpacity(accent.primary, 0.2), withOpacity(accent.primary, 0.05)],
+      rim: accent.primary,
+      glow: accent.primary,
+    },
+    speaking: {
+      inner: [withOpacity(accent.secondary, 0.7), withOpacity(accent.secondary, 0.4), withOpacity(accent.secondary, 0.1)],
+      rim: accent.secondary,
+      glow: accent.secondary,
+    },
+    complete: {
+      inner: [withOpacity(accent.primary, 0.6), withOpacity(accent.primary, 0.35), withOpacity(accent.primary, 0.1)],
+      rim: accent.tertiary,
+      glow: accent.secondary,
+    },
+    error: {
+      inner: [withOpacity(error, 0.5), withOpacity(error, 0.25), withOpacity(error, 0.05)],
+      rim: error,
+      glow: error,
+    },
+  };
+}
 
 const BREATH_SPEEDS: Record<OrbState, number> = {
   idle:         2000,
@@ -69,8 +108,12 @@ export interface VoiceOrbProps {
 }
 
 export function VoiceOrb({ size = 'md', orbState = 'idle', style }: VoiceOrbProps) {
+  const { theme } = useTheme();
+  const colors = useMemo(
+    () => getOrbColors(theme.colors.accent, theme.colors.error),
+    [theme.colors.accent, theme.colors.error]
+  )[orbState];
   const diameter = SIZE_MAP[size];
-  const colors = STATE_COLORS[orbState];
   const breathSpeed = BREATH_SPEEDS[orbState];
   const pulseScale = PULSE_SCALE[orbState];
 
@@ -201,7 +244,7 @@ export function VoiceOrb({ size = 'md', orbState = 'idle', style }: VoiceOrbProp
 
           {/* Inner dark void */}
           <LinearGradient
-            colors={['#000000', '#0a0014']}
+            colors={[theme.colors.background.primary, withOpacity(theme.colors.background.primary, 0.95)]}
             style={[
               styles.void,
               {
@@ -243,6 +286,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(200, 160, 255, 0.18)',
   },
   void: {
-    backgroundColor: '#000000',
+    opacity: 0.9,
   },
 });

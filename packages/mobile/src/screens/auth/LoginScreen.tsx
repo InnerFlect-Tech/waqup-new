@@ -92,31 +92,28 @@ export default function LoginScreen({ navigation, route }: Props) {
             {!showEmailForm ? (
               <>
                 {/* Social-first: stacked full-width pill buttons */}
-                <TouchableOpacity
+                <Button
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  iconLeft={<GoogleIcon size={20} />}
                   onPress={handleGoogleSignIn}
                   disabled={googleLoading || isLoading}
-                  style={[
-                    styles.pillButton,
-                    { backgroundColor: colors.accent.primary, opacity: googleLoading || isLoading ? 0.6 : 1 },
-                  ]}
-                  activeOpacity={0.75}
+                  style={styles.pillButton}
                 >
-                  <GoogleIcon size={20} />
-                  <Typography variant="bodyBold" style={[styles.pillText, { color: colors.text.onDark }]}>
-                    {googleLoading ? t('login.connectingToGoogle') : t('login.continueWithGoogle')}
-                  </Typography>
-                </TouchableOpacity>
+                  {googleLoading ? t('login.connectingToGoogle') : t('login.continueWithGoogle')}
+                </Button>
 
-                <TouchableOpacity
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  fullWidth
                   onPress={() => setShowEmailForm(true)}
                   disabled={googleLoading || isLoading}
-                  style={[styles.pillButtonOutlined, { borderColor: colors.glass.border }]}
-                  activeOpacity={0.75}
+                  style={styles.pillButtonOutlined}
                 >
-                  <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
-                    Sign in with email
-                  </Typography>
-                </TouchableOpacity>
+                  Sign in with email
+                </Button>
               </>
             ) : (
               /* Email/password form when "Sign in with email" tapped */
@@ -222,28 +219,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   pillButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.full,
-    minHeight: authTokens.socialButtonMinHeight,
     marginBottom: spacing.md,
   },
-  pillText: {
-    marginLeft: spacing.sm,
-  },
   pillButtonOutlined: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    minHeight: authTokens.socialButtonMinHeight,
     marginBottom: spacing.md,
   },
   emailForm: {

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius, shadows } from '@/theme';
+import { spacing, borderRadius, shadows, motionTokens } from '@/theme';
 import { BlurView } from 'expo-blur';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -43,18 +43,20 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
   const slideAnim = React.useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const backdropOpacity = React.useRef(new Animated.Value(0)).current;
 
+  const duration = motionTokens.sheet;
+
   useEffect(() => {
     if (visible) {
       // Slide up animation
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: 0,
-          duration: 300,
+          duration,
           useNativeDriver: true,
         }),
         Animated.timing(backdropOpacity, {
           toValue: 1,
-          duration: 300,
+          duration,
           useNativeDriver: true,
         }),
       ]).start();
@@ -63,17 +65,17 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: SCREEN_HEIGHT,
-          duration: 250,
+          duration: duration - 50,
           useNativeDriver: true,
         }),
         Animated.timing(backdropOpacity, {
           toValue: 0,
-          duration: 250,
+          duration: duration - 50,
           useNativeDriver: true,
         }),
       ]).start();
     }
-  }, [visible]);
+  }, [visible, duration]);
 
   const handleHeight = typeof height === 'string' 
     ? (parseFloat(height) / 100) * SCREEN_HEIGHT 
@@ -92,6 +94,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
           style={[
             styles.backdrop,
             {
+              backgroundColor: colors.overlay,
               opacity: backdropOpacity,
             },
           ]}
@@ -138,7 +141,6 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   sheet: {
     position: 'absolute',

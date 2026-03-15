@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography, Card, Button, QCoin } from '@/components';
+import { Typography, Card, Button, QCoin, ListRow } from '@/components';
 import { useAuthStore } from '@/stores/authStore';
 import { useCreditBalance } from '@/hooks';
 import { MainStackParamList } from '@/navigation/types';
@@ -14,16 +15,16 @@ type ProfileNav = NativeStackNavigationProp<MainStackParamList>;
 interface MenuItem {
   label: string;
   description: string;
-  icon: string;
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
   screen?: keyof MainStackParamList;
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { label: 'Account Settings', description: 'Email, password, notifications', icon: '⚙️', screen: 'Settings' },
-  { label: 'Progress', description: 'Your practice journey & streaks', icon: '📈', screen: 'Progress' },
-  { label: 'Reminders', description: 'Daily practice reminders', icon: '🔔', screen: 'Reminders' },
-  { label: 'Voice Settings', description: 'Your cloned ElevenLabs voice', icon: '🎙️', screen: 'Settings' },
-  { label: 'Privacy & Data', description: 'Delete account and manage data', icon: '🔒', screen: 'Settings' },
+  { label: 'Account Settings', description: 'Email, password, notifications', icon: 'cog', screen: 'Settings' },
+  { label: 'Progress', description: 'Your practice journey & streaks', icon: 'chart-line', screen: 'Progress' },
+  { label: 'Reminders', description: 'Daily practice reminders', icon: 'bell', screen: 'Reminders' },
+  { label: 'Voice Settings', description: 'Your cloned ElevenLabs voice', icon: 'microphone', screen: 'Settings' },
+  { label: 'Privacy & Data', description: 'Delete account and manage data', icon: 'lock', screen: 'Settings' },
 ];
 
 export default function ProfileScreen() {
@@ -123,38 +124,27 @@ export default function ProfileScreen() {
         {/* Menu items */}
         <View style={styles.menuSection}>
           {MENU_ITEMS.map((item) => (
-            <TouchableOpacity
+            <Card
               key={item.label}
-              activeOpacity={0.8}
+              variant="default"
+              pressable
               onPress={() => {
                 if (item.screen) {
                   (navigation.navigate as (name: keyof MainStackParamList) => void)(item.screen);
                 }
               }}
+              accessibilityRole="button"
+              accessibilityLabel={item.label}
+              noPadding
+              style={[styles.menuCard, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
             >
-              <Card
-                variant="default"
-                style={[
-                  styles.menuCard,
-                  { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border },
-                ]}
-              >
-                <Typography variant="h2" style={{ fontSize: 24 }}>
-                  {item.icon}
-                </Typography>
-                <View style={{ flex: 1 }}>
-                  <Typography variant="captionBold" style={{ color: colors.text.primary }}>
-                    {item.label}
-                  </Typography>
-                  <Typography variant="small" style={{ color: colors.text.secondary, marginTop: 2 }}>
-                    {item.description}
-                  </Typography>
-                </View>
-                <Typography variant="body" style={{ color: colors.text.secondary }}>
-                  →
-                </Typography>
-              </Card>
-            </TouchableOpacity>
+              <ListRow
+                icon={item.icon}
+                label={item.label}
+                description={item.description}
+                chevron
+              />
+            </Card>
           ))}
         </View>
 
@@ -223,11 +213,8 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   menuCard: {
-    padding: spacing.lg,
     borderRadius: borderRadius.lg,
     borderWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
+    overflow: 'hidden',
   },
 });

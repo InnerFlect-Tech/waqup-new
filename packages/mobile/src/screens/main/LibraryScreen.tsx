@@ -12,7 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { MainStackParamList, ContentItemType } from '@/navigation/types';
 import { useTheme, spacing, borderRadius } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography, Card, Button, Loading } from '@/components';
+import { Typography, Card, Button, Loading, EmptyState } from '@/components';
 import { useContent } from '@/hooks';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 
@@ -153,60 +153,42 @@ export default function LibraryScreen() {
           </View>
         ) : error ? (
           <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
-            <Card
-              variant="default"
-              style={[styles.emptyCard, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
-            >
-              <Typography variant="h2" style={{ fontSize: 40, marginBottom: spacing.md }}>⚠️</Typography>
-              <Typography variant="h4" style={{ color: colors.text.primary, textAlign: 'center' }}>
-                Could not load library
-              </Typography>
-              <Typography variant="body" style={{ color: colors.text.secondary, textAlign: 'center', marginTop: spacing.sm }}>
-                {error.message}
-              </Typography>
-            </Card>
+            <EmptyState
+              icon={<Typography variant="h2" style={{ fontSize: 40 }}>⚠️</Typography>}
+              title="Could not load library"
+              body={error.message}
+              style={[styles.emptyState, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
+            />
           </ScrollView>
         ) : isEmpty ? (
           <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
-            <Card
-              variant="default"
-              style={[
-                styles.emptyCard,
-                { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border },
-              ]}
-            >
-              <Typography variant="h2" style={{ fontSize: 48, marginBottom: spacing.md }}>
-                📚
-              </Typography>
-              <Typography
-                variant="h3"
-                style={{ color: colors.text.primary, marginBottom: spacing.sm, textAlign: 'center' }}
-              >
-                {debouncedQuery
+            <EmptyState
+              icon={<Typography variant="h2" style={{ fontSize: 40 }}>📚</Typography>}
+              title={
+                debouncedQuery
                   ? 'No results found'
                   : activeFilter !== 'all'
                   ? `No ${activeFilter}s yet`
-                  : 'Your library is empty'}
-              </Typography>
-              <Typography
-                variant="body"
-                style={{
-                  color: colors.text.secondary,
-                  textAlign: 'center',
-                  marginBottom: spacing.xl,
-                  lineHeight: 22,
-                }}
-              >
-                {debouncedQuery
+                  : 'Your library is empty'
+              }
+              body={
+                debouncedQuery
                   ? 'Try different keywords or clear the search'
-                  : 'Create your first practice and it will appear here'}
-              </Typography>
-              {!debouncedQuery && (
-                <Button variant="primary" size="md" onPress={() => navigation.navigate('ContentCreate', { contentType: 'affirmation', mode: 'chat' })}>
-                  Create Practice
-                </Button>
-              )}
-            </Card>
+                  : 'Create your first practice and it will appear here'
+              }
+              action={
+                !debouncedQuery ? (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onPress={() => navigation.navigate('ContentCreate', { contentType: 'affirmation', mode: 'chat' })}
+                  >
+                    Create Practice
+                  </Button>
+                ) : undefined
+              }
+              style={[styles.emptyState, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
+            />
           </ScrollView>
         ) : (
           <FlatList
@@ -271,11 +253,8 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: spacing.xxxl,
   },
-  emptyCard: {
-    padding: spacing.xxl,
-    borderRadius: borderRadius.xl,
+  emptyState: {
     borderWidth: 1,
-    alignItems: 'center',
   },
   itemCard: {
     padding: spacing.md,

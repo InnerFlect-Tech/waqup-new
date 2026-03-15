@@ -3,11 +3,13 @@
  * Maps 1:1 from CreateEntryScreen: Rituals, Affirmations, Meditations.
  */
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme, spacing, borderRadius } from '@/theme';
-import { Typography } from '@/components';
+import { Typography, ListRow } from '@/components';
 import { BottomSheet } from '@/components/layout/BottomSheet';
 import { CONTENT_TYPE_COPY, CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
 import type { ContentItemType } from '@waqup/shared/types';
@@ -15,10 +17,10 @@ import type { MainStackParamList } from '@/navigation/types';
 
 const CREATE_ORDER: ContentItemType[] = ['ritual', 'affirmation', 'meditation'];
 
-const TYPE_ICONS: Record<ContentItemType, string> = {
-  affirmation: '✨',
-  meditation: '🧘',
-  ritual: '🔮',
+const TYPE_ICONS: Record<ContentItemType, React.ComponentProps<typeof MaterialCommunityIcons>['name']> = {
+  affirmation: 'white-balance-sunny',
+  meditation: 'meditation',
+  ritual: 'crystal-ball',
 };
 
 export interface CreateMenuSheetProps {
@@ -32,6 +34,7 @@ export function CreateMenuSheet({ visible, onClose }: CreateMenuSheetProps) {
   const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
 
   const handleSelect = (contentType: ContentItemType) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onClose();
     // Drawer context: navigate to Main stack's ContentCreate
     (navigation as { navigate: (name: string, params?: object) => void }).navigate('Main', {
@@ -54,30 +57,19 @@ export function CreateMenuSheet({ visible, onClose }: CreateMenuSheetProps) {
           const copy = CONTENT_TYPE_COPY[contentType];
           const accentColor = CONTENT_TYPE_COLORS[contentType];
           return (
-            <TouchableOpacity
-              key={contentType}
-              style={[
-                styles.row,
-                { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border },
-              ]}
-              onPress={() => handleSelect(contentType)}
-              activeOpacity={0.8}
-            >
-              <View style={[styles.iconTile, { backgroundColor: `${accentColor}30` }]}>
-                <Typography style={[styles.iconText, { color: accentColor }]}>
-                  {TYPE_ICONS[contentType]}
-                </Typography>
-              </View>
-              <View style={styles.rowText}>
-                <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
-                  {copy.label}s
-                </Typography>
-                <Typography variant="caption" style={{ color: colors.text.secondary, marginTop: 2 }}>
-                  {copy.depth}
-                </Typography>
-              </View>
-              <Typography style={{ color: accentColor, fontSize: 18 }}>›</Typography>
-            </TouchableOpacity>
+            <View key={contentType} style={[styles.rowWrap, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}>
+              <ListRow
+                icon={TYPE_ICONS[contentType]}
+                iconColor={accentColor}
+                label={`${copy.label}s`}
+                description={copy.depth}
+                chevron
+                onPress={() => handleSelect(contentType)}
+                children={
+                  <MaterialCommunityIcons name="chevron-right" size={20} color={accentColor} />
+                }
+              />
+            </View>
           );
         })}
       </View>
@@ -96,27 +88,10 @@ const styles = StyleSheet.create({
   subtitle: {
     marginBottom: spacing.lg,
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.md,
+  rowWrap: {
     borderRadius: borderRadius.lg,
     borderWidth: 1,
     marginBottom: spacing.sm,
-    gap: spacing.md,
-    minHeight: 72,
-  },
-  iconTile: {
-    width: 48,
-    height: 48,
-    borderRadius: borderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 24,
-  },
-  rowText: {
-    flex: 1,
+    overflow: 'hidden',
   },
 });

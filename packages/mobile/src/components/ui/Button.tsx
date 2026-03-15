@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { TouchableOpacity, TouchableOpacityProps, StyleSheet, ViewStyle, View, Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import Animated, { useAnimatedStyle, withTiming, useSharedValue } from 'react-native-reanimated';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/theme';
-import { spacing, borderRadius } from '@/theme';
+import { spacing, buttonTokens } from '@/theme';
 import { Typography } from './Typography';
 import { Loading } from './Loading';
 import { getTextColor, getTextVariant } from '@waqup/shared/utils';
@@ -15,6 +16,7 @@ export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   fullWidth?: boolean;
+  iconLeft?: React.ReactNode;
   children: React.ReactNode;
   style?: ViewStyle;
 }
@@ -38,9 +40,12 @@ export const Button: React.FC<ButtonProps> = ({
   const handlePressIn = useCallback(
     (e: Parameters<NonNullable<TouchableOpacityProps['onPressIn']>>[0]) => {
       pressed.value = true;
+      if (variant === 'primary' || variant === 'secondary') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
       onPressIn?.(e);
     },
-    [onPressIn]
+    [onPressIn, variant]
   );
 
   const handlePressOut = useCallback(
@@ -102,9 +107,12 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <Loading variant="spinner" size="sm" color={variant === 'primary' ? 'white' : 'primary'} />
       ) : (
-        <Typography variant={textVariant} color={textColor} style={styles.buttonText}>
-          {children}
-        </Typography>
+        <>
+          {iconLeft && <View style={styles.iconLeft}>{iconLeft}</View>}
+          <Typography variant={textVariant} color={textColor} style={styles.buttonText}>
+            {children}
+          </Typography>
+        </>
       )}
     </>
   );
@@ -162,7 +170,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: borderRadius.md,
+    borderRadius: buttonTokens.borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -194,17 +202,20 @@ const styles = StyleSheet.create({
   },
   blurContainer: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: borderRadius.md,
+    borderRadius: buttonTokens.borderRadius,
     overflow: 'hidden',
   },
   webContainer: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: borderRadius.md,
+    borderRadius: buttonTokens.borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   buttonText: {
     textAlign: 'center',
+  },
+  iconLeft: {
+    marginRight: buttonTokens.iconGap,
   },
 });

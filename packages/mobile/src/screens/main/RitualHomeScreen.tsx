@@ -3,7 +3,7 @@
  * Affirmations, Meditations, Rituals — each navigates to ContentCreate.
  */
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,9 +11,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { MainStackParamList, MainTabParamList } from '@/navigation/types';
-import { useTheme, spacing, borderRadius } from '@/theme';
+import { useTheme, spacing, borderRadius, iconTokens } from '@/theme';
 import { Screen } from '@/components/layout';
-import { Typography } from '@/components';
+import { Typography, Card } from '@/components';
 import { CONTENT_TYPE_COPY } from '@waqup/shared/constants';
 import type { ContentItemType } from '@waqup/shared/types';
 
@@ -78,30 +78,19 @@ export default function RitualHomeScreen() {
             const copy = CONTENT_TYPE_COPY[type];
             const title = copy?.label ? `${copy.label}s` : type;
             return (
-              <TouchableOpacity
+              <Card
                 key={type}
-                activeOpacity={0.8}
+                variant="default"
+                pressable
                 onPress={() => handleCardPress(type)}
-                style={[
-                  styles.card,
-                  {
-                    backgroundColor: colors.glass.opaque,
-                    borderColor: colors.glass.border,
-                  },
-                ]}
+                accessibilityRole="button"
+                accessibilityLabel={`Create ${title}`}
+                style={[styles.card, { backgroundColor: colors.glass.opaque, borderColor: colors.glass.border }]}
               >
-                <View
-                  style={[
-                    styles.iconContainer,
-                    {
-                      borderColor: colors.accent.tertiary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
+                <View style={[styles.iconContainer, { borderColor: colors.accent.tertiary, borderWidth: 1 }]}>
                   <MaterialCommunityIcons
                     name={icon as 'white-balance-sunny' | 'moon-waning-crescent' | 'fire'}
-                    size={24}
+                    size={iconTokens.lg}
                     color={colors.accent.tertiary}
                   />
                 </View>
@@ -109,14 +98,11 @@ export default function RitualHomeScreen() {
                   <Typography variant="bodyBold" style={{ color: colors.text.primary }}>
                     {title}
                   </Typography>
-                  <Typography
-                    variant="caption"
-                    style={{ color: colors.text.secondary, marginTop: 2 }}
-                  >
+                  <Typography variant="caption" style={{ color: colors.text.secondary, marginTop: 2 }}>
                     {subtitle}
                   </Typography>
                 </View>
-              </TouchableOpacity>
+              </Card>
             );
           })}
         </View>
@@ -148,7 +134,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.lg,
-    borderRadius: borderRadius.xl,
+    borderRadius: borderRadius.lg,
     borderWidth: 1,
     minHeight: 88,
   },
