@@ -243,8 +243,8 @@ export default function HealthPage() {
 
   return (
     <SuperAdminGate>
-    <PageShell intensity="medium" bare>
-      <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
+    <PageShell intensity="medium" bare allowDocumentScroll>
+      <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', paddingTop: spacing.xxl, paddingBottom: spacing.xxl }}>
 
         {/* Header */}
         <div style={{ marginBottom: spacing.xl }}>

@@ -47,7 +47,7 @@ export function ContentCreateLayout({
 }) {
   return (
     <ContentCreationProvider contentType={contentType}>
-      <PageShell intensity="medium">
+      <PageShell intensity="medium" allowDocumentScroll>
         <LayoutInner>{children}</LayoutInner>
       </PageShell>
     </ContentCreationProvider>

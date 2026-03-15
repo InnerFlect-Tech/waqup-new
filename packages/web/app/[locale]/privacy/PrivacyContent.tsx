@@ -66,7 +66,7 @@ export function PrivacyContent() {
     });
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent style={{ maxWidth: 680 }}>
         <Typography
           variant="h1"

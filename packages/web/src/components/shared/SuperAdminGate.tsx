@@ -36,7 +36,7 @@ export function SuperAdminGate({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <PageShell intensity="light" bare>
+      <PageShell intensity="light" bare allowDocumentScroll>
         <div
           style={{
             display: 'flex',

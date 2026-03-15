@@ -112,7 +112,7 @@ export default function CompanyStrategyPage() {
   return (
     <SuperAdminGate>
       <PageShell intensity="medium" bare allowDocumentScroll>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: spacing.xl }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', paddingTop: spacing.xxl, paddingBottom: spacing.xxl }}>
           <div style={{ marginBottom: spacing.xxl }}>
             <Link
               href="/admin"

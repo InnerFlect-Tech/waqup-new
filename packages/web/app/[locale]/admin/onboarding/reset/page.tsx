@@ -54,7 +54,7 @@ export default function RestartOnboardingPage() {
 
   return (
     <SuperAdminGate>
-      <PageShell intensity="strong" maxWidth={480}>
+      <PageShell intensity="strong" maxWidth={480} allowDocumentScroll>
         <div
           style={{
             minHeight: '50dvh',

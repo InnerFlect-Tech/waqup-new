@@ -43,9 +43,15 @@ export const PageShell: React.FC<PageShellProps> = ({
     : `max(${PAGE_TOP_PADDING}, env(safe-area-inset-top, 0px))`;
   const safePaddingBottom = `max(${PAGE_PADDING}, env(safe-area-inset-bottom, 0px))`;
 
-  /** When bare + allowDocumentScroll: page controls layout; minimal wrapper only for stacking. */
+  /** When bare + allowDocumentScroll: page controls layout; apply horizontal padding for header alignment, skip inner maxWidth wrapper. */
   const contentStyle: React.CSSProperties = bare && allowDocumentScroll
-    ? { position: 'relative', zIndex: 1, minWidth: 0 }
+    ? {
+        position: 'relative',
+        zIndex: 1,
+        minWidth: 0,
+        paddingLeft: horizontalPadding,
+        paddingRight: horizontalPadding,
+      }
     : {
         position: 'relative',
         zIndex: 1,

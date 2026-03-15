@@ -351,7 +351,7 @@ function FoundingPartnersDashboard() {
     });
 
   return (
-    <PageShell intensity="light" maxWidth={1100}>
+    <PageShell intensity="light" maxWidth={1100} allowDocumentScroll>
       <div style={{ paddingTop: spacing.xxxl, paddingBottom: spacing.xxxl }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xxl, flexWrap: 'wrap', gap: spacing.md }}>

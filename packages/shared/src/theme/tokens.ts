@@ -155,4 +155,8 @@ export const layout = {
   /** Hero min height — almost full viewport for marketing pages (for-teachers, for-coaches, for-creators, for-studios) */
   heroMinHeightVh: 90,
   heroMinHeightCap: 800,
+  /** Z-index stacking — SSOT for nav, mobile menu, overlays. Ensures header always on top. */
+  zIndexNav: 50,
+  zIndexNavBar: 51,
+  zIndexMobileMenu: 55, /* above nav so portaled menu appears on top */
 } as const;

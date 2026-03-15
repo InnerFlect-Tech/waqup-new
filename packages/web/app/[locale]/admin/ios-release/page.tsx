@@ -404,8 +404,8 @@ export default function IOSReleasePage() {
 
   return (
     <SuperAdminGate>
-      <PageShell intensity="medium" bare>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: spacing.xl }}>
+      <PageShell intensity="medium" bare allowDocumentScroll>
+        <div style={{ maxWidth: 900, margin: '0 auto', paddingTop: spacing.xxl, paddingBottom: spacing.xxl }}>
 
           {/* Header */}
           <div style={{ marginBottom: spacing.xxl }}>

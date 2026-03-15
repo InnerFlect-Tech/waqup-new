@@ -26,7 +26,7 @@ export function PlaceholderPage({
   const colors = theme.colors;
 
   return (
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" allowDocumentScroll>
       <PageContent>
           <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
             {title}

@@ -78,8 +78,8 @@ export default function CreationStepsPage() {
 
   return (
     <SuperAdminGate>
-    <PageShell intensity="medium" bare>
-      <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: spacing.xl }}>
+    <PageShell intensity="medium" bare allowDocumentScroll>
+      <div style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', paddingTop: spacing.xxl, paddingBottom: spacing.xxl }}>
         {/* Header */}
         <div style={{ marginBottom: spacing.xl }}>
           <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary, fontSize: '1.75rem' }}>

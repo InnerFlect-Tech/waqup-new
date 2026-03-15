@@ -15,8 +15,8 @@ export default function SitemapPage() {
 
   return (
     <SuperAdminGate>
-    <PageShell intensity="medium" bare>
-      <div style={{ padding: spacing.xl }}>
+    <PageShell intensity="medium" bare allowDocumentScroll>
+      <div style={{ paddingTop: spacing.xxl, paddingBottom: spacing.xxl }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <Typography variant="h1" style={{ marginBottom: spacing.sm, color: colors.text.primary }}>
             Sitemap

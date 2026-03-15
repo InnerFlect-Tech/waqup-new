@@ -66,11 +66,14 @@ export const Logo: React.FC<LogoProps> = (props) => {
           letterSpacing: size === 'lg' ? '-2px' : '-1px',
           fontSize: fontSize,
           lineHeight: 1,
+          display: 'flex',
+          alignItems: 'center',
           whiteSpace: 'nowrap',
           fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
           WebkitFontSmoothing: 'antialiased',
           MozOsxFontSmoothing: 'grayscale',
           textRendering: 'optimizeLegibility',
+          transform: 'translateY(-1px)', /* optical centering: font metrics make text appear low */
         }}
       >
         <span style={{ fontWeight: 300, color: colors.text.primary }}>wa</span>
@@ -98,7 +101,11 @@ export const Logo: React.FC<LogoProps> = (props) => {
 
   if (renderAsLink) {
     return (
-      <Link href={linkHref} className="waqup-logo-link" style={{ textDecoration: 'none', display: 'inline-block' }}>
+      <Link
+        href={linkHref}
+        className="waqup-logo-link"
+        style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+      >
         {logoContent}
       </Link>
     );

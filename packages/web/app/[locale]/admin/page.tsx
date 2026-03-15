@@ -145,12 +145,13 @@ export default function AdminDashboardPage() {
 
   return (
     <SuperAdminGate>
-      <PageShell intensity="medium" bare>
+      <PageShell intensity="medium" bare allowDocumentScroll>
         <div
           style={{
             maxWidth: 1100,
             margin: '0 auto',
-            padding: spacing.xl,
+            paddingTop: spacing.xxl,
+            paddingBottom: spacing.xxl,
           }}
         >
           <div style={{ marginBottom: spacing.xl }}>

@@ -447,9 +447,9 @@ export default function OracleAdminPage() {
   // ── Admin dashboard ───────────────────────────────────────────────────────
   return (
     <SuperAdminGate>
-    <PageShell intensity="medium">
+    <PageShell intensity="medium" maxWidth={1100} allowDocumentScroll>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}
-        style={{ maxWidth: 720, margin: '0 auto', paddingBottom: spacing.xxl, display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
+        style={{ paddingTop: spacing.xxl, paddingBottom: spacing.xxl, display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: spacing.md, marginBottom: spacing.xxl }}>

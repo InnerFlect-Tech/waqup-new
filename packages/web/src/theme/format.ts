@@ -129,6 +129,8 @@ export const PAGE_HORIZONTAL_PADDING = HEADER_PADDING_X_RESPONSIVE;
 /** Speak page bottom UI height — SSOT for orb centering area. Responsive: shrinks on small viewports to avoid trapping content. */
 export const SPEAK_BOTTOM_UI_HEIGHT = `min(${px(layout.speakBottomUiHeight)}, 35vh)`;
 export const PAGE_PADDING = spacing.xl;
+/** Nav horizontal padding — aligned with page content (PageShell formula) so header edges match content edges. */
+export const NAV_PADDING_X_ALIGNED = `clamp(${PAGE_PADDING}, 5vw, ${HEADER_PADDING_X})`;
 /** Standard glass card padding - use for most cards */
 export const CARD_PADDING = spacing.lg;
 /** Auth/content glass card padding */
@@ -191,4 +193,9 @@ export const MENU_PANEL_SHADOW = '0 8px 32px rgba(0,0,0,0.5)';
 export const MENU_DRAWER_SHADOW = '-8px 0 32px rgba(0,0,0,0.4)';
 /** Nav bar background when scrolled — SSOT for fixed header glass effect */
 export const NAV_SCROLLED_BG = 'rgba(0,0,0,0.8)';
+
+/** Z-index stacking — SSOT for nav, header bar, mobile menu. Ensures header always on top. */
+export const Z_INDEX_NAV = layout.zIndexNav;
+export const Z_INDEX_NAV_BAR = layout.zIndexNavBar;
+export const Z_INDEX_MOBILE_MENU = layout.zIndexMobileMenu;
 

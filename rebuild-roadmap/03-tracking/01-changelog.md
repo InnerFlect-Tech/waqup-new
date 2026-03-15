@@ -6,6 +6,18 @@
 
 ---
 
+## Three scrollbars fix & PageShell allowDocumentScroll (2026-03-15)
+
+- **Status**: ✅ Complete
+- **Completed**: 2026-03-15
+- **Notes**:
+  - **Root cause**: PageShell with default `allowDocumentScroll=false` creates a nested scroll container (overflowY: auto + u-h-dvh) inside AppLayout's scroll container. This produced three scrollbars when the mobile menu was open: (1) mobile menu drawer, (2) AppLayout main content, (3) PageShell inner — the third was redundant.
+  - **Fix**: Added `allowDocumentScroll` to all PageShell usages that render inside AppLayout: admin (waitlist, users, dashboard, founding-partners, content, oracle, ios-release, onboarding/reset), system (schema, creation-steps, conversation, audio, pipelines, page), updates (page, open-items, beta-tester-recruitment, beta-readiness-implementation, audio-system-implementation, multilingual-i18n-implementation), legal (data-deletion, privacy, terms), health, pages, sitemap-view, ContentCreateLayout, SuperAdminGate, PlaceholderPage. With allowDocumentScroll, PageShell does not add its own overflow — AppLayout's scroll container is the single scroll region for page content.
+- **Affected**: 25+ pages and components using PageShell.
+- **Updated**: 2026-03-15
+
+---
+
 ## Header/Navigation System Production Refactor (2026-03-15)
 
 - **Status**: ✅ Complete

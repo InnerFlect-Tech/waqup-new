@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PageShell, SuperAdminGate } from '@/components';
+import { PageShell, SuperAdminGate, QCoin } from '@/components';
 import { useTheme } from '@/theme';
 import { spacing, borderRadius, BLUR } from '@/theme';
-import { QCoin } from '@/components';
-import { ArrowUpRight, ArrowDownLeft, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, RefreshCw, ChevronDown, ChevronRight, Search, Users, CreditCard, Coins, ArrowLeft } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import { formatDate, formatDateRelative } from '@waqup/shared/utils';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -41,6 +41,52 @@ interface AdminUser {
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  icon: React.ElementType;
+  accent: string;
+}) {
+  return (
+    <div
+      style={{
+        padding: spacing.lg,
+        borderRadius: borderRadius.lg,
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+      }}
+    >
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          background: `${accent}18`,
+          border: `1px solid ${accent}30`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Icon size={16} color={accent} />
+      </div>
+      <div>
+        <div style={{ fontSize: 28, fontWeight: 300, color: '#fff', letterSpacing: '-1px', lineHeight: 1 }}>
+          {value}
+        </div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 4 }}>{label}</div>
+      </div>
+    </div>
+  );
+}
 
 function StatusBadge({ status }: { status: string }) {
   const colorMap: Record<string, string> = {
@@ -276,7 +322,7 @@ export default function AdminUsersPage() {
   const colors = theme.colors;
 
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start true — we fetch on mount
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
@@ -313,16 +359,59 @@ export default function AdminUsersPage() {
 
   return (
     <SuperAdminGate>
-    <PageShell intensity="medium">
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: `${spacing.xxl} ${spacing.xl}` }}>
-        {/* Header */}
-        <div style={{ marginBottom: spacing.xl }}>
-          <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: colors.text.secondary, marginBottom: spacing.xs }}>
-            Superadmin
+    <PageShell intensity="light" maxWidth={1100} allowDocumentScroll>
+      <div style={{ paddingTop: spacing.xxxl, paddingBottom: spacing.xxxl }}>
+        {/* Header — matches Waitlist layout */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xxl, flexWrap: 'wrap', gap: spacing.md }}>
+          <div>
+            <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(147,51,234,0.8)', marginBottom: 6 }}>
+              Admin
+            </div>
+            <h1 style={{ fontSize: 28, fontWeight: 300, color: colors.text.primary, margin: 0, letterSpacing: '-0.5px' }}>
+              Users
+            </h1>
           </div>
-          <h1 style={{ fontSize: 28, fontWeight: 200, color: colors.text.primary, margin: 0, letterSpacing: '-0.02em' }}>
-            Users
-          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+            <Link
+              href="/admin"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 14px',
+                borderRadius: borderRadius.md,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: 'rgba(255,255,255,0.5)',
+                fontSize: 13,
+                textDecoration: 'none',
+              }}
+            >
+              <ArrowLeft size={14} />
+              Dashboard
+            </Link>
+            <button
+              onClick={() => void fetchUsers()}
+              disabled={loading}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 14px',
+                borderRadius: borderRadius.md,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: 13,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.5 : 1,
+                fontFamily: 'inherit',
+              }}
+            >
+              <RefreshCw size={14} style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
+              Refresh
+            </button>
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
@@ -331,80 +420,50 @@ export default function AdminUsersPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
-              {/* Stats bar */}
+              {/* Stats — matches Waitlist StatCard layout */}
               <div
                 style={{
-                  display: 'flex',
-                  gap: spacing.lg,
-                  marginBottom: spacing.xl,
-                  flexWrap: 'wrap',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                  gap: spacing.md,
+                  marginBottom: spacing.xxl,
                 }}
               >
-                {[
-                  { label: 'Total users', value: users.length },
-                  { label: 'Active subscribers', value: activeSubscriptions },
-                  { label: 'Total Qs in circulation', value: totalBalance },
-                ].map((stat) => (
-                  <div
-                    key={stat.label}
-                    style={{
-                      padding: `${spacing.md} ${spacing.xl}`,
-                      borderRadius: borderRadius.lg,
-                      background: colors.glass.light,
-                      backdropFilter: BLUR.lg,
-                      WebkitBackdropFilter: BLUR.lg,
-                      border: `1px solid ${colors.glass.border}`,
-                      minWidth: 140,
-                    }}
-                  >
-                    <div style={{ fontSize: 11, color: colors.text.secondary, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                      {stat.label}
-                    </div>
-                    <div style={{ fontSize: 24, fontWeight: 200, color: colors.text.primary, letterSpacing: '-0.02em' }}>
-                      {stat.value}
-                    </div>
-                  </div>
-                ))}
+                <StatCard label="Total users" value={users.length} icon={Users} accent="#9333EA" />
+                <StatCard label="Active subscribers" value={activeSubscriptions} icon={CreditCard} accent="#6366F1" />
+                <StatCard label="Total Qs in circulation" value={totalBalance} icon={Coins} accent="#A855F7" />
               </div>
 
-              {/* Toolbar */}
+              {/* Search — matches Waitlist toolbar */}
               <div style={{ display: 'flex', gap: spacing.md, marginBottom: spacing.md, alignItems: 'center' }}>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by email or ID…"
+                <div
                   style={{
                     flex: 1,
-                    padding: `${spacing.sm} ${spacing.md}`,
-                    borderRadius: borderRadius.md,
-                    background: colors.glass.medium,
-                    border: `1px solid ${colors.glass.border}`,
-                    color: colors.text.primary,
-                    fontSize: 14,
-                    outline: 'none',
-                  }}
-                />
-                <button
-                  onClick={() => void fetchUsers()}
-                  disabled={loading}
-                  style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 5,
-                    padding: `${spacing.sm} ${spacing.md}`,
+                    gap: 10,
+                    padding: `10px ${spacing.md}`,
                     borderRadius: borderRadius.md,
-                    background: colors.glass.medium,
-                    border: `1px solid ${colors.glass.border}`,
-                    color: colors.text.secondary,
-                    fontSize: 13,
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.6 : 1,
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.08)',
                   }}
                 >
-                  <RefreshCw size={13} style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
-                  Refresh
-                </button>
+                  <Search size={16} color="rgba(255,255,255,0.4)" style={{ flexShrink: 0 }} />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search by email or ID…"
+                    style={{
+                      flex: 1,
+                      background: 'transparent',
+                      border: 'none',
+                      color: colors.text.primary,
+                      fontSize: 14,
+                      outline: 'none',
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Error */}
@@ -418,9 +477,32 @@ export default function AdminUsersPage() {
                     color: colors.error,
                     fontSize: 13,
                     marginBottom: spacing.md,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: spacing.md,
+                    flexWrap: 'wrap',
                   }}
                 >
-                  {fetchError}
+                  <span>{fetchError}</span>
+                  <button
+                    type="button"
+                    onClick={() => void fetchUsers()}
+                    disabled={loading}
+                    style={{
+                      padding: `${spacing.xs} ${spacing.sm}`,
+                      borderRadius: borderRadius.sm,
+                      background: `${colors.error}20`,
+                      border: `1px solid ${colors.error}40`,
+                      color: colors.error,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    Retry
+                  </button>
                 </div>
               )}
 

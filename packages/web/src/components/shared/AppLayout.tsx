@@ -34,7 +34,7 @@ import {
   Compass,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher, MenuDivider } from '@/components';
-import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, HEADER_PADDING_X_RESPONSIVE, BLUR, MENU_PANEL_BG, MENU_PANEL_BG_OPAQUE, MENU_PANEL_SHADOW, MENU_DRAWER_SHADOW, NAV_SCROLLED_BG } from '@/theme';
+import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, NAV_PADDING_X_ALIGNED, Z_INDEX_NAV, Z_INDEX_NAV_BAR, Z_INDEX_MOBILE_MENU, BLUR, MENU_PANEL_BG, MENU_PANEL_BG_OPAQUE, MENU_PANEL_SHADOW, MENU_DRAWER_SHADOW, NAV_SCROLLED_BG } from '@/theme';
 import { withOpacity } from '@waqup/shared/theme';
 import { useAuthStore, useRoleOverrideStore } from '@/stores';
 import { useCreditBalance, useAvatarColors, useSuperAdmin } from '@/hooks';
@@ -78,8 +78,8 @@ const NAV_ITEMS: NavItem[] = [
 
 const USER_MENU_ITEMS: UserMenuItem[] = [
   { name: 'My Library', path: '/library', icon: <Library className="w-4 h-4" /> },
-  { name: 'Plan', path: '/sanctuary/plan', icon: <CreditCard className="w-4 h-4" /> },
   { name: 'Settings', path: '/sanctuary/settings', icon: <Settings className="w-4 h-4" /> },
+  { name: 'Plan', path: '/sanctuary/plan', icon: <CreditCard className="w-4 h-4" /> },
 ];
 
 const USER_MENU_ITEMS_SECONDARY: UserMenuItem[] = [
@@ -107,23 +107,54 @@ const VIEW_AS_LABELS: Record<Exclude<ViewAsRole, null>, string> = {
 
 const VIEW_AS_BANNER_HEIGHT = 44;
 
-const SUPERADMIN_MENU_ITEMS: UserMenuItem[] = [
-  { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
-  { name: 'Company Strategy', path: '/admin/company-strategy', icon: <Compass className="w-4 h-4" /> },
-  { name: 'Restart onboarding', path: '/admin/onboarding/reset', icon: <RotateCcw className="w-4 h-4" /> },
-  { name: 'About & Acknowledgments', path: '/sanctuary/settings/about', icon: <Info className="w-4 h-4" /> },
-  { name: 'Updates', path: '/updates', icon: <FileText className="w-4 h-4" /> },
-  { name: 'Users', path: '/admin/users', icon: <Users className="w-4 h-4" /> },
-  { name: 'Waitlist', path: '/admin/waitlist', icon: <ListChecks className="w-4 h-4" /> },
-  { name: 'Founding Partners', path: '/admin/founding-partners', icon: <Handshake className="w-4 h-4" /> },
-  { name: 'Content Overview', path: '/admin/content', icon: <BarChart3 className="w-4 h-4" /> },
-  { name: 'Oracle / AI', path: '/admin/oracle', icon: <Cpu className="w-4 h-4" /> },
-  { name: 'System', path: '/system', icon: <Settings className="w-4 h-4" /> },
-  { name: 'Creation Steps', path: '/system/creation-steps', icon: <Layout className="w-4 h-4" /> },
-  { name: 'API Health', path: '/health', icon: <Activity className="w-4 h-4" /> },
-  { name: 'All Pages', path: '/pages', icon: <FileText className="w-4 h-4" /> },
-  { name: 'Showcase', path: '/showcase', icon: <Layout className="w-4 h-4" /> },
-  { name: 'Sitemap', path: '/sitemap-view', icon: <Map className="w-4 h-4" /> },
+/** Super Admin menu items grouped by category for clarity */
+const SUPERADMIN_MENU_CATEGORIES: { label: string; items: UserMenuItem[] }[] = [
+  {
+    label: 'Admin',
+    items: [
+      { name: 'Admin Dashboard', path: '/admin', icon: <Shield className="w-4 h-4" /> },
+      { name: 'Users', path: '/admin/users', icon: <Users className="w-4 h-4" /> },
+      { name: 'Content Overview', path: '/admin/content', icon: <BarChart3 className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Growth & Access',
+    items: [
+      { name: 'Waitlist', path: '/admin/waitlist', icon: <ListChecks className="w-4 h-4" /> },
+      { name: 'Founding Partners', path: '/admin/founding-partners', icon: <Handshake className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'AI & System',
+    items: [
+      { name: 'Oracle / AI', path: '/admin/oracle', icon: <Cpu className="w-4 h-4" /> },
+      { name: 'System', path: '/system', icon: <Settings className="w-4 h-4" /> },
+      { name: 'API Health', path: '/health', icon: <Activity className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Documentation',
+    items: [
+      { name: 'Updates', path: '/updates', icon: <FileText className="w-4 h-4" /> },
+      { name: 'Creation Steps', path: '/system/creation-steps', icon: <Layout className="w-4 h-4" /> },
+      { name: 'Company Strategy', path: '/admin/company-strategy', icon: <Compass className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Developer',
+    items: [
+      { name: 'All Pages', path: '/pages', icon: <FileText className="w-4 h-4" /> },
+      { name: 'Showcase', path: '/showcase', icon: <Layout className="w-4 h-4" /> },
+      { name: 'Sitemap', path: '/sitemap-view', icon: <Map className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Tools',
+    items: [
+      { name: 'Restart onboarding', path: '/admin/onboarding/reset', icon: <RotateCcw className="w-4 h-4" /> },
+      { name: 'About & Acknowledgments', path: '/sanctuary/settings/about', icon: <Info className="w-4 h-4" /> },
+    ],
+  },
 ];
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -153,6 +184,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [profileMenuPosition, setProfileMenuPosition] = useState<{ top: number; right: number } | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuOpenedAtRef = useRef<number>(0);
 
   const navItems: NavItem[] = [
     ...NAV_ITEMS,
@@ -264,12 +296,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <motion.nav
           initial={{ y: 0 }}
           animate={{ y: 0 }}
-          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
+          className="fixed top-0 left-0 right-0 transition-all duration-200"
           style={{
+            zIndex: Z_INDEX_NAV,
             paddingTop: `max(${spacing.md}, env(safe-area-inset-top, 0px))`,
-            paddingLeft: HEADER_PADDING_X_RESPONSIVE,
-            paddingRight: HEADER_PADDING_X_RESPONSIVE,
-            ...(isScrolled ? navScrolledStyle : { background: 'transparent' }),
+            paddingLeft: NAV_PADDING_X_ALIGNED,
+            paddingRight: NAV_PADDING_X_ALIGNED,
+            ...navScrolledStyle,
           }}
         >
           <div
@@ -283,9 +316,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           >
             <div
               className="flex items-center justify-between flex-nowrap"
-              style={{ height: NAV_HEIGHT, minHeight: NAV_HEIGHT, gap: spacing.xl }}
+              style={{
+                position: 'relative',
+                zIndex: Z_INDEX_NAV_BAR,
+                height: NAV_HEIGHT,
+                minHeight: NAV_HEIGHT,
+                gap: spacing.xl,
+                alignItems: 'center',
+              }}
             >
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 flex items-center" style={{ minHeight: NAV_HEIGHT }}>
                 <Logo size="md" href="/sanctuary" />
               </div>
 
@@ -516,53 +556,60 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         <>
                           <MenuDivider background={withOpacity(colors.accent.tertiary, 0.12)} margin={`0 ${spacing.lg}`} />
                           <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
-                            <p
-                              className="text-xs font-medium"
-                              style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                            >
-                              Super Admin
-                            </p>
-                            <div
-                              style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
-                                gap: 2,
-                              }}
-                            >
-                              {SUPERADMIN_MENU_ITEMS.map((item) => (
-                                <button
-                                  key={item.path}
-                                  type="button"
-                                  className={`flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn ${pathname === item.path ? 'active' : ''}`}
-                                  style={{
-                                    padding: `${spacing.sm} ${spacing.md}`,
-                                    gap: spacing.md,
-                                    color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
-                                    background: pathname === item.path ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
-                                  }}
-                                  onClick={() => {
-                                    router.push(item.path);
-                                    setShowProfileMenu(false);
-                                  }}
-                                >
-                                  {item.icon}
-                                  <span className="truncate">{item.name}</span>
-                                </button>
-                              ))}
-                            </div>
+                            {SUPERADMIN_MENU_CATEGORIES.map((cat) => (
+                              <div key={cat.label} style={{ marginBottom: cat.label ? spacing.lg : 0 }}>
+                                {cat.label && (
+                                  <p
+                                    style={{
+                                      fontSize: 11,
+                                      fontWeight: 600,
+                                      letterSpacing: '0.06em',
+                                      textTransform: 'uppercase',
+                                      color: colors.text.tertiary,
+                                      marginBottom: spacing.sm,
+                                      marginTop: cat.label === SUPERADMIN_MENU_CATEGORIES[0]?.label ? 0 : spacing.md,
+                                    }}
+                                  >
+                                    {cat.label}
+                                  </p>
+                                )}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                                  {cat.items.map((item) => (
+                                    <button
+                                      key={item.path}
+                                      type="button"
+                                      className={`w-full flex items-center text-sm rounded-lg border-0 cursor-pointer transition-all nav-menu-item-btn ${pathname === item.path ? 'active' : ''}`}
+                                      style={{
+                                        padding: `${spacing.sm} ${spacing.md}`,
+                                        gap: spacing.md,
+                                        borderRadius: borderRadius.md,
+                                        color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
+                                        background: pathname === item.path ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
+                                      }}
+                                      onClick={() => {
+                                        router.push(item.path);
+                                        setShowProfileMenu(false);
+                                      }}
+                                    >
+                                      {item.icon}
+                                      <span>{item.name}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                           <MenuDivider background={withOpacity(colors.accent.tertiary, 0.12)} margin={`0 ${spacing.lg}`} />
                         </>
                       )}
                       {actualIsSuperAdmin && (
                         <div style={{ padding: `${spacing.sm} ${spacing.lg}` }}>
-                          <p
-                            className="text-xs font-medium"
-                            style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                          >
-                            View as
-                          </p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <p
+                      style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}
+                    >
+                      View as
+                    </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
                               {VIEW_AS_OPTIONS.map((opt) => {
                                 const isActive = viewAsRole === opt.value;
                                 return (
@@ -573,6 +620,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                     style={{
                                       padding: `${spacing.sm} ${spacing.md}`,
                                       gap: spacing.md,
+                                      borderRadius: borderRadius.md,
                                       color: isActive ? colors.accent.tertiary : colors.text.onDark,
                                       background: isActive ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
                                     }}
@@ -614,19 +662,29 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
               </div>
 
-              <div className="md:hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2"
+              <div
+                className="md:hidden flex items-center justify-center flex-shrink-0"
+                style={{ touchAction: 'manipulation', minWidth: 44, minHeight: NAV_HEIGHT }}
+              >
+                <button
+                  type="button"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    const willBeOpen = !isMobileMenuOpen;
+                    if (willBeOpen) mobileMenuOpenedAtRef.current = Date.now();
+                    setIsMobileMenuOpen((prev) => !prev);
+                  }}
+                  className="inline-flex items-center justify-center p-2 rounded-lg border-0 cursor-pointer transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  aria-label={isMobileMenuOpen ? t('closeMenu') : t('openMenu')}
+                  data-testid="mobile-menu-toggle"
+                  style={{ touchAction: 'manipulation', background: 'transparent', color: colors.text.primary, transform: 'translateY(-1px)' }}
                 >
                   {isMobileMenuOpen ? (
-                    <X className="w-6 h-6" style={{ color: colors.text.primary }} />
+                    <X className="w-6 h-6" />
                   ) : (
-                    <Menu className="w-6 h-6" style={{ color: colors.text.primary }} />
+                    <Menu className="w-6 h-6" />
                   )}
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -634,7 +692,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               <div
                 style={{
                   width: '100%',
-                  padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE}`,
+                  padding: `${spacing.sm} ${NAV_PADDING_X_ALIGNED}`,
                   background: withOpacity(colors.accent.primary, 0.12),
                   borderBottom: `1px solid ${colors.glass.border}`,
                   display: 'flex',
@@ -666,251 +724,299 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
-        </motion.nav>
 
-        {/* Authenticated mobile menu: portaled to body to prevent scroll-induced clipping on mobile browsers */}
-        <AnimatePresence>
-          {isMobileMenuOpen && typeof document !== 'undefined' && createPortal(
-            <div className="md:hidden fixed inset-0 z-[45]" style={{ pointerEvents: 'auto' }} aria-hidden="false">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                key="auth-menu-backdrop"
-                transition={{ duration: 0.2 }}
-                style={{
-                  position: 'fixed',
-                  inset: 0,
-                  background: colors.overlay,
-                  backdropFilter: BLUR.sm,
-                  WebkitBackdropFilter: BLUR.sm,
-                }}
-                onClick={() => setIsMobileMenuOpen(false)}
-              />
-              <motion.div
-                key="auth-menu-panel"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                style={{
-                  position: 'fixed',
-                  top: viewAsRole !== null && actualIsSuperAdmin ? `calc(${NAV_TOP_OFFSET} + ${VIEW_AS_BANNER_HEIGHT}px)` : NAV_TOP_OFFSET,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: NAV_SCROLLED_BG,
-                  backdropFilter: BLUR.lg,
-                  WebkitBackdropFilter: BLUR.lg,
-                  padding: `${spacing.sm} ${HEADER_PADDING_X_RESPONSIVE} ${spacing.md}`,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: spacing.sm,
-                  maxHeight: 'min(80vh, 520px)',
-                  overflowY: 'auto',
-                  overflowX: 'hidden',
-                  WebkitOverflowScrolling: 'touch',
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {navItems.map((item) => (
-                  <Button
-                    key={item.path}
-                    variant="ghost"
-                    onClick={() => router.push(item.path)}
-                    className="w-full justify-start"
-                    style={{
-                      color: pathname === item.path ? colors.text.primary : colors.text.secondary,
-                      background: pathname === item.path ? colors.glass.border : undefined,
-                    }}
+          {/* Authenticated mobile menu: portaled to body to avoid motion.nav transform containing block (fixed would clip) */}
+          {typeof document !== 'undefined' &&
+            createPortal(
+              <AnimatePresence>
+                {isMobileMenuOpen && (
+                  <div
+                    key="auth-mobile-menu"
+                    className="md:hidden fixed inset-0"
+                    style={{ zIndex: Z_INDEX_MOBILE_MENU, pointerEvents: 'auto' }}
+                    aria-hidden="false"
                   >
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </Button>
-                ))}
-
-                <MenuDivider background={colors.glass.border} />
-
-                <button
-                  type="button"
-                  className="w-full text-left rounded-lg border-0 cursor-pointer"
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  key="auth-drawer-backdrop"
+                  transition={{ duration: 0.2 }}
                   style={{
-                    padding: `${spacing.md} ${spacing.lg}`,
-                    background: withOpacity(colors.accent.primary, 0.08),
-                    border: `1px solid ${withOpacity(colors.accent.tertiary, 0.15)}`,
+                    position: 'fixed',
+                    inset: 0,
+                    background: colors.overlay,
+                    backdropFilter: BLUR.sm,
+                    WebkitBackdropFilter: BLUR.sm,
                   }}
                   onClick={() => {
-                    router.push('/sanctuary/credits');
+                    if (Date.now() - mobileMenuOpenedAtRef.current < 350) return;
                     setIsMobileMenuOpen(false);
                   }}
-                >
-                  {displayName && (
-                    <p className="text-sm font-medium truncate" style={{ color: colors.text.primary, marginBottom: 2 }}>
-                      {displayName}
-                    </p>
-                  )}
-                  <p className="text-xs truncate" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
-                    {user?.email}
-                  </p>
-                  <span
-                    className="inline-flex items-center rounded-full"
-                    style={{
-                      padding: `${spacing.xs} ${spacing.sm}`,
-                      gap: spacing.xs,
-                      background: withOpacity(colors.accent.primary, 0.2),
-                      border: `1px solid ${withOpacity(colors.accent.tertiary, 0.3)}`,
-                      fontSize: '0.75rem',
-                      color: colors.text.secondary,
-                    }}
-                  >
-                    <QCoin size="sm" showAmount={creditsBalance} />
-                    <span style={{ marginLeft: spacing.xs }}>Qs</span>
-                  </span>
-                </button>
-
-                {USER_MENU_ITEMS.map((item) => (
-                  <button
-                    key={item.path}
-                    type="button"
-                    className="w-full flex items-center rounded-lg border-0 cursor-pointer"
-                    style={{
-                      padding: `${spacing.md} ${spacing.lg}`,
-                      gap: spacing.md,
-                      color: colors.text.onDark,
-                      background: 'transparent',
-                    }}
-                    onClick={() => {
-                      router.push(item.path);
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    {item.icon}
-                    {item.name}
-                  </button>
-                ))}
-
-                <MenuDivider background={colors.glass.border} />
-
-                {USER_MENU_ITEMS_SECONDARY.map((item) => (
-                  <button
-                    key={item.path}
-                    type="button"
-                    className="w-full flex items-center rounded-lg border-0 cursor-pointer"
-                    style={{
-                      padding: `${spacing.md} ${spacing.lg}`,
-                      gap: spacing.md,
-                      color: item.highlight ? colors.accent.tertiary : colors.text.onDark,
-                      background: 'transparent',
-                    }}
-                    onClick={() => {
-                      router.push(item.path);
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    {item.icon}
-                    {item.name}
-                  </button>
-                ))}
-
-                {actualIsSuperAdmin && viewAsRole === null && (
-                  <>
-                    <MenuDivider background={colors.glass.border} />
-                    <div>
-                      <p
-                        className="text-xs font-medium"
-                        style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                      >
-                        Super Admin
-                      </p>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                        {SUPERADMIN_MENU_ITEMS.map((item) => (
-                          <button
-                            key={item.path}
-                            type="button"
-                            className="flex items-center rounded-lg border-0 cursor-pointer"
-                            style={{
-                              padding: `${spacing.sm} ${spacing.md}`,
-                              gap: spacing.md,
-                              color: pathname === item.path ? colors.accent.tertiary : colors.text.onDark,
-                              background: 'transparent',
-                            }}
-                            onClick={() => {
-                              router.push(item.path);
-                              setIsMobileMenuOpen(false);
-                            }}
-                          >
-                            {item.icon}
-                            <span className="truncate">{item.name}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <MenuDivider background={colors.glass.border} />
-                  </>
-                )}
-                {actualIsSuperAdmin && (
-                  <div>
-                    <p
-                      className="text-xs font-medium"
-                      style={{ color: colors.text.tertiary, marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                    >
-                      View as
-                    </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {VIEW_AS_OPTIONS.map((opt) => {
-                        const isActive = viewAsRole === opt.value;
-                        return (
-                          <button
-                            key={opt.label}
-                            type="button"
-                            className="w-full flex items-center justify-between text-sm rounded-lg border-0 cursor-pointer"
-                            style={{
-                              padding: `${spacing.sm} ${spacing.md}`,
-                              gap: spacing.md,
-                              color: isActive ? colors.accent.tertiary : colors.text.onDark,
-                              background: isActive ? withOpacity(colors.accent.tertiary, 0.12) : 'transparent',
-                            }}
-                            onClick={() => handleViewAsSelect(opt.value)}
-                          >
-                            <span>{opt.label}</span>
-                            {isActive && <Check className="w-4 h-4" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                <MenuDivider background={colors.glass.border} />
-
-                <div style={{ padding: spacing.lg }}>
-                  <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}>
-                    {t('language')}
-                  </p>
-                  <LanguageSwitcher compact />
-                </div>
-
-                <MenuDivider background={colors.glass.border} />
-
-                <button
-                  type="button"
-                  className="w-full flex items-center text-sm rounded-lg border-0 cursor-pointer"
+                />
+                <motion.div
+                  key="auth-drawer-panel"
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'spring', damping: 28, stiffness: 300 }}
                   style={{
-                    padding: `${spacing.md} ${spacing.lg}`,
-                    gap: spacing.md,
-                    color: colors.text.secondary,
-                    background: 'transparent',
+                    position: 'fixed',
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: 'min(320px, 88vw)',
+                    maxWidth: 320,
+                    background: MENU_PANEL_BG_OPAQUE,
+                    backdropFilter: BLUR.xl,
+                    WebkitBackdropFilter: BLUR.xl,
+                    borderLeft: `1px solid ${colors.glass.border}`,
+                    boxShadow: MENU_DRAWER_SHADOW,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflowY: 'auto',
                   }}
-                  onClick={handleSignOut}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <LogOut className="w-4 h-4" />
-                  Sign out
-                </button>
-              </motion.div>
-            </div>,
-            document.body
-          )}
-        </AnimatePresence>
+                  {/* Header: User card on top + close */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      gap: spacing.md,
+                      padding: `${spacing.lg} ${spacing.xl}`,
+                      flexShrink: 0,
+                      borderBottom: `1px solid ${colors.glass.border}`,
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="flex-1 text-left border-0 cursor-pointer min-w-0"
+                      style={{
+                        padding: 0,
+                        background: 'transparent',
+                      }}
+                      onClick={() => {
+                        router.push('/sanctuary/credits');
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      {displayName && (
+                        <p className="text-sm font-medium truncate" style={{ color: colors.text.primary, marginBottom: 2 }}>
+                          {displayName}
+                        </p>
+                      )}
+                      <p className="text-xs truncate" style={{ color: colors.text.secondary, marginBottom: spacing.xs }}>
+                        {user?.email}
+                      </p>
+                      <span
+                        className="inline-flex items-center rounded-full"
+                        style={{
+                          padding: `${spacing.xs} ${spacing.sm}`,
+                          gap: spacing.xs,
+                          background: withOpacity(colors.accent.primary, 0.2),
+                          border: `1px solid ${withOpacity(colors.accent.tertiary, 0.3)}`,
+                          fontSize: '0.75rem',
+                          color: colors.text.secondary,
+                        }}
+                      >
+                        <QCoin size="sm" showAmount={creditsBalance} />
+                        <span style={{ marginLeft: spacing.xs }}>Qs</span>
+                      </span>
+                    </button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-2 shrink-0"
+                      aria-label={t('closeMenu')}
+                    >
+                      <X className="w-5 h-5" style={{ color: colors.text.primary }} />
+                    </Button>
+                  </div>
+                  {/* Nav items: public-style ghost buttons (SSOT from public menu) */}
+                  <div
+                    style={{
+                      flex: 1,
+                      padding: `${spacing.lg} ${spacing.xl}`,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: spacing.xs,
+                    }}
+                  >
+                    {navItems.map((item) => (
+                      <Button
+                        key={item.path}
+                        variant="ghost"
+                        onClick={() => {
+                          router.push(item.path);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start"
+                        style={{
+                          color: pathname === item.path ? colors.text.primary : colors.text.secondary,
+                          background: pathname === item.path ? colors.glass.border : undefined,
+                        }}
+                      >
+                        {item.icon}
+                        <span>{item.name}</span>
+                      </Button>
+                    ))}
+
+                    <MenuDivider background={colors.glass.border} />
+
+                    {USER_MENU_ITEMS.map((item) => (
+                      <Button
+                        key={item.path}
+                        variant="ghost"
+                        onClick={() => {
+                          router.push(item.path);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start"
+                        style={{
+                          color: pathname === item.path ? colors.text.primary : colors.text.secondary,
+                          background: pathname === item.path ? colors.glass.border : undefined,
+                        }}
+                      >
+                        {item.icon}
+                        {item.name}
+                      </Button>
+                    ))}
+
+                    {USER_MENU_ITEMS_SECONDARY.map((item) => (
+                      <Button
+                        key={item.path}
+                        variant="ghost"
+                        onClick={() => {
+                          router.push(item.path);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full justify-start"
+                        style={{
+                          color: item.highlight ? colors.accent.tertiary : pathname === item.path ? colors.text.primary : colors.text.secondary,
+                          background: pathname === item.path ? colors.glass.border : undefined,
+                        }}
+                      >
+                        {item.icon}
+                        {item.name}
+                      </Button>
+                    ))}
+
+                    {actualIsSuperAdmin && viewAsRole === null && (
+                      <>
+                        <MenuDivider background={colors.glass.border} />
+                        <div>
+                          <p
+                            style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}
+                          >
+                            Super Admin
+                          </p>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>
+                            {SUPERADMIN_MENU_CATEGORIES.map((cat) => (
+                              <div key={cat.label}>
+                                <p
+                                  style={{
+                                    fontSize: 10,
+                                    fontWeight: 600,
+                                    letterSpacing: '0.08em',
+                                    textTransform: 'uppercase',
+                                    color: colors.text.tertiary,
+                                    marginBottom: spacing.xs,
+                                    opacity: 0.8,
+                                  }}
+                                >
+                                  {cat.label}
+                                </p>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                                  {cat.items.map((item) => (
+                                    <Button
+                                      key={item.path}
+                                      variant="ghost"
+                                      onClick={() => {
+                                        router.push(item.path);
+                                        setIsMobileMenuOpen(false);
+                                      }}
+                                      className="w-full justify-start"
+                                      style={{
+                                        color: pathname === item.path ? colors.accent.tertiary : colors.text.secondary,
+                                        background: pathname === item.path ? withOpacity(colors.accent.tertiary, 0.12) : undefined,
+                                      }}
+                                    >
+                                      {item.icon}
+                                      <span>{item.name}</span>
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <MenuDivider background={colors.glass.border} />
+                      </>
+                    )}
+                    {actualIsSuperAdmin && (
+                      <div>
+                        <p
+                          style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}
+                        >
+                          View as
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
+                          {VIEW_AS_OPTIONS.map((opt) => {
+                            const isActive = viewAsRole === opt.value;
+                            return (
+                              <button
+                                key={opt.label}
+                                type="button"
+                                className={`w-full flex items-center justify-between text-sm border-0 cursor-pointer nav-menu-item-btn ${isActive ? 'active' : ''}`}
+                                style={{
+                                  padding: `${spacing.sm} ${spacing.md}`,
+                                  gap: spacing.md,
+                                  borderRadius: borderRadius.md,
+                                  color: isActive ? colors.accent.tertiary : colors.text.onDark,
+                                  background: isActive ? withOpacity(colors.accent.tertiary, 0.08) : 'transparent',
+                                }}
+                                onClick={() => handleViewAsSelect(opt.value)}
+                              >
+                                <span>{opt.label}</span>
+                                {isActive && <Check className="w-4 h-4" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    <MenuDivider background={colors.glass.border} />
+
+                    <div style={{ width: '100%' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: colors.text.tertiary, marginBottom: spacing.sm }}>
+                        {t('language')}
+                      </p>
+                      <LanguageSwitcher compact />
+                    </div>
+
+                    <MenuDivider background={colors.glass.border} />
+
+                    <Button
+                      variant="ghost"
+                      onClick={handleSignOut}
+                      className="w-full justify-start"
+                      style={{ color: colors.text.secondary }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign out
+                    </Button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+            )}
+        </motion.nav>
 
         {/* Single scroll container — matches guest layout; prevents nested scroll / "scroll twice" bug */}
         <div
@@ -978,12 +1084,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <motion.nav
           initial={{ y: 0 }}
           animate={{ y: 0 }}
-          className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
+          className="fixed top-0 left-0 right-0 transition-all duration-200"
           style={{
+            zIndex: Z_INDEX_NAV,
             paddingTop: `max(${spacing.md}, env(safe-area-inset-top, 0px))`,
-            paddingLeft: HEADER_PADDING_X_RESPONSIVE,
-            paddingRight: HEADER_PADDING_X_RESPONSIVE,
-            ...(isScrolled ? navScrolledStyle : { background: 'transparent' }),
+            paddingLeft: NAV_PADDING_X_ALIGNED,
+            paddingRight: NAV_PADDING_X_ALIGNED,
+            ...navScrolledStyle,
           }}
         >
           <div
@@ -997,9 +1104,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           >
           <div
             className="flex items-center justify-between"
-            style={{ height: NAV_HEIGHT, minHeight: NAV_HEIGHT, gap: spacing.xl }}
+            style={{ position: 'relative', zIndex: Z_INDEX_NAV_BAR, height: NAV_HEIGHT, minHeight: NAV_HEIGHT, gap: spacing.xl, alignItems: 'center' }}
           >
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 flex items-center" style={{ minHeight: NAV_HEIGHT }}>
               <Logo size="md" href="/" />
             </div>
 
@@ -1055,31 +1162,42 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </Button>
             </div>
 
-            <div className="md:hidden">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2"
+              <div
+                className="md:hidden flex items-center justify-center"
+                style={{ touchAction: 'manipulation', minWidth: 44, minHeight: NAV_HEIGHT, alignItems: 'center' }}
               >
-                {isMobileMenuOpen ? (
-                  <X className="w-6 h-6" style={{ color: colors.text.primary }} />
-                ) : (
-                  <Menu className="w-6 h-6" style={{ color: colors.text.primary }} />
-                )}
-              </Button>
-            </div>
+                <button
+                  type="button"
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen((prev) => !prev);
+                  }}
+                  className="inline-flex items-center justify-center p-2 rounded-lg border-0 cursor-pointer transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  aria-label={isMobileMenuOpen ? t('closeMenu') : t('openMenu')}
+                  data-testid="mobile-menu-toggle"
+                  style={{ touchAction: 'manipulation', background: 'transparent', color: colors.text.primary, transform: 'translateY(-1px)' }}
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="w-6 h-6" style={{ color: colors.text.primary }} />
+                  ) : (
+                    <Menu className="w-6 h-6" style={{ color: colors.text.primary }} />
+                  )}
+                </button>
+              </div>
           </div>
         </div>
 
-        {/* Mobile menu: slide-in drawer from right */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-          <div
-            className="md:hidden fixed inset-0 z-40"
-            style={{ pointerEvents: 'auto' }}
-            aria-hidden="false"
-          >
+        {/* Mobile menu: portaled to body to avoid motion.nav transform containing block */}
+        {typeof document !== 'undefined' &&
+          createPortal(
+            <AnimatePresence>
+              {isMobileMenuOpen && (
+                <div
+                  key="guest-mobile-menu"
+                  className="md:hidden fixed inset-0"
+                  style={{ zIndex: Z_INDEX_MOBILE_MENU, pointerEvents: 'auto' }}
+                  aria-hidden="false"
+                >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1212,7 +1330,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </motion.div>
           </div>
           )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
       </motion.nav>
       {/* Single scroll container: main + footer scroll together, one scrollbar */}
       <div

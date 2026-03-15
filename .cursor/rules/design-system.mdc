@@ -93,7 +93,7 @@ marginBottom: '24px'
 ## Nav / Header Padding — Always Use HEADER_PADDING_X
 
 ```typescript
-// ✅ Correct — consistent with the header token (80px)
+// ✅ Correct — consistent with the header token (96px)
 import { HEADER_PADDING_X } from '@/theme';
 paddingLeft: HEADER_PADDING_X
 paddingRight: HEADER_PADDING_X
@@ -102,6 +102,27 @@ paddingRight: HEADER_PADDING_X
 paddingLeft: spacing.xl    // too small
 paddingLeft: '48px'        // hardcoded
 ```
+
+---
+
+## Page Horizontal Padding — SSOT for Content Edges
+
+Page content horizontal padding must align with the nav header. Use the canonical token:
+
+```typescript
+// ✅ Use PAGE_HORIZONTAL_PADDING for page content edges
+import { PAGE_HORIZONTAL_PADDING } from '@/theme';
+paddingLeft: PAGE_HORIZONTAL_PADDING
+paddingRight: PAGE_HORIZONTAL_PADDING
+
+// ❌ Never use spacing.xl or spacing.xxl for page edge padding
+padding: spacing.xl                    // wrong — reserved for internal spacing
+padding: `${spacing.xxl} ${spacing.xl}` // wrong for horizontal edges
+```
+
+- **PageShell** (non-bare): applies `PAGE_HORIZONTAL_PADDING` automatically
+- **PageShell** (bare + allowDocumentScroll): applies it automatically since spacing SSOT fix
+- **Custom layouts**: import and use `PAGE_HORIZONTAL_PADDING` or `HEADER_PADDING_X_RESPONSIVE` for section edges
 
 ---
 
@@ -136,6 +157,7 @@ The root-level `waqup-app/` folder is the **old monolithic app** — deprecated,
 - [ ] No new hardcoded hex colors added
 - [ ] No new hardcoded `blur(Xpx)` values — use `BLUR.*`
 - [ ] No new hardcoded spacing values — use `spacing.*`
+- [ ] Page horizontal edges use `PAGE_HORIZONTAL_PADDING` (not `spacing.xl`/`spacing.xxl`)
 - [ ] No dead token exports left in `format.ts` / `index.ts`
 - [ ] New tokens are added to `tokens.ts` first, then `format.ts`, then `index.ts`
 - [ ] All three token files updated atomically (never partially)
