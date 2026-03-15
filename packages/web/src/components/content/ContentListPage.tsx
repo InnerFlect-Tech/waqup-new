@@ -7,12 +7,13 @@ import { GRID_CARD_MIN, SEARCH_INPUT_MAX_WIDTH } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
-import { Play, Mic, Bot, Clock, Calendar, Plus, RefreshCw, ChevronLeft } from 'lucide-react';
+import { Play, Mic, Bot, Clock, Calendar, Plus, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ContentItem, ContentItemType } from './ContentItem';
 import { getContentDetailHref } from './getContentDetailHref';
 import { getContentTypeIcon } from '@/lib/content-helpers';
-import { getContentTypeBadgeVariant, formatDate } from '@waqup/shared/utils';
+import { getContentTypeBadgeVariant, getContentDisplayInfo, formatDate } from '@waqup/shared/utils';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
+import { withOpacity } from '@waqup/shared/theme';
 
 const formatDateShort = (iso?: string | null) =>
   formatDate(iso, { includeYear: false, fallback: '' });
@@ -25,6 +26,16 @@ export interface ContentListPageProps {
   backHref: string;
   content: ContentItem[];
   createLabel?: string;
+  /** When true, create action only in header; no create card in grid */
+  createInHeaderOnly?: boolean;
+  /** When set, show a "Continue listening" row above the grid */
+  continueListeningItem?: ContentItem | null;
+  /** Use display-title layer (clean titles, draft labels); default true for affirmations */
+  useDisplayTitle?: boolean;
+  /** Placeholder for search input */
+  searchPlaceholder?: string;
+  /** Subtitle for create card when in grid */
+  createCardSubtitle?: string;
   isLoading?: boolean;
   error?: string | null;
   onRetry?: () => void;
@@ -32,14 +43,148 @@ export interface ContentListPageProps {
 
 const TYPE_COLOR: Record<ContentItemType, string> = CONTENT_TYPE_COLORS;
 
-function ContentCard({
+function ContinueListeningRow({
   item,
   colors,
+  contentType,
+  useDisplayTitle,
 }: {
   item: ContentItem;
   colors: ReturnType<typeof useTheme>['theme']['colors'];
+  contentType: ContentItemType;
+  useDisplayTitle?: boolean;
 }) {
   const typeColor = TYPE_COLOR[item.type] ?? colors.accent.primary;
+  const displayInfo = useDisplayTitle
+    ? getContentDisplayInfo({
+        title: item.title,
+        description: item.description,
+        script: item.script,
+        status: item.status ?? undefined,
+        voiceUrl: item.voiceUrl,
+        audioUrl: item.audioUrl,
+      })
+    : null;
+  const title = displayInfo?.displayTitle ?? item.title ?? 'Untitled';
+  const detailHref = getContentDetailHref(item.type, item.id);
+
+  return (
+    <div style={{ marginBottom: spacing.xl }}>
+      <Typography
+        variant="small"
+        style={{
+          color: colors.text.secondary,
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontSize: 11,
+          marginBottom: spacing.sm,
+        }}
+      >
+        Continue listening
+      </Typography>
+      <Link href={detailHref} style={{ textDecoration: 'none' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: spacing.lg,
+            padding: spacing.xl,
+            borderRadius: borderRadius.xl,
+            background: `linear-gradient(135deg, ${typeColor}15, ${colors.glass.light})`,
+            backdropFilter: BLUR.xl,
+            WebkitBackdropFilter: BLUR.xl,
+            border: `1px solid ${typeColor}40`,
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            boxShadow: `0 8px 32px ${typeColor}25`,
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: borderRadius.lg,
+              background: `${typeColor}25`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            {React.createElement(getContentTypeIcon(item.type), {
+              size: 24,
+              color: typeColor,
+              strokeWidth: 2,
+            })}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              variant="h3"
+              style={{ color: colors.text.primary, fontWeight: 500, marginBottom: 2 }}
+            >
+              {title}
+            </Typography>
+            <Typography
+              variant="small"
+              style={{
+                color: typeColor,
+                fontSize: 11,
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
+            >
+              {item.type}
+              {item.duration ? ` · ${item.duration}` : ''}
+            </Typography>
+          </div>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: borderRadius.full,
+              background: typeColor,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: `0 4px 16px ${typeColor}50`,
+              flexShrink: 0,
+            }}
+          >
+            <Play size={18} color={colors.text.onDark} strokeWidth={2} style={{ marginLeft: 2 }} />
+          </div>
+          <ChevronRight size={16} color={colors.text.secondary} />
+        </div>
+      </Link>
+    </div>
+  );
+}
+
+function ContentCard({
+  item,
+  colors,
+  useDisplayTitle = false,
+}: {
+  item: ContentItem;
+  colors: ReturnType<typeof useTheme>['theme']['colors'];
+  useDisplayTitle?: boolean;
+}) {
+  const typeColor = TYPE_COLOR[item.type] ?? colors.accent.primary;
+  const displayInfo = useDisplayTitle
+    ? getContentDisplayInfo({
+        title: item.title,
+        description: item.description,
+        script: item.script,
+        status: item.status ?? undefined,
+        voiceUrl: item.voiceUrl,
+        audioUrl: item.audioUrl,
+      })
+    : null;
+  const title = displayInfo?.displayTitle ?? item.title ?? 'Untitled';
+  const subtitle = displayInfo?.subtitle ?? item.description;
+  const draftLabel = displayInfo?.draftLabel;
 
   return (
     <Link href={getContentDetailHref(item.type, item.id)} style={{ textDecoration: 'none' }}>
@@ -51,85 +196,97 @@ function ContentCard({
           background: colors.glass.light,
           backdropFilter: BLUR.xl,
           WebkitBackdropFilter: BLUR.xl,
-          border: `1px solid ${colors.glass.border}`,
+          border: `1px solid ${typeColor}40`,
+          boxShadow: `0 8px 32px ${typeColor}18`,
           overflow: 'hidden',
           cursor: 'pointer',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
-          aspectRatio: '16/9',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: spacing.lg,
+          height: '100%',
+          minHeight: 200,
         }}
       >
-        {/* Ambient glow */}
+        {/* Hero slot — marketplace-style, collectible */}
         <div
           style={{
-            position: 'absolute',
-            top: -40,
-            right: -40,
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            background: `${typeColor}18`,
-            filter: 'blur(30px)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Top row */}
-        <div
-          style={{
+            height: 72,
+            background: `linear-gradient(135deg, ${typeColor}40, ${typeColor}12)`,
             display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
+            alignItems: 'center',
+            justifyContent: 'center',
             position: 'relative',
-            zIndex: 1,
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-            <Badge variant={getContentTypeBadgeVariant(item.type)} size="sm">
-              {item.type}
-            </Badge>
-            {item.status === 'draft' && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: `${spacing.xs} ${spacing.sm}`,
-                  borderRadius: borderRadius.full,
-                  background: `${colors.warning}20`,
-                  border: `1px solid ${colors.warning}30`,
-                  fontSize: '10px',
-                  color: colors.warning,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase' as const,
-                }}
-              >
-                Draft
-              </div>
-            )}
-          </div>
           <div
             style={{
-              width: 36,
-              height: 36,
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(circle at 80% 20%, ${typeColor}20 0%, transparent 55%)`,
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              width: 40,
+              height: 40,
               borderRadius: borderRadius.full,
-              background: `${typeColor}20`,
-              border: `1px solid ${typeColor}30`,
+              background: withOpacity(colors.text.onDark, 0.15),
+              backdropFilter: BLUR.sm,
+              WebkitBackdropFilter: BLUR.sm,
+              border: `1px solid ${typeColor}50`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0,
+              zIndex: 1,
+              boxShadow: `0 4px 12px ${typeColor}30`,
             }}
           >
-            {React.createElement(getContentTypeIcon(item.type), { size: 16, color: typeColor, strokeWidth: 2 })}
+            <Play size={18} color={typeColor} strokeWidth={2.5} style={{ marginLeft: 2 }} />
           </div>
         </div>
 
-        {/* Title + description */}
-        <div style={{ flex: 1, padding: `${spacing.sm} 0`, position: 'relative', zIndex: 1 }}>
+        <div style={{ padding: spacing.lg, flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: spacing.sm,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
+              {React.createElement(getContentTypeIcon(item.type), { size: 14, color: typeColor, strokeWidth: 2.5 })}
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: typeColor,
+                }}
+              >
+                {item.type}
+              </span>
+              {draftLabel && (
+                <span
+                  style={{
+                    padding: `0 ${spacing.xs}`,
+                    borderRadius: borderRadius.sm,
+                    background: `${colors.warning}20`,
+                    border: `1px solid ${colors.warning}30`,
+                    fontSize: 10,
+                    color: colors.warning,
+                    fontWeight: 600,
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  {draftLabel}
+                </span>
+              )}
+            </div>
+          </div>
+
           <Typography
             variant="h4"
             style={{
@@ -143,13 +300,14 @@ function ContentCard({
               lineHeight: 1.4,
             }}
           >
-            {item.title}
+            {title}
           </Typography>
-          {item.description && (
+          {subtitle && (
             <Typography
               variant="caption"
               style={{
                 color: colors.text.secondary,
+                flex: 1,
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
@@ -157,44 +315,36 @@ function ContentCard({
                 lineHeight: 1.5,
               }}
             >
-              {item.description}
+              {subtitle}
             </Typography>
           )}
-        </div>
 
-        {/* Bottom metadata */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'relative',
-            zIndex: 1,
-            flexWrap: 'wrap',
-            gap: spacing.xs,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
-            {item.frequency && (
-              <span
-                style={{ fontSize: '11px', fontWeight: 600, color: typeColor, letterSpacing: '0.03em' }}
-              >
-                {item.frequency}
-              </span>
-            )}
-            {item.frequency && item.duration && (
-              <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
-            )}
-            {item.duration && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                <Clock size={10} color={colors.text.secondary} strokeWidth={2} />
-                <span style={{ fontSize: '11px', color: colors.text.secondary }}>{item.duration}</span>
-              </div>
-            )}
-            {item.voiceType && (
-              <>
-                <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: spacing.md,
+              flexWrap: 'wrap',
+              gap: spacing.xs,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, flexWrap: 'wrap' }}>
+              {item.frequency && (
+                <span
+                  style={{ fontSize: '11px', fontWeight: 600, color: typeColor, letterSpacing: '0.03em' }}
+                >
+                  {item.frequency}
+                </span>
+              )}
+              {item.duration && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Clock size={10} color={colors.text.secondary} strokeWidth={2} />
+                  <span style={{ fontSize: 11, color: colors.text.secondary }}>{item.duration}</span>
+                </span>
+              )}
+              {item.voiceType && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   {item.voiceType === 'ai' ? (
                     <Bot size={10} color={colors.accent.secondary} strokeWidth={2} />
                   ) : (
@@ -202,27 +352,26 @@ function ContentCard({
                   )}
                   <span
                     style={{
-                      fontSize: '11px',
-                      color:
-                        item.voiceType === 'ai' ? colors.accent.secondary : colors.accent.primary,
+                      fontSize: 11,
+                      color: item.voiceType === 'ai' ? colors.accent.secondary : colors.accent.primary,
                     }}
                   >
                     {item.voiceType === 'ai' ? 'Professional voice' : 'My voice'}
                   </span>
-                </div>
-              </>
+                </span>
+              )}
+            </div>
+            {(item.createdAt || item.lastPlayed) && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
+                <span style={{ fontSize: 11, color: colors.text.secondary }}>
+                  {item.lastPlayed
+                    ? `Played ${formatDateShort(item.lastPlayed)}`
+                    : formatDateShort(item.createdAt)}
+                </span>
+              </span>
             )}
           </div>
-          {(item.createdAt || item.lastPlayed) && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-              <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
-              <span style={{ fontSize: '11px', color: colors.text.secondary }}>
-                {item.lastPlayed
-                  ? `Played ${formatDateShort(item.lastPlayed)}`
-                  : formatDateShort(item.createdAt)}
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Hover play overlay */}
@@ -231,16 +380,15 @@ function ContentCard({
           style={{
             position: 'absolute',
             inset: 0,
-            background:
-              'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)',
+            background: `linear-gradient(to top, ${withOpacity(colors.background.primary, 0.75)} 0%, ${withOpacity(colors.background.primary, 0.25)} 50%, transparent 100%)`,
             borderRadius: borderRadius.xl,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             opacity: 0,
             transition: 'opacity 0.25s ease',
-            pointerEvents: 'none',
             zIndex: 2,
+            pointerEvents: 'none',
           }}
         >
           <div
@@ -248,17 +396,17 @@ function ContentCard({
               width: 52,
               height: 52,
               borderRadius: borderRadius.full,
-              background: 'rgba(255,255,255,0.15)',
+              background: withOpacity(colors.text.onDark, 0.2),
               backdropFilter: BLUR.sm,
               WebkitBackdropFilter: BLUR.sm,
-              border: '1px solid rgba(255,255,255,0.3)',
+              border: `1px solid ${withOpacity(colors.text.onDark, 0.35)}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: `0 8px 24px ${typeColor}50`,
             }}
           >
-            <Play size={22} color="#fff" strokeWidth={2} style={{ marginLeft: spacing.xs }} />
+            <Play size={22} color={colors.text.onDark} strokeWidth={2} style={{ marginLeft: spacing.xs }} />
           </div>
         </div>
       </div>
@@ -274,6 +422,11 @@ export function ContentListPage({
   backHref,
   content,
   createLabel = 'Create New',
+  createInHeaderOnly = false,
+  continueListeningItem,
+  useDisplayTitle = false,
+  searchPlaceholder,
+  createCardSubtitle,
   isLoading = false,
   error = null,
   onRetry,
@@ -353,11 +506,21 @@ export function ContentListPage({
           </Link>
         </div>
 
+        {/* Continue listening */}
+        {continueListeningItem && (
+          <ContinueListeningRow
+            item={continueListeningItem}
+            colors={colors}
+            contentType={contentType}
+            useDisplayTitle={useDisplayTitle}
+          />
+        )}
+
         {/* Search */}
         <div style={{ maxWidth: SEARCH_INPUT_MAX_WIDTH, marginBottom: spacing.xl }}>
           <input
             type="text"
-            placeholder={`Search ${contentType}s...`}
+            placeholder={searchPlaceholder ?? `Search ${contentType}s...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
@@ -426,46 +589,63 @@ export function ContentListPage({
                 gap: spacing.lg,
               }}
             >
-              {/* Create card */}
+              {/* Create card — only when not in header-only mode */}
+              {!createInHeaderOnly && (
               <Link href={createHref} style={{ textDecoration: 'none' }}>
                 <div
                   className="clp-card"
                   style={{
                     position: 'relative',
                     borderRadius: borderRadius.xl,
-                    background: 'transparent',
-                    border: `2px dashed ${colors.glass.border}`,
+                    background: `${typeColor}04`,
+                    border: `2px dashed ${typeColor}35`,
                     overflow: 'hidden',
                     cursor: 'pointer',
-                    transition: 'transform 0.2s ease, border-color 0.2s ease',
-                    aspectRatio: '16/9',
+                    transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: spacing.lg,
-                    gap: spacing.md,
+                    height: '100%',
+                    minHeight: 200,
                   }}
                 >
+                  {/* Hero slot — matches content card structure */}
                   <div
                     style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: borderRadius.full,
-                      background: `${typeColor}20`,
-                      border: `1px solid ${typeColor}40`,
+                      height: 72,
+                      background: `linear-gradient(135deg, ${typeColor}12, ${typeColor}04)`,
+                      borderBottom: `1px dashed ${typeColor}25`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
                   >
-                    {React.createElement(getContentTypeIcon(contentType), {
-                      size: 22,
-                      color: typeColor,
-                      strokeWidth: 2,
-                    })}
+                    <div
+                      style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: borderRadius.full,
+                        background: `linear-gradient(135deg, ${typeColor}30, ${typeColor}15)`,
+                        border: `1px solid ${typeColor}40`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: `0 4px 12px ${typeColor}25`,
+                      }}
+                    >
+                      <Plus size={22} color={typeColor} strokeWidth={2.5} />
+                    </div>
                   </div>
-                  <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      padding: spacing.lg,
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                    }}
+                  >
                     <Typography
                       variant="h4"
                       style={{
@@ -477,14 +657,15 @@ export function ContentListPage({
                       {createLabel}
                     </Typography>
                     <Typography variant="caption" style={{ color: colors.text.secondary }}>
-                      Create a new {contentType}
+                      {createCardSubtitle ?? `Add a new ${contentType} to your collection`}
                     </Typography>
                   </div>
                 </div>
               </Link>
+              )}
 
               {filteredContent.map((item) => (
-                <ContentCard key={item.id} item={item} colors={colors} />
+                <ContentCard key={item.id} item={item} colors={colors} useDisplayTitle={useDisplayTitle} />
               ))}
             </div>
 

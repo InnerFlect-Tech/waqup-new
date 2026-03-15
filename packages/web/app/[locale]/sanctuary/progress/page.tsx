@@ -512,12 +512,12 @@ export default function ProgressPage() {
           ))}
         </div>
 
-        {/* ── Section 3: Practice Activity ─────────────────────────────────── */}
+        {/* ── Section 3: Practice Activity (full width) ─────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          style={{ ...glassCard, marginBottom: spacing.lg }}
+          style={{ ...glassCard, marginBottom: spacing.lg, width: '100%' }}
         >
           {/* Card header */}
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: spacing.lg, flexWrap: 'wrap', gap: spacing.sm }}>
@@ -554,22 +554,22 @@ export default function ProgressPage() {
             )}
           </div>
 
-          {/* Heatmap grid */}
-          <div style={{ overflowX: 'auto', paddingBottom: spacing.xs }}>
+          {/* Heatmap grid — full width, cells scale to fill available space */}
+          <div style={{ width: '100%', overflowX: 'auto', paddingBottom: spacing.xs }}>
             {loading ? (
-              <div style={{ display: 'flex', gap: 4 }}>
+              <div style={{ display: 'flex', width: '100%', gap: spacing.xs }}>
                 {Array.from({ length: 16 }).map((_, i) => (
-                  <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <div key={i} style={{ flex: 1, minWidth: 10, display: 'flex', flexDirection: 'column', gap: 3 }}>
                     {Array.from({ length: 7 }).map((_, j) => (
-                      <div key={j} style={{ width: 16, height: 16, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }} />
+                      <div key={j} style={{ aspectRatio: '1', minHeight: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }} />
                     ))}
                   </div>
                 ))}
               </div>
             ) : data.heatmap ? (
-              <div style={{ display: 'flex', gap: spacing.xs }}>
+              <div style={{ display: 'flex', width: '100%', gap: spacing.xs }}>
                 {/* Day labels */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, paddingTop: 20, marginRight: 4 }}>
+                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 3, paddingTop: 20, marginRight: 4 }}>
                   {WEEK_LABELS.map((label, i) => (
                     <div
                       key={label}
@@ -581,7 +581,6 @@ export default function ProgressPage() {
                         display: 'flex',
                         alignItems: 'center',
                         lineHeight: 1,
-                        // only show Mon, Wed, Fri to avoid crowding
                         visibility: i % 2 === 0 ? 'visible' : 'hidden',
                       }}
                     >
@@ -590,29 +589,41 @@ export default function ProgressPage() {
                   ))}
                 </div>
 
-                {/* Weeks */}
-                <div>
+                {/* Weeks — flex to fill remaining width */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                   {/* Month labels row */}
-                  <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                  <div style={{ display: 'flex', gap: spacing.xs, marginBottom: 4 }}>
                     {data.heatmap.weeks.map((week, wi) => (
-                      <div key={wi} style={{ width: 16, fontSize: 9, color: colors.text.secondary, textAlign: 'center', opacity: 0.55, lineHeight: 1.2 }}>
+                      <div
+                        key={wi}
+                        style={{
+                          flex: 1,
+                          minWidth: 10,
+                          fontSize: 9,
+                          color: colors.text.secondary,
+                          textAlign: 'center',
+                          opacity: 0.55,
+                          lineHeight: 1.2,
+                        }}
+                      >
                         {wi % 4 === 0
                           ? formatDate(data.heatmap!.weeks[wi][0].date, { monthOnly: true, locale: 'en' })
                           : ''}
                       </div>
                     ))}
                   </div>
-                  {/* Cell grid */}
-                  <div style={{ display: 'flex', gap: 4 }}>
+                  {/* Cell grid — each week column flexes equally */}
+                  <div style={{ display: 'flex', gap: spacing.xs }}>
                     {data.heatmap.weeks.map((week, wi) => (
-                      <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                      <div key={wi} style={{ flex: 1, minWidth: 10, display: 'flex', flexDirection: 'column', gap: 3 }}>
                         {week.map((day, di) => (
                           <div
                             key={di}
                             title={`${formatDate(day.date, { weekdayShort: true, locale: 'en' })}: ${day.count} session${day.count !== 1 ? 's' : ''}${day.dominantType ? ` · mostly ${day.dominantType}` : ''}`}
                             style={{
-                              width: 16,
-                              height: 16,
+                              aspectRatio: '1',
+                              width: '100%',
+                              minHeight: 8,
                               borderRadius: 4,
                               background: heatCellColor(day.intensity, day.dominantType),
                               cursor: day.count > 0 ? 'pointer' : 'default',

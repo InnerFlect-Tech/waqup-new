@@ -1,4 +1,31 @@
 {
+  "why": {
+    "headline": "Muda a voz que te molda",
+    "supportingLine": "As palavras que mais ouves moldam o que te parece verdade. O waQup transforma essa repetição diária em algo pessoal.",
+    "beforeTitle": "Antes",
+    "beforeLine1": "Pensamentos antigos em repetição.",
+    "beforeLine2": "A mesma dúvida antes de dormir.",
+    "beforeLine3": "A mesma história ao acordar.",
+    "shiftTitle": "A mudança",
+    "shiftLine1": "As tuas palavras. A tua voz.",
+    "shiftLine2": "Tocadas quando a tua mente está mais aberta.",
+    "afterTitle": "Depois",
+    "afterLine1": "Um diálogo interior mais calmo.",
+    "afterLine2": "Uma imagem de ti mais forte.",
+    "afterLine3": "Mais da pessoa que queres tornar-te.",
+    "footerLine": "Melhor ouvido ao acordar e antes de dormir",
+    "cta": "Começar a tua mudança →"
+  },
+  "voice": {
+    "recordCta": "Gravar a tua voz",
+    "uploadAlternative": "Carregar ficheiro"
+  },
+  "intention": {
+    "headline": "O que mais te importa agora?",
+    "subhead": "Clareza de intenção ativa o córtex pré-frontal — a parte do teu cérebro responsável pelo planeamento e mudança.",
+    "cta": "Começar a criar →",
+    "skip": "Saltar — ir direto ao orbe →"
+  },
   "welcome": {
     "title": "Welcome to waQup",
     "subtitle": "Let's personalize your experience",
@@ -9,7 +36,27 @@
     "subtitle": "We'll use this when we speak to you in your rituals. You can change it anytime.",
     "placeholder": "e.g. Alex",
     "primaryLabel": "Continue →",
-    "skipLabel": "Skip for now"
+    "skipLabel": "Skip for now",
+    "applicationsTitle": "Onde é que isto se aplica? O waQup funciona para:",
+    "applicationsNote": "Prática pessoal, ensino, coaching, criação ou gestão de um espaço — as mesmas ferramentas, a tua voz, a tua intenção.",
+    "applications": {
+      "teachers": {
+        "label": "Professores",
+        "explanation": "Cria afirmações e meditações personalizadas para os teus alunos. Reforça conceitos com a tua voz, cria rituais de sala de aula e apoia a aprendizagem com conteúdo que codifica a identidade."
+      },
+      "coaches": {
+        "label": "Coaches & Consultores",
+        "explanation": "Apoia clientes com conteúdo à medida. Usa a tua voz para máximo impacto em sessões individuais ou de grupo — o cérebro confia na voz do coach para mudança duradoura."
+      },
+      "creators": {
+        "label": "Criadores & Influenciadores",
+        "explanation": "Produz conteúdo guiado único para a tua audiência. Diferencia-te com a tua voz autêntica — afirmações, meditações e rituais que criam conexão mais profunda."
+      },
+      "studios": {
+        "label": "Studios & Espaços",
+        "explanation": "Oferece experiências de marca e conteúdo específico para cada aula. Escala o teu ensino com criação assistida por IA, mantendo a voz e intenção do teu studio."
+      }
+    }
   },
   "preferences": {
     "title": "What brings you here?",

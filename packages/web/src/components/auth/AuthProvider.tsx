@@ -92,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       '/coming-soon',
       '/waitlist',
       '/join', // Founding member signup — footer + popup target
+      '/about', // Public About & What's New (version, changelog, credits)
       '/privacy',
       '/terms',
       '/data-deletion',

@@ -14,25 +14,36 @@ test.describe('Navigation (authenticated)', () => {
     await page.goto('/sanctuary');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
-    // Desktop nav should show Sanctuary, Speak, and Marketplace links
+    // Desktop nav should show Sanctuary, Create, Library, and Marketplace links
     await expect(page.getByTestId('nav-sanctuary')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByTestId('nav-speak')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('nav-create')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('nav-library')).toBeVisible({ timeout: 10000 });
     await expect(page.getByTestId('nav-marketplace')).toBeVisible({ timeout: 10000 });
   });
 
-  test('Speak nav link navigates to /speak', async ({ page }, testInfo) => {
+  test('Create nav link navigates to /create', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name.includes('mobile'), 'Desktop nav hidden on mobile');
     await page.goto('/sanctuary');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
-    await page.getByTestId('nav-speak').click();
-    await expect(page).toHaveURL(/\/speak/, { timeout: 10000 });
+    await page.getByTestId('nav-create').click();
+    await expect(page).toHaveURL(/\/create/, { timeout: 10000 });
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible();
+  });
+
+  test('Library nav link navigates to /library', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name.includes('mobile'), 'Desktop nav hidden on mobile');
+    await page.goto('/sanctuary');
+    await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
+
+    await page.getByTestId('nav-library').click();
+    await expect(page).toHaveURL(/\/library/, { timeout: 10000 });
     await expect(page.locator('main, [role="main"]').first()).toBeVisible();
   });
 
   test('Sanctuary nav link navigates to /sanctuary', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name.includes('mobile'), 'Desktop nav hidden on mobile');
-    await page.goto('/speak');
+    await page.goto('/create');
     await expect(page.locator('main, [role="main"]').first()).toBeVisible({ timeout: 15000 });
 
     await page.getByTestId('nav-sanctuary').click();

@@ -71,20 +71,34 @@ function TodaysPractice({
       <Link href={detailHref} style={{ textDecoration: 'none' }}>
         <div
           style={{
+            position: 'relative',
             display: 'flex',
             alignItems: 'center',
             gap: spacing.lg,
             padding: spacing.xl,
             borderRadius: borderRadius.xl,
-            background: `linear-gradient(135deg, ${typeColor}12, ${colors.glass.light})`,
+            background: `linear-gradient(135deg, ${typeColor}15, ${colors.glass.light})`,
             backdropFilter: BLUR.xl,
             WebkitBackdropFilter: BLUR.xl,
-            border: `1px solid ${typeColor}35`,
+            border: `1px solid ${typeColor}40`,
             cursor: 'pointer',
-            transition: 'transform 0.2s ease',
-            boxShadow: `0 8px 32px ${typeColor}20`,
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            boxShadow: `0 8px 32px ${typeColor}25`,
+            overflow: 'hidden',
           }}
         >
+          {/* Collectible accent bar — featured card */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 3,
+              background: `linear-gradient(90deg, ${typeColor}, ${typeColor}80)`,
+              borderRadius: `${borderRadius.xl}px ${borderRadius.xl}px 0 0`,
+            }}
+          />
           <div
             style={{
               width: 56,
@@ -159,85 +173,111 @@ function ContentCard({
           background: colors.glass.light,
           backdropFilter: BLUR.xl,
           WebkitBackdropFilter: BLUR.xl,
-          border: `1px solid ${colors.glass.border}`,
+          border: `1px solid ${typeColor}40`,
+          boxShadow: `0 8px 32px ${typeColor}18`,
           overflow: 'hidden',
           cursor: 'pointer',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
-          aspectRatio: '16/9',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: spacing.lg,
+          height: '100%',
+          minHeight: 200,
         }}
       >
-        {/* Ambient glow based on type */}
+        {/* Hero slot — marketplace-style, collectible header */}
         <div
           style={{
-            position: 'absolute',
-            top: -40,
-            right: -40,
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            background: `${typeColor}18`,
-            filter: 'blur(30px)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Top row: badge + icon */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
+            height: 72,
+            background: `linear-gradient(135deg, ${typeColor}40, ${typeColor}12)`,
             position: 'relative',
-            zIndex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-            <Badge variant={getContentTypeBadgeVariant(item.type)} size="sm">
-              {item.type}
-            </Badge>
-            {item.status === 'draft' && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: `${spacing.xs} ${spacing.sm}`,
-                  borderRadius: borderRadius.full,
-                  background: `${colors.warning}20`,
-                  border: `1px solid ${colors.warning}30`,
-                  fontSize: '10px',
-                  color: colors.warning,
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase' as const,
-                }}
-              >
-                Draft
-              </div>
-            )}
-          </div>
+          {/* Collectible accent bar */}
           <div
             style={{
-              width: 36,
-              height: 36,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 3,
+              background: `linear-gradient(90deg, ${typeColor}, ${typeColor}80)`,
+              borderRadius: `${borderRadius.xl}px ${borderRadius.xl}px 0 0`,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `radial-gradient(circle at 80% 20%, ${typeColor}20 0%, transparent 55%)`,
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              width: 40,
+              height: 40,
               borderRadius: borderRadius.full,
-              background: `${typeColor}20`,
-              border: `1px solid ${typeColor}30`,
+              background: withOpacity(colors.text.onDark, 0.15),
+              backdropFilter: BLUR.sm,
+              WebkitBackdropFilter: BLUR.sm,
+              border: `1px solid ${typeColor}50`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0,
+              zIndex: 1,
+              boxShadow: `0 4px 12px ${typeColor}30`,
             }}
           >
-            {React.createElement(getContentTypeIcon(item.type), { size: 16, color: typeColor, strokeWidth: 2 })}
+            <Play size={18} color={typeColor} strokeWidth={2.5} style={{ marginLeft: 2 }} />
           </div>
         </div>
 
-        {/* Title + description */}
-        <div style={{ flex: 1, padding: `${spacing.sm} 0`, position: 'relative', zIndex: 1 }}>
+        <div style={{ padding: spacing.lg, flex: 1, display: 'flex', flexDirection: 'column' }}>
+          {/* Top row: badge + icon */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: spacing.sm,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
+              {React.createElement(getContentTypeIcon(item.type), { size: 14, color: typeColor, strokeWidth: 2.5 })}
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  color: typeColor,
+                }}
+              >
+                {item.type}
+              </span>
+              {item.status === 'draft' && (
+                <span
+                  style={{
+                    padding: `0 ${spacing.xs}`,
+                    borderRadius: borderRadius.sm,
+                    background: `${colors.warning}20`,
+                    border: `1px solid ${colors.warning}30`,
+                    fontSize: 10,
+                    color: colors.warning,
+                    fontWeight: 600,
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  DRAFT
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Title + description */}
           <Typography
             variant="h4"
             style={{
@@ -258,6 +298,7 @@ function ContentCard({
               variant="caption"
               style={{
                 color: colors.text.secondary,
+                flex: 1,
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
@@ -268,41 +309,33 @@ function ContentCard({
               {item.description}
             </Typography>
           )}
-        </div>
 
-        {/* Bottom metadata row */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'relative',
-            zIndex: 1,
-            flexWrap: 'wrap',
-            gap: spacing.xs,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
-            {item.frequency && (
-              <span
-                style={{ fontSize: '11px', fontWeight: 600, color: typeColor, letterSpacing: '0.03em' }}
-              >
-                {item.frequency}
-              </span>
-            )}
-            {item.frequency && item.duration && (
-              <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
-            )}
-            {item.duration && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                <Clock size={10} color={colors.text.secondary} strokeWidth={2} />
-                <span style={{ fontSize: '11px', color: colors.text.secondary }}>{item.duration}</span>
-              </div>
-            )}
-            {item.voiceType && (
-              <>
-                <span style={{ fontSize: '11px', color: colors.text.secondary }}>·</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
+          {/* Bottom metadata — collectible attributes */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: spacing.md,
+              flexWrap: 'wrap',
+              gap: spacing.xs,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, flexWrap: 'wrap' }}>
+              {item.duration && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Clock size={10} color={colors.text.secondary} strokeWidth={2} />
+                  <span style={{ fontSize: 11, color: colors.text.secondary }}>{item.duration}</span>
+                </span>
+              )}
+              {typeof item.playCount === 'number' && item.playCount > 0 && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Play size={10} color={colors.text.secondary} strokeWidth={2} />
+                  <span style={{ fontSize: 11, color: colors.text.secondary }}>{item.playCount}</span>
+                </span>
+              )}
+              {item.voiceType && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   {item.voiceType === 'ai' ? (
                     <Bot size={10} color={colors.accent.secondary} strokeWidth={2} />
                   ) : (
@@ -310,52 +343,64 @@ function ContentCard({
                   )}
                   <span
                     style={{
-                      fontSize: '11px',
+                      fontSize: 11,
                       color: item.voiceType === 'ai' ? colors.accent.secondary : colors.accent.primary,
                     }}
                   >
                     {item.voiceType === 'ai' ? 'AI voice' : 'My voice'}
                   </span>
-                </div>
-              </>
-            )}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
-            {typeof item.playCount === 'number' && item.playCount > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                <Play size={10} color={colors.text.secondary} strokeWidth={2} />
-                <span style={{ fontSize: '11px', color: colors.text.secondary }}>{item.playCount}</span>
-              </div>
-            )}
-            {(item.createdAt || item.lastPlayed) && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs }}>
-                <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
-                <span style={{ fontSize: '11px', color: colors.text.secondary }}>
-                  {item.lastPlayed
-                    ? `Played ${formatDate(item.lastPlayed, { includeYear: false, fallback: '' })}`
-                    : formatDate(item.createdAt, { includeYear: false, fallback: '' })}
                 </span>
-              </div>
-            )}
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+              {(item.createdAt || item.lastPlayed) && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Calendar size={10} color={colors.text.secondary} strokeWidth={2} />
+                  <span style={{ fontSize: 11, color: colors.text.secondary }}>
+                    {item.lastPlayed
+                      ? formatDate(item.lastPlayed, { includeYear: false, fallback: '' })
+                      : formatDate(item.createdAt, { includeYear: false, fallback: '' })}
+                  </span>
+                </span>
+              )}
+              {onShare && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); onShare(item); }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: spacing.xs,
+                    color: typeColor,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  title="Share to marketplace"
+                >
+                  <Share2 size={14} strokeWidth={2} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Hover overlay */}
+        {/* Hover overlay — play affordance */}
         <div
           className="library-card-overlay"
           style={{
             position: 'absolute',
             inset: 0,
-            background:
-              `linear-gradient(to top, ${withOpacity(colors.background.primary, 0.7)} 0%, ${withOpacity(colors.background.primary, 0.2)} 60%, transparent 100%)`,
+            background: `linear-gradient(to top, ${withOpacity(colors.background.primary, 0.75)} 0%, ${withOpacity(colors.background.primary, 0.25)} 50%, transparent 100%)`,
             borderRadius: borderRadius.xl,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: spacing.md,
             opacity: 0,
             transition: 'opacity 0.25s ease',
             zIndex: 2,
+            pointerEvents: 'none',
           }}
         >
           <div
@@ -363,41 +408,18 @@ function ContentCard({
               width: 52,
               height: 52,
               borderRadius: borderRadius.full,
-              background: withOpacity(colors.text.onDark, 0.15),
+              background: withOpacity(colors.text.onDark, 0.2),
               backdropFilter: BLUR.sm,
               WebkitBackdropFilter: BLUR.sm,
-              border: `1px solid ${withOpacity(colors.text.onDark, 0.3)}`,
+              border: `1px solid ${withOpacity(colors.text.onDark, 0.35)}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: `0 8px 24px ${typeColor}50`,
-              pointerEvents: 'none',
             }}
           >
             <Play size={22} color={colors.text.onDark} strokeWidth={2} style={{ marginLeft: spacing.xs }} />
           </div>
-          {onShare && (
-            <button
-              type="button"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onShare(item); }}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: borderRadius.full,
-                background: withOpacity(colors.text.onDark, 0.12),
-                backdropFilter: BLUR.sm,
-                WebkitBackdropFilter: BLUR.sm,
-                border: `1px solid ${withOpacity(colors.text.onDark, 0.2)}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-              }}
-              title="Share to marketplace"
-            >
-              <Share2 size={16} color={colors.text.onDark} strokeWidth={2} />
-            </button>
-          )}
         </div>
       </div>
     </Link>
@@ -409,49 +431,70 @@ function CreateCard({
 }: {
   colors: ReturnType<typeof useTheme>['theme']['colors'];
 }) {
+  const accent = colors.accent.primary;
   return (
     <Link href="/create" style={{ textDecoration: 'none' }}>
       <div
-        className="library-card"
+        className="library-card create-card"
         style={{
           position: 'relative',
           borderRadius: borderRadius.xl,
-          background: 'transparent',
-          border: `2px dashed ${colors.glass.border}`,
+          background: `${accent}04`,
+          border: `2px dashed ${accent}35`,
           overflow: 'hidden',
           cursor: 'pointer',
-          transition: 'transform 0.2s ease, border-color 0.2s ease',
-          aspectRatio: '16/9',
+          transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: spacing.lg,
-          gap: spacing.md,
+          height: '100%',
+          minHeight: 200,
         }}
       >
+        {/* Hero slot — matches content card structure */}
         <div
           style={{
-            width: 48,
-            height: 48,
-            borderRadius: borderRadius.full,
-            background: colors.gradients.primary,
+            height: 72,
+            background: `linear-gradient(135deg, ${accent}12, ${accent}04)`,
+            borderBottom: `1px dashed ${accent}25`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: `0 4px 16px ${colors.accent.primary}50`,
           }}
         >
-          <Plus size={22} color={colors.text.onDark} strokeWidth={2.5} />
+          <div
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: borderRadius.full,
+              background: `linear-gradient(135deg, ${accent}30, ${accent}15)`,
+              border: `1px solid ${accent}40`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: `0 4px 16px ${accent}25`,
+            }}
+          >
+            <Plus size={22} color={accent} strokeWidth={2.5} />
+          </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: spacing.lg,
+            gap: spacing.sm,
+          }}
+        >
           <Typography
             variant="h4"
-            style={{ color: colors.text.primary, fontWeight: 500, marginBottom: spacing.xs }}
+            style={{ color: colors.text.primary, fontWeight: 500, textAlign: 'center' }}
           >
             Create New
           </Typography>
-          <Typography variant="caption" style={{ color: colors.text.secondary }}>
+          <Typography variant="caption" style={{ color: colors.text.secondary, textAlign: 'center' }}>
             Add a new affirmation, meditation, or ritual
           </Typography>
         </div>
@@ -830,12 +873,16 @@ export default function LibraryPage() {
 
         <style>{`
           .library-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px ${withOpacity(colors.background.primary, 0.3)};
-            border-color: ${withOpacity(colors.text.onDark, 0.2)} !important;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            border-color: rgba(255,255,255,0.25) !important;
           }
           .library-card:hover .library-card-overlay {
             opacity: 1 !important;
+          }
+          .library-card.create-card:hover {
+            border-color: ${colors.accent.primary}60 !important;
+            box-shadow: 0 12px 40px ${colors.accent.primary}20;
           }
         `}</style>
       </PageContent>

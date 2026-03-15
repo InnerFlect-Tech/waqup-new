@@ -25,7 +25,7 @@ export interface QuickAction {
 }
 
 export const SANCTUARY_MENU_ITEMS: MenuItem[] = [
-  { name: 'My Voice', description: 'Set up your cloned voice for TTS', icon: Mic, href: '/sanctuary/voice' },
+  { name: 'Your voice', description: 'Manage recording and voice setup', icon: Mic, href: '/sanctuary/voice' },
   { name: 'Progress', description: 'Track your transformation journey', icon: TrendingUp, href: '/sanctuary/progress' },
   { name: 'Qs', description: 'Manage your Qs', icon: CreditCard, iconNode: <QCoin size="sm" />, href: '/sanctuary/credits', count: 50 },
   { name: 'Settings', description: 'Customize your experience', icon: Settings, href: '/sanctuary/settings' },
@@ -33,9 +33,9 @@ export const SANCTUARY_MENU_ITEMS: MenuItem[] = [
 
 /** Home page uses Sparkles/GraduationCap; Sanctuary uses Plus/BookOpen */
 export const HOME_QUICK_ACTIONS: QuickAction[] = [
-  { name: 'Create New', description: 'Start a new affirmation, meditation, or ritual', icon: Sparkles, href: '/create' },
+  { name: 'Create new track', description: 'Turn an intention into personal audio', icon: Sparkles, href: '/create' },
   { name: 'Set Reminder', description: 'Schedule your practice', icon: Bell, href: '/sanctuary/reminders' },
-  { name: 'Learn & Transform', description: 'Understand the science of transformation', icon: GraduationCap, href: '/sanctuary/learn' },
+  { name: 'Why it works', description: 'Understand the science', icon: GraduationCap, href: '/sanctuary/learn' },
 ];
 
 export const PROFILE_MENU_ITEMS: MenuItem[] = [
@@ -50,7 +50,7 @@ export const PROFILE_MENU_ITEMS: MenuItem[] = [
 ];
 
 export const SANCTUARY_QUICK_ACTIONS: QuickAction[] = [
-  { name: 'Create New', description: 'Start a new affirmation, meditation, or ritual', icon: Plus, href: '/create' },
+  { name: 'Create new track', description: 'Turn an intention into personal audio', icon: Plus, href: '/create' },
   { name: 'Set Reminder', description: 'Schedule your practice', icon: Bell, href: '/sanctuary/reminders' },
-  { name: 'Learn & Transform', description: 'Understand the science of transformation', icon: BookOpen, href: '/sanctuary/learn' },
+  { name: 'Why it works', description: 'Understand the science', icon: BookOpen, href: '/sanctuary/learn' },
 ];

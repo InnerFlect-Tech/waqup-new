@@ -56,7 +56,7 @@ export default function RitualDetailPage() {
         await recordPlay();
       }}
       onDelete={async () => {
-        const ok = await remove();
+        const ok = await remove(item.id);
         if (ok) router.push('/sanctuary/rituals');
       }}
     />

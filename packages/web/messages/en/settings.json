@@ -46,6 +46,7 @@
   "errorSaving": "Error saving. Please try again.",
   "about": "About & Acknowledgments",
   "aboutDescription": "Version, changelog, and credits",
+  "aboutBackHome": "Home",
   "aboutBackToSettings": "Back to Settings",
   "aboutTitle": "About waQup",
   "aboutSubtitle": "Version, changelog, and credits for the people and services that make waQup possible.",

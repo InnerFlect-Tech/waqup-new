@@ -14,9 +14,11 @@ import { useTranslations } from 'next-intl';
 
 interface AboutPageContentProps {
   changelogMarkdown: string;
+  /** When 'public', page is accessible without auth; back link goes to home. When 'sanctuary', back link goes to settings. */
+  variant?: 'public' | 'sanctuary';
 }
 
-export function AboutPageContent({ changelogMarkdown }: AboutPageContentProps) {
+export function AboutPageContent({ changelogMarkdown, variant = 'sanctuary' }: AboutPageContentProps) {
   const { theme } = useTheme();
   const colors = theme.colors;
   const t = useTranslations('settings');
@@ -40,21 +42,39 @@ export function AboutPageContent({ changelogMarkdown }: AboutPageContentProps) {
   return (
     <PageShell intensity="medium" allowDocumentScroll>
       <PageContent width="narrow">
-        <Link
-          href="/sanctuary/settings"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: spacing.xs,
-            color: colors.text.secondary,
-            textDecoration: 'none',
-            fontSize: 14,
-            marginBottom: spacing.lg,
-          }}
-        >
-          <ArrowLeft size={16} />
-          {t('aboutBackToSettings')}
-        </Link>
+        {variant === 'public' ? (
+          <Link
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: spacing.xs,
+              color: colors.text.secondary,
+              textDecoration: 'none',
+              fontSize: 14,
+              marginBottom: spacing.lg,
+            }}
+          >
+            <ArrowLeft size={16} />
+            {t('aboutBackHome')}
+          </Link>
+        ) : (
+          <Link
+            href="/sanctuary/settings"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: spacing.xs,
+              color: colors.text.secondary,
+              textDecoration: 'none',
+              fontSize: 14,
+              marginBottom: spacing.lg,
+            }}
+          >
+            <ArrowLeft size={16} />
+            {t('aboutBackToSettings')}
+          </Link>
+        )}
 
         <Typography variant="h1" style={{ color: colors.text.primary, marginBottom: spacing.sm, fontWeight: 300, textAlign: 'center' }}>
           {t('aboutTitle')}

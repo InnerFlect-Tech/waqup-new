@@ -10,7 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { Mic, Upload, Play, Check, Loader2, AlertCircle, Plus } from 'lucide-react';
 import { getVoiceStatus, createVoice, uploadVoiceSamples, previewVoice } from '@/lib/api-client';
 import type { VoiceStatus } from '@/lib/api-client';
-import { VoiceGate } from '@/components/voice';
+import { VoiceGate, VoiceSampleRecorder } from '@/components/voice';
 
 const PREVIEW_TEXT =
   'Hello, this is a preview of your cloned voice. Your personalized affirmations and meditations will sound like this.';
@@ -38,8 +38,19 @@ export default function VoiceSetupPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [name, setName] = useState('');
+  const [inputMode, setInputMode] = useState<'record' | 'upload'>('record');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [removeNoise, setRemoveNoise] = useState(false);
+
+  const handleRecordingReady = (blob: Blob, mime: string) => {
+    const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+    const file = new File([blob], `voice-sample.${ext}`, { type: blob.type });
+    setSelectedFiles([file]);
+  };
+
+  const handleRecordingReset = () => {
+    setSelectedFiles([]);
+  };
 
   const fetchStatus = async () => {
     try {
@@ -169,8 +180,8 @@ export default function VoiceSetupPage() {
           My Voice
         </Typography>
         <Typography variant="body" style={{ color: colors.text.secondary, marginBottom: spacing.lg, textAlign: 'center' }}>
-          Clone your voice for personalized affirmations and meditations. Upload a recording and your
-          voice will be ready instantly.
+          Clone your voice for personalized affirmations and meditations. Record directly or upload a
+          file — your voice will be ready instantly.
         </Typography>
 
         {error && (
@@ -238,77 +249,129 @@ export default function VoiceSetupPage() {
               />
             </div>
 
-            {/* Audio samples upload */}
+            {/* Audio samples — Record (primary) or Upload */}
             <div style={{ marginBottom: spacing.md }}>
               <label style={{ display: 'block', marginBottom: spacing.xs }}>
                 <Typography variant="small" style={{ color: colors.text.secondary }}>
                   Audio samples <span style={{ color: colors.error }}>*</span>
                 </Typography>
               </label>
-              <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginBottom: spacing.sm, display: 'block', fontSize: 12 }}>
-                Upload one or more audio recordings of your voice (MP3, WAV, M4A). 30+ seconds total recommended.
-              </Typography>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="audio/*"
-                multiple
-                onChange={handleFileSelect}
-                style={{ display: 'none' }}
-              />
-
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
+              <div
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
                   gap: spacing.sm,
-                  width: '100%',
-                  padding: `${spacing.md} ${spacing.lg}`,
-                  borderRadius: borderRadius.md,
-                  border: `2px dashed ${selectedFiles.length ? colors.accent.primary : colors.glass.border}`,
-                  background: selectedFiles.length ? `${colors.accent.primary}08` : colors.glass.transparent,
-                  color: selectedFiles.length ? colors.accent.primary : colors.text.secondary,
-                  cursor: 'pointer',
-                  fontSize: 14,
-                  transition: 'all 0.2s',
-                  justifyContent: 'center',
+                  marginBottom: spacing.sm,
                 }}
               >
-                <Upload size={18} />
-                {totalDurationLabel ?? 'Click to upload audio files'}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setInputMode('record')}
+                  style={{
+                    flex: 1,
+                    padding: `${spacing.sm} ${spacing.md}`,
+                    borderRadius: borderRadius.md,
+                    border: `1px solid ${inputMode === 'record' ? colors.accent.primary : colors.glass.border}`,
+                    background: inputMode === 'record' ? `${colors.accent.primary}12` : colors.glass.transparent,
+                    color: inputMode === 'record' ? colors.accent.primary : colors.text.secondary,
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    fontWeight: 500,
+                  }}
+                >
+                  <Mic size={14} style={{ marginRight: spacing.xs, verticalAlign: 'middle' }} />
+                  Record
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInputMode('upload')}
+                  style={{
+                    flex: 1,
+                    padding: `${spacing.sm} ${spacing.md}`,
+                    borderRadius: borderRadius.md,
+                    border: `1px solid ${inputMode === 'upload' ? colors.accent.primary : colors.glass.border}`,
+                    background: inputMode === 'upload' ? `${colors.accent.primary}12` : colors.glass.transparent,
+                    color: inputMode === 'upload' ? colors.accent.primary : colors.text.secondary,
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    fontWeight: 500,
+                  }}
+                >
+                  <Upload size={14} style={{ marginRight: spacing.xs, verticalAlign: 'middle' }} />
+                  Upload file
+                </button>
+              </div>
 
-              {selectedFiles.length > 0 && (
-                <div style={{ marginTop: spacing.sm, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                  {selectedFiles.map((file, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: `${spacing.xs} ${spacing.md}`,
-                        borderRadius: borderRadius.sm,
-                        background: colors.glass.transparent,
-                        border: `1px solid ${colors.glass.border}`,
-                      }}
-                    >
-                      <Typography variant="small" style={{ color: colors.text.secondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80%' }}>
-                        {file.name}
-                      </Typography>
-                      <button
-                        type="button"
-                        onClick={() => removeFile(i)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text.secondary, padding: '2px 4px', fontSize: 14 }}
-                      >
-                        ×
-                      </button>
+              {inputMode === 'record' ? (
+                <VoiceSampleRecorder
+                  recordLabel="Record your voice"
+                  onRecordingReady={handleRecordingReady}
+                  onReset={handleRecordingReset}
+                />
+              ) : (
+                <>
+                  <Typography variant="small" style={{ color: colors.text.tertiary ?? colors.text.secondary, marginBottom: spacing.sm, display: 'block', fontSize: 12 }}>
+                    Upload one or more audio recordings (MP3, WAV, M4A). 30+ seconds total recommended.
+                  </Typography>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="audio/*"
+                    multiple
+                    onChange={handleFileSelect}
+                    style={{ display: 'none' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: spacing.sm,
+                      width: '100%',
+                      padding: `${spacing.md} ${spacing.lg}`,
+                      borderRadius: borderRadius.md,
+                      border: `2px dashed ${selectedFiles.length ? colors.accent.primary : colors.glass.border}`,
+                      background: selectedFiles.length ? `${colors.accent.primary}08` : colors.glass.transparent,
+                      color: selectedFiles.length ? colors.accent.primary : colors.text.secondary,
+                      cursor: 'pointer',
+                      fontSize: 14,
+                      transition: 'all 0.2s',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Upload size={18} />
+                    {totalDurationLabel ?? 'Click to upload audio files'}
+                  </button>
+                  {selectedFiles.length > 0 && (
+                    <div style={{ marginTop: spacing.sm, display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
+                      {selectedFiles.map((file, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: `${spacing.xs} ${spacing.md}`,
+                            borderRadius: borderRadius.sm,
+                            background: colors.glass.transparent,
+                            border: `1px solid ${colors.glass.border}`,
+                          }}
+                        >
+                          <Typography variant="small" style={{ color: colors.text.secondary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80%' }}>
+                            {file.name}
+                          </Typography>
+                          <button
+                            type="button"
+                            onClick={() => removeFile(i)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.text.secondary, padding: '2px 4px', fontSize: 14 }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </div>
 

@@ -1,4 +1,31 @@
 {
+  "why": {
+    "headline": "Ändere die Stimme, die dich prägt",
+    "supportingLine": "Die Worte, die du am häufigsten hörst, bestimmen, was sich wahr anfühlt. waQup verwandelt diese tägliche Wiederholung in etwas Persönliches.",
+    "beforeTitle": "Vorher",
+    "beforeLine1": "Alte Gedanken im Loop.",
+    "beforeLine2": "Der gleiche Zweifel vor dem Schlaf.",
+    "beforeLine3": "Die gleiche Geschichte beim Aufwachen.",
+    "shiftTitle": "Die Wende",
+    "shiftLine1": "Deine Worte. Deine Stimme.",
+    "shiftLine2": "Abgespielt, wenn dein Geist am aufnahmefähigsten ist.",
+    "afterTitle": "Nachher",
+    "afterLine1": "Ein ruhigerer innerer Dialog.",
+    "afterLine2": "Ein stärkeres Selbstbild.",
+    "afterLine3": "Mehr von der Person, die du werden willst.",
+    "footerLine": "Am besten nach dem Aufwachen und vor dem Schlaf",
+    "cta": "Deinen Wandel starten →"
+  },
+  "voice": {
+    "recordCta": "Stimme aufnehmen",
+    "uploadAlternative": "Datei hochladen"
+  },
+  "intention": {
+    "headline": "Was liegt dir gerade am meisten am Herzen?",
+    "subhead": "Klare Absicht aktiviert den präfrontalen Kortex – den Teil deines Gehirns, der für Planung und Veränderung zuständig ist.",
+    "cta": "Erstellen starten →",
+    "skip": "Überspringen – direkt zum Orb →"
+  },
   "welcome": {
     "title": "Welcome to waQup",
     "subtitle": "Let's personalize your experience",
@@ -9,7 +36,27 @@
     "subtitle": "We'll use this when we speak to you in your rituals. You can change it anytime.",
     "placeholder": "e.g. Alex",
     "primaryLabel": "Continue →",
-    "skipLabel": "Skip for now"
+    "skipLabel": "Skip for now",
+    "applicationsTitle": "Wo trifft das zu? waQup eignet sich für:",
+    "applicationsNote": "Persönliche Praxis, Lehre, Coaching, Content-Erstellung oder Betrieb eines Raums — dieselben Tools, deine Stimme, deine Absicht.",
+    "applications": {
+      "teachers": {
+        "label": "Lehrer & Professoren",
+        "explanation": "Erstelle personalisierte Affirmationen und Meditationen für deine Schüler. Verstärke Konzepte mit deiner Stimme, gestalte Klassenrituale und unterstütze das Lernen mit identitätsstiftendem Content."
+      },
+      "coaches": {
+        "label": "Coaches & Berater",
+        "explanation": "Unterstütze Klienten mit maßgeschneidertem Content. Nutze deine Stimme für maximale Wirkung in Einzel- oder Gruppensitzungen — das Gehirn vertraut der Stimme des Coachs für nachhaltige Veränderung."
+      },
+      "creators": {
+        "label": "Creator & Influencer",
+        "explanation": "Erstelle einzigartige geführte Inhalte für dein Publikum. Differenziere dich durch deine authentische Stimme — Affirmationen, Meditationen und Rituale, die tiefere Verbindung schaffen."
+      },
+      "studios": {
+        "label": "Studios & Räume",
+        "explanation": "Biete Markenerlebnisse und klassen-spezifischen Content. Skaliere deine Lehre mit KI-gestützter Erstellung und behalte dabei die Stimme und Absicht deines Studios."
+      }
+    }
   },
   "preferences": {
     "title": "What brings you here?",

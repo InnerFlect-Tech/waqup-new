@@ -3,8 +3,8 @@
 -- =============================================================================
 -- Run in Supabase Dashboard → SQL Editor.
 -- The account must already exist (signed up via the app).
--- Seeds: content_items, credit_transactions, practice_sessions, reflection_entries
--- so you can see everything (Library, Sanctuary, Progress, Qs balance).
+-- Seeds: content_items, credit_transactions, practice_sessions, reflection_entries,
+-- marketplace_items (so example cards appear in /marketplace).
 -- =============================================================================
 
 do $$
@@ -88,5 +88,22 @@ begin
       now() - interval '14 days'
     );
 
-  raise notice 'Seeded daniel.indias@gmail.com: 14 content items, 500 Qs, 14 practice sessions, 3 reflection entries.';
+  -- ── Marketplace: publish complete content items so they appear in /marketplace ─
+  -- (marketplace_items are cascade-deleted when content_items are deleted above)
+  insert into public.marketplace_items (content_item_id, creator_id, is_listed, is_unlisted, is_elevated, play_count, share_count)
+  select ci.id, v_user_id, true, false,
+    -- First 2 items get elevated badge (Curated by waQup)
+    row_number() over (order by ci.created_at) <= 2,
+    -- Vary play/share counts for testing trending/top sorts (12–340 plays, 2–48 shares)
+    (floor(random() * 330) + 12)::integer,
+    (floor(random() * 46) + 2)::integer
+  from public.content_items ci
+  where ci.user_id = v_user_id and ci.status = 'complete'
+  on conflict (content_item_id) do update set
+    is_listed = true,
+    is_unlisted = false,
+    play_count = excluded.play_count,
+    share_count = excluded.share_count;
+
+  raise notice 'Seeded daniel.indias@gmail.com: 14 content items, 500 Qs, 14 practice sessions, 3 reflection entries, 10 marketplace listings.';
 end $$;

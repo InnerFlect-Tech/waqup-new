@@ -8,6 +8,16 @@ import type { UpdateContentInput } from '@waqup/shared/services';
 
 export { contentKeys };
 
+/**
+ * Ensures content ID is a string. Next.js/next-intl params.id can sometimes be
+ * string[] in edge cases; Supabase expects a plain string for UUID columns.
+ */
+function ensureContentId(id: unknown): string {
+  if (typeof id === 'string') return id;
+  if (Array.isArray(id) && id.length > 0 && typeof id[0] === 'string') return id[0];
+  return String(id);
+}
+
 const contentService = createContentService(supabase);
 
 const {
@@ -49,14 +59,15 @@ interface UseContentItemResult {
   isLoading: boolean;
   error: string | null;
   update: (input: UpdateContentInput) => Promise<boolean>;
-  remove: () => Promise<boolean>;
+  remove: (idOverride?: string) => Promise<boolean>;
   recordPlay: () => Promise<boolean>;
   refetch: () => void;
 }
 
-export function useContentItem(id: string): UseContentItemResult {
-  const { data, isLoading, error, refetch } = useContentItemQuery(id);
-  const updateMutation = useUpdateContent(id);
+export function useContentItem(id: string | string[] | undefined): UseContentItemResult {
+  const resolvedId = ensureContentId(id ?? '');
+  const { data, isLoading, error, refetch } = useContentItemQuery(resolvedId);
+  const updateMutation = useUpdateContent(resolvedId);
   const deleteMutation = useDeleteContent();
   const recordPlayMutation = useRecordPlay();
 
@@ -73,9 +84,10 @@ export function useContentItem(id: string): UseContentItemResult {
         return false;
       }
     },
-    remove: async () => {
+    remove: async (idOverride?: string) => {
       try {
-        await deleteMutation.mutateAsync(id);
+        const targetId = ensureContentId(idOverride ?? resolvedId);
+        await deleteMutation.mutateAsync(targetId);
         return true;
       } catch {
         return false;
@@ -83,7 +95,7 @@ export function useContentItem(id: string): UseContentItemResult {
     },
     recordPlay: async () => {
       try {
-        await recordPlayMutation.mutateAsync(id);
+        await recordPlayMutation.mutateAsync(resolvedId);
         return true;
       } catch {
         return false;

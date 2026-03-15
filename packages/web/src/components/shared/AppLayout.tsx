@@ -32,6 +32,7 @@ import {
   Info,
   RotateCcw,
   Compass,
+  Plus,
 } from 'lucide-react';
 import { Button, Logo, QCoin, AvatarOrb, PublicFooter, LanguageSwitcher, MenuDivider } from '@/components';
 import { useTheme, spacing, borderRadius, MAX_WIDTH_7XL, NAV_HEIGHT, NAV_TOP_OFFSET, NAV_PADDING_X_ALIGNED, Z_INDEX_NAV, Z_INDEX_NAV_BAR, Z_INDEX_MOBILE_MENU, BLUR, MENU_PANEL_BG, MENU_PANEL_BG_OPAQUE, MENU_PANEL_SHADOW, MENU_DRAWER_SHADOW, NAV_SCROLLED_BG } from '@/theme';
@@ -67,13 +68,9 @@ interface UserMenuItem {
 
 const NAV_ITEMS: NavItem[] = [
   { name: 'Sanctuary', path: '/sanctuary', icon: <Home className="w-5 h-5" /> },
-  { name: 'Speak', path: '/speak', icon: <Mic className="w-5 h-5" /> },
+  { name: 'Create', path: '/create', icon: <Plus className="w-5 h-5" /> },
+  { name: 'Library', path: '/library', icon: <Library className="w-5 h-5" /> },
   { name: 'Marketplace', path: '/marketplace', icon: <Store className="w-5 h-5" /> },
-  {
-    name: 'Reminders',
-    path: '/sanctuary/reminders',
-    icon: <Bell className="w-5 h-5" />,
-  },
 ];
 
 const USER_MENU_ITEMS: UserMenuItem[] = [
@@ -89,6 +86,8 @@ const USER_MENU_ITEMS_SECONDARY: UserMenuItem[] = [
     icon: <Share2 className="w-4 h-4" />,
     highlight: true,
   },
+  { name: 'Speak', path: '/speak', icon: <Mic className="w-4 h-4" /> },
+  { name: 'Reminders', path: '/sanctuary/reminders', icon: <Bell className="w-4 h-4" /> },
   { name: 'Help & Feedback', path: '/sanctuary/help', icon: <HelpCircle className="w-4 h-4" /> },
 ];
 
@@ -334,9 +333,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                   {navItems.map((item) => {
                     const testId =
                       item.path === '/sanctuary' ? 'nav-sanctuary' :
-                      item.path === '/speak' ? 'nav-speak' :
-                      item.path === '/marketplace' ? 'nav-marketplace' :
-                      item.path === '/library' ? 'nav-library' : undefined;
+                      item.path === '/create' ? 'nav-create' :
+                      item.path === '/library' ? 'nav-library' :
+                      item.path === '/marketplace' ? 'nav-marketplace' : undefined;
                     return (
                     <Button
                       key={item.path}

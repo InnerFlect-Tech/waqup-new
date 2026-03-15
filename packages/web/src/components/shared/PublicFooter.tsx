@@ -97,6 +97,7 @@ export function PublicFooter() {
             </div>
             <nav style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
               {internalLinks('/how-it-works', t('footerHowItWorks'))}
+              {internalLinks('/about', t('footerWhatNew'))}
               {internalLinks('/explanation', t('footerTheScience'))}
               {internalLinks('/pricing', t('footerPricing'))}
               {internalLinks('/marketplace', t('footerMarketplace'))}

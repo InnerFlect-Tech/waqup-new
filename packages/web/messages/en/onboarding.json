@@ -1,15 +1,19 @@
 {
   "why": {
-    "founderStory": "I was depressed. Nothing was working. I applied these rules — my own voice, repetition, language aligned with how the subconscious works — and it changed my life. I built waQup so others can have the same access.",
-    "rulesTitle": "The rules that make it work — backed by scientific perspectives. Full details on The Science:",
-    "ruleRepetition": "Repetition: Daily practice rewires the brain.",
-    "rulePositive": "Positive framing: The subconscious doesn't process \"no.\" \"No smoking\" → weak. \"I choose vitality\" → constructive, aligned.",
-    "rulePresent": "Present tense: \"I am confident\" not \"I will be.\"",
-    "ruleBelievable": "Believable, gradual: Avoid grandiose claims that trigger rejection.",
-    "ruleOwnVoice": "Own voice: Your brain encodes your voice 30–40% more strongly than strangers'.",
-    "identityShift": "All of this — aligned. Identity shift is the outcome. Not scientifically proven, but backed by research.",
-    "cta": "I'm ready →",
-    "scienceLink": "The Science"
+    "headline": "Change the {voice} that shapes you",
+    "headlineVoice": "voice",
+    "supportingLine": "Become who you really dreamed of becoming — through your own voice.",
+    "beforeTitle": "Before",
+    "beforeDesc": "Old thoughts on repeat.",
+    "shiftTitle": "The Shift",
+    "shiftLine1": "Your words. Your voice.",
+    "shiftLine2": "Played when your mind is most open.",
+    "afterTitle": "After",
+    "afterCheck1": "A stronger self-image",
+    "afterCheck2": "A calmer inner voice",
+    "timingAfterWaking": "After waking",
+    "timingBeforeSleep": "Before sleep",
+    "cta": "Start your shift →"
   },
   "intention": {
     "headline": "What matters most to you right now?",
@@ -25,6 +29,8 @@
     "costNote": "Own recording = free. Clone = 50 Q one-time + per-creation cost by length.",
     "voiceName": "Voice name",
     "audioSamples": "Audio samples",
+    "recordCta": "Record your voice",
+    "uploadAlternative": "Upload file",
     "audioHint": "Upload one or more recordings (MP3, WAV, M4A). 30+ seconds total recommended.",
     "uploadCta": "Click to upload audio files",
     "removeNoise": "Remove background noise from samples",
@@ -49,10 +55,22 @@
     "applicationsTitle": "Where does this apply? waQup works for:",
     "applicationsNote": "Personal practice, teaching, coaching, creating, or running a space — same tools, your voice, your intention.",
     "applications": {
-      "teachers": "Teachers & Professors",
-      "coaches": "Coaches & Consultations",
-      "creators": "Creators & Influencers",
-      "studios": "Studios & Spaces"
+      "teachers": {
+        "label": "Teachers & Professors",
+        "explanation": "Create personalized affirmations and meditations for your students. Reinforce concepts with your voice, build classroom rituals, and support learning with identity-encoding content."
+      },
+      "coaches": {
+        "label": "Coaches & Consultations",
+        "explanation": "Support clients with tailored content. Use your voice for maximum impact in 1:1 or group sessions — the brain trusts the coach's voice for lasting change."
+      },
+      "creators": {
+        "label": "Creators & Influencers",
+        "explanation": "Produce unique guided content for your audience. Differentiate with your authentic voice — affirmations, meditations, and rituals that build deeper connection."
+      },
+      "studios": {
+        "label": "Studios & Spaces",
+        "explanation": "Offer branded experiences and class-specific content. Scale your teaching with AI-assisted creation while keeping your studio's voice and intention."
+      }
     }
   },
   "preferences": {
