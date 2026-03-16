@@ -153,7 +153,7 @@ a {
   color: transparent;
 }
 
-/* Core value — hero matches right column height, stack on mobile */
+/* Core value — hero + right cards match height; stack on mobile */
 .core-value-hero-wrap {
   min-height: 0;
 }
@@ -174,8 +174,8 @@ a {
   }
   .core-value-grid [data-layout="horizontal"] > div:first-child {
     flex: none !important;
-    min-height: 160px !important;
-    max-height: min(220px, 58vw) !important;
+    min-height: 140px !important;
+    max-height: min(200px, 50vw) !important;
     aspect-ratio: 1 !important;
     width: 100% !important;
   }

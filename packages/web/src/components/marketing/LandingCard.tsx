@@ -55,7 +55,7 @@ export function LandingCard({
   featured = false,
   badge,
   compact = false,
-  minHeight = 200,
+  minHeight = 180,
   priority = false,
   children,
   fillHeight = false,
@@ -79,11 +79,11 @@ export function LandingCard({
     <div
       className="hero-mic-image"
       style={{
-        flex: isHorizontal ? '0 0 360px' : undefined,
-        width: isHorizontal ? 360 : undefined,
-        height: isHorizontal ? (fillHeight ? '100%' : 360) : undefined,
-        minHeight: isHorizontal ? (fillHeight ? 200 : 360) : HERO_IMAGE_HEIGHT,
-        aspectRatio: isHorizontal && !fillHeight ? '1' : undefined,
+        flex: isHorizontal ? '0 0 min(300px, 38vw)' : undefined,
+        width: isHorizontal ? 'min(300px, 38vw)' : undefined,
+        height: isHorizontal ? (fillHeight ? '100%' : undefined) : undefined,
+        minHeight: isHorizontal ? (fillHeight ? 160 : 260) : HERO_IMAGE_HEIGHT,
+        aspectRatio: isHorizontal ? '1' : undefined,
         position: 'relative',
         borderRadius: isHorizontal
           ? `${borderRadius.lg} 0 0 ${borderRadius.lg}`
@@ -363,7 +363,7 @@ export function LandingCard({
         transition: 'transform 0.25s ease, box-shadow 0.25s ease',
         display: 'flex',
         flexDirection: isHorizontal || isBanner ? 'row' : 'column',
-        minHeight: isHero && !fillHeight ? (isHorizontal ? 360 : 380) : minHeight,
+        minHeight: isHero && !fillHeight ? (isHorizontal ? 260 : 320) : minHeight,
         height: fillHeight ? '100%' : undefined,
         position: 'relative',
         overflow: 'hidden',

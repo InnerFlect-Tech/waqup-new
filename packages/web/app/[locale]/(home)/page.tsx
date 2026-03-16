@@ -339,7 +339,7 @@ export default function LandingPage() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: spacing.lg,
+            gap: spacing.md,
           }}
           className="core-value-grid"
         >
@@ -367,8 +367,8 @@ export default function LandingPage() {
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: spacing.lg,
-                    marginTop: spacing.md,
+                    gap: spacing.md,
+                    marginTop: spacing.sm,
                     flex: 1,
                     minHeight: 0,
                   }}
@@ -388,13 +388,13 @@ export default function LandingPage() {
                         display: 'flex',
                         alignItems: 'flex-start',
                         gap: spacing.sm,
-                        fontSize: 'clamp(15px, 1.4vw, 16px)',
-                        lineHeight: 1.45,
+                        fontSize: 'clamp(14px, 1.3vw, 15px)',
+                        lineHeight: 1.4,
                         color: colors.text.secondary,
                       }}
                     >
                       <span style={{ flexShrink: 0, marginTop: 2 }}>
-                        <Check size={18} color={colors.accent.primary} strokeWidth={2.5} />
+                        <Check size={16} color={colors.accent.primary} strokeWidth={2.5} />
                       </span>
                       <span>{t('landing.coreValue.yourVoice.benefit1')}</span>
                     </li>
@@ -403,13 +403,13 @@ export default function LandingPage() {
                         display: 'flex',
                         alignItems: 'flex-start',
                         gap: spacing.sm,
-                        fontSize: 'clamp(15px, 1.4vw, 16px)',
-                        lineHeight: 1.45,
+                        fontSize: 'clamp(14px, 1.3vw, 15px)',
+                        lineHeight: 1.4,
                         color: colors.text.secondary,
                       }}
                     >
                       <span style={{ flexShrink: 0, marginTop: 2 }}>
-                        <Check size={18} color={colors.accent.primary} strokeWidth={2.5} />
+                        <Check size={16} color={colors.accent.primary} strokeWidth={2.5} />
                       </span>
                       <span>{t('landing.coreValue.yourVoice.benefit2')}</span>
                     </li>
@@ -424,7 +424,7 @@ export default function LandingPage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: spacing.sm,
-                      padding: '14px 20px',
+                      padding: '12px 18px',
                       borderRadius: 14,
                       background: colors.gradients.primary,
                       color: colors.text.onDark ?? '#fff',
@@ -454,9 +454,10 @@ export default function LandingPage() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: spacing.md,
+                gap: spacing.sm,
                 minWidth: 0,
                 minHeight: 0,
+                height: '100%',
               }}
             >
               <div style={{ flex: 1, minHeight: 0, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
