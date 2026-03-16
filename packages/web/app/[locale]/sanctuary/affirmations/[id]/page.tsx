@@ -52,8 +52,8 @@ export default function AffirmationDetailPage() {
       backHref="/sanctuary/affirmations"
       editHref={`/sanctuary/affirmations/${id}/edit`}
       editAudioHref={`/sanctuary/affirmations/${id}/edit-audio`}
-      onRecordPlay={async () => {
-        await recordPlay();
+      onRecordPlay={async (durationSeconds) => {
+        await recordPlay(durationSeconds);
       }}
       onDelete={async () => {
         const ok = await remove(item.id);

@@ -60,7 +60,7 @@ interface UseContentItemResult {
   error: string | null;
   update: (input: UpdateContentInput) => Promise<boolean>;
   remove: (idOverride?: string) => Promise<boolean>;
-  recordPlay: () => Promise<boolean>;
+  recordPlay: (durationSeconds?: number) => Promise<boolean>;
   refetch: () => void;
 }
 
@@ -93,9 +93,9 @@ export function useContentItem(id: string | string[] | undefined): UseContentIte
         return false;
       }
     },
-    recordPlay: async () => {
+    recordPlay: async (durationSeconds?: number) => {
       try {
-        await recordPlayMutation.mutateAsync(resolvedId);
+        await recordPlayMutation.mutateAsync({ id: resolvedId, durationSeconds });
         return true;
       } catch {
         return false;

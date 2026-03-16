@@ -52,8 +52,8 @@ export default function MeditationDetailPage() {
       backHref="/sanctuary/meditations"
       editHref={`/sanctuary/meditations/${id}/edit`}
       editAudioHref={`/sanctuary/meditations/${id}/edit-audio`}
-      onRecordPlay={async () => {
-        await recordPlay();
+      onRecordPlay={async (durationSeconds) => {
+        await recordPlay(durationSeconds);
       }}
       onDelete={async () => {
         const ok = await remove(item.id);

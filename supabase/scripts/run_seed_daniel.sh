@@ -20,6 +20,11 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SEED_FILE="$SCRIPT_DIR/seed_daniel_indias.sql"
 cd "$PROJECT_ROOT"
 
+# Load env from common locations (DATABASE_URL for remote Supabase)
+for f in .env .env.local .env.development .env.development.local packages/web/.env.local; do
+  [[ -f "$f" ]] && set -a && source "$f" && set +a && break
+done
+
 if [[ ! -f "$SEED_FILE" ]]; then
   echo "Error: Seed file not found: $SEED_FILE"
   exit 1

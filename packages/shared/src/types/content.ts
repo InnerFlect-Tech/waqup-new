@@ -24,6 +24,10 @@ export interface AudioSettings {
   /** Playback effects */
   fadeIn: boolean;
   fadeOut: boolean;
+  /** Target ritual duration in minutes (e.g. 5, 10, 20). Used for repetition planning. */
+  targetDurationMinutes?: number;
+  /** Silence between voice repetitions in seconds. Default 3. */
+  repetitionSpacingSeconds?: number;
 }
 
 export const DEFAULT_AUDIO_SETTINGS: AudioSettings = {

@@ -7,13 +7,13 @@ import { spacing, borderRadius, BLUR } from '@/theme';
 import { useTheme } from '@/theme';
 import { PageShell, PageContent } from '@/components';
 import { Link } from '@/i18n/navigation';
-import { Play, Pause, SkipBack, SkipForward, Waves, Headphones, Square } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Waves, Headphones, Square, Clock } from 'lucide-react';
 import { useWebAudioPlayer, useBinauralEngine, useLayersPreview } from '@/hooks';
 import type { ContentItemType, AudioLayers, AudioVolumes, AudioSettings } from '@waqup/shared/types';
-import { PLAYBACK_SPEEDS } from '@waqup/shared/types';
+import { PLAYBACK_SPEEDS, DEFAULT_AUDIO_SETTINGS } from '@waqup/shared/types';
 import { CONTENT_TYPE_COLORS, getBinauralPreset, getAtmospherePreset } from '@waqup/shared/constants';
 import { supabase } from '@/lib/supabase';
-import { formatTime, Analytics } from '@waqup/shared/utils';
+import { formatTime, Analytics, TARGET_DURATION_PRESETS, buildPlaybackPlan } from '@waqup/shared/utils';
 import { resolveAtmosphereUrl } from '@/utils/atmosphere';
 import { useAuthStore } from '@/stores';
 
@@ -27,7 +27,8 @@ export interface AudioPageProps {
   audioSettings?: AudioSettings | null;
   /** Override initial volumes (e.g. from content.audioSettings) */
   initialVolumes?: Partial<AudioVolumes>;
-  onSave?: () => void;
+  /** Called when user clicks Save; receives current audioSettings and ambientUrl to persist */
+  onSave?: (data: { audioSettings: AudioSettings; ambientUrl: string | null }) => void | Promise<void>;
 }
 
 const TYPE_ACCENT: Record<ContentItemType, string> = CONTENT_TYPE_COLORS;
@@ -92,11 +93,21 @@ export function AudioPage({
   const resolvedAmbientUrl =
     layers?.ambientUrl ?? resolveAtmosphereUrl(atmospherePresetIdForLayer) ?? undefined;
 
+  const binauralPresetId = audioSettings?.binauralPresetId ?? 'none';
+  const selectedBinauralPreset = getBinauralPreset(binauralPresetId);
+  const resolvedBinauralUrl =
+    layers?.binauralUrl ?? (selectedBinauralPreset?.fileUrl ?? null) ?? undefined;
+
   const resolvedLayers: AudioLayers = {
     ...(layers ?? {}),
     voiceUrl: layers?.voiceUrl ?? null,
     ambientUrl: resolvedAmbientUrl,
+    binauralUrl: resolvedBinauralUrl ?? layers?.binauralUrl ?? null,
   };
+
+  // ── Target duration (repetition planning) ─────────────────────────────────
+  const [targetDuration, setTargetDuration] = useState<number | undefined>(audioSettings?.targetDurationMinutes);
+  const [playbackPlan, setPlaybackPlan] = useState<ReturnType<typeof buildPlaybackPlan> | null>(null);
 
   const {
     state,
@@ -112,16 +123,24 @@ export function AudioPage({
     setVolumes,
     setSpeed,
     isReady,
-  } = useWebAudioPlayer(resolvedLayers, initialVolumes);
+  } = useWebAudioPlayer(resolvedLayers, initialVolumes, playbackPlan);
 
-  // ── Binaural engine (oscillators) ───────────────────────────────────────
-  const binauralPresetId = audioSettings?.binauralPresetId ?? 'none';
-  const selectedBinauralPreset = getBinauralPreset(binauralPresetId);
+  // Build playback plan when voice duration and target are available
+  useEffect(() => {
+    const target = targetDuration ?? audioSettings?.targetDurationMinutes;
+    if (target == null || position.durationMs <= 0) {
+      setPlaybackPlan(null);
+      return;
+    }
+    setPlaybackPlan(buildPlaybackPlan(position.durationMs, target, audioSettings?.repetitionSpacingSeconds ?? 3));
+  }, [position.durationMs, targetDuration, audioSettings?.targetDurationMinutes, audioSettings?.repetitionSpacingSeconds]);
 
+  // ── Binaural: use oscillators only when no pre-rendered file ─────────────────
+  // When resolvedBinauralUrl is set, useWebAudioPlayer loads the file; oscillators stay off
   useBinauralEngine({
     audioContext,
     binauralGain,
-    preset: selectedBinauralPreset,
+    preset: resolvedBinauralUrl ? getBinauralPreset('none') : selectedBinauralPreset,
     isPlaying: state === 'playing',
   });
 
@@ -497,13 +516,91 @@ export function AudioPage({
           </Typography>
         </div>
 
+        {/* Target duration (repetition planning) */}
+        <div
+          style={{
+            marginBottom: spacing.xl,
+            padding: spacing.xl,
+            borderRadius: borderRadius.xl,
+            background: colors.glass.light,
+            backdropFilter: BLUR.lg,
+            WebkitBackdropFilter: BLUR.lg,
+            border: `1px solid ${colors.glass.border}`,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.lg }}>
+            <Clock size={18} color={accent} />
+            <Typography variant="h3" style={{ color: colors.text.primary }}>
+              Target duration
+            </Typography>
+          </div>
+          <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, fontSize: 12, display: 'block' }}>
+            Voice will repeat to fill the chosen duration.
+          </Typography>
+          <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setTargetDuration(undefined)}
+              style={{
+                padding: `${spacing.sm} ${spacing.md}`,
+                borderRadius: borderRadius.lg,
+                background: (audioSettings?.targetDurationMinutes ?? targetDuration) == null ? `${accent}15` : 'transparent',
+                border: `1px solid ${(audioSettings?.targetDurationMinutes ?? targetDuration) == null ? accent + '60' : colors.glass.border}`,
+                color: (audioSettings?.targetDurationMinutes ?? targetDuration) == null ? accent : colors.text.secondary,
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: (audioSettings?.targetDurationMinutes ?? targetDuration) == null ? 600 : 400,
+              }}
+            >
+              Single play
+            </button>
+            {TARGET_DURATION_PRESETS.map((minutes) => (
+              <button
+                key={minutes}
+                onClick={() => setTargetDuration(minutes)}
+                style={{
+                  padding: `${spacing.sm} ${spacing.md}`,
+                  borderRadius: borderRadius.lg,
+                  background: (audioSettings?.targetDurationMinutes ?? targetDuration) === minutes ? `${accent}15` : 'transparent',
+                  border: `1px solid ${(audioSettings?.targetDurationMinutes ?? targetDuration) === minutes ? accent + '60' : colors.glass.border}`,
+                  color: (audioSettings?.targetDurationMinutes ?? targetDuration) === minutes ? accent : colors.text.secondary,
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: (audioSettings?.targetDurationMinutes ?? targetDuration) === minutes ? 600 : 400,
+                }}
+              >
+                {minutes} min
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Actions */}
         <div style={{ display: 'flex', gap: spacing.sm }}>
           <Link href={backHref} style={{ textDecoration: 'none' }}>
             <Button variant="outline" size="md">Back</Button>
           </Link>
           {onSave && (
-            <Button variant="primary" size="md" onClick={onSave} style={{ backgroundColor: accent, borderColor: accent }}>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => {
+                const payload = {
+                  audioSettings: {
+                    ...DEFAULT_AUDIO_SETTINGS,
+                    ...audioSettings,
+                    volumeVoice: volumes.voice,
+                    volumeAmbient: volumes.ambient,
+                    volumeBinaural: volumes.binaural,
+                    volumeMaster: volumes.master,
+                    targetDurationMinutes: targetDuration ?? audioSettings?.targetDurationMinutes,
+                    repetitionSpacingSeconds: audioSettings?.repetitionSpacingSeconds ?? 3,
+                  },
+                  ambientUrl: resolveAtmosphereUrl(atmospherePresetIdForLayer),
+                };
+                void onSave(payload);
+              }}
+              style={{ backgroundColor: accent, borderColor: accent }}
+            >
               Save
             </Button>
           )}

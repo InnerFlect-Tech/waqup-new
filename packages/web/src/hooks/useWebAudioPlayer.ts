@@ -8,6 +8,7 @@ import type {
   PlaybackSpeed,
   PlaybackState,
 } from '@waqup/shared/types';
+import type { PlaybackPlan } from '@waqup/shared/utils';
 import { DEFAULT_VOLUMES } from '@waqup/shared/types';
 import { logError } from '@waqup/shared/utils';
 
@@ -51,6 +52,7 @@ interface UseWebAudioPlayerResult {
 export function useWebAudioPlayer(
   layers: AudioLayers,
   initialVolumes?: Partial<AudioVolumes>,
+  playbackPlan?: PlaybackPlan | null,
 ): UseWebAudioPlayerResult {
   const [state, setState] = useState<PlaybackState>('idle');
   const [position, setPosition] = useState<PlaybackPosition>({ positionMs: 0, durationMs: 0 });
@@ -65,6 +67,7 @@ export function useWebAudioPlayer(
   const ctxRef = useRef<AudioContext | null>(null);
   const voiceSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const ambientSourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const binauralSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const voiceGainRef = useRef<GainNode | null>(null);
   const ambientGainRef = useRef<GainNode | null>(null);
   const binauralGainRef = useRef<GainNode | null>(null);
@@ -74,10 +77,12 @@ export function useWebAudioPlayer(
   // Raw ArrayBuffers fetched eagerly — decoded after AudioContext is created
   const voiceArrayBufRef = useRef<ArrayBuffer | null>(null);
   const ambientArrayBufRef = useRef<ArrayBuffer | null>(null);
+  const binauralArrayBufRef = useRef<ArrayBuffer | null>(null);
 
   // Decoded AudioBuffers — available once graph is built
   const voiceBufferRef = useRef<AudioBuffer | null>(null);
   const ambientBufferRef = useRef<AudioBuffer | null>(null);
+  const binauralBufferRef = useRef<AudioBuffer | null>(null);
 
   // Playback state refs
   const startTimeRef = useRef<number>(0);
@@ -85,6 +90,17 @@ export function useWebAudioPlayer(
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const speedRef = useRef<PlaybackSpeed>(1.0);
   const volumesRef = useRef<AudioVolumes>({ ...DEFAULT_VOLUMES, ...initialVolumes });
+  const playbackPlanRef = useRef<PlaybackPlan | null>(null);
+  const voiceSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
+
+  useEffect(() => { playbackPlanRef.current = playbackPlan ?? null; }, [playbackPlan]);
+
+  // When playback plan is provided, use its total duration for progress display
+  useEffect(() => {
+    if (playbackPlan) {
+      setPosition((prev) => ({ ...prev, durationMs: playbackPlan.totalDurationMs }));
+    }
+  }, [playbackPlan?.totalDurationMs]);
 
   // Keep speedRef and volumesRef in sync with state
   useEffect(() => { speedRef.current = speed; }, [speed]);
@@ -100,10 +116,16 @@ export function useWebAudioPlayer(
 
   // ── Stop all running audio sources ────────────────────────────────────────
   const stopSources = useCallback(() => {
+    voiceSourcesRef.current.forEach((vs) => {
+      try { vs.stop(); } catch { /* already stopped */ }
+    });
+    voiceSourcesRef.current.clear();
     try { voiceSourceRef.current?.stop(); } catch { /* already stopped */ }
     try { ambientSourceRef.current?.stop(); } catch { /* already stopped */ }
+    try { binauralSourceRef.current?.stop(); } catch { /* already stopped */ }
     voiceSourceRef.current = null;
     ambientSourceRef.current = null;
+    binauralSourceRef.current = null;
   }, []);
 
   // ── Build the Web Audio graph (called lazily on first play) ───────────────
@@ -153,6 +175,13 @@ export function useWebAudioPlayer(
           console.warn('[useWebAudioPlayer] ambient decode failed (non-fatal):', ambErr);
         }
       }
+      if (binauralArrayBufRef.current) {
+        try {
+          binauralBufferRef.current = await ctx.decodeAudioData(binauralArrayBufRef.current.slice(0));
+        } catch (binErr) {
+          console.warn('[useWebAudioPlayer] binaural decode failed (non-fatal):', binErr);
+        }
+      }
 
       // Expose nodes for useBinauralEngine and waveform visualization
       setAnalyserNode(analyser);
@@ -198,6 +227,14 @@ export function useWebAudioPlayer(
             console.warn('[useWebAudioPlayer] ambient fetch failed (non-fatal):', ambErr);
           }
         }
+        if (layers.binauralUrl) {
+          try {
+            const binRes = await fetch(layers.binauralUrl);
+            binauralArrayBufRef.current = await binRes.arrayBuffer();
+          } catch (binErr) {
+            console.warn('[useWebAudioPlayer] binaural fetch failed (non-fatal):', binErr);
+          }
+        }
 
         if (!cancelled) {
           setIsReady(true);
@@ -223,14 +260,16 @@ export function useWebAudioPlayer(
       ctxRef.current = null;
       voiceBufferRef.current = null;
       ambientBufferRef.current = null;
+      binauralBufferRef.current = null;
       voiceArrayBufRef.current = null;
       ambientArrayBufRef.current = null;
+      binauralArrayBufRef.current = null;
       setIsReady(false);
       setState('idle');
       pausedAtRef.current = 0;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layers.voiceUrl, layers.ambientUrl]);
+  }, [layers.voiceUrl, layers.ambientUrl, layers.binauralUrl]);
 
   // ── Volume sync ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -259,45 +298,120 @@ export function useWebAudioPlayer(
 
       // ctx.resume() MUST be awaited before starting sources on iOS Safari.
       void ctx.resume().then(() => {
-        const vs = ctx.createBufferSource();
-        vs.buffer = vBuf;
-        vs.playbackRate.value = speedRef.current;
-        vs.connect(voiceGainRef.current!);
-        voiceSourceRef.current = vs;
-        vs.start(0, pausedAtRef.current);
+        const plan = playbackPlanRef.current;
+        const baseTime = ctx.currentTime;
 
-        // When voice track ends, stop ambient and move to 'ended' state
-        vs.onended = () => {
-          if (voiceSourceRef.current !== vs) return; // stale callback after seek/pause
-          try { ambientSourceRef.current?.stop(); } catch { /* ok */ }
-          ambientSourceRef.current = null;
-          voiceSourceRef.current = null;
+        if (plan) {
+          // ── Plan-based: schedule N voice segments with spacing ─────────────────
+          const voiceSec = plan.voiceDurationMs / 1000;
+          const spacingSec = plan.spacingMs / 1000;
+          const totalSec = plan.totalDurationMs / 1000;
+
+          for (let i = 0; i < plan.repeatCount; i++) {
+            const vs = ctx.createBufferSource();
+            vs.buffer = vBuf;
+            vs.playbackRate.value = speedRef.current;
+            vs.connect(voiceGainRef.current!);
+            voiceSourcesRef.current.add(vs);
+
+            const start = baseTime + i * (voiceSec + spacingSec);
+            vs.start(start, 0, voiceSec);
+
+            if (i === plan.repeatCount - 1) {
+              vs.onended = () => {
+                try { ambientSourceRef.current?.stop(); } catch { /* ok */ }
+                ambientSourceRef.current = null;
+                try { binauralSourceRef.current?.stop(); } catch { /* ok */ }
+                binauralSourceRef.current = null;
+                voiceSourcesRef.current.clear();
+                stopTick();
+                setState('ended');
+              };
+            }
+          }
+
+          if (ambientBufferRef.current) {
+            const as = ctx.createBufferSource();
+            as.buffer = ambientBufferRef.current;
+            as.loop = true;
+            as.playbackRate.value = speedRef.current;
+            as.connect(ambientGainRef.current!);
+            ambientSourceRef.current = as;
+            as.start(baseTime, 0);
+            as.stop(baseTime + totalSec);
+          }
+          if (binauralBufferRef.current) {
+            const bs = ctx.createBufferSource();
+            bs.buffer = binauralBufferRef.current;
+            bs.loop = true;
+            bs.playbackRate.value = speedRef.current;
+            bs.connect(binauralGainRef.current!);
+            binauralSourceRef.current = bs;
+            bs.start(baseTime, 0);
+            bs.stop(baseTime + totalSec);
+          }
+
+          startTimeRef.current = baseTime;
+          setState('playing');
+
           stopTick();
-          setState('ended');
-        };
+          tickRef.current = setInterval(() => {
+            const c = ctxRef.current;
+            if (!c) return;
+            const elapsed = Math.min((c.currentTime - baseTime) * 1000, plan.totalDurationMs);
+            setPosition({ positionMs: elapsed, durationMs: plan.totalDurationMs });
+          }, 250);
+        } else {
+          // ── Single play (no plan) ─────────────────────────────────────────────
+          const vs = ctx.createBufferSource();
+          vs.buffer = vBuf;
+          vs.playbackRate.value = speedRef.current;
+          vs.connect(voiceGainRef.current!);
+          voiceSourceRef.current = vs;
+          vs.start(0, pausedAtRef.current);
 
-        if (ambientBufferRef.current) {
-          const as = ctx.createBufferSource();
-          as.buffer = ambientBufferRef.current;
-          as.loop = true;
-          as.playbackRate.value = speedRef.current;
-          as.connect(ambientGainRef.current!);
-          ambientSourceRef.current = as;
-          as.start(0, pausedAtRef.current % ambientBufferRef.current.duration);
+          vs.onended = () => {
+            if (voiceSourceRef.current !== vs) return;
+            try { ambientSourceRef.current?.stop(); } catch { /* ok */ }
+            ambientSourceRef.current = null;
+            try { binauralSourceRef.current?.stop(); } catch { /* ok */ }
+            binauralSourceRef.current = null;
+            voiceSourceRef.current = null;
+            stopTick();
+            setState('ended');
+          };
+
+          if (ambientBufferRef.current) {
+            const as = ctx.createBufferSource();
+            as.buffer = ambientBufferRef.current;
+            as.loop = true;
+            as.playbackRate.value = speedRef.current;
+            as.connect(ambientGainRef.current!);
+            ambientSourceRef.current = as;
+            as.start(0, pausedAtRef.current % ambientBufferRef.current.duration);
+          }
+          if (binauralBufferRef.current) {
+            const bs = ctx.createBufferSource();
+            bs.buffer = binauralBufferRef.current;
+            bs.loop = true;
+            bs.playbackRate.value = speedRef.current;
+            bs.connect(binauralGainRef.current!);
+            binauralSourceRef.current = bs;
+            bs.start(0, pausedAtRef.current % binauralBufferRef.current.duration);
+          }
+
+          startTimeRef.current = ctx.currentTime;
+          setState('playing');
+
+          stopTick();
+          tickRef.current = setInterval(() => {
+            const c = ctxRef.current;
+            if (!c) return;
+            const elapsed = c.currentTime - startTimeRef.current + pausedAtRef.current;
+            const dur = voiceBufferRef.current?.duration ?? 0;
+            setPosition({ positionMs: Math.min(elapsed * 1000, dur * 1000), durationMs: dur * 1000 });
+          }, 250);
         }
-
-        startTimeRef.current = ctx.currentTime;
-        setState('playing');
-
-        // Position tick at 250ms — sufficient for a progress bar, saves CPU on mobile
-        stopTick();
-        tickRef.current = setInterval(() => {
-          const c = ctxRef.current;
-          if (!c) return;
-          const elapsed = c.currentTime - startTimeRef.current + pausedAtRef.current;
-          const dur = voiceBufferRef.current?.duration ?? 0;
-          setPosition({ positionMs: Math.min(elapsed * 1000, dur * 1000), durationMs: dur * 1000 });
-        }, 250);
       });
     });
   }, [buildGraph, stopTick]);
@@ -338,6 +452,8 @@ export function useWebAudioPlayer(
           if (voiceSourceRef.current !== vs) return;
           try { ambientSourceRef.current?.stop(); } catch { /* ok */ }
           ambientSourceRef.current = null;
+          try { binauralSourceRef.current?.stop(); } catch { /* ok */ }
+          binauralSourceRef.current = null;
           voiceSourceRef.current = null;
           stopTick();
           setState('ended');
@@ -351,6 +467,15 @@ export function useWebAudioPlayer(
           as.connect(ambientGainRef.current!);
           ambientSourceRef.current = as;
           as.start(0, pausedAtRef.current % ambientBufferRef.current.duration);
+        }
+        if (binauralBufferRef.current) {
+          const bs = ctx.createBufferSource();
+          bs.buffer = binauralBufferRef.current;
+          bs.loop = true;
+          bs.playbackRate.value = speedRef.current;
+          bs.connect(binauralGainRef.current!);
+          binauralSourceRef.current = bs;
+          bs.start(0, pausedAtRef.current % binauralBufferRef.current.duration);
         }
 
         startTimeRef.current = ctx.currentTime;
@@ -375,6 +500,7 @@ export function useWebAudioPlayer(
     speedRef.current = s;
     if (voiceSourceRef.current) voiceSourceRef.current.playbackRate.value = s;
     if (ambientSourceRef.current) ambientSourceRef.current.playbackRate.value = s;
+    if (binauralSourceRef.current) binauralSourceRef.current.playbackRate.value = s;
   }, []);
 
   return {

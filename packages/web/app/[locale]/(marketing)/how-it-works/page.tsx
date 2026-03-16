@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell, WaitlistCTA } from '@/components';
+import { PageShell, WaitlistCTA, PublicFooter } from '@/components';
 import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades, HERO_OVERLAY_QUOTE } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
 import { CONTENT_TYPE_COLORS } from '@waqup/shared/constants';
@@ -343,7 +343,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ── Step divider ─────────────────────────────────── */}
-      <div style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ background: colors.glass.dark }}>
         <div className="hiw-step-divider" style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `${spacing.xxl} ${PAGE_PADDING}`, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0 }}>
           {[
             { n: '01', label: tp('step1Label'), icon: MessageCircle },
@@ -536,7 +536,7 @@ export default function HowItWorksPage() {
               depth: tp('meditationsDepth'),
               desc: tp('meditationsDesc'),
               color: colors.accent.secondary,
-              gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
+              gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, ${colors.accent.secondary}10)`,
               outcome: tp('meditationsOutcome'),
               science: tp('meditationsScience'),
             },
@@ -734,16 +734,16 @@ export default function HowItWorksPage() {
           <div style={{ width: '100%', maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', padding: `0 ${PAGE_PADDING}` }}>
             <div style={{ maxWidth: 520, padding: '48px 56px', ...FROSTED_GLASS_HERO, borderRadius: 24 }}>
               <div style={{ fontSize: 11, color: colors.accent.tertiary, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600, marginBottom: 20 }}>{tp('voiceCloningLabel')}</div>
-              <h3 style={{ fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 300, letterSpacing: '-1px', color: '#fff', margin: '0 0 24px', lineHeight: 1.15, textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
+              <h3 style={{ fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 300, letterSpacing: '-1px', color: colors.text.onDark, margin: '0 0 24px', lineHeight: 1.15, textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
                 {tp('voiceCloningTitle1')}<br />
                 <span style={{ background: colors.gradients.primary, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{tp('voiceCloningTitle2')}</span>
               </h3>
-              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.8)', lineHeight: 1.75, margin: '0 0 32px', fontWeight: 300 }}>
+              <p style={{ fontSize: 16, color: colors.text.secondary, lineHeight: 1.75, margin: '0 0 32px', fontWeight: 300 }}>
                 {tp('voiceCloningParagraph')}
               </p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: `${colors.accent.primary}25`, border: `1px solid ${colors.accent.primary}50`, fontSize: 13, color: '#C084FC', fontWeight: 500 }}>{tp('voiceCloningBadge1')}</div>
-                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{tp('voiceCloningBadge2')}</div>
+                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: `${colors.accent.primary}25`, border: `1px solid ${colors.accent.primary}50`, fontSize: 13, color: colors.accent.tertiary, fontWeight: 500 }}>{tp('voiceCloningBadge1')}</div>
+                <div style={{ padding: '10px 22px', borderRadius: borderRadius.full, background: colors.glass.dark, border: `1px solid ${colors.glass.border}`, fontSize: 13, color: colors.text.secondary }}>{tp('voiceCloningBadge2')}</div>
               </div>
             </div>
           </div>
@@ -853,6 +853,8 @@ export default function HowItWorksPage() {
           />
         </div>
       </section>
+
+      <PublicFooter />
 
       {/* ── Global Styles ─────────────────────────────────── */}
       <style dangerouslySetInnerHTML={{ __html: `

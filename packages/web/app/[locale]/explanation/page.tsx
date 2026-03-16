@@ -4,7 +4,8 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Typography, Button } from '@/components';
 import { useTheme } from '@/theme';
-import { PageShell, WaitlistCTA } from '@/components';
+import { withOpacity } from '@waqup/shared/theme';
+import { PageShell, WaitlistCTA, PublicFooter } from '@/components';
 import { spacing, borderRadius, BLUR, FROSTED_GLASS_HERO, imageEdgeFades, LANDING_SECTION_PADDING_Y } from '@/theme';
 import { CONTENT_MAX_WIDTH, CONTENT_MEDIUM, PAGE_PADDING } from '@/theme';
 import { Link } from '@/i18n/navigation';
@@ -173,7 +174,7 @@ export default function SciencePage() {
       </section>
 
       {/* ── Pillar divider ─────────────────────────────────── */}
-      <div style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <div style={{ background: colors.glass.dark }}>
         <div
           className="science-pillar-divider"
           style={{
@@ -406,7 +407,7 @@ export default function SciencePage() {
                 fontSize: 'clamp(20px, 2.5vw, 28px)',
                 fontWeight: 300,
                 lineHeight: 1.4,
-                color: '#fff',
+                  color: colors.text.onDark,
                 letterSpacing: '-0.5px',
                 textShadow: '0 2px 20px rgba(0,0,0,0.4)',
               }}
@@ -453,7 +454,7 @@ export default function SciencePage() {
               tagline: tp('pillar2Tagline'),
               desc: tp('pillar2Desc'),
               color: colors.accent.secondary,
-              gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, rgba(99,102,241,0.06))`,
+              gradient: `linear-gradient(160deg, ${colors.accent.secondary}18, ${withOpacity(colors.accent.secondary, 0.06)})`,
               science: tp('pillar2Science'),
             },
             {
@@ -651,7 +652,7 @@ export default function SciencePage() {
                   fontSize: 'clamp(28px, 3vw, 44px)',
                   fontWeight: 300,
                   letterSpacing: '-1px',
-                  color: '#fff',
+                  color: colors.text.onDark,
                   margin: '0 0 24px',
                   lineHeight: 1.15,
                   textShadow: '0 2px 20px rgba(0,0,0,0.4)',
@@ -673,7 +674,7 @@ export default function SciencePage() {
               <p
                 style={{
                   fontSize: 16,
-                  color: 'rgba(255,255,255,0.8)',
+                  color: withOpacity(colors.text.onDark, 0.8),
                   lineHeight: 1.75,
                   margin: '0 0 32px',
                   fontWeight: 300,
@@ -689,7 +690,7 @@ export default function SciencePage() {
                     background: `${colors.accent.primary}25`,
                     border: `1px solid ${colors.accent.primary}50`,
                     fontSize: 13,
-                    color: '#C084FC',
+                    color: colors.accent.tertiary,
                     fontWeight: 500,
                   }}
                 >
@@ -699,10 +700,10 @@ export default function SciencePage() {
                   style={{
                     padding: '10px 22px',
                     borderRadius: borderRadius.full,
-                    background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.12)',
+                    background: withOpacity(colors.text.onDark, 0.08),
+                    border: `1px solid ${withOpacity(colors.text.onDark, 0.12)}`,
                     fontSize: 13,
-                    color: 'rgba(255,255,255,0.7)',
+                    color: withOpacity(colors.text.onDark, 0.7),
                   }}
                 >
                   {tp('voiceCloningBadge2')}
@@ -736,6 +737,8 @@ export default function SciencePage() {
           />
         </div>
       </section>
+
+      <PublicFooter />
 
       {/* ── Global Styles ─────────────────────────────────── */}
       <style

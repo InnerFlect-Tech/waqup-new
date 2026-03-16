@@ -512,11 +512,21 @@ export default function SanctuaryHomePage() {
               padding: `${spacing.md} ${spacing.lg}`,
               minHeight: 72,
               borderRight: `1px solid ${colors.glass.border}`,
+              borderLeft: `3px solid ${displayStreak > 0 ? STREAK_COLOR : 'transparent'}`,
+              background: displayStreak > 0 ? `${STREAK_COLOR}08` : 'transparent',
             }}
           >
-            <Typography variant="micro" style={{ color: colors.text.secondary, marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {t('practiceRhythm')}
-            </Typography>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.xs, marginBottom: 2 }}>
+              <Flame
+                size={14}
+                color={displayStreak > 0 ? STREAK_COLOR : colors.text.secondary}
+                strokeWidth={2}
+                fill={displayStreak > 0 ? STREAK_COLOR : 'none'}
+              />
+              <Typography variant="micro" style={{ color: colors.text.secondary, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {t('practiceRhythm')}
+              </Typography>
+            </div>
             {progressError ? (
               <button
                 type="button"
@@ -540,7 +550,15 @@ export default function SanctuaryHomePage() {
                 Retry
               </button>
             ) : (
-              <Typography variant="body" style={{ color: colors.text.primary, margin: 0, fontWeight: 500, fontSize: 15 }}>
+              <Typography
+                variant="body"
+                style={{
+                  color: displayStreak > 0 ? STREAK_COLOR : colors.text.primary,
+                  margin: 0,
+                  fontWeight: 500,
+                  fontSize: 15,
+                }}
+              >
                 {displayStreak === 0 ? t('stayWithPractice') : t('practiceRhythmActive', { count: displayStreak })}
               </Typography>
             )}

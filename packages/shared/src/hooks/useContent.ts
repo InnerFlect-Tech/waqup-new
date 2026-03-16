@@ -8,7 +8,7 @@ interface ContentService {
   createContent: (input: CreateContentInput) => Promise<{ success: boolean; data: ContentItem | null; error: string | null }>;
   updateContent: (id: string, input: UpdateContentInput) => Promise<{ success: boolean; data: ContentItem | null; error: string | null }>;
   deleteContent: (id: string) => Promise<{ success: boolean; error: string | null }>;
-  recordPlay: (id: string) => Promise<{ success: boolean; error: string | null }>;
+  recordPlay: (id: string, durationSeconds?: number) => Promise<{ success: boolean; error: string | null }>;
 }
 
 // ─── Query keys ──────────────────────────────────────────────────────────────
@@ -103,12 +103,15 @@ export function createContentHooks(contentService: ContentService) {
   function useRecordPlay() {
     const queryClient = useQueryClient();
     return useMutation({
-      mutationFn: async (id: string): Promise<void> => {
-        const result = await contentService.recordPlay(id);
+      mutationFn: async ({
+        id,
+        durationSeconds,
+      }: { id: string; durationSeconds?: number }): Promise<void> => {
+        const result = await contentService.recordPlay(id, durationSeconds);
         if (!result.success) throw new Error(result.error ?? 'Failed to record play');
       },
-      onSettled: (_void, _err, id) => {
-        queryClient.invalidateQueries({ queryKey: contentKeys.detail(id) });
+      onSettled: (_void, _err, variables) => {
+        if (variables) queryClient.invalidateQueries({ queryKey: contentKeys.detail(variables.id) });
       },
     });
   }

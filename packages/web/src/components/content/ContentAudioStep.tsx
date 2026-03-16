@@ -15,10 +15,11 @@ import {
   getActiveBinauralPresets,
   getActiveAtmospherePresets,
 } from '@waqup/shared/constants';
+import { TARGET_DURATION_PRESETS } from '@waqup/shared/utils';
 import { resolveAtmosphereUrl } from '@/utils/atmosphere';
 import type { AudioSettings } from '@waqup/shared/types';
 import { DEFAULT_AUDIO_SETTINGS } from '@waqup/shared/types';
-import { Music, Volume2, Waves, Zap, Wind, Check, ChevronLeft, Play, Square } from 'lucide-react';
+import { Music, Volume2, Waves, Zap, Wind, Check, ChevronLeft, Play, Square, Clock } from 'lucide-react';
 
 export interface ContentAudioStepProps {
   backHref: string;
@@ -416,6 +417,52 @@ export function ContentAudioStep({ backHref, nextHref }: ContentAudioStepProps) 
         </AnimatePresence>
       </motion.div>
       ) : null}
+
+      {/* ── Target Duration (for repetition planning) ─────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.17 }}
+        style={{
+          padding: spacing.xl,
+          borderRadius: borderRadius.xl,
+          background: colors.glass.light,
+          backdropFilter: BLUR.xl,
+          WebkitBackdropFilter: BLUR.xl,
+          border: `1px solid ${colors.glass.border}`,
+          marginBottom: spacing.md,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.lg }}>
+          <Clock size={15} color={colors.text.secondary} />
+          <Typography variant="small" style={{ color: colors.text.secondary, textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: 11 }}>
+            Target duration
+          </Typography>
+        </div>
+        <Typography variant="small" style={{ color: colors.text.secondary, marginBottom: spacing.md, fontSize: 12, display: 'block' }}>
+          Voice will repeat to fill this duration. Use headphones for best effect with binaural layers.
+        </Typography>
+        <div style={{ display: 'flex', gap: spacing.sm, flexWrap: 'wrap' }}>
+          <PresetCard
+            label="Single play"
+            sublabel="No repetition"
+            isSelected={settings.targetDurationMinutes == null}
+            isNone
+            onClick={() => update('targetDurationMinutes', undefined)}
+            accentColor={meta.color}
+          />
+          {TARGET_DURATION_PRESETS.map((minutes) => (
+            <PresetCard
+              key={minutes}
+              label={`${minutes} min`}
+              sublabel={minutes === 5 ? 'Short session' : minutes === 20 ? 'Long session' : undefined}
+              isSelected={settings.targetDurationMinutes === minutes}
+              onClick={() => update('targetDurationMinutes', minutes)}
+              accentColor={meta.color}
+            />
+          ))}
+        </div>
+      </motion.div>
 
       {/* ── Fade Effects ────────────────────────────────────────────────────── */}
       <motion.div

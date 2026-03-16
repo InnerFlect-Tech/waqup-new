@@ -6,6 +6,8 @@
  */
 
 export * from './audio-helpers';
+export * from './audio-resolver';
+export * from './playback-plan';
 export * from './component-helpers';
 export * from './format-date';
 export * from './feedback-context';

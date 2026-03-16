@@ -52,8 +52,8 @@ export default function RitualDetailPage() {
       backHref="/sanctuary/rituals"
       editHref={`/sanctuary/rituals/${id}/edit`}
       editAudioHref={`/sanctuary/rituals/${id}/edit-audio`}
-      onRecordPlay={async () => {
-        await recordPlay();
+      onRecordPlay={async (durationSeconds) => {
+        await recordPlay(durationSeconds);
       }}
       onDelete={async () => {
         const ok = await remove(item.id);

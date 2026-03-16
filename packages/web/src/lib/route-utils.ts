@@ -45,6 +45,8 @@ const PROTECTED_PREFIXES = [
 
 const NO_FOOTER_PATTERNS = [
   '/',
+  '/explanation',
+  '/how-it-works',
   '/for-teachers',
   '/for-creators',
   '/for-coaches',

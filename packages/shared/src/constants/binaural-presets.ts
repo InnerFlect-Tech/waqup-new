@@ -37,6 +37,8 @@ export interface BinauralPreset {
   active: boolean;
   /** Display sort order */
   sortOrder: number;
+  /** Optional pre-rendered WAV/FLAC URL — when set, used instead of oscillators for more stable playback */
+  fileUrl?: string | null;
 }
 
 export const BINAURAL_PRESETS: BinauralPreset[] = [
@@ -61,6 +63,7 @@ export const BINAURAL_PRESETS: BinauralPreset[] = [
     mood: 'Deep rest',
     active: true,
     sortOrder: 1,
+    fileUrl: '/audio/binaural/delta.mp3',
   },
   {
     id: 'theta',
@@ -72,6 +75,7 @@ export const BINAURAL_PRESETS: BinauralPreset[] = [
     mood: 'Meditation',
     active: true,
     sortOrder: 2,
+    fileUrl: '/audio/binaural/theta.mp3',
   },
   {
     id: 'alpha',
@@ -83,6 +87,7 @@ export const BINAURAL_PRESETS: BinauralPreset[] = [
     mood: 'Calm focus',
     active: true,
     sortOrder: 3,
+    fileUrl: '/audio/binaural/alpha.mp3',
   },
   {
     id: 'beta',
@@ -94,6 +99,7 @@ export const BINAURAL_PRESETS: BinauralPreset[] = [
     mood: 'Active focus',
     active: true,
     sortOrder: 4,
+    fileUrl: '/audio/binaural/beta.mp3',
   },
   {
     id: 'gamma',
@@ -105,6 +111,7 @@ export const BINAURAL_PRESETS: BinauralPreset[] = [
     mood: 'Peak focus',
     active: true,
     sortOrder: 5,
+    fileUrl: '/audio/binaural/gamma.mp3',
   },
 ];
 

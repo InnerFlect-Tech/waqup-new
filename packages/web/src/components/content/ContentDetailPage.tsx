@@ -25,7 +25,7 @@ export interface ContentDetailPageProps {
   backHref: string;
   editHref: string;
   editAudioHref: string;
-  onRecordPlay?: () => Promise<void>;
+  onRecordPlay?: (durationSeconds?: number) => Promise<void>;
   onDelete?: (id: string) => void;
 }
 
@@ -63,7 +63,6 @@ export function ContentDetailPage({
       } else {
         try {
           await audioRef.current.play();
-          await onRecordPlay?.();
         } catch {
           setIsPlaying(false);
         }
@@ -83,6 +82,7 @@ export function ContentDetailPage({
       setIsPlaying(false);
       const durationSeconds = el.duration ? Math.round(el.duration) : 0;
       Analytics.contentCompleted(id, contentType, durationSeconds, user?.id);
+      void onRecordPlay?.(durationSeconds);
     };
     el.addEventListener('play', onPlay);
     el.addEventListener('pause', onPause);
@@ -92,7 +92,7 @@ export function ContentDetailPage({
       el.removeEventListener('pause', onPause);
       el.removeEventListener('ended', onEnded);
     };
-  }, [canPlay, id, contentType, user?.id]);
+  }, [canPlay, id, contentType, user?.id, onRecordPlay]);
 
   const handleDelete = () => {
     if (showDeleteConfirm) {
