@@ -216,7 +216,7 @@ export default function SanctuaryHomePage() {
         >
           <Typography
             variant="h1"
-            component="p"
+            as="p"
             style={{
               marginBottom: spacing.xs,
               color: colors.text.primary,
