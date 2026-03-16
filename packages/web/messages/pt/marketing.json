@@ -1,14 +1,14 @@
 {
   "hero": {
-    "headline": "A sua voz. A sua prática. A sua transformação.",
-    "subheadline": "Afirmações, meditações e rituais na sua voz. Projetados para reprogramar o subconsciente.",
+    "headline": "Torna-te quem queres ser — com a tua própria voz.",
+    "subheadline": "Crie afirmações, meditações e rituais na tua própria voz para remodelar o teu diálogo interno, identidade e estado diário.",
     "cta": "Entrar na Lista de Espera",
     "secondaryCta": "Veja como funciona",
     "earlyAccess": "Acesso antecipado · Sem cartão · Pratique grátis"
   },
   "howItWorks": {
     "title": "Como Funciona",
-    "subtitle": "Criado para transformação pela voz",
+    "subtitle": "Três passos. A tua voz. A tua transformação.",
     "steps": {
       "tell": {
         "title": "Conte-nos a sua intenção",
@@ -28,7 +28,7 @@
       "h1Line1": "Das primeiras palavras",
       "h1Line2": "à transformação",
       "h1Line3": "duradoura.",
-      "heroParagraph": "Três passos. A sua voz. Concebido cientificamente para reprogramar os padrões subconscientes que definem quem é e quem está a tornar-se.",
+      "heroParagraph": "Três passos. A tua voz. Transforma as tuas intenções em prática diária que reforça a identidade que escolheste.",
       "ctaStartFree": "Começar Grátis Hoje",
       "ctaViewPlans": "Ver Planos",
       "stat1Value": "3 passos",
@@ -43,8 +43,8 @@
       "step2Label": "A IA cria o seu conteúdo",
       "step3Label": "Ouvir e transformar",
       "sectionLabel": "Como Funciona",
-      "sectionTitle": "Três passos para um novo si",
-      "sectionParagraph": "Sem formulários. Sem guiões. Sem competências de produção. Apenas uma conversa que se torna na sua prática diária.",
+      "sectionTitle": "Três passos para uma mudança duradoura",
+      "sectionParagraph": "Sem formulários. Sem competências de produção. Apenas uma conversa que se torna na tua prática diária.",
       "step1Subtitle": "Um coach que realmente escuta",
       "step1Title": "Conte à IA a sua história",
       "step1Desc": "Não preenche um formulário. Tem uma conversa. Uma IA conversacional guia-o pelas suas dificuldades, objetivos e contexto emocional específicos. Coisas que um modelo nunca poderia capturar.",
@@ -215,7 +215,7 @@
   },
   "waitlist": {
     "title": "Entrar na Lista de Espera",
-    "subtitle": "Seja um dos primeiros a transformar a sua mente com voz.",
+    "subtitle": "Seja um dos primeiros a praticar na sua própria voz.",
     "emailPlaceholder": "exemplo@email.com",
     "namePlaceholder": "O seu nome",
     "firstNamePlaceholder": "Nome",
@@ -331,7 +331,7 @@
       "claimFailed": "Falha ao garantir a sua vaga. Por favor, tente novamente."
     }
   },
-  "footerTagline": "A sua voz. A sua transformação.",
+  "footerTagline": "Torna-te quem queres ser — com a tua própria voz.",
   "joinWaitlist": "Entrar na Lista",
   "signIn": "Entrar",
   "language": "Idioma",
@@ -357,10 +357,10 @@
   "footerDataDeletion": "Eliminação de Dados",
   "footerPaymentNote": "Praticar é sempre gratuito. Pagamento: cartões (Stripe) · Bitcoin em breve",
   "share": {
-    "home": "Transforme a sua mente com waQup — afirmações, meditações e rituais personalizados na sua voz. Confira:",
-    "howItWorks": "Veja como o waQup funciona — transformação pela voz em 3 passos:",
-    "explanation": "A ciência por detrás do waQup — neuroplasticidade, memória vocal e reprogramação subconsciente:",
-    "pricing": "Confira os preços do waQup — planos e pacotes Q. A prática é sempre grátis:",
+    "home": "Torna-te quem queres ser — com a tua própria voz. Crie afirmações, meditações e rituais na tua voz. Confira:",
+    "howItWorks": "Como o waQup te ajuda a tornar-te quem queres ser — três passos, a tua voz, prática diária. Confira:",
+    "explanation": "Por que a tua própria voz muda tudo — neuroplasticidade, diálogo interno e a ciência do hábito. Confira:",
+    "pricing": "Preços — simples e transparente. Pratique grátis para sempre. Confira:",
     "marketplace": "Explore o mercado waQup — descubra afirmações, meditações e rituais:",
     "getQs": "Obtenha créditos Q para waQup — alimente a sua jornada de criação:",
     "forTeachers": "Para professores e coaches — dê aos seus alunos práticas de voz personalizadas com waQup:",
@@ -368,7 +368,7 @@
     "forCreators": "Para criadores — ganhe com o seu conteúdo. Junte-se ao waQup:",
     "forStudios": "Para estúdios — amplie práticas pela voz. Conheça o waQup:",
     "ourStory": "A história do waQup — por que estamos a construir transformação pela voz:",
-    "investors": "waQup para parceiros fundadores — partilha de receita, sem diluição de capital:",
+    "investors": "Parceiros Fundadores — partilha de receita, economia de unidade clara. waQup: plataforma de mudança de identidade. Confira:",
     "join": "Membros Fundadores — vagas limitadas para apoiantes iniciais do waQup:",
     "launch": "O waQup está no ar. A sua voz. A sua prática. A sua transformação:",
     "funnels": "waQup — transforme a sua mente pela voz:",
@@ -654,8 +654,8 @@
   },
   "landing": {
     "badge": "Personalizado para ti",
-    "headline": "A tua prática, na tua voz.",
-    "subheadline": "Cria afirmações, meditações e rituais pela conversa. Pratica grátis, para sempre.",
+    "headline": "Torna-te quem queres ser — com a tua própria voz.",
+    "subheadline": "Crie afirmações, meditações e rituais na tua própria voz para remodelar o teu diálogo interno, identidade e estado diário.",
     "earlyAccess": "Acesso antecipado · Sem cartão · Pratique grátis sempre",
     "waitlistCount": "{count} na lista de espera",
     "practiceInYourVoice": "Pratique na sua própria voz",

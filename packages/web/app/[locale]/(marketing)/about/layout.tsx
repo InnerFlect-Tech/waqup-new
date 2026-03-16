@@ -1,16 +1,8 @@
-import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { createMarketingMetadata } from '@/lib/marketing-metadata';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'metadata' });
-  return {
-    title: t('pages.about'),
-  };
+  return createMarketingMetadata({ locale, pageKey: 'about', path: '/about' });
 }
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {

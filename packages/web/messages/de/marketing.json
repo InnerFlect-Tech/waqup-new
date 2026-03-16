@@ -1,14 +1,14 @@
 {
   "hero": {
-    "headline": "Deine Stimme. Deine Praxis. Deine Transformation.",
-    "subheadline": "waQup erstellt personalisierte Affirmationen, Meditationen und Rituale in deiner Stimme — wissenschaftlich entwickelt, um dein Unterbewusstsein neu zu verdrahten.",
+    "headline": "Werde, wer du sein willst — mit deiner eigenen Stimme.",
+    "subheadline": "Erstelle Affirmationen, Meditationen und Rituale in deiner eigenen Stimme — um deinen inneren Dialog, deine Identität und deinen täglichen Zustand zu verändern.",
     "cta": "Zur Warteliste anmelden",
     "secondaryCta": "So funktioniert es",
     "earlyAccess": "Frühzeitiger Zugang · Keine Karte · Kostenlos üben"
   },
   "howItWorks": {
     "title": "So funktioniert es",
-    "subtitle": "Für stimmenbasierte Transformation entwickelt",
+    "subtitle": "Drei Schritte. Deine Stimme. Deine Transformation.",
     "steps": {
       "tell": {
         "title": "Teile uns deine Absicht mit",
@@ -229,7 +229,7 @@
   },
   "waitlist": {
     "title": "Zur Warteliste anmelden",
-    "subtitle": "Sei unter den Ersten, die ihren Geist mit Stimme transformieren.",
+    "subtitle": "Sei unter den Ersten, die in der eigenen Stimme praktizieren.",
     "emailPlaceholder": "deine@email.com",
     "namePlaceholder": "Dein Name",
     "firstNamePlaceholder": "Vorname",
@@ -608,7 +608,7 @@
       "ctaBrowse": "Browse the marketplace"
     }
   },
-  "footerTagline": "Deine Stimme. Deine Transformation. Wissenschaftlich entwickelt, um die unbewussten Muster zu verändern, die dich definieren.",
+  "footerTagline": "Werde, wer du sein willst — mit deiner eigenen Stimme.",
   "joinWaitlist": "Anmelden",
   "signIn": "Anmelden",
   "language": "Sprache",
@@ -634,10 +634,10 @@
   "footerDataDeletion": "Datenlöschung",
   "footerPaymentNote": "Üben ist immer kostenlos. Zahlung: Karten (Stripe) · Bitcoin bald verfügbar",
   "share": {
-    "home": "Transformiere deinen Geist mit waQup — personalisierte Affirmationen, Meditationen und Rituale in deiner Stimme. Schau rein:",
-    "howItWorks": "So funktioniert waQup — stimmengestützte Transformation in 3 Schritten:",
-    "explanation": "Die Wissenschaft hinter waQup — Neuroplastizität, Stimmengedächtnis und Unterbewusstseins-Reprogrammierung:",
-    "pricing": "waQup Preise — Pläne und Q-Pakete. Üben ist immer kostenlos:",
+    "home": "Werde, wer du sein willst — mit deiner eigenen Stimme. Erstelle Affirmationen, Meditationen und Rituale in deiner Stimme. Schau rein:",
+    "howItWorks": "Wie waQup dir hilft, der zu werden, der du sein willst — drei Schritte, deine Stimme, tägliche Praxis. Schau rein:",
+    "explanation": "Warum deine eigene Stimme alles verändert — Neuroplastizität, Selbstgespräch und die Wissenschaft der Gewohnheit. Schau rein:",
+    "pricing": "Preise — einfach und transparent. Übe für immer kostenlos. Schau rein:",
     "marketplace": "Entdecke den waQup-Marktplatz — Affirmationen, Meditationen und Rituale:",
     "getQs": "Hole dir Q-Credits für waQup — treibe deine Kreation an:",
     "forTeachers": "Für Lehrer und Coaches — gib deinen Schülern personalisierte Stimmübungen mit waQup:",
@@ -645,7 +645,7 @@
     "forCreators": "Für Creator — verdiene mit deinem Content. Tritt waQup bei:",
     "forStudios": "Für Studios — skaliere stimmenbasierte Praxis. Lerne waQup kennen:",
     "ourStory": "Die waQup-Geschichte — warum wir stimmenbasierte Transformation bauen:",
-    "investors": "waQup für Gründungspartner — Umsatzbeteiligung, keine Aktienverwässerung:",
+    "investors": "Gründungspartner — Umsatzbeteiligung, klare Einheitseconomy. waQup: Identitätswandel-Plattform. Schau rein:",
     "join": "Gründungsmitglieder — begrenzte Plätze für frühe waQup-Unterstützer:",
     "launch": "waQup ist live. Deine Stimme. Deine Praxis. Deine Transformation:",
     "funnels": "waQup — transformiere deinen Geist durch Stimme:",
@@ -654,8 +654,8 @@
   },
   "landing": {
     "badge": "Personalisiert für dich",
-    "headline": "Deine Stimme. Deine Identität. Deine Transformation.",
-    "subheadline": "Live aufnehmen oder in 60 Sekunden klonen — deine Stimme, so oder so. Personalisierte Affirmationen, Meditationen und Rituale, die dein Unterbewusstsein umprogrammieren. Höre morgens und abends, wenn es wirkt. Basiert auf Neurowissenschaft. Für immer kostenlos üben.",
+    "headline": "Werde, wer du sein willst — mit deiner eigenen Stimme.",
+    "subheadline": "Erstelle Affirmationen, Meditationen und Rituale in deiner eigenen Stimme, um deinen Selbstdialog, deine Identität und deinen Tageszustand zu verändern.",
     "earlyAccess": "Frühzeitiger Zugang · Keine Karte · Immer kostenlos üben",
     "waitlistCount": "{count} auf der Warteliste",
     "practiceInYourVoice": "Übe in deiner eigenen Stimme",

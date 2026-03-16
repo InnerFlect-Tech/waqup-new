@@ -1,7 +1,7 @@
 {
   "hero": {
-    "headline": "Votre voix. Votre pratique. Votre transformation.",
-    "subheadline": "waQup crée des affirmations, méditations et rituels personnalisés dans votre propre voix — conçus scientifiquement pour reprogrammer votre subconscient.",
+    "headline": "Deviens qui tu veux être — avec ta propre voix.",
+    "subheadline": "Créez des affirmations, méditations et rituels dans votre propre voix pour remodeler votre dialogue intérieur, identité et état quotidien.",
     "cta": "Rejoindre la liste d'attente",
     "secondaryCta": "Voir comment ça marche",
     "earlyAccess": "Accès anticipé · Sans carte · Pratiquez gratuitement"
@@ -229,7 +229,7 @@
   },
   "waitlist": {
     "title": "Rejoindre la liste d'attente",
-    "subtitle": "Soyez parmi les premiers à transformer votre esprit avec la voix.",
+    "subtitle": "Soyez parmi les premiers à pratiquer avec votre propre voix.",
     "emailPlaceholder": "votre@email.com",
     "namePlaceholder": "Votre nom",
     "firstNamePlaceholder": "Prénom",
@@ -608,7 +608,7 @@
       "ctaBrowse": "Browse the marketplace"
     }
   },
-  "footerTagline": "Votre voix. Votre transformation. Scientifiquement conçu pour reprogrammer les schémas subconscients qui vous définissent.",
+  "footerTagline": "Deviens qui tu veux être — avec ta propre voix.",
   "joinWaitlist": "Rejoindre",
   "signIn": "Connexion",
   "language": "Langue",
@@ -634,10 +634,10 @@
   "footerDataDeletion": "Suppression des données",
   "footerPaymentNote": "Pratiquer est toujours gratuit. Paiement : cartes (Stripe) · Bitcoin bientôt",
   "share": {
-    "home": "Transformez votre esprit avec waQup — affirmations, méditations et rituels personnalisés dans votre voix. Découvrez :",
-    "howItWorks": "Comment waQup fonctionne — transformation par la voix en 3 étapes :",
-    "explanation": "La science derrière waQup — neuroplasticité, mémoire vocale et reprogrammation subconsciente :",
-    "pricing": "Tarifs waQup — forfaits et packs Q. La pratique est toujours gratuite :",
+    "home": "Deviens qui tu veux être — avec ta propre voix. Crée des affirmations, méditations et rituels dans ta voix. Découvre :",
+    "howItWorks": "Comment waQup t'aide à devenir qui tu veux être — trois étapes, ta voix, pratique quotidienne. Découvre :",
+    "explanation": "Pourquoi ta propre voix change tout — neuroplasticité, dialogue intérieur et la science de l'habitude. Découvre :",
+    "pricing": "Tarifs — simple et transparent. Pratique gratuite pour toujours. Découvre :",
     "marketplace": "Explorez le marché waQup — affirmations, méditations et rituels :",
     "getQs": "Obtenez des crédits Q pour waQup — alimentez votre parcours de création :",
     "forTeachers": "Pour enseignants et coaches — offrez des pratiques vocales personnalisées avec waQup :",
@@ -645,7 +645,7 @@
     "forCreators": "Pour créateurs — gagnez avec votre contenu. Rejoignez waQup :",
     "forStudios": "Pour studios — développez la pratique par la voix. Découvrez waQup :",
     "ourStory": "L'histoire de waQup — pourquoi nous construisons la transformation par la voix :",
-    "investors": "waQup pour partenaires fondateurs — partage des revenus, pas de dilution :",
+    "investors": "Partenaires fondateurs — partage des revenus, économie claire. waQup : plateforme de changement d'identité. Découvre :",
     "join": "Membres fondateurs — places limitées pour les premiers soutiens waQup :",
     "launch": "waQup est en ligne. Votre voix. Votre pratique. Votre transformation :",
     "funnels": "waQup — transformez votre esprit par la voix :",
@@ -654,8 +654,8 @@
   },
   "landing": {
     "badge": "Personnalisé pour toi",
-    "headline": "Votre voix. Votre identité. Votre transformation.",
-    "subheadline": "Enregistrez en direct ou clonez en 60 secondes — votre voix, dans tous les cas. Créez des affirmations, méditations et rituels personnalisés qui reprogramment votre subconscient. Écoutez le matin et le soir, quand ça prend. Basé sur les neurosciences. Pratiquez gratuitement pour toujours.",
+    "headline": "Deviens qui tu veux être — avec ta propre voix.",
+    "subheadline": "Créez des affirmations, méditations et rituels dans votre propre voix pour remodeler votre dialogue intérieur, identité et état quotidien.",
     "earlyAccess": "Accès anticipé · Sans carte · Pratiquez gratuitement toujours",
     "waitlistCount": "{count} sur la liste d'attente",
     "practiceInYourVoice": "Pratiquez dans votre propre voix",

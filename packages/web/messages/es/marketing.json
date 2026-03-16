@@ -1,7 +1,7 @@
 {
   "hero": {
-    "headline": "Tu voz. Tu práctica. Tu transformación.",
-    "subheadline": "waQup crea afirmaciones, meditaciones y rituales personalizados en tu propia voz — diseñados científicamente para reprogramar tu subconsciente.",
+    "headline": "Conviértete en quien quieres ser — con tu propia voz.",
+    "subheadline": "Crea afirmaciones, meditaciones y rituales en tu propia voz para remodelar tu diálogo interno, identidad y estado diario.",
     "cta": "Unirme a la Lista de Espera",
     "secondaryCta": "Ver cómo funciona",
     "earlyAccess": "Acceso anticipado · Sin tarjeta · Practica gratis"
@@ -229,7 +229,7 @@
   },
   "waitlist": {
     "title": "Únete a la Lista de Espera",
-    "subtitle": "Sé de los primeros en transformar tu mente con voz.",
+    "subtitle": "Sé de los primeros en practicar con tu propia voz.",
     "emailPlaceholder": "tu@email.com",
     "namePlaceholder": "Tu nombre",
     "firstNamePlaceholder": "Nombre",
@@ -608,7 +608,7 @@
       "ctaBrowse": "Browse the marketplace"
     }
   },
-  "footerTagline": "Tu voz. Tu transformación. Diseñado científicamente para reprogramar los patrones subconscientes que te definen.",
+  "footerTagline": "Conviértete en quien quieres ser — con tu propia voz.",
   "joinWaitlist": "Unirse",
   "signIn": "Iniciar sesión",
   "language": "Idioma",
@@ -634,10 +634,10 @@
   "footerDataDeletion": "Eliminación de Datos",
   "footerPaymentNote": "Practicar es siempre gratis. Pago: tarjetas (Stripe) · Bitcoin próximamente",
   "share": {
-    "home": "Transforma tu mente con waQup — afirmaciones, meditaciones y rituales personalizados en tu voz. Échale un vistazo:",
-    "howItWorks": "Descubre cómo funciona waQup — transformación por voz en 3 pasos:",
-    "explanation": "La ciencia detrás de waQup — neuroplasticidad, memoria vocal y reprogramación subconsciente:",
-    "pricing": "Consulta los precios de waQup — planes y paquetes Q. Practicar es siempre gratis:",
+    "home": "Conviértete en quien quieres ser — con tu propia voz. Crea afirmaciones, meditaciones y rituales en tu voz. Échale un vistazo:",
+    "howItWorks": "Cómo waQup te ayuda a convertirte en quien quieres ser — tres pasos, tu voz, práctica diaria. Échale un vistazo:",
+    "explanation": "Por qué tu propia voz cambia todo — neuroplasticidad, diálogo interno y la ciencia del hábito. Échale un vistazo:",
+    "pricing": "Precios — simple y transparente. Practica gratis para siempre. Échale un vistazo:",
     "marketplace": "Explora el mercado waQup — descubre afirmaciones, meditaciones y rituales:",
     "getQs": "Obtén créditos Q para waQup — impulsa tu viaje de creación:",
     "forTeachers": "Para profesores y coaches — da a tus alumnos prácticas de voz personalizadas con waQup:",
@@ -654,8 +654,8 @@
   },
   "landing": {
     "badge": "Personalizado para ti",
-    "headline": "Tu voz. Tu identidad. Tu transformación.",
-    "subheadline": "Graba en vivo o clona en 60 segundos — tu voz, como prefieras. Crea afirmaciones, meditaciones y rituales personalizados que reprograman tu subconsciente. Escucha por la mañana y por la noche, cuando cala. Basado en neurociencia. Practica gratis para siempre.",
+    "headline": "Conviértete en quien quieres ser — con tu propia voz.",
+    "subheadline": "Crea afirmaciones, meditaciones y rituales en tu propia voz para remodelar tu diálogo interno, identidad y estado diario.",
     "earlyAccess": "Acceso anticipado · Sin tarjeta · Practica gratis siempre",
     "waitlistCount": "{count} en la lista de espera",
     "practiceInYourVoice": "Practica en tu propia voz",

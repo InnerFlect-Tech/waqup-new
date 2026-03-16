@@ -1,7 +1,7 @@
 {
-  "defaultDescription": "Transformiere deinen Geist durch Stimme und heilige Frequenzen",
+  "defaultDescription": "Werde, wer du sein willst — mit deiner eigenen Stimme. waQup hilft dir, Selbstgespräch und Identität bewusst zu gestalten.",
   "pages": {
-    "home": "waQup — Transformation durch Stimme",
+    "home": "Werde, wer du sein willst — mit deiner eigenen Stimme",
     "login": "Anmelden",
     "signup": "Konto erstellen",
     "forgotPassword": "Passwort vergessen",
@@ -27,14 +27,14 @@
     "referral": "Empfehlung",
     "help": "Hilfe & Support",
     "learn": "Lernen",
-    "pricing": "Preise",
-    "howItWorks": "So funktioniert es",
+    "pricing": "Preise — Einfach, transparent",
+    "howItWorks": "Wie waQup dir hilft, zu werden, wer du sein willst",
     "waitlist": "Warteliste",
     "join": "Gründungsmitglieder",
     "explanation": "Die Wissenschaft",
     "ourStory": "Unsere Geschichte",
-    "theScience": "Die Wissenschaft",
-    "investors": "Gründungspartner",
+    "theScience": "Die Wissenschaft — Warum deine eigene Stimme alles verändert",
+    "investors": "Gründungspartner — Strategische Investition",
     "privacy": "Datenschutzerklärung",
     "terms": "Nutzungsbedingungen",
     "comingSoon": "Demnächst",
@@ -46,7 +46,7 @@
     "funnels": "Verkaufs-Funnels",
     "launch": "Launch",
     "getQs": "Qs erhalten",
-    "about": "Über uns & Danksagungen"
+    "about": "Über uns"
   },
   "auth": {
     "login": "Anmelden",
@@ -60,7 +60,8 @@
     "howItWorks": "So funktioniert waQup: Erzähl der KI deine Absicht, erstelle in deiner Stimme und transformiere durch tägliche Praxis. Drei Schritte. Kein Abo zum Wiederabspielen.",
     "investors": "waQup für Gründungspartner — Umsatzbeteiligung, keine Aktienverwässerung. Plattform für Stimmen-Transformation mit klarer Unit-Economy.",
     "ourStory": "Warum wir waQup gebaut haben — die Gründergeschichte hinter stimmenbasierten Affirmationen, Meditationen und Ritualen.",
-    "theScience": "Die Wissenschaft hinter waQup: Neuroplastizität, Stimmengedächtnis und Unterbewusstseins-Reprogrammierung.",
+    "theScience": "Wie Wiederholung, Selbstgespräch, Gedächtnis und deine eigene Stimme zusammenwirken — fundiert in Neuroplastizitäts- und Stimmengedächtnis-Forschung.",
+    "about": "Menschen helfen, ihr Selbstgespräch und ihre Identität bewusst mit der eigenen Stimme zu gestalten.",
     "forTeachers": "waQup für Lehrer und Coaches — bringe personalisierte Stimmübungen zu deinen Schülern und Klienten.",
     "forCoaches": "waQup für Coaches — teile private Stimmübungen mit Klienten. Erstelle in Minuten, nicht Stunden.",
     "forCreators": "waQup für Creator — verdiene mit deinem Content. Deine Stimme, deine Marke, Umsatzbeteiligung.",

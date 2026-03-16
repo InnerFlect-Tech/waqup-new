@@ -48,7 +48,7 @@ export async function createMarketingMetadata({
     ? `auth.${pageKey}` as const
     : `pages.${pageKey}` as const;
   const pageTitle = t(titleKey);
-  const fullTitle = `${pageTitle} — waQup`;
+  const fullTitle = `${pageTitle} | waQup`;
 
   let desc = descriptionOverride ?? t('defaultDescription');
   try {
@@ -64,7 +64,7 @@ export async function createMarketingMetadata({
   const url = `${SITE_URL.replace(/\/$/, '')}${canonicalPath === '/' ? '' : canonicalPath}`;
 
   return {
-    title: pageTitle,
+    title: fullTitle,
     description: desc,
     openGraph: {
       type: 'website',
