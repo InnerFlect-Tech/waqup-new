@@ -100,7 +100,7 @@ export function useWebAudioPlayer(
     if (playbackPlan) {
       setPosition((prev) => ({ ...prev, durationMs: playbackPlan.totalDurationMs }));
     }
-  }, [playbackPlan?.totalDurationMs]);
+  }, [playbackPlan]);
 
   // Keep speedRef and volumesRef in sync with state
   useEffect(() => { speedRef.current = speed; }, [speed]);
